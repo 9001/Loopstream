@@ -1,0 +1,32 @@
+<!-- This config file contains a minimal set of configurable parameters,
+     and mostly just contains the things you need to change.  We created
+     this for those who got scared away from the rather large and heavily
+     commented icecast.xml.dist file. -->
+<icecast>
+    <limits>
+        <sources>99</sources>
+    </limits>
+    <authentication>
+        <source-password>loopstream</source-password>
+        <relay-password>loopstream</relay-password>
+        <admin-user>admin</admin-user>
+        <admin-password>loopstream</admin-password>
+    </authentication>
+
+    <hostname>localhost</hostname>
+    <listen-socket>
+        <port>42069</port>
+    </listen-socket>
+    <fileserve>1</fileserve>
+    <paths>
+        <logdir>./logs</logdir>
+        <webroot>./web</webroot>
+        <adminroot>./admin</adminroot>
+        <alias source="/" dest="/status.xsl"/>
+    </paths>
+    <logging>
+        <accesslog>access.log</accesslog>
+        <errorlog>error.log</errorlog>
+      	<loglevel>1</loglevel> <!-- 4 Debug, 3 Info, 2 Warn, 1 Error -->
+    </logging>
+</icecast>
