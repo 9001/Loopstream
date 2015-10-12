@@ -68,7 +68,7 @@ namespace Loopstream
                 }
                 if (Program.debug)
                 {
-                    dbg += "music=" + LSDevice.stringer(wf) + "\r\n\r\n";
+                    dbg += "music=" + LSDevice.stringer(wf) + "\n\n";
                 }
             }
             catch
@@ -90,7 +90,7 @@ namespace Loopstream
                     }
                     if (Program.debug)
                     {
-                        dbg += "mic=" + LSDevice.stringer(wf) + "\r\n\r\n";
+                        dbg += "mic=" + LSDevice.stringer(wf) + "\n\n";
                     }
                 }
                 catch
@@ -100,17 +100,22 @@ namespace Loopstream
             }
             if (!string.IsNullOrEmpty(fail))
             {
-                MessageBox.Show("I am sorry to say that some devices (" + fail.Trim(',', ' ') + ") fail to open.\r\nThis will probably cause issues :(",
+                MessageBox.Show("I am sorry to say that some devices (" + fail.Trim(',', ' ') + ") fail to open.\nThis will probably cause issues :(",
                     "Critical error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
             if (!string.IsNullOrEmpty(smp))
             {
-                if (DialogResult.Yes == MessageBox.Show("Hey, got some work for you!\r\n\r\n" +
-                    "Some of your devices (" + smp.Trim(',', ' ') + ") have\r\na different samplerate than what you\r\nspecified in the settings (" + settings.samplerate + " Hz).\r\n\r\n" +
-                    //"This will still work (I am applying a resampler), but there will be lower sound quality and more load on your computer.\r\n\r\n" +
-                    //"If you want to keep things TopNotch™, please see the\n\"Soundcard Samplerate\" section in the readme.";
-                    "You can't stream like this.\r\n\r\n" +
-                    "Do you want to fix it now? I'll help you!",
+                if (DialogResult.Yes == MessageBox.Show(
+                    "Some of your devices (" + smp.Trim(',', ' ') + ")\n" + 
+                    "have a different samplerate than what you\n" +
+                    "specified in the settings (" + settings.samplerate + " Hz).\n" +
+                    "\n" +
+                    "This will still work, but there will be:\n" +
+                    "    - lower sound quality\n" +
+                    "    - more latency / audio delay\n" +
+                    "    - more load on your computer\n\n" +
+                    "Do you have time to fix this for\n" +
+                    "the ultimate r/a/dio experience?",
                     "HEY! LISTEN!", MessageBoxButtons.YesNo, MessageBoxIcon.Warning))
                 {
                     samplerateTutorial();
@@ -118,7 +123,7 @@ namespace Loopstream
             }
             if (Program.debug)
             {
-                if (DialogResult.No == MessageBox.Show("-!- DEBUG (no=clipboard)\r\n\r\n" + dbg, "DEBUG", MessageBoxButtons.YesNo, MessageBoxIcon.Information))
+                if (DialogResult.No == MessageBox.Show("-!- DEBUG (no=clipboard)\n\n" + dbg, "DEBUG", MessageBoxButtons.YesNo, MessageBoxIcon.Information))
                 {
                     Clipboard.Clear();
                     Clipboard.SetText(dbg);
@@ -155,32 +160,55 @@ namespace Loopstream
             proc.StartInfo.Arguments = "shell32.dll,Control_RunDLL mmsys.cpl,,playback";
             proc.StartInfo.FileName = "rundll32.exe";
             proc.Start();
-            MessageBox.Show("I have taken the liberty of opening\r\nyour soundcard control panel.\r\n\r\n" +
-                "Here's what you'll do:\r\n\r\n" +
-                "1. Rightclick the first playback device\r\n" +
-                "2. Select «Properties»\r\n" +
-                "3. Open the «Advanced» tab\r\n" +
-                "4. Change «Default Format» to this:\r\n" +
-                "        16 bit, " + settings.samplerate + " Hz (whatever)\r\n" +
-                "5. Press OK\r\n\r\n" +
-                "Now do that with all your playback devices,\r\nthen press OK on both the soundcard\r\ncontrol window and this message.");
+            MessageBox.Show("I have taken the liberty of opening\nyour soundcard control panel.\n\n" +
+                "Here's what you'll do:\n\n" +
+                "1. Rightclick the first playback device\n" +
+                "2. Select «Properties»\n" +
+                "3. Open the «Advanced» tab\n" +
+                "4. Change «Default Format» to this:\n" +
+                "        16 bit, " + settings.samplerate + " Hz (whatever)\n" +
+                "5. Press OK\n\n" +
+                "Now do that with all your playback devices,\nthen press OK on both the soundcard\ncontrol window and this message.");
             
             proc = new System.Diagnostics.Process();
             proc.StartInfo.Arguments = "shell32.dll,Control_RunDLL mmsys.cpl,,recording";
             proc.StartInfo.FileName = "rundll32.exe";
             proc.Start();
-            MessageBox.Show("Sorry, but you're not finished just yet.\r\n" +
-                "Don't worry, you're getting good at this!\r\n\r\n" +
-                "1. Rightclick the first recording device\r\n" +
-                "2. Select «Properties»\r\n" +
-                "3. Open the «Advanced» tab\r\n" +
-                "4. Change «Default Format» to this:\r\n" +
-                "        2 channel, 16 bit, " + settings.samplerate + " Hz (whatever)\r\n" +
-                "5. Press OK\r\n\r\n" +
-                "==== if you can't see a «2 channel»\r\n" +
-                "==== option, then «1 channel» is OK!\r\n\r\n" +
-                "Same procedure like last year, do that on all\r\nof your recording devices, then hit OK.\r\n\r\n" +
+            MessageBox.Show("Sorry, but you're not finished just yet.\n" +
+                "Don't worry, you're getting good at this!\n\n" +
+                "1. Rightclick the first recording device\n" +
+                "2. Select «Properties»\n" +
+                "3. Open the «Advanced» tab\n" +
+                "4. Change «Default Format» to this:\n" +
+                "        2 channel, 16 bit, " + settings.samplerate + " Hz (whatever)\n" +
+                "5. Press OK\n\n" +
+                "==== if you can't see a «2 channel»\n" +
+                "==== option, then «1 channel» is OK!\n\n" +
+                "Same procedure like last year, do that on all\nof your recording devices, then hit OK.\n\n" +
                 "Thanks, now you're ready to fly!");
+
+            Splesh spl = new Splesh();
+            spl.Show();
+            Application.DoEvents();
+            settings.runTests(spl, true);
+            spl.gtfo();
+            string bads = "";
+            foreach (LSDevice dev in settings.devs)
+            {
+                if (dev != null &&
+                    dev.wf != null &&
+                    dev.wf.SampleRate != settings.samplerate)
+                {
+                    bads += (dev.mm.DataFlow == DataFlow.All ||
+                             dev.mm.DataFlow == DataFlow.Render ?
+                             "Music" : "Microphone") + " source:   " +
+                             dev.name + "\n";
+                }
+            }
+            if (!string.IsNullOrEmpty(bads))
+            {
+                MessageBox.Show("The following audio devices are still not using the correct samplerate (" + settings.samplerate + "):\n\n" + bads);
+            }
         }
 
         private void ConfigSC_Load(object sender, EventArgs e)
@@ -388,7 +416,15 @@ namespace Loopstream
         {
             if (gMount.Text.Length > 0)
             {
-                settings.mount = gMount.Text;
+                settings.mount = gMount.Text.TrimStart('/');
+                if (settings.mount.EndsWith(".mp3") ||
+                    settings.mount.EndsWith(".ogg") ||
+                    settings.mount.EndsWith(".aac"))
+                {
+                    settings.mount =
+                        settings.mount.Substring(0,
+                        settings.mount.LastIndexOf('.'));
+                }
                 gMount.BackColor = SystemColors.Window;
                 gMount.ForeColor = SystemColors.WindowText;
             }
@@ -603,6 +639,7 @@ namespace Loopstream
         void tPop_Tick(object sender, EventArgs e)
         {
             tPop.Stop();
+            if (popTop == gHost) popTop = gMount;
             // fucking hell microsoft how did you fuck THIS up
             tt.Show(tt.GetToolTip(popTop), gTwoS);
         }
@@ -644,17 +681,17 @@ namespace Loopstream
 
                 if (IntPtr.Size == 4)
                 {
-                    MessageBox.Show("I see you're running the 32bit version of Loopstream!\r\n\r\n" +
-                        "If iTunes still doesn't produce correct tags with this edition of Loopstream, then the problem is probably that your version of iTunes is different from the one that Loopstream supports.\r\n\r\n" +
+                    MessageBox.Show("I see you're running the 32bit version of Loopstream!\n\n" +
+                        "If iTunes still doesn't produce correct tags with this edition of Loopstream, then the problem is probably that your version of iTunes is different from the one that Loopstream supports.\n\n" +
                         "Yes, iTunes is /that/ picky. Sorry :(");
                     return;
                 }
 
                 if (DialogResult.Yes == MessageBox.Show(
-                    "This media player's a tricky one.\r\n\r\n" +
-                    "If the tags you send appear to be bullshit,\r\n" +
-                    "I can make a copy of myself that might\r\n" +
-                    "work better for this.\r\n\r\n" +
+                    "This media player's a tricky one.\n\n" +
+                    "If the tags you send appear to be bullshit,\n" +
+                    "I can make a copy of myself that might\n" +
+                    "work better for this.\n\n" +
                     "Should I clone myself to Loopstream32.exe?",
                     "Hot Cloning Action",
                     MessageBoxButtons.YesNo,

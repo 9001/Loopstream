@@ -34,17 +34,23 @@ namespace Loopstream
         public void vis()
         {
             /*MessageBox.Show(
-                "Hello there!\r\n" +
-                "\r\n" +
-                "Since this is your first run, here's a\r\n" +
-                "short list of things that don't work yet:\r\n" +
-                "\r\n" +
-                "    - Streaming to OGG/Vorbis\r\n" +
-                "       (icecast disconnects when you stream silence)\r\n" +
-                "\r\n" +
-                "That's about it.\r\n" +
+                "Hello there!\n" +
+                "\n" +
+                "Since this is your first run, here's a\n" +
+                "short list of things that don't work yet:\n" +
+                "\n" +
+                "    - Streaming to OGG/Vorbis\n" +
+                "       (icecast disconnects when you stream silence)\n" +
+                "\n" +
+                "That's about it.\n" +
                 "Enjoy streaming!");*/
             label1.Visible = label2.Visible = label3.Visible = true;
+            Application.DoEvents();
+        }
+
+        public void unvis()
+        {
+            label1.Visible = label2.Visible = false;
             Application.DoEvents();
         }
 

@@ -39,9 +39,11 @@ namespace Loopstream
         LSPcmFeed pcm;
         LSTag tag;
         Control[] invals; //sorry
+        string lqMessage; //sorry
 
         private void Form1_Load(object sender, EventArgs e)
         {
+            pMessage.Height = 64;
             myBounds = this.Bounds;
             this.Bounds = new Rectangle(0, -100, 0, 0);
             this.Icon = Program.icon;
@@ -55,7 +57,9 @@ namespace Loopstream
         void t_Tick(object sender, EventArgs e)
         {
             ((Timer)sender).Stop();
-            this.Text += " v" + Application.ProductVersion;
+            this.Text += " v" + Application.ProductVersion
+                //+ "-kilim-1"
+                ;
             
             DFC.coreTest();
             if (Directory.Exists(@"..\..\tools\"))
@@ -68,9 +72,10 @@ namespace Loopstream
                 splash.vis();
                 new DFC().extract(splash.pb);
             }
+            splash.unvis();
 
             settings = LSSettings.load();
-            settings.runTests(splash);
+            settings.runTests(splash, false);
             isPresetLoad = true;
 
             gMusic.valueChanged += gSlider_valueChanged;
@@ -160,6 +165,7 @@ namespace Loopstream
                 gOut.graden2,
             };
             invalOnNext = false;
+            lqMessage = null;
 
             Timer tTitle = new Timer();
             tTitle.Tick += tTitle_Tick;
@@ -258,14 +264,14 @@ namespace Loopstream
             if (settings.devRec == null || settings.devOut == null)
             {
                 if (DialogResult.OK == MessageBox.Show(
-                    "Please take a minute to adjust your settings\r\n\r\n(soundcard and radio server)",
+                    "Please take a minute to adjust your settings\n\n(soundcard and radio server)",
                     "Audio endpoint is null", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning))
                 {
                     gSettings_Click(sender, e);
 
                     if (settings.devRec == null || settings.devOut == null)
                     {
-                        MessageBox.Show("Config is still invalid.\r\n\r\nGiving up.", "Crit", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        MessageBox.Show("Config is still invalid.\n\nGiving up.", "Crit", MessageBoxButtons.OK, MessageBoxIcon.Error);
                         return;
                     }
                 }
@@ -340,8 +346,8 @@ namespace Loopstream
         {
             if (settings.devRec == null || settings.devRec.mm == null)
             {
-                MessageBox.Show("I'm about to open the settings window.\r\n\r\n" +
-                    "In the second dropdown (input Music), please select the speakers output you use when listening to music.\r\n\r\nPress apply when done.");
+                MessageBox.Show("I'm about to open the settings window.\n\n" +
+                    "In the second dropdown (input Music), please select the speakers output you use when listening to music.\n\nPress apply when done.");
                 gSettings_Click(sender, e);
 
                 if (settings.devRec == null || settings.devRec.mm == null)
@@ -364,8 +370,8 @@ namespace Loopstream
             Clipboard.Clear();
             Clipboard.SetText(str);
             MessageBox.Show(
-                "Capture will begin when you press OK; please open a media player and start listening to some music.\r\n\r\n" +
-                "While you wait, the following text is on your clipboard... Paste it in irc (Ctrl-V)\r\n\r\n" + str);
+                "Capture will begin when you press OK; please open a media player and start listening to some music.\n\n" +
+                "While you wait, the following text is on your clipboard... Paste it in irc (Ctrl-V)\n\n" + str);
 
             wdt_v = File.OpenWrite("Loopstream.raw");
             wdt_writer = new NAudio.Wave.WaveFileWriter("Loopstream.wav", wdt_waveIn.WaveFormat);
@@ -381,7 +387,7 @@ namespace Loopstream
             }
             gMic.level = 0;
             if (DialogResult.Yes == MessageBox.Show("Test finished! The soundclip has been recorded to Loopstream.wav in the " +
-                    "same folder as this .exe, more specifically here:\r\n\r\n" + Application.StartupPath + "\r\n\r\n" +
+                    "same folder as this .exe, more specifically here:\n\n" + Application.StartupPath + "\n\n" +
                     "Could you uploading this to pomf.se? Thanks!", "Open browser?", MessageBoxButtons.YesNo))
             {
                 System.Diagnostics.Process.Start("http://pomf.se/");
@@ -431,11 +437,44 @@ namespace Loopstream
 
         void tTitle_Tick(object sender, EventArgs e)
         {
+            if (mixer != null && mixer.isLQ != null)
+            {
+                lqMessage = mixer.isLQ;
+                mixer.isLQ = null;
+                this.Height += 64;
+                pMessage.Visible = true;
+            }
             if (tag == null) return;
             this.Text = string.Format("{0:0.00} // {1:0.00} // {2}",
                 Math.Round(settings.mp3.FIXME_kbps, 2),
                 Math.Round(settings.ogg.FIXME_kbps, 2),
                 tag.tag);
+        }
+
+        long lastclick = 0;
+        private void pictureBox1_MouseClick(object sender, MouseEventArgs e)
+        {
+            if (e.Button == System.Windows.Forms.MouseButtons.Right)
+            {
+                long time = DateTime.UtcNow.Ticks / 10000;
+                if (time < lastclick + 1000)
+                {
+                    Clipboard.Clear();
+                    Application.DoEvents();
+                    Clipboard.SetText(Program.DBGLOG);
+                    Application.DoEvents();
+                    MessageBox.Show("Debug information placed on clipboard\n\nGo to pastebin and Ctrl-V");
+                }
+                lastclick = time;
+            }
+        }
+
+        private void gLowQ_Click(object sender, EventArgs e)
+        {
+            pMessage.Visible = false;
+            this.Height -= 64;
+            MessageBox.Show(lqMessage);
+            lqMessage = null;
         }
     }
 }

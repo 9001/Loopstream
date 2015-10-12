@@ -59,6 +59,7 @@
             this.gUnavail = new System.Windows.Forms.CheckBox();
             this.gTestDevs = new System.Windows.Forms.CheckBox();
             this.tpServer = new System.Windows.Forms.TabPage();
+            this.label25 = new System.Windows.Forms.Label();
             this.gPublic = new System.Windows.Forms.CheckBox();
             this.label15 = new System.Windows.Forms.Label();
             this.label14 = new System.Windows.Forms.Label();
@@ -95,6 +96,7 @@
             this.gDelete = new System.Windows.Forms.Button();
             this.gLatinize = new System.Windows.Forms.CheckBox();
             this.pTagAdvanced1 = new System.Windows.Forms.Panel();
+            this.gGroup = new System.Windows.Forms.TextBox();
             this.label17 = new System.Windows.Forms.Label();
             this.gEncodingL = new System.Windows.Forms.Label();
             this.label24 = new System.Windows.Forms.Label();
@@ -122,14 +124,12 @@
             this.gSplash = new System.Windows.Forms.CheckBox();
             this.pTabs = new System.Windows.Forms.Panel();
             this.label5 = new System.Windows.Forms.Label();
-            this.label12 = new System.Windows.Forms.Label();
-            this.tt = new System.Windows.Forms.ToolTip(this.components);
-            this.label25 = new System.Windows.Forms.Label();
-            this.gGroup = new System.Windows.Forms.TextBox();
             this.hTags = new Loopstream.TLabel();
             this.hEncoders = new Loopstream.TLabel();
             this.hServer = new Loopstream.TLabel();
             this.hSoundcard = new Loopstream.TLabel();
+            this.label12 = new System.Windows.Forms.Label();
+            this.tt = new System.Windows.Forms.ToolTip(this.components);
             this.pWrapper.SuspendLayout();
             this.tc.SuspendLayout();
             this.tpSoundcard.SuspendLayout();
@@ -540,6 +540,15 @@
             this.tpServer.Size = new System.Drawing.Size(534, 275);
             this.tpServer.TabIndex = 1;
             this.tpServer.Text = "Server";
+            // 
+            // label25
+            // 
+            this.label25.AutoSize = true;
+            this.label25.Location = new System.Drawing.Point(100, 142);
+            this.label25.Name = "label25";
+            this.label25.Size = new System.Drawing.Size(94, 13);
+            this.label25.TabIndex = 55;
+            this.label25.Text = "Stream information";
             // 
             // gPublic
             // 
@@ -996,6 +1005,19 @@
             this.pTagAdvanced1.TabIndex = 63;
             this.pTagAdvanced1.Visible = false;
             // 
+            // gGroup
+            // 
+            this.gGroup.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.gGroup.Location = new System.Drawing.Point(100, 92);
+            this.gGroup.Name = "gGroup";
+            this.gGroup.Size = new System.Drawing.Size(22, 20);
+            this.gGroup.TabIndex = 45;
+            this.gGroup.Text = "1";
+            this.tt.SetToolTip(this.gGroup, "Which Regex matching group to keep as \"Artist - Title\"");
+            this.gGroup.TextChanged += new System.EventHandler(this.gGroup_TextChanged);
+            this.gGroup.MouseEnter += new System.EventHandler(this.gHost_MouseEnter);
+            this.gGroup.MouseLeave += new System.EventHandler(this.gHost_MouseLeave);
+            // 
             // label17
             // 
             this.label17.BackColor = System.Drawing.SystemColors.ButtonShadow;
@@ -1280,41 +1302,6 @@
             this.label5.Size = new System.Drawing.Size(542, 1);
             this.label5.TabIndex = 5;
             // 
-            // label12
-            // 
-            this.label12.BackColor = System.Drawing.SystemColors.Control;
-            this.label12.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.label12.Location = new System.Drawing.Point(0, 34);
-            this.label12.Name = "label12";
-            this.label12.Size = new System.Drawing.Size(542, 10);
-            this.label12.TabIndex = 1;
-            // 
-            // tt
-            // 
-            this.tt.ShowAlways = true;
-            this.tt.UseAnimation = false;
-            this.tt.UseFading = false;
-            // 
-            // label25
-            // 
-            this.label25.AutoSize = true;
-            this.label25.Location = new System.Drawing.Point(100, 142);
-            this.label25.Name = "label25";
-            this.label25.Size = new System.Drawing.Size(94, 13);
-            this.label25.TabIndex = 55;
-            this.label25.Text = "Stream information";
-            // 
-            // gGroup
-            // 
-            this.gGroup.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.gGroup.Location = new System.Drawing.Point(100, 92);
-            this.gGroup.Name = "gGroup";
-            this.gGroup.Size = new System.Drawing.Size(22, 20);
-            this.gGroup.TabIndex = 45;
-            this.gGroup.Text = "1";
-            this.tt.SetToolTip(this.gGroup, "Which Regex matching group to keep as \"Artist - Title\"");
-            this.gGroup.TextChanged += new System.EventHandler(this.gGroup_TextChanged);
-            // 
             // hTags
             // 
             this.hTags.AutoSize = true;
@@ -1366,6 +1353,21 @@
             this.hSoundcard.Size = new System.Drawing.Size(115, 35);
             this.hSoundcard.TabIndex = 0;
             this.hSoundcard.Text = "Soundcard";
+            // 
+            // label12
+            // 
+            this.label12.BackColor = System.Drawing.SystemColors.Control;
+            this.label12.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.label12.Location = new System.Drawing.Point(0, 34);
+            this.label12.Name = "label12";
+            this.label12.Size = new System.Drawing.Size(542, 10);
+            this.label12.TabIndex = 1;
+            // 
+            // tt
+            // 
+            this.tt.ShowAlways = true;
+            this.tt.UseAnimation = false;
+            this.tt.UseFading = false;
             // 
             // ConfigSC
             // 

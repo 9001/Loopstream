@@ -3,30 +3,34 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using NAudio.Wave;
+using NAudio.CoreAudioApi;
+using NAudio.Wave.SampleProviders;
 
 namespace Loopstream
 {
     class LSMixer
     {
         LSSettings settings;
-        NAudio.Wave.WaveFormat format;
-        NAudio.Wave.WasapiLoopbackCapture recCap;
-        NAudio.CoreAudioApi.WasapiCapture micCap;
-        NAudio.Wave.BufferedWaveProvider recIn, micIn;
-        NAudio.Dmo.Resampler recRe, micRe;
+        WaveFormat format;
+        WasapiLoopbackCapture recCap;
+        WasapiCapture micCap;
+        BufferedWaveProvider recIn, micIn;
+        MediaFoundationResampler recRe, micRe;
         NPatch.VolumeSlider recVol, micVol, outVol;
-        NAudio.Wave.SampleProviders.MixingSampleProvider mixer;
-        NAudio.Wave.SampleProviders.SampleToWaveProvider muxer;
-        NAudio.Wave.WasapiOut mixOut;
+        MixingSampleProvider mixer;
+        SampleToWaveProvider muxer;
+        WasapiOut mixOut;
         NPatch.Fork fork;
-        NAudio.Wave.WaveFileWriter waver;
+        WaveFileWriter waver;
         public NPatch.Fork.Outlet lameOutlet;
+        public string isLQ;
 
         public void Dispose()
         {
-            recCap.StopRecording();
-            micCap.StopRecording();
-            mixOut.Dispose();
+            if (recCap != null) recCap.StopRecording();
+            if (micCap != null) micCap.StopRecording();
+            if (mixOut != null) mixOut.Dispose();
             if (recRe != null) recRe.Dispose();
             if (micRe != null) micRe.Dispose();
         }
@@ -41,54 +45,57 @@ namespace Loopstream
         public LSMixer(LSSettings settings)
         {
             this.settings = settings;
+            isLQ = null;
             doMagic();
         }
 
         void doMagic()
         {
+            string lq = "";
             recRe = micRe = null;
-            NAudio.Wave.ISampleProvider recProv, micProv;
-            //format = new NAudio.Wave.WaveFormat(44100, 32, 2);
-            format = NAudio.Wave.WaveFormat.CreateIeeeFloatWaveFormat(44100, 2);
-            mixer = new NAudio.Wave.SampleProviders.MixingSampleProvider(format);
-            // music=ABPS:384000  BPS:32  BA:8  CH:2  ENC:IeeeFloat  ES:0  SR:48000
-            // mic=ABPS:352800  BPS:32  BA:8  CH:2  ENC:IeeeFloat  ES:0  SR:44100
-            //settings.mixer.valueChanged += mixer_valueChanged;
+            ISampleProvider recProv, micProv;
+            format = WaveFormat.CreateIeeeFloatWaveFormat(44100, 2);
+            mixer = new MixingSampleProvider(format);
             
-            recCap = new NAudio.Wave.WasapiLoopbackCapture(settings.devRec.mm);
-            /*if (recCap.WaveFormat.SampleRate != settings.samplerate)
-            {
-                recRe = new NAudio.Dmo.Resampler();
-                recRe.MediaObject.SetInputWaveFormat(0, recCap.WaveFormat);%
-                recRe.MediaObject.SetOutputWaveFormat(0, format);
-                recRe.MediaObject.AllocateStreamingResources();
-            }*/
+            recCap = new WasapiLoopbackCapture(settings.devRec.mm);
+            recCap.DataAvailable += recDev_DataAvailable_03;
+            recIn = new BufferedWaveProvider(recCap.WaveFormat);
             if (recCap.WaveFormat.SampleRate != settings.samplerate)
             {
-                System.Windows.Forms.MessageBox.Show("Incorrect samplerate on music device, aborting");
-                Program.kill();
+                recRe = new MediaFoundationResampler(recIn, settings.samplerate);
+                recRe.ResamplerQuality = 60;
+                lq += "Incorrect samplerate on music device, resampling\n" +
+                    settings.devRec.mm.DeviceFriendlyName + "\n" +
+                    settings.devRec.mm.FriendlyName + "\n" +
+                    settings.devRec.id + "\n" +
+                    LSDevice.stringer(settings.devRec.wf) + "\n" +
+                    LSDevice.stringer(recCap.WaveFormat) + "\n\n";
             }
-            recCap.DataAvailable += recDev_DataAvailable_03;
-            recIn = new NAudio.Wave.BufferedWaveProvider(format); //recCap.WaveFormat);
-            recProv = new NAudio.Wave.SampleProviders.WaveToSampleProvider(recIn);
+            recProv = new WaveToSampleProvider((IWaveProvider)recRe ?? (IWaveProvider)recIn);
             //recProv = new NPatch.ChannelSelector(recProv, settings.micLeft ? 0 : 1);
             recVol = new NPatch.VolumeSlider(recProv);
             mixer.AddMixerInput(recVol);
 
-            if (settings.devMic.mm != null)
+            if (settings.devMic != null && settings.devMic.mm != null)
             {
-                micCap = new NAudio.CoreAudioApi.WasapiCapture(settings.devMic.mm);
+                micCap = new WasapiCapture(settings.devMic.mm);
+                micCap.DataAvailable += micDev_DataAvailable_03;
+                micIn = new BufferedWaveProvider(micCap.WaveFormat);
                 if (micCap.WaveFormat.SampleRate != settings.samplerate)
                 {
-                    System.Windows.Forms.MessageBox.Show("Incorrect samplerate on microphone device, aborting");
-                    Program.kill();
+                    micRe = new MediaFoundationResampler(micIn, settings.samplerate);
+                    micRe.ResamplerQuality = 60;
+                    lq += "Incorrect samplerate on microphone device, resampling\n" +
+                        settings.devMic.mm.DeviceFriendlyName + "\n" +
+                        settings.devMic.mm.FriendlyName + "\n" +
+                        settings.devMic.id + "\n" +
+                        LSDevice.stringer(settings.devMic.wf) + "\n" +
+                        LSDevice.stringer(micCap.WaveFormat) + "\n\n";
                 }
-                micIn = new NAudio.Wave.BufferedWaveProvider(micCap.WaveFormat);
-                micCap.DataAvailable += micDev_DataAvailable_03;
-                micProv = new NAudio.Wave.SampleProviders.WaveToSampleProvider(micIn);
+                micProv = new WaveToSampleProvider((IWaveProvider)micRe ?? (IWaveProvider)micIn);
                 if (micCap.WaveFormat.Channels == 1)
                 {
-                    micProv = new NAudio.Wave.SampleProviders.MonoToStereoSampleProvider(micProv);
+                    micProv = new MonoToStereoSampleProvider(micProv);
                 }
                 else if (settings.micLeft != settings.micRight)
                 {
@@ -105,7 +112,7 @@ namespace Loopstream
             fork = new NPatch.Fork(mixer, 2);
             lameOutlet = fork.providers[1];
             outVol = new NPatch.VolumeSlider(fork.providers[0]);
-            muxer = new NAudio.Wave.SampleProviders.SampleToWaveProvider(outVol);
+            muxer = new SampleToWaveProvider(outVol);
             //mixer_valueChanged(null, null);
             recVol.SetVolume((float)settings.mixer.vRec);
             micVol.SetVolume((float)settings.mixer.vMic);
@@ -114,8 +121,8 @@ namespace Loopstream
             micVol.muted = !settings.mixer.bMic;
             outVol.muted = !settings.mixer.bOut;
             
-            mixOut = new NAudio.Wave.WasapiOut(settings.devOut.mm,
-                NAudio.CoreAudioApi.AudioClientShareMode.Shared, false, 100);
+            mixOut = new WasapiOut(settings.devOut.mm,
+                AudioClientShareMode.Shared, false, 100);
 
             mixOut.Init(muxer);
             recCap.StartRecording();
@@ -124,6 +131,8 @@ namespace Loopstream
                 micCap.StartRecording();
             }
             mixOut.Play();
+
+            if (!string.IsNullOrEmpty(lq)) isLQ = lq;
 
             /*byte[] buffer = new byte[outVol.WaveFormat.AverageBytesPerSecond * 10];
             while (true)
@@ -152,53 +161,21 @@ namespace Loopstream
             if (slider == Slider.Out) outVol.muted = !notMuted;
         }
 
-        void recDev_DataAvailable_03(object sender, NAudio.Wave.WaveInEventArgs e)
+        void recDev_DataAvailable_03(object sender, WaveInEventArgs e)
         {
-            if (recRe == null)
-            {
-                recIn.AddSamples(e.Buffer, 0, e.BytesRecorded);
-            }
-            else
-            {
-                resampler(e, recRe, recIn);
-            }
+            recIn.AddSamples(e.Buffer, 0, e.BytesRecorded);
         }
 
-        void micDev_DataAvailable_03(object sender, NAudio.Wave.WaveInEventArgs e)
+        void micDev_DataAvailable_03(object sender, WaveInEventArgs e)
         {
-            if (micRe == null)
-            {
-                micIn.AddSamples(e.Buffer, 0, e.BytesRecorded);
-            }
-            else
-            {
-                resampler(e, micRe, micIn);
-            }
-        }
-
-        void resampler(NAudio.Wave.WaveInEventArgs e, NAudio.Dmo.Resampler re, NAudio.Wave.BufferedWaveProvider wp)
-        {
-            Console.Write('.');
-            NAudio.Dmo.MediaBuffer b = new NAudio.Dmo.MediaBuffer(e.Buffer.Length);
-            b.LoadData(e.Buffer, e.BytesRecorded);
-            re.MediaObject.ProcessInput(0, b, NAudio.Dmo.DmoInputDataBufferFlags.None, 0, 0);
-            using (NAudio.Dmo.DmoOutputDataBuffer outputBuffer = new
-                   NAudio.Dmo.DmoOutputDataBuffer(format.AverageBytesPerSecond))
-            {
-                re.MediaObject.ProcessOutput(
-                    NAudio.Dmo.DmoProcessOutputFlags.None, 1,
-                    new NAudio.Dmo.DmoOutputDataBuffer[] { outputBuffer });
-                byte[] oBytes = new byte[outputBuffer.Length];
-                outputBuffer.RetrieveData(oBytes, 0);
-                wp.AddSamples(oBytes, 0, oBytes.Length);
-            }
+            micIn.AddSamples(e.Buffer, 0, e.BytesRecorded);
         }
 
         void doMagic02_WORKS()
         {
-            NAudio.Wave.WasapiLoopbackCapture wlc = new NAudio.Wave.WasapiLoopbackCapture(settings.devRec.mm);
-            NAudio.Wave.WaveInProvider waveIn = new NAudio.Wave.WaveInProvider(wlc);
-            NAudio.Wave.WasapiOut waveOut = new NAudio.Wave.WasapiOut(settings.devOut.mm, NAudio.CoreAudioApi.AudioClientShareMode.Shared, false, 100);
+            WasapiLoopbackCapture wlc = new WasapiLoopbackCapture(settings.devRec.mm);
+            WaveInProvider waveIn = new WaveInProvider(wlc);
+            WasapiOut waveOut = new WasapiOut(settings.devOut.mm, AudioClientShareMode.Shared, false, 100);
             waveOut.Init(waveIn);
             wlc.StartRecording();
             waveOut.Play();

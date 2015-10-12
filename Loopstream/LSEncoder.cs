@@ -109,7 +109,7 @@ namespace Loopstream
             }
             catch (Exception e)
             {
-                MessageBox.Show("Server connection error:\r\n\r\n" + e.Message + " (" + e.Source + ")",
+                MessageBox.Show("Server connection error:\n\n" + e.Message + " (" + e.Source + ")",
                     "Stream abort", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
@@ -134,7 +134,7 @@ namespace Loopstream
             }
             else
             {
-                MessageBox.Show("Unknown radio server error:\r\n\r\n" + str,
+                MessageBox.Show("Unknown radio server error:\n\n" + str,
                     "Stream abort", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }

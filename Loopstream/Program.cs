@@ -9,6 +9,7 @@ namespace Loopstream
 {
     static class Program
     {
+        public static string DBGLOG;
         public static bool debug = false;
         public static NotifyIcon ni;
         public static string tools;
@@ -24,6 +25,7 @@ namespace Loopstream
             //Console.WriteLine(LSSettings.version().ToString("x"));
             //Program.kill();
 
+            DBGLOG = "";
             SIGNMODE = false;
             if (args.Length > 0)
             {

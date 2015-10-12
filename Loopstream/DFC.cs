@@ -41,7 +41,7 @@ namespace Loopstream
             {
                 if (stream == null)
                 {
-                    MessageBox.Show("dfc not found\r\n\r\n(ed fucked up)");
+                    MessageBox.Show("dfc not found\n\n(ed fucked up)");
                     Program.kill();
                 }
                 Directory.CreateDirectory(Program.tools);
@@ -327,8 +327,8 @@ namespace Loopstream
                 if (!matchMD5)
                 {
                     if (DialogResult.Cancel == MessageBox.Show(
-                        "The application seems to be corrupted!\r\n\r\n" +
-                        "You should redownload it.\r\n\r\n" +
+                        "The application seems to be corrupted!\n\n" +
+                        "You should redownload it.\n\n" +
                         "Ignore and continune?", "Bad binary",
                         MessageBoxButtons.OKCancel, MessageBoxIcon.Warning))
                     {

@@ -3,6 +3,10 @@
 + new feature
 ~ other change
 
+2013-08-01, 00:16:11 - Loopstream 1.2.0.0
+  + Samplerate conversion
+  + Shitty debug logger
+
 2013-07-30, 23:18:43 - Loopstream 1.1.1.0
   = Streaming without mic
   ~ Mixer preset tweaks

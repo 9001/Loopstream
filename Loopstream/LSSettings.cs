@@ -52,19 +52,19 @@ namespace Loopstream
             public LSMeta()
             {
                 src = ptn = tit = "";
-                encoding = "UTF-8";
+                encoding = "utf-8";
                 reader = Reader.WindowCaption;
                 freq = 500;
                 grp = 1;
             }
-            public LSMeta(Reader r, string ti, string sr, int fr, string pt, int grp)
+            public LSMeta(Reader r, string ti, string sr, int fr, string pt, int grp = 1, string enc = "utf-8")
             {
                 reader = r;
                 tit = ti;
                 src = sr;
                 ptn = pt;
                 freq = fr;
-                encoding = "UTF-8";
+                encoding = enc;
                 this.grp = grp;
             }
             public override string ToString()
@@ -116,7 +116,7 @@ namespace Loopstream
         public LSPreset[] presets;
 
         public LSParams mp3, ogg;
-        public long samplerate;
+        public int samplerate;
         public string host;
         public int port;
         public string pass;
@@ -222,55 +222,52 @@ namespace Loopstream
             {
                 metas.AddRange(new LSMeta[] {
                     new LSMeta(LSMeta.Reader.WindowCaption, "Foobar 2000", "foobar2000", 500,
-                        @" *(.*[^ ]) *( - foobar2000$|\[foobar2000 v([0-9\.]*)\]$)", 1),
+                        @" *(.*[^ ]) *( - foobar2000$|\[foobar2000 v([0-9\.]*)\]$)"),
                     new LSMeta(LSMeta.Reader.WindowCaption, "Winamp", "winamp", 500,
                         @"([0-9]*\. )? *(.*[^ ]) * - Winamp$", 2),
                     new LSMeta(LSMeta.Reader.WindowCaption, "VLC", "vlc", 500,
-                        @" *(.*[^ ]) * - VLC media player", 1),
+                        @" *(.*[^ ]) * - VLC media player"),
                     new LSMeta(LSMeta.Reader.ProcessMemory, "iTunes 64bit 11.0.4.4", "itunes", 500,
-                        "iTunes.dll+15C4D52, iTunes.dll+15C4952", 1),
+                        "iTunes.dll+15C4D52, iTunes.dll+15C4952", 1, "utf-16"),
                     new LSMeta(LSMeta.Reader.Website, "other icecast mount", "http://stream0.r-a-d.io:8000/", 2000,
-                        "<tr>\\n<td><h3>Mount Point /main.mp3</h3></td>.*?<td>Current Song:</td>\\n<td class=\"streamdata\">(.*?)</td>", 1),
+                        "<tr>\\n<td><h3>Mount Point /main.mp3</h3></td>.*?<td>Current Song:</td>\\n<td class=\"streamdata\">(.*?)</td>"),
                 });
             }
         }
-        public void runTests(Splesh splesh)
+        public void runTests(Splesh splesh, bool forceTest)
         {
-            if (testDevs)
+            Program.DBGLOG = "";
+            if (testDevs || forceTest)
             {
+                StringBuilder sw = new StringBuilder();
                 for (int a = 0; a < devs.Length; a++)
                 {
                     splesh.prog(a + 1, devs.Length);
-                    devs[a].test();
-                }
-                /*using (System.IO.StreamWriter sw = new System.IO.StreamWriter("Loopstream.devs", false, Encoding.UTF8))
-                {
-                    foreach (LSDevice dev in devs)
+                    //devs[a].test();
+                    try
                     {
+                        devs[a].test();
+                        sw.AppendLine(devs[a].mm.ID);
+                        sw.AppendLine(devs[a].mm.DeviceFriendlyName);
+                        sw.AppendLine(devs[a].mm.FriendlyName);
                         try
                         {
-                            dev.test();
-                            sw.WriteLine(dev.mm.ID);
-                            sw.WriteLine(dev.mm.DeviceFriendlyName);
-                            sw.WriteLine(dev.mm.FriendlyName);
-                            try
-                            {
-                                sw.WriteLine(LSDevice.stringer(dev.wf));
-                            }
-                            catch
-                            {
-                                sw.WriteLine("*** bad wf ***");
-                            }
+                            sw.AppendLine(LSDevice.stringer(devs[a].wf));
                         }
                         catch
                         {
-                            sw.WriteLine("*!* bad dev *!*");
+                            sw.AppendLine("*** bad wf ***");
                         }
-                        sw.WriteLine();
-                        sw.WriteLine("---");
-                        sw.WriteLine();
                     }
-                }*/
+                    catch
+                    {
+                        sw.AppendLine("*!* bad dev *!*");
+                    }
+                    sw.AppendLine();
+                    sw.AppendLine("---");
+                    sw.AppendLine();
+                }
+                Program.DBGLOG += sw.ToString();
             }
         }
 
@@ -320,11 +317,13 @@ namespace Loopstream
 
                     int myVer = version();
                     int iniVer = Convert.ToInt32(ver, 16);
-                    if (myVer != iniVer && false)
+                    if (myVer != iniVer)
                     {
+                        byte[] bver = BitConverter.GetBytes(iniVer);
+                        Array.Reverse(bver);
                         System.Windows.Forms.MessageBox.Show(
-                            "Your configuration file is from version " + iniVer + ", which is too old.\r\n\r\n" +
-                            "Starting with default config.",
+                            "Your configuration file is from version " + BitConverter.ToString(bver) + ", which is rather old.\n\n" +
+                            "Don't get your hopes up but I'll try to load it...",
                             "Incompatible config file",
                             System.Windows.Forms.MessageBoxButtons.OK,
                             System.Windows.Forms.MessageBoxIcon.Information);
@@ -338,7 +337,7 @@ namespace Loopstream
                 {
                     ret = new LSSettings();
                     System.Windows.Forms.MessageBox.Show(
-                        "Failed to load settings:\r\n«Loopstream.ini» is probably from an old version of the program.\r\n\r\nDetailed information:\r\n" + e.Message + "\r\n" + e.StackTrace,
+                        "Failed to load settings:\n«Loopstream.ini» is probably from an old version of the program.\n\nDetailed information:\n" + e.Message + "\n" + e.StackTrace,
                         "Default settings",
                         System.Windows.Forms.MessageBoxButtons.OK,
                         System.Windows.Forms.MessageBoxIcon.Information);
@@ -353,8 +352,8 @@ namespace Loopstream
                 catch (Exception e)
                 {
                     System.Windows.Forms.MessageBox.Show(
-                        "Failed to initialize settings object:\r\nPossibly from an outdated version of «Loopstream.ini», though more likely a developer fuckup. Go tell ed this:\r\n\r\n" +
-                        e.Message + "\r\n\r\n" + e.Source + "\r\n\r\n" + e.InnerException + "\r\n\r\n" + e.StackTrace);
+                        "Failed to initialize settings object:\nPossibly from an outdated version of «Loopstream.ini», though more likely a developer fuckup. Go tell ed this:\n\n" +
+                        e.Message + "\n\n" + e.Source + "\n\n" + e.InnerException + "\n\n" + e.StackTrace);
                 }
             }
             ret = new LSSettings();
