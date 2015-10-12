@@ -65,8 +65,8 @@
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.gTag = new System.Windows.Forms.TextBox();
-            this.button2 = new System.Windows.Forms.Button();
-            this.button1 = new System.Windows.Forms.Button();
+            this.gTagRead = new System.Windows.Forms.Button();
+            this.gTagSend = new System.Windows.Forms.Button();
             this.box_sliders.SuspendLayout();
             this.box_top.SuspendLayout();
             this.box_bottom.SuspendLayout();
@@ -492,8 +492,8 @@
             this.pTag.Controls.Add(this.label1);
             this.pTag.Controls.Add(this.label2);
             this.pTag.Controls.Add(this.gTag);
-            this.pTag.Controls.Add(this.button2);
-            this.pTag.Controls.Add(this.button1);
+            this.pTag.Controls.Add(this.gTagRead);
+            this.pTag.Controls.Add(this.gTagSend);
             this.pTag.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.pTag.Location = new System.Drawing.Point(0, 392);
             this.pTag.Name = "pTag";
@@ -534,27 +534,27 @@
             this.gTag.TabIndex = 0;
             this.gTag.KeyDown += new System.Windows.Forms.KeyEventHandler(this.gTag_KeyDown);
             // 
-            // button2
+            // gTagRead
             // 
-            this.button2.Dock = System.Windows.Forms.DockStyle.Right;
-            this.button2.Location = new System.Drawing.Point(553, 0);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(50, 20);
-            this.button2.TabIndex = 19;
-            this.button2.Text = "Read";
-            this.button2.UseVisualStyleBackColor = true;
-            this.button2.Click += new System.EventHandler(this.button2_Click);
+            this.gTagRead.Dock = System.Windows.Forms.DockStyle.Right;
+            this.gTagRead.Location = new System.Drawing.Point(553, 0);
+            this.gTagRead.Name = "gTagRead";
+            this.gTagRead.Size = new System.Drawing.Size(50, 20);
+            this.gTagRead.TabIndex = 19;
+            this.gTagRead.Text = "Read";
+            this.gTagRead.UseVisualStyleBackColor = true;
+            this.gTagRead.Click += new System.EventHandler(this.gTagRead_Click);
             // 
-            // button1
+            // gTagSend
             // 
-            this.button1.Dock = System.Windows.Forms.DockStyle.Right;
-            this.button1.Location = new System.Drawing.Point(603, 0);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(50, 20);
-            this.button1.TabIndex = 18;
-            this.button1.Text = "Send";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
+            this.gTagSend.Dock = System.Windows.Forms.DockStyle.Right;
+            this.gTagSend.Location = new System.Drawing.Point(603, 0);
+            this.gTagSend.Name = "gTagSend";
+            this.gTagSend.Size = new System.Drawing.Size(50, 20);
+            this.gTagSend.TabIndex = 18;
+            this.gTagSend.Text = "Send";
+            this.gTagSend.UseVisualStyleBackColor = true;
+            this.gTagSend.Click += new System.EventHandler(this.gTagSend_Click);
             // 
             // Home
             // 
@@ -627,8 +627,8 @@
         private Pritch gB;
         private Pritch gA;
         private UC_Troggle gLoad;
-        private System.Windows.Forms.Button button2;
-        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Button gTagRead;
+        private System.Windows.Forms.Button gTagSend;
 
     }
 }

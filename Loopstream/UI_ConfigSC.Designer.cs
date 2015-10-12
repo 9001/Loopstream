@@ -58,6 +58,12 @@
             this.gUnavail = new System.Windows.Forms.CheckBox();
             this.gTestDevs = new System.Windows.Forms.CheckBox();
             this.tpServer = new System.Windows.Forms.TabPage();
+            this.gServerDel = new System.Windows.Forms.Button();
+            this.gServerLoad = new System.Windows.Forms.Button();
+            this.gServerSave = new System.Windows.Forms.Button();
+            this.gServerSel = new System.Windows.Forms.ComboBox();
+            this.gUser = new System.Windows.Forms.TextBox();
+            this.gUnhide = new System.Windows.Forms.CheckBox();
             this.label25 = new System.Windows.Forms.Label();
             this.gPublic = new System.Windows.Forms.CheckBox();
             this.label15 = new System.Windows.Forms.Label();
@@ -129,6 +135,7 @@
             this.gLPoor = new System.Windows.Forms.TextBox();
             this.gCPoor = new System.Windows.Forms.CheckBox();
             this.pFooter = new System.Windows.Forms.Panel();
+            this.button1 = new System.Windows.Forms.Button();
             this.gVU = new System.Windows.Forms.CheckBox();
             this.pButtons = new System.Windows.Forms.Panel();
             this.gCancel = new System.Windows.Forms.Button();
@@ -137,14 +144,13 @@
             this.gSplash = new System.Windows.Forms.CheckBox();
             this.pTabs = new System.Windows.Forms.Panel();
             this.label5 = new System.Windows.Forms.Label();
-            this.label12 = new System.Windows.Forms.Label();
-            this.tt = new System.Windows.Forms.ToolTip(this.components);
-            this.button1 = new System.Windows.Forms.Button();
             this.hOSD = new Loopstream.TLabel();
             this.hTags = new Loopstream.TLabel();
             this.hEncoders = new Loopstream.TLabel();
             this.hServer = new Loopstream.TLabel();
             this.hSoundcard = new Loopstream.TLabel();
+            this.label12 = new System.Windows.Forms.Label();
+            this.tt = new System.Windows.Forms.ToolTip(this.components);
             this.pWrapper.SuspendLayout();
             this.tc.SuspendLayout();
             this.tpSoundcard.SuspendLayout();
@@ -212,7 +218,7 @@
             this.gSiren.Margin = new System.Windows.Forms.Padding(3, 3, 7, 3);
             this.gSiren.Name = "gSiren";
             this.gSiren.Size = new System.Drawing.Size(49, 17);
-            this.gSiren.TabIndex = 17;
+            this.gSiren.TabIndex = 19;
             this.gSiren.Text = "Siren";
             this.tt.SetToolTip(this.gSiren, "This is a siren server (in-house protocol)");
             this.gSiren.UseVisualStyleBackColor = true;
@@ -228,7 +234,7 @@
             this.gIce.Margin = new System.Windows.Forms.Padding(3, 3, 7, 3);
             this.gIce.Name = "gIce";
             this.gIce.Size = new System.Drawing.Size(40, 17);
-            this.gIce.TabIndex = 16;
+            this.gIce.TabIndex = 18;
             this.gIce.TabStop = true;
             this.gIce.Text = "Ice";
             this.tt.SetToolTip(this.gIce, "This is an icecast server");
@@ -245,7 +251,7 @@
             this.gShout.Margin = new System.Windows.Forms.Padding(3, 3, 7, 3);
             this.gShout.Name = "gShout";
             this.gShout.Size = new System.Drawing.Size(53, 17);
-            this.gShout.TabIndex = 15;
+            this.gShout.TabIndex = 17;
             this.gShout.Text = "Shout";
             this.tt.SetToolTip(this.gShout, "This is a ShoutCAST server");
             this.gShout.UseVisualStyleBackColor = true;
@@ -267,18 +273,20 @@
             this.label7.AutoSize = true;
             this.label7.Location = new System.Drawing.Point(21, 47);
             this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(53, 13);
+            this.label7.Size = new System.Drawing.Size(60, 13);
             this.label7.TabIndex = 33;
-            this.label7.Text = "Password";
+            this.label7.Text = "user / pass";
             // 
             // gPass
             // 
-            this.gPass.Location = new System.Drawing.Point(101, 44);
+            this.gPass.Location = new System.Drawing.Point(171, 44);
             this.gPass.Name = "gPass";
-            this.gPass.Size = new System.Drawing.Size(163, 20);
-            this.gPass.TabIndex = 13;
-            this.gPass.Text = "user|assword";
-            this.tt.SetToolTip(this.gPass, "Username \"source\" is assumed, this is your source password.");
+            this.gPass.PasswordChar = 'o';
+            this.gPass.Size = new System.Drawing.Size(93, 20);
+            this.gPass.TabIndex = 14;
+            this.gPass.Text = "hackme";
+            this.tt.SetToolTip(this.gPass, "This is the source password.\r\nDefault (and hopefully never) \"hackme\".\r\n\r\nr/a/dio:" +
+        "  Your admin panel password");
             this.gPass.TextChanged += new System.EventHandler(this.gPass_TextChanged);
             this.gPass.MouseEnter += new System.EventHandler(this.gHost_MouseEnter);
             this.gPass.MouseLeave += new System.EventHandler(this.gHost_MouseLeave);
@@ -288,7 +296,7 @@
             this.gMount.Location = new System.Drawing.Point(101, 70);
             this.gMount.Name = "gMount";
             this.gMount.Size = new System.Drawing.Size(163, 20);
-            this.gMount.TabIndex = 14;
+            this.gMount.TabIndex = 16;
             this.gMount.Text = "main";
             this.tt.SetToolTip(this.gMount, "The mountpoint to stream to:\r\n    NOT including the preceding /\r\n    NOT includin" +
         "g .extension");
@@ -311,7 +319,7 @@
             this.gHost.Name = "gHost";
             this.gHost.Size = new System.Drawing.Size(163, 20);
             this.gHost.TabIndex = 12;
-            this.gHost.Text = "stream0.r-a-d.io:1337";
+            this.gHost.Text = "become.stream.r-a-d.io:1337";
             this.tt.SetToolTip(this.gHost, "The server you will stream to.\r\nUse one of either:\r\n    DOMAIN:PORT\r\n    IPADDRES" +
         "S:PORT\r\n    HOSTNAME:PORT\r\n");
             this.gHost.TextChanged += new System.EventHandler(this.gHost_TextChanged);
@@ -328,7 +336,7 @@
             this.gSave.Text = "S A V E   4 E V A";
             this.tt.SetToolTip(this.gSave, "Save and apply this configuration");
             this.gSave.UseVisualStyleBackColor = true;
-            this.gSave.Click += new System.EventHandler(this.button1_Click);
+            this.gSave.Click += new System.EventHandler(this.gSave_Click);
             this.gSave.MouseEnter += new System.EventHandler(this.gHost_MouseEnter);
             this.gSave.MouseLeave += new System.EventHandler(this.gHost_MouseLeave);
             // 
@@ -551,6 +559,12 @@
             // tpServer
             // 
             this.tpServer.BackColor = System.Drawing.SystemColors.Control;
+            this.tpServer.Controls.Add(this.gServerDel);
+            this.tpServer.Controls.Add(this.gServerLoad);
+            this.tpServer.Controls.Add(this.gServerSave);
+            this.tpServer.Controls.Add(this.gServerSel);
+            this.tpServer.Controls.Add(this.gUser);
+            this.tpServer.Controls.Add(this.gUnhide);
             this.tpServer.Controls.Add(this.label25);
             this.tpServer.Controls.Add(this.gPublic);
             this.tpServer.Controls.Add(this.label15);
@@ -577,6 +591,84 @@
             this.tpServer.TabIndex = 1;
             this.tpServer.Text = "Server";
             // 
+            // gServerDel
+            // 
+            this.gServerDel.Location = new System.Drawing.Point(441, 78);
+            this.gServerDel.Name = "gServerDel";
+            this.gServerDel.Size = new System.Drawing.Size(69, 23);
+            this.gServerDel.TabIndex = 28;
+            this.gServerDel.Text = "Delete";
+            this.tt.SetToolTip(this.gServerDel, "Delete a stored snapshot of this page.");
+            this.gServerDel.UseVisualStyleBackColor = true;
+            this.gServerDel.Click += new System.EventHandler(this.gServerDel_Click);
+            this.gServerDel.MouseEnter += new System.EventHandler(this.gHost_MouseEnter);
+            this.gServerDel.MouseLeave += new System.EventHandler(this.gHost_MouseLeave);
+            // 
+            // gServerLoad
+            // 
+            this.gServerLoad.Location = new System.Drawing.Point(363, 47);
+            this.gServerLoad.Name = "gServerLoad";
+            this.gServerLoad.Size = new System.Drawing.Size(147, 23);
+            this.gServerLoad.TabIndex = 26;
+            this.gServerLoad.Text = "Load Server Profile";
+            this.tt.SetToolTip(this.gServerLoad, "Load the selected preset (snapshot),\r\nupdating everything on this page.");
+            this.gServerLoad.UseVisualStyleBackColor = true;
+            this.gServerLoad.Click += new System.EventHandler(this.gServerLoad_Click);
+            this.gServerLoad.MouseEnter += new System.EventHandler(this.gHost_MouseEnter);
+            this.gServerLoad.MouseLeave += new System.EventHandler(this.gHost_MouseLeave);
+            // 
+            // gServerSave
+            // 
+            this.gServerSave.Location = new System.Drawing.Point(363, 78);
+            this.gServerSave.Name = "gServerSave";
+            this.gServerSave.Size = new System.Drawing.Size(69, 23);
+            this.gServerSave.TabIndex = 27;
+            this.gServerSave.Text = "Save";
+            this.tt.SetToolTip(this.gServerSave, "Save a snapshot of this page as a new profile.");
+            this.gServerSave.UseVisualStyleBackColor = true;
+            this.gServerSave.Click += new System.EventHandler(this.gServerSave_Click);
+            this.gServerSave.MouseEnter += new System.EventHandler(this.gHost_MouseEnter);
+            this.gServerSave.MouseLeave += new System.EventHandler(this.gHost_MouseLeave);
+            // 
+            // gServerSel
+            // 
+            this.gServerSel.FormattingEnabled = true;
+            this.gServerSel.Location = new System.Drawing.Point(363, 18);
+            this.gServerSel.Name = "gServerSel";
+            this.gServerSel.Size = new System.Drawing.Size(147, 21);
+            this.gServerSel.TabIndex = 25;
+            this.tt.SetToolTip(this.gServerSel, "For those of you with too many servers;\r\nHere you can store \"snapshots\" of this p" +
+        "age.");
+            this.gServerSel.MouseEnter += new System.EventHandler(this.gHost_MouseEnter);
+            this.gServerSel.MouseLeave += new System.EventHandler(this.gHost_MouseLeave);
+            // 
+            // gUser
+            // 
+            this.gUser.Location = new System.Drawing.Point(101, 44);
+            this.gUser.Name = "gUser";
+            this.gUser.Size = new System.Drawing.Size(64, 20);
+            this.gUser.TabIndex = 13;
+            this.gUser.Text = "source";
+            this.tt.SetToolTip(this.gUser, "This is the source username.\r\nDefault (and almost always) \"source\".\r\n\r\nr/a/dio:  " +
+        "Your admin panel username.");
+            this.gUser.TextChanged += new System.EventHandler(this.gUser_TextChanged);
+            this.gUser.MouseEnter += new System.EventHandler(this.gHost_MouseEnter);
+            this.gUser.MouseLeave += new System.EventHandler(this.gHost_MouseLeave);
+            // 
+            // gUnhide
+            // 
+            this.gUnhide.AutoSize = true;
+            this.gUnhide.Location = new System.Drawing.Point(266, 46);
+            this.gUnhide.Name = "gUnhide";
+            this.gUnhide.Size = new System.Drawing.Size(51, 17);
+            this.gUnhide.TabIndex = 15;
+            this.gUnhide.Text = "show";
+            this.tt.SetToolTip(this.gUnhide, "Show the password in plaintext.");
+            this.gUnhide.UseVisualStyleBackColor = true;
+            this.gUnhide.CheckedChanged += new System.EventHandler(this.gUnhide_CheckedChanged);
+            this.gUnhide.MouseEnter += new System.EventHandler(this.gHost_MouseEnter);
+            this.gUnhide.MouseLeave += new System.EventHandler(this.gHost_MouseLeave);
+            // 
             // label25
             // 
             this.label25.AutoSize = true;
@@ -590,12 +682,12 @@
             // 
             this.gPublic.AutoSize = true;
             this.gPublic.CheckAlign = System.Drawing.ContentAlignment.TopLeft;
-            this.gPublic.Location = new System.Drawing.Point(293, 140);
+            this.gPublic.Location = new System.Drawing.Point(294, 140);
             this.gPublic.Margin = new System.Windows.Forms.Padding(12, 3, 3, 3);
             this.gPublic.Name = "gPublic";
-            this.gPublic.Size = new System.Drawing.Size(224, 17);
-            this.gPublic.TabIndex = 22;
-            this.gPublic.Text = "Public stream (announce in Yellow Pages)";
+            this.gPublic.Size = new System.Drawing.Size(222, 17);
+            this.gPublic.TabIndex = 20;
+            this.gPublic.Text = "Pubic stream (announce in Yellow Pages)";
             this.tt.SetToolTip(this.gPublic, "Hide after startup sequence");
             this.gPublic.UseVisualStyleBackColor = true;
             this.gPublic.CheckedChanged += new System.EventHandler(this.gPublic_CheckedChanged);
@@ -643,7 +735,7 @@
             this.gURL.Location = new System.Drawing.Point(101, 241);
             this.gURL.Name = "gURL";
             this.gURL.Size = new System.Drawing.Size(409, 20);
-            this.gURL.TabIndex = 21;
+            this.gURL.TabIndex = 24;
             this.gURL.Text = "https://github.com/9001/loopstream";
             this.gURL.TextChanged += new System.EventHandler(this.gURL_TextChanged);
             this.gURL.MouseEnter += new System.EventHandler(this.gHost_MouseEnter);
@@ -654,7 +746,7 @@
             this.gTitle.Location = new System.Drawing.Point(101, 163);
             this.gTitle.Name = "gTitle";
             this.gTitle.Size = new System.Drawing.Size(409, 20);
-            this.gTitle.TabIndex = 18;
+            this.gTitle.TabIndex = 21;
             this.gTitle.Text = "Loopstream";
             this.gTitle.TextChanged += new System.EventHandler(this.gTitle_TextChanged);
             this.gTitle.MouseEnter += new System.EventHandler(this.gHost_MouseEnter);
@@ -665,7 +757,7 @@
             this.gGenre.Location = new System.Drawing.Point(101, 215);
             this.gGenre.Name = "gGenre";
             this.gGenre.Size = new System.Drawing.Size(409, 20);
-            this.gGenre.TabIndex = 20;
+            this.gGenre.TabIndex = 23;
             this.gGenre.Text = "Post-Avant Jazzcore";
             this.gGenre.TextChanged += new System.EventHandler(this.gGenre_TextChanged);
             this.gGenre.MouseEnter += new System.EventHandler(this.gHost_MouseEnter);
@@ -676,7 +768,7 @@
             this.gDescription.Location = new System.Drawing.Point(101, 189);
             this.gDescription.Name = "gDescription";
             this.gDescription.Size = new System.Drawing.Size(409, 20);
-            this.gDescription.TabIndex = 19;
+            this.gDescription.TabIndex = 22;
             this.gDescription.Text = "Cave Explorer Committee";
             this.gDescription.TextChanged += new System.EventHandler(this.gDescription_TextChanged);
             this.gDescription.MouseEnter += new System.EventHandler(this.gHost_MouseEnter);
@@ -703,7 +795,7 @@
             // 
             this.panel2.Controls.Add(this.gMp3Mono);
             this.panel2.Controls.Add(this.gMp3Stereo);
-            this.panel2.Location = new System.Drawing.Point(17, 155);
+            this.panel2.Location = new System.Drawing.Point(18, 154);
             this.panel2.Name = "panel2";
             this.panel2.Size = new System.Drawing.Size(139, 45);
             this.panel2.TabIndex = 43;
@@ -743,7 +835,7 @@
             // 
             this.panel1.Controls.Add(this.gOggMono);
             this.panel1.Controls.Add(this.gOggStereo);
-            this.panel1.Location = new System.Drawing.Point(206, 155);
+            this.panel1.Location = new System.Drawing.Point(207, 154);
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(139, 45);
             this.panel1.TabIndex = 42;
@@ -782,7 +874,7 @@
             // gMp3Enable
             // 
             this.gMp3Enable.AutoSize = true;
-            this.gMp3Enable.Location = new System.Drawing.Point(23, 20);
+            this.gMp3Enable.Location = new System.Drawing.Point(24, 19);
             this.gMp3Enable.Name = "gMp3Enable";
             this.gMp3Enable.Size = new System.Drawing.Size(84, 17);
             this.gMp3Enable.TabIndex = 23;
@@ -797,7 +889,7 @@
             // 
             this.gRecOGG.AutoSize = true;
             this.gRecOGG.CheckAlign = System.Drawing.ContentAlignment.TopLeft;
-            this.gRecOGG.Location = new System.Drawing.Point(212, 43);
+            this.gRecOGG.Location = new System.Drawing.Point(213, 42);
             this.gRecOGG.Margin = new System.Windows.Forms.Padding(12, 3, 3, 3);
             this.gRecOGG.Name = "gRecOGG";
             this.gRecOGG.Size = new System.Drawing.Size(88, 17);
@@ -812,7 +904,7 @@
             // gOggEnable
             // 
             this.gOggEnable.AutoSize = true;
-            this.gOggEnable.Location = new System.Drawing.Point(212, 20);
+            this.gOggEnable.Location = new System.Drawing.Point(213, 19);
             this.gOggEnable.Name = "gOggEnable";
             this.gOggEnable.Size = new System.Drawing.Size(86, 17);
             this.gOggEnable.TabIndex = 31;
@@ -829,7 +921,7 @@
             this.gRecMP3.CheckAlign = System.Drawing.ContentAlignment.TopLeft;
             this.gRecMP3.Checked = true;
             this.gRecMP3.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.gRecMP3.Location = new System.Drawing.Point(23, 43);
+            this.gRecMP3.Location = new System.Drawing.Point(24, 42);
             this.gRecMP3.Margin = new System.Windows.Forms.Padding(12, 3, 3, 3);
             this.gRecMP3.Name = "gRecMP3";
             this.gRecMP3.Size = new System.Drawing.Size(86, 17);
@@ -847,7 +939,7 @@
             this.groupBox1.Controls.Add(this.gMp3Quality);
             this.groupBox1.Controls.Add(this.gMp3QualityV);
             this.groupBox1.Controls.Add(this.gMp3Bitrate);
-            this.groupBox1.Location = new System.Drawing.Point(17, 73);
+            this.groupBox1.Location = new System.Drawing.Point(18, 72);
             this.groupBox1.Margin = new System.Windows.Forms.Padding(0, 3, 0, 8);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(139, 71);
@@ -917,7 +1009,7 @@
             this.groupBox2.Controls.Add(this.gOggQuality);
             this.groupBox2.Controls.Add(this.gOggQualityV);
             this.groupBox2.Controls.Add(this.gOggBitrate);
-            this.groupBox2.Location = new System.Drawing.Point(206, 73);
+            this.groupBox2.Location = new System.Drawing.Point(207, 72);
             this.groupBox2.Margin = new System.Windows.Forms.Padding(0, 3, 0, 8);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Size = new System.Drawing.Size(139, 71);
@@ -1383,7 +1475,7 @@
             // label27
             // 
             this.label27.AutoSize = true;
-            this.label27.Location = new System.Drawing.Point(288, 58);
+            this.label27.Location = new System.Drawing.Point(289, 57);
             this.label27.Name = "label27";
             this.label27.Size = new System.Drawing.Size(114, 13);
             this.label27.TabIndex = 5;
@@ -1391,7 +1483,7 @@
             // 
             // gLDrop
             // 
-            this.gLDrop.Location = new System.Drawing.Point(243, 55);
+            this.gLDrop.Location = new System.Drawing.Point(244, 54);
             this.gLDrop.Name = "gLDrop";
             this.gLDrop.Size = new System.Drawing.Size(44, 20);
             this.gLDrop.TabIndex = 4;
@@ -1404,7 +1496,7 @@
             // gCDrop
             // 
             this.gCDrop.AutoSize = true;
-            this.gCDrop.Location = new System.Drawing.Point(23, 57);
+            this.gCDrop.Location = new System.Drawing.Point(24, 56);
             this.gCDrop.Name = "gCDrop";
             this.gCDrop.Size = new System.Drawing.Size(214, 17);
             this.gCDrop.TabIndex = 3;
@@ -1419,7 +1511,7 @@
             // label16
             // 
             this.label16.AutoSize = true;
-            this.label16.Location = new System.Drawing.Point(288, 21);
+            this.label16.Location = new System.Drawing.Point(289, 20);
             this.label16.Name = "label16";
             this.label16.Size = new System.Drawing.Size(120, 13);
             this.label16.TabIndex = 2;
@@ -1427,7 +1519,7 @@
             // 
             // gLPoor
             // 
-            this.gLPoor.Location = new System.Drawing.Point(243, 18);
+            this.gLPoor.Location = new System.Drawing.Point(244, 17);
             this.gLPoor.Name = "gLPoor";
             this.gLPoor.Size = new System.Drawing.Size(44, 20);
             this.gLPoor.TabIndex = 1;
@@ -1440,7 +1532,7 @@
             // gCPoor
             // 
             this.gCPoor.AutoSize = true;
-            this.gCPoor.Location = new System.Drawing.Point(23, 20);
+            this.gCPoor.Location = new System.Drawing.Point(24, 19);
             this.gCPoor.Name = "gCPoor";
             this.gCPoor.Size = new System.Drawing.Size(214, 17);
             this.gCPoor.TabIndex = 0;
@@ -1466,6 +1558,15 @@
             this.pFooter.Name = "pFooter";
             this.pFooter.Size = new System.Drawing.Size(542, 67);
             this.pFooter.TabIndex = 39;
+            // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(105, 37);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(1, 1);
+            this.button1.TabIndex = 38;
+            this.button1.Text = "button1";
+            this.button1.UseVisualStyleBackColor = true;
             // 
             // gVU
             // 
@@ -1504,7 +1605,7 @@
             this.gCancel.Text = "A p p l y   o n l y";
             this.tt.SetToolTip(this.gCancel, "Apply this configuration only for this session");
             this.gCancel.UseVisualStyleBackColor = true;
-            this.gCancel.Click += new System.EventHandler(this.button2_Click);
+            this.gCancel.Click += new System.EventHandler(this.gCancel_Click);
             this.gCancel.MouseEnter += new System.EventHandler(this.gHost_MouseEnter);
             this.gCancel.MouseLeave += new System.EventHandler(this.gHost_MouseLeave);
             // 
@@ -1567,30 +1668,6 @@
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(542, 1);
             this.label5.TabIndex = 5;
-            // 
-            // label12
-            // 
-            this.label12.BackColor = System.Drawing.SystemColors.Control;
-            this.label12.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.label12.Location = new System.Drawing.Point(0, 34);
-            this.label12.Name = "label12";
-            this.label12.Size = new System.Drawing.Size(542, 10);
-            this.label12.TabIndex = 1;
-            // 
-            // tt
-            // 
-            this.tt.ShowAlways = true;
-            this.tt.UseAnimation = false;
-            this.tt.UseFading = false;
-            // 
-            // button1
-            // 
-            this.button1.Location = new System.Drawing.Point(105, 37);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(1, 1);
-            this.button1.TabIndex = 38;
-            this.button1.Text = "button1";
-            this.button1.UseVisualStyleBackColor = true;
             // 
             // hOSD
             // 
@@ -1656,6 +1733,21 @@
             this.hSoundcard.Size = new System.Drawing.Size(115, 35);
             this.hSoundcard.TabIndex = 0;
             this.hSoundcard.Text = "Soundcard";
+            // 
+            // label12
+            // 
+            this.label12.BackColor = System.Drawing.SystemColors.Control;
+            this.label12.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.label12.Location = new System.Drawing.Point(0, 34);
+            this.label12.Name = "label12";
+            this.label12.Size = new System.Drawing.Size(542, 10);
+            this.label12.TabIndex = 1;
+            // 
+            // tt
+            // 
+            this.tt.ShowAlways = true;
+            this.tt.UseAnimation = false;
+            this.tt.UseFading = false;
             // 
             // ConfigSC
             // 
@@ -1821,5 +1913,11 @@
         private System.Windows.Forms.Button gTarget;
         private System.Windows.Forms.CheckBox gURLDecode;
         private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.CheckBox gUnhide;
+        private System.Windows.Forms.TextBox gUser;
+        private System.Windows.Forms.Button gServerLoad;
+        private System.Windows.Forms.Button gServerSave;
+        private System.Windows.Forms.ComboBox gServerSel;
+        private System.Windows.Forms.Button gServerDel;
     }
 }

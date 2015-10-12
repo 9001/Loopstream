@@ -30,12 +30,12 @@ namespace Loopstream
         public LSSettings settings; //, apply;
         bool doRegexTests;
 
-        private void button2_Click(object sender, EventArgs e)
+        private void gCancel_Click(object sender, EventArgs e)
         {
             apply(false);
         }
 
-        private void button1_Click(object sender, EventArgs e)
+        private void gSave_Click(object sender, EventArgs e)
         {
             /*StringBuilder sb = new StringBuilder();
             sb.AppendLine(((LSDevice)gOutS.SelectedItem).id + "\t" + gOutS.SelectedItem);
@@ -253,6 +253,10 @@ namespace Loopstream
             t.Tick += t_Tick;
             t.Interval = 100;
             t.Start();
+
+            tPop = new Timer();
+            tPop.Interval = tt.InitialDelay;
+            tPop.Tick += tPop_Tick;
         }
         Panel[] tabPage;
         TLabel[] tabHeader;
@@ -269,9 +273,11 @@ namespace Loopstream
             }
             tabHeader_MouseDown(tabHeader[0], new MouseEventArgs(System.Windows.Forms.MouseButtons.Left, 1, 20, 10, 0));
 
-            tPop = new Timer();
-            tPop.Interval = tt.InitialDelay;
-            tPop.Tick += tPop_Tick;
+            if (settings.pass == "hackme")
+            {
+                gUnhide.Checked = true;
+            }
+            hookFocus(this.Controls);
 
             if (!System.IO.File.Exists("Loopstream.ini"))
             {
@@ -282,6 +288,7 @@ namespace Loopstream
             }
         }
 
+        long lastTAB = 0;
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
         {
             if (keyData == (Keys.F1))
@@ -289,7 +296,34 @@ namespace Loopstream
                 new System.Threading.Thread(new System.Threading.ThreadStart(wizard)).Start();
                 return true;
             }
+            if (keyData == (Keys.Tab) ||
+                keyData == (Keys.Tab | Keys.Shift))
+            {
+                lastTAB = DateTime.UtcNow.Ticks;
+            }
             return base.ProcessCmdKey(ref msg, keyData);
+        }
+
+        void tabHandler(object sender, EventArgs e)
+        {
+            long now = DateTime.UtcNow.Ticks;
+            //this.Text = (now - lastTAB).ToString();
+            if (now - lastTAB < 10000 * 20)
+            {
+                ((TextBox)sender).SelectAll();
+            }
+        }
+
+        void hookFocus(Control.ControlCollection cc)
+        {
+            foreach (Control c in cc)
+            {
+                hookFocus(c.Controls);
+                if (c.GetType() == typeof(TextBox))
+                {
+                    c.GotFocus += tabHandler;
+                }
+            }
         }
 
         void initForm()
@@ -335,17 +369,7 @@ namespace Loopstream
             gOggMono.Checked = settings.ogg.channels == LSSettings.LSChannels.mono;
             gOggStereo.Checked = settings.ogg.channels == LSSettings.LSChannels.stereo;
 
-            gHost.Text = settings.host + ":" + settings.port;
-            gPass.Text = settings.pass;
-            gMount.Text = settings.mount;
-            gShout.Checked = settings.relay == LSSettings.LSRelay.shout;
-            gIce.Checked = settings.relay == LSSettings.LSRelay.ice;
-            gSiren.Checked = settings.relay == LSSettings.LSRelay.siren;
-            gTitle.Text = settings.title;
-            gDescription.Text = settings.description;
-            gGenre.Text = settings.genre;
-            gURL.Text = settings.url;
-            gPublic.Checked = settings.pubstream;
+            visualizeServerSettings();
 
             gTestDevs.Checked = settings.testDevs;
             gUnavail.Checked = settings.showUnavail;
@@ -371,6 +395,38 @@ namespace Loopstream
             loadMetaReader(true);
             
             disregardEvents = false;
+        }
+
+        void visualizeServerSettings()
+        {
+            gHost.Text = settings.host + ":" + settings.port;
+            gUser.Text = settings.user;
+            gPass.Text = settings.pass;
+            gMount.Text = settings.mount;
+            gShout.Checked = settings.relay == LSSettings.LSRelay.shout;
+            gIce.Checked = settings.relay == LSSettings.LSRelay.ice;
+            gSiren.Checked = settings.relay == LSSettings.LSRelay.siren;
+            gTitle.Text = settings.title;
+            gDescription.Text = settings.description;
+            gGenre.Text = settings.genre;
+            gURL.Text = settings.url;
+            gPublic.Checked = settings.pubstream;
+
+            gServerSel.Items.Clear();
+            LSSettings.LSServerPreset activePreset = null;
+            foreach (LSSettings.LSServerPreset preset in settings.serverPresets)
+            {
+                gServerSel.Items.Add(preset);
+                if (preset.Matches(settings))
+                {
+                    activePreset = preset;
+                }
+            }
+            gServerSel.SelectedItem = activePreset;
+            if (activePreset == null)
+            {
+                gServerSel.Text = "(unsaved)";
+            }
         }
 
         void reDevice()
@@ -462,6 +518,21 @@ namespace Loopstream
             {
                 gHost.BackColor = Color.Firebrick;
                 gHost.ForeColor = Color.Gold;
+            }
+        }
+
+        private void gUser_TextChanged(object sender, EventArgs e)
+        {
+            if (gUser.Text.Length > 0)
+            {
+                settings.user = gUser.Text;
+                gUser.BackColor = SystemColors.Window;
+                gUser.ForeColor = SystemColors.WindowText;
+            }
+            else
+            {
+                gUser.BackColor = Color.Firebrick;
+                gUser.ForeColor = Color.Gold;
             }
         }
 
@@ -572,12 +643,22 @@ namespace Loopstream
             settings.recOgg = gRecOGG.Checked;
         }
 
+        Timer unFxTimer = null;
         //NAudio.Wave.Mp3FileReader fx_mp3 = null;
         NAudio.Wave.WaveFileReader fx_wav = null;
         NAudio.Wave.WasapiOut fx_out = null;
         System.IO.Stream fx_stream = null;
         void playFX(LSDevice dev)
         {
+            if (unFxTimer == null)
+            {
+                unFxTimer = new Timer();
+                unFxTimer.Interval = 3000;
+                unFxTimer.Tick += delegate(object oa, EventArgs ob)
+                {
+                    unFX();
+                };
+            }
             try
             {
                 if (disregardEvents) return;
@@ -588,6 +669,7 @@ namespace Loopstream
                 fx_out = new NAudio.Wave.WasapiOut(dev.mm, NAudio.CoreAudioApi.AudioClientShareMode.Shared, false, 100);
                 fx_out.Init(fx_wav);
                 fx_out.Play();
+                unFxTimer.Start();
             }
             catch { }
         }
@@ -599,6 +681,7 @@ namespace Loopstream
                 if (fx_out != null) fx_out.Dispose();
                 if (fx_wav != null) fx_wav.Dispose();
                 if (fx_stream != null) fx_stream.Dispose();
+                unFxTimer.Stop();
             }
             catch { }
         }
@@ -701,7 +784,11 @@ namespace Loopstream
 
         private void gHost_MouseLeave(object sender, EventArgs e)
         {
-            tt.Hide(gTwoS);
+            try
+            {
+                tt.Hide(button1);
+            }
+            catch { }
             tPop.Stop();
         }
 
@@ -710,7 +797,7 @@ namespace Loopstream
             try
             {
                 string msg = tt.GetToolTip(popTop);
-                this.Text = popTop.Name + " = " + msg;
+                //this.Text = popTop.Name + " = " + msg;
                 tPop.Stop();
                 //if (popTop == gHost) popTop = gMount;
                 // fucking hell microsoft how did you fuck THIS up
@@ -1060,11 +1147,11 @@ namespace Loopstream
                                 string[] mods = asdf[1].Split('&');
                                 foreach (string mod in mods)
                                 {
-                                    if (mod == "resampling" && (
+                                    if (mod.StartsWith("resampling") && (
                                         (settings.devRec == null || settings.devRec.wf == null || settings.devRec.wf.SampleRate != settings.samplerate) ||
                                         (settings.devMic != null && settings.devMic.wf != null && settings.devMic.wf.SampleRate != settings.samplerate)))
                                     {
-                                        action = "page/resampling";
+                                        action = "page/" + mod;
                                     }
                                     if (mod == "reload")
                                     {
@@ -1087,6 +1174,7 @@ namespace Loopstream
                                         this.Invoke((MethodInvoker)delegate
                                         {
                                             setTab(1);
+                                            gUser.Focus();
                                         });
                                     }
                                     if (mod == "scp")
@@ -1118,6 +1206,7 @@ namespace Loopstream
                                         {
                                             TextBox tb =
                                                 trg == "host" ? gHost :
+                                                trg == "user" ? gUser :
                                                 trg == "pass" ? gPass :
                                                 trg == "mount" ? gMount :
                                                 null;
@@ -1239,8 +1328,9 @@ namespace Loopstream
                             }
                             else if (ar[0] == "shutdown")
                             {
-                                quit = true;
-                                data = Encoding.UTF8.GetBytes(head + "bye" + tail);
+                                //quit = true;
+                                data = Encoding.UTF8.GetBytes(head + "bye <img id=\"bye\" src=\"/png/win95.png\" />" + tail);
+                                //data = Encoding.UTF8.GetBytes(head + "bye <script>setTimeout(function(){window.close();},500);</script>" + tail);
                             }
                             else
                             {
@@ -1257,6 +1347,7 @@ namespace Loopstream
                                 {
                                     data = File.ReadAllBytes(action);
                                 }
+                                quit = action.Contains("win95");
                             }
                         }
 
@@ -1324,6 +1415,57 @@ namespace Loopstream
         private void gURLDecode_CheckedChanged(object sender, EventArgs e)
         {
             settings.meta.urldecode = gURLDecode.Checked;
+        }
+
+        private void gUnhide_CheckedChanged(object sender, EventArgs e)
+        {
+            gPass.PasswordChar = gPass.PasswordChar == '\0' ? 'o' : '\0';
+        }
+
+        private void gServerLoad_Click(object sender, EventArgs e)
+        {
+            ((LSSettings.LSServerPreset)gServerSel.SelectedItem).LoadFromProfile(settings);
+            visualizeServerSettings();
+        }
+
+        private void gServerSave_Click(object sender, EventArgs e)
+        {
+            string presetName = gServerSel.Text;
+            foreach (LSSettings.LSServerPreset preset in settings.serverPresets)
+            {
+                if (preset.presetName == presetName)
+                {
+                    if (DialogResult.Yes == MessageBox.Show(
+                        "About to OVERWRITE the existing preset:\n\n        «" + preset.presetName + "»\n\nContinue?",
+                        "Confirm OVERWRITE", MessageBoxButtons.YesNo, MessageBoxIcon.Question))
+                    {
+                        preset.SaveToProfile(settings);
+                        return;
+                    }
+                }
+            }
+            if (DialogResult.Yes == MessageBox.Show(
+                "About to create a NEW preset:\n\n        «" + presetName + "»\n\nContinue?",
+                "Confirm NEW preset", MessageBoxButtons.YesNo, MessageBoxIcon.Question))
+            {
+                LSSettings.LSServerPreset preset = new LSSettings.LSServerPreset();
+                preset.SaveToProfile(settings);
+                preset.presetName = presetName;
+                settings.serverPresets.Add(preset);
+                visualizeServerSettings();
+            }
+        }
+
+        private void gServerDel_Click(object sender, EventArgs e)
+        {
+            LSSettings.LSServerPreset preset = (LSSettings.LSServerPreset)gServerSel.SelectedItem;
+            if (DialogResult.Yes == MessageBox.Show(
+                        "About to DELETE the preset:\n\n        «" + preset.presetName + "»\n\nContinue?",
+                        "Confirm DELETE", MessageBoxButtons.YesNo, MessageBoxIcon.Question))
+            {
+                settings.serverPresets.Remove(preset);
+                visualizeServerSettings();
+            }
         }
     }
 }

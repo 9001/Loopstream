@@ -3,7 +3,7 @@
 TPL_REQUIRE_2
 <div id="wrap">
 	<p>Loopstream will broadcast in "CD Quality", meaning a level of detail
-	<br />(samplerate) of 44100Hz. Some of your audio devices use a different samplerate.</p>
+	<br />(sample rate) of 44100Hz. Some of your audio devices use a different sample rate.</p>
 	
 	<hr />
 	
@@ -26,7 +26,7 @@ TPL_REQUIRE_2
 	<p>Wanna do that?</p>
 
 	<div id="devs">
-		<a href="/page/resample">Fix soundcard samplerate</a>
+		<a href="/page/resample">Fix soundcard «sample rate»</a>
 		<a href="/page/done?serv">Continue with lower quality</a>
 	</div>
 </div>

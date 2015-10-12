@@ -28,7 +28,7 @@ namespace Loopstream
             haveFailed = false;
             latin1 = Encoding.GetEncoding("ISO_8859-1");
             
-            auth = "source:" + settings.pass;
+            auth = string.Format("{0}:{1}", settings.user, settings.pass);
             auth = Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(auth)); 
             System.Threading.Thread t = new System.Threading.Thread(new System.Threading.ThreadStart(feeder));
             t.Name = "LSTag_Feeder";

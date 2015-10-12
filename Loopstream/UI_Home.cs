@@ -45,6 +45,10 @@ namespace Loopstream
         string daText = "Connect";
         string wincap;
 
+        int iKonami = 0;
+        Timer tKonami = null;
+        Keys[] cKonami;
+
         private void Form1_Load(object sender, EventArgs e)
         {
             pMessage.Height = 64;
@@ -73,7 +77,7 @@ namespace Loopstream
                 Program.kill();
             }
             if (Directory.Exists(Program.tools) &&
-                !File.Exists(Program.tools + @"web\png\scp1.png"))
+                !File.Exists(Program.tools + @"web\png\win95.png"))
             {
                 Directory.Delete(Program.tools, true);
             }
@@ -191,6 +195,13 @@ namespace Loopstream
             invalOnNext = false;
             lqMessage = null;
 
+            iKonami = 0;
+            tKonami = new Timer();
+            cKonami = new Keys[] { Keys.Up, Keys.Up, Keys.Down, Keys.Down, Keys.Left, Keys.Right, Keys.Left, Keys.Right, Keys.B, Keys.A, Keys.Enter };
+            tKonami.Tick += new EventHandler(tKonami_Tick);
+            tKonami.Interval = 10;
+            //tKonami.Start();
+
             //gSpeed.giSlider.A_LEVEL = 1;
 
             Timer tTitle = new Timer();
@@ -198,6 +209,74 @@ namespace Loopstream
             tTitle.Interval = 200;
             tTitle.Start();
             showhide();
+        }
+
+        double shake = 1;
+        int dW, dH;
+        double dX, dY;
+        double dGravity = 1.05;
+        double dBounce = 0.8;
+        double dSpeedY = 0;
+        double dSpeedX = 10;
+        Rectangle dRect = Rectangle.Empty;
+        bool inKonami = false;
+        void tKonami_Tick(object sender, EventArgs e)
+        {
+            if (inKonami) return;
+            inKonami = true;
+
+            if (dRect.Width == 0)
+            {
+                dW = this.Width;
+                dH = this.Height;
+                dX = this.Left;
+                dY = this.Top;
+                dRect = Screen.FromControl(this).WorkingArea;
+            }
+            if (shake < 10)
+            {
+                dX += Program.rnd.Next((int)shake * 2 + 1) - (int)(shake+0.5);
+                dY += Program.rnd.Next((int)shake * 2 + 1) - (int)(shake+0.5);
+                this.Location = new Point((int)dX, (int)dY);
+                shake += 0.05;
+                if (shake >= 10)
+                {
+                    tKonami.Interval = 500;
+                }
+                inKonami = false;
+                return;
+            }
+            tKonami.Interval = 10;
+            //this.Left += Program.rnd.Next(5) - 2;
+            //this.Top += Program.rnd.Next(5) - 2;
+            
+            //if (dSpeedX < 2) dSpeedX *= dGravity;
+            //else dSpeedX *= dGravity * 0.93;
+            if (dSpeedX > 5) dSpeedX -= dGravity / 30;
+
+            dSpeedY += dGravity;
+            dX += dSpeedX;
+            dY += dSpeedY;
+            if (dY + dH > dRect.Bottom)
+            {
+                dY = dRect.Bottom - dH;
+                dSpeedY *= -dBounce;
+            }
+            if (dX > dRect.Right + dRect.Width * 0.1)
+            {
+                tKonami.Stop();
+                dX = dRect.Left + (dRect.Width - dW) / 2;
+                dY = dRect.Top + (dRect.Height - dH) / 2;
+
+                dGravity = 1.05;
+                dBounce = 0.8;
+                dSpeedY = 0;
+                dSpeedX = 10;
+                shake = 1;
+            }
+            this.Location = new Point((int)dX, (int)dY);
+            
+            inKonami = false;
         }
 
         bool invalOnNext;
@@ -233,6 +312,27 @@ namespace Loopstream
             {
                 System.Diagnostics.Process.Start("http://r-a-d.io/ed/loopstream");
                 return true;
+            }
+            //this.Text = keyData.ToString();
+            if (tKonami != null)
+            {
+                if (iKonami < cKonami.Length)
+                {
+                    if (keyData != cKonami[iKonami++])
+                    {
+                        iKonami = 0;
+                    }
+                    if (iKonami >= cKonami.Length)
+                    {
+                        tKonami.Start();
+                        iKonami = 0;
+                        return true;
+                    }
+                }
+                if (keyData == Keys.Escape)
+                {
+                    //tKonami.Stop();
+                }
             }
             return base.ProcessCmdKey(ref msg, keyData);
         }
@@ -400,6 +500,20 @@ namespace Loopstream
 
         private void gLoad_Click(object sender, EventArgs e)
         {
+            //this.Text = gLoad.rightclick ? "right" : "left";
+            if (gLoad.rightclick)
+            {
+                if (DialogResult.Yes == MessageBox.Show("Reset presets?", "hello", MessageBoxButtons.YesNo, MessageBoxIcon.Question))
+                {
+                    settings.resetPresets();
+                    Pritch[] pritches = { gA, gB, gC, gD };
+                    for (int a = 0; a < pritches.Length; a++)
+                    {
+                        pritches[a].preset = settings.presets[a];
+                    }
+                }
+                return;
+            }
             isPresetLoad = !isPresetLoad;
             if (isPresetLoad)
             {
@@ -696,7 +810,7 @@ namespace Loopstream
             }
         }
 
-        private void button2_Click(object sender, EventArgs e)
+        private void gTagRead_Click(object sender, EventArgs e)
         {
             try
             {
@@ -709,7 +823,7 @@ namespace Loopstream
             }
         }
 
-        private void button1_Click(object sender, EventArgs e)
+        private void gTagSend_Click(object sender, EventArgs e)
         {
             try
             {

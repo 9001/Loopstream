@@ -27,6 +27,13 @@ namespace Loopstream
             bLoad = bSave = null;
             init();
             Resize += UC_Troggle_Resize;
+            pb.MouseDown += new MouseEventHandler(pb_MouseDown);
+        }
+
+        public bool rightclick = false;
+        void pb_MouseDown(object sender, MouseEventArgs e)
+        {
+            rightclick = e.Button == System.Windows.Forms.MouseButtons.Right;
         }
         void UC_Troggle_Resize(object sender, EventArgs e)
         {

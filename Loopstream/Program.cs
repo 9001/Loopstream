@@ -15,6 +15,7 @@ namespace Loopstream
         public static string tools;
         public static string[] args;
         public static bool SIGNMODE;
+        public static Random rnd;
         //public static System.IO.StreamWriter log;
 
         /// <summary>
@@ -73,6 +74,7 @@ namespace Loopstream
             tools += "Tools\\";
             
             Logger.init();
+            rnd = new Random();
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(new Home());

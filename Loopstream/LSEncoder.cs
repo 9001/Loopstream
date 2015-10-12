@@ -51,7 +51,7 @@ namespace Loopstream
             logger.a("make shouter");
             System.Net.Sockets.NetworkStream prepS;
             string ver = Application.ProductVersion;
-            string auth = "source:" + settings.pass;
+            string auth = string.Format("{0}:{1}", settings.user, settings.pass);
             auth = Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(auth));
             byte[] header;
             if (enc.ext == "mp3")

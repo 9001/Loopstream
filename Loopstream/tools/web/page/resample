@@ -25,8 +25,8 @@ TPL_BADSMP
 	
 	<hr />
 	
-	<p><a href="/page/resample?reload" onclick="return plswait();">Perform a rescan</a> to check that you've fixed everything before you continue.</p>
+	<!-- p><a href="/page/resample?reload" onclick="return plswait();">Perform a rescan</a> to check that you've fixed everything before you continue.</p -->
 	
-	<a class="next" href="/page/done?serv">Continue</a>
+	<a class="next" href="/page/done?reload&resampling2&serv" onclick="return plswait();">Continue</a>
 	
 </div>

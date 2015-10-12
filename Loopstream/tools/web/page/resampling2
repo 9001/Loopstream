@@ -1,0 +1,18 @@
+	<h2>What are you doing bro</h2>
+</div>
+TPL_REQUIRE_2
+<div id="wrap">
+	
+	<p>Dude, the sample rate is still fucked up!</p>
+	
+	<p>Please make sure to follow all the steps correctly.</p>
+	
+	<hr />
+	
+	<p>Wanna try again?</p>
+
+	<div id="devs">
+		<a href="/page/resample">Hell yeah, let's kick some soundcard ass</a>
+		<a href="/page/done?serv">Fuck it. Continue with lower quality</a>
+	</div>
+</div>

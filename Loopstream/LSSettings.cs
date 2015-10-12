@@ -9,6 +9,75 @@ namespace Loopstream
 {
     public class LSSettings
     {
+        public class LSServerPreset
+        {
+            public int port;
+            public LSRelay relay;
+            public string host, user, pass, mount;
+            public string title, description, genre, url;
+            public bool pubstream;
+            public string presetName;
+
+            public LSServerPreset()
+            {
+                presetName = "<no name>";
+                host = user = pass = mount = "";
+                relay = LSRelay.ice;
+                port = 0;
+            }
+            public void SaveToProfile(LSSettings settings)
+            {
+                host = settings.host;
+                port = settings.port;
+                user = settings.user;
+                pass = settings.pass;
+                mount = settings.mount;
+                relay = settings.relay;
+
+                title = settings.title;
+                description = settings.description;
+                genre = settings.genre;
+                url = settings.url;
+                pubstream = settings.pubstream;
+            }
+            public void LoadFromProfile(LSSettings settings)
+            {
+                settings.host = host;
+                settings.port = port;
+                settings.user = user;
+                settings.pass = pass;
+                settings.mount = mount;
+                settings.relay = relay;
+
+                settings.title = title;
+                settings.description = description;
+                settings.genre = genre;
+                settings.url = url;
+                settings.pubstream = pubstream;
+            }
+            public bool Matches(LSSettings settings)
+            {
+                return (
+                    settings.host == host &&
+                    settings.port == port &&
+                    settings.user == user &&
+                    settings.pass == pass &&
+                    settings.mount == mount &&
+                    settings.relay == relay &&
+
+                    settings.title == title &&
+                    settings.description == description &&
+                    settings.genre == genre &&
+                    settings.url == url &&
+                    settings.pubstream == pubstream
+                );
+            }
+            public override string ToString()
+            {
+                return presetName;
+            }
+        }
+
         public class LSPreset
         {
             public double vRec, vMic, vSpd, vOut;
@@ -153,16 +222,14 @@ namespace Loopstream
 
         public LSPreset mixer;
         public LSPreset[] presets;
-
         public LSParams mp3, ogg;
         public int samplerate;
-        public string host;
-        public int port;
-        public string pass;
-        public string mount;
-        public enum LSRelay { ice, shout, siren }
-        public LSRelay relay;
 
+        public List<LSServerPreset> serverPresets;
+        public enum LSRelay { ice, shout, siren }
+        public int port;
+        public LSRelay relay;
+        public string host, user, pass, mount;
         public string title, description, genre, url;
         public bool pubstream;
 
@@ -199,10 +266,12 @@ namespace Loopstream
             ogg.channels = LSChannels.stereo;
             ogg.ext = "ogg";
             samplerate = 44100;
-            
-            host = "r-a-d.io";
+
+            serverPresets = new List<LSServerPreset>();
+            host = "become.stream.r-a-d.io";
             port = 1337;
-            pass = "user|assword";
+            user = "source";
+            pass = "hackme";
             mount = "main";
             relay = LSRelay.ice;
             title = "Loopstream";
@@ -216,12 +285,7 @@ namespace Loopstream
             meta = new LSMeta();
             metas = new List<LSMeta>();
 
-            presets = new LSPreset[] {
-                new LSPreset(1.00, 0, 0.6, 1, true, true, false, 1, 1),
-                new LSPreset(0.25, 1, 0.6, 1, true, true, false, 1, 32),
-                new LSPreset(1.00, 0, 0.6, 1, true, true, true, 1, 1),
-                new LSPreset(0.25, 1, 0.6, 1, true, true, true, 1, 32),
-            };
+            resetPresets();
             //presets[0] = new LSPreset(1, 1, 0.32, 1, true, true, true); //DEBUG
             //presets[0] = new LSPreset(0.5, 0.875, 0.32, 0.75, true, true, true); //DEBUG
             mixer = new LSPreset();
@@ -237,8 +301,8 @@ namespace Loopstream
             autohide = false;
 
             warn_poor = warn_drop = true;
-            lim_poor = 0.95;
-            lim_drop = 0.8;
+            lim_poor = 0.92;
+            lim_drop = 0.78;
             init();
         }
 
@@ -295,12 +359,21 @@ namespace Loopstream
                         @"^▶  *(.*[^ ]) *- Mozilla Firefox"),
                     new LSMeta(LSMeta.Reader.WindowCaption, "Firefox - YouTube", "firefox", 500,
                         @"^▶  *(.*[^ ]) *- YouTube - Mozilla Firefox"),
-                    new LSMeta(LSMeta.Reader.Website, "other icecast mount", "http://stream0.r-a-d.io:8000/", 2000,
+                    new LSMeta(LSMeta.Reader.Website, "other icecast mount", "http://wessie.info:1130/", 2000,
                         "<tr>\\n<td><h3>Mount Point /main.mp3</h3></td>.*?<td>Current Song:</td>\\n<td class=\"streamdata\">(.*?)</td>"),
                     new LSMeta(LSMeta.Reader.Website, "NI Traktor  (requires Loopstream Plugin)", "http://localhost:42069/status2.xsl", 1000,
                         "\\n<pre>(.*)</pre>\\n", 1, "utf-8", true)
                 });
             }
+        }
+        public void resetPresets()
+        {
+            presets = new LSPreset[] {
+                new LSPreset(1.00, 0, 0.6, 1, true, true, false, 1, 1),
+                new LSPreset(0.15, 1, 0.6, 1, true, true, false, 1, 4),
+                new LSPreset(1.00, 0, 0.6, 1, true, true, true, 1, 1),
+                new LSPreset(0.15, 1, 0.6, 1, true, true, true, 1, 4),
+            };
         }
         public void runTests(Splesh splesh, bool forceTest)
         {

@@ -3,6 +3,16 @@
 + new feature
 ~ other change
 
+2014-01-22, 00:32:51 - Loopstream 1.3.6.4
+  + Icecast server presets
+  + Custom icecast usernames
+  = Memory sniffing from 32bit apps was broken >= 1.3.6.0
+  = Race condition in settings tooltips would keep crashing
+  ~ Autoselect text in textboxes when tabbing through them
+  + Reset mixer presets by rightclicking load/save
+  + Setup wizard more better
+  + Easter egg
+
 2014-01-05, 16:49:32 - Loopstream 1.3.6.1
   + Support for Loopstream-Traktor
   + Tag reader: URLDecode switch for reader profiles
