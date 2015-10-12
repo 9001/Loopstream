@@ -3,6 +3,10 @@
 + new feature
 ~ other change
 
+2013-08-17, 00:24:58 - Loopstream 1.2.7.7
+  = Tag profiles wasn't deep-copied when editing
+  = Bubbling UI events in advanced tagging options
+
 2013-08-13, 22:10:29 - Loopstream 1.2.7.5
   + Memory sniffer can follow pointers
   + Tags for MPCHC, FamiTracker, SoundCloud, YouTube

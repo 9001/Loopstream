@@ -73,13 +73,23 @@ namespace Loopstream
             }
             public void apply(LSMeta meta)
             {
-                src = meta.src;
-                ptn = meta.ptn;
-                tit = meta.tit;
-                encoding = meta.encoding;
-                reader = meta.reader;
-                freq = meta.freq;
-                grp = meta.grp;
+                LSMeta.apply(meta, this);
+            }
+            public static LSMeta copy(LSMeta meta)
+            {
+                LSMeta ret = new LSMeta();
+                apply(meta, ret);
+                return ret;
+            }
+            public static void apply(LSMeta src, LSMeta target)
+            {
+                target.src = src.src;
+                target.ptn = src.ptn;
+                target.tit = src.tit;
+                target.encoding = src.encoding;
+                target.reader = src.reader;
+                target.freq = src.freq;
+                target.grp = src.grp;
             }
             public bool eq(LSMeta meta)
             {

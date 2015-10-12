@@ -804,16 +804,18 @@ namespace Loopstream
         {
             settings.meta.reader = (LSSettings.LSMeta.Reader)gReader.SelectedItem;
             gEncoding.Visible = gEncodingL.Visible = (settings.meta.reader != LSSettings.LSMeta.Reader.WindowCaption);
-            if (settings.meta.reader == LSSettings.LSMeta.Reader.Website ||
+            if (!disregardEvents)
+            {
+                if (settings.meta.reader == LSSettings.LSMeta.Reader.Website ||
                 settings.meta.reader == LSSettings.LSMeta.Reader.File)
-            {
-                gEncoding.Text = "utf-8";
+                {
+                    gEncoding.Text = "utf-8";
+                }
+                if (settings.meta.reader == LSSettings.LSMeta.Reader.ProcessMemory)
+                {
+                    gEncoding.Text = "utf-16";
+                }
             }
-            if (settings.meta.reader == LSSettings.LSMeta.Reader.ProcessMemory)
-            {
-                gEncoding.Text = "utf-16";
-            }
-            gEncoding_TextChanged(sender, e);
         }
 
         private void gSource_TextChanged(object sender, EventArgs e)
@@ -878,7 +880,8 @@ namespace Loopstream
 
         private void gStore_Click(object sender, EventArgs e)
         {
-            settings.metas.Add(settings.meta);
+            //settings.metas.Add(settings.meta);
+            settings.metas.Add(LSSettings.LSMeta.copy(settings.meta));
             loadMetaReader(true);
             gMeta.SelectedItem = settings.meta;
         }
@@ -899,7 +902,11 @@ namespace Loopstream
                     gMeta.Items.Add(meta);
                 }
             }
+            bool reset = disregardEvents; //fuck
+            disregardEvents = true; //fuck
             gReader.SelectedItem = settings.meta.reader;
+            disregardEvents = reset; //fuck
+
             gSource.Text = settings.meta.src;
             gPattern.Text = settings.meta.ptn;
             gFreq.Text = settings.meta.freq.ToString();
