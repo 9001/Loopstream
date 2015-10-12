@@ -70,11 +70,14 @@
             this.gGenre = new System.Windows.Forms.TextBox();
             this.gDescription = new System.Windows.Forms.TextBox();
             this.tpEncoders = new System.Windows.Forms.TabPage();
+            this.panel2 = new System.Windows.Forms.Panel();
+            this.gMp3Mono = new System.Windows.Forms.RadioButton();
             this.gMp3Stereo = new System.Windows.Forms.RadioButton();
+            this.panel1 = new System.Windows.Forms.Panel();
+            this.gOggMono = new System.Windows.Forms.RadioButton();
             this.gOggStereo = new System.Windows.Forms.RadioButton();
             this.gMp3Enable = new System.Windows.Forms.CheckBox();
             this.gRecOGG = new System.Windows.Forms.CheckBox();
-            this.gMp3Mono = new System.Windows.Forms.RadioButton();
             this.gOggEnable = new System.Windows.Forms.CheckBox();
             this.gRecMP3 = new System.Windows.Forms.CheckBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
@@ -87,7 +90,6 @@
             this.gOggQuality = new System.Windows.Forms.RadioButton();
             this.gOggQualityV = new System.Windows.Forms.TextBox();
             this.gOggBitrate = new System.Windows.Forms.RadioButton();
-            this.gOggMono = new System.Windows.Forms.RadioButton();
             this.tpTags = new System.Windows.Forms.TabPage();
             this.gTagAuto = new System.Windows.Forms.CheckBox();
             this.gMeta = new System.Windows.Forms.ComboBox();
@@ -131,13 +133,14 @@
             this.hEncoders = new Loopstream.TLabel();
             this.hServer = new Loopstream.TLabel();
             this.hSoundcard = new Loopstream.TLabel();
-            this.panel1 = new System.Windows.Forms.Panel();
-            this.panel2 = new System.Windows.Forms.Panel();
+            this.gVU = new System.Windows.Forms.CheckBox();
             this.pWrapper.SuspendLayout();
             this.tc.SuspendLayout();
             this.tpSoundcard.SuspendLayout();
             this.tpServer.SuspendLayout();
             this.tpEncoders.SuspendLayout();
+            this.panel2.SuspendLayout();
+            this.panel1.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.tpTags.SuspendLayout();
@@ -146,8 +149,6 @@
             this.pFooter.SuspendLayout();
             this.pButtons.SuspendLayout();
             this.pTabs.SuspendLayout();
-            this.panel1.SuspendLayout();
-            this.panel2.SuspendLayout();
             this.SuspendLayout();
             // 
             // gOutS
@@ -658,6 +659,28 @@
             this.tpEncoders.TabIndex = 2;
             this.tpEncoders.Text = "Encoders";
             // 
+            // panel2
+            // 
+            this.panel2.Controls.Add(this.gMp3Mono);
+            this.panel2.Controls.Add(this.gMp3Stereo);
+            this.panel2.Location = new System.Drawing.Point(17, 155);
+            this.panel2.Name = "panel2";
+            this.panel2.Size = new System.Drawing.Size(139, 45);
+            this.panel2.TabIndex = 43;
+            // 
+            // gMp3Mono
+            // 
+            this.gMp3Mono.AutoSize = true;
+            this.gMp3Mono.Location = new System.Drawing.Point(6, 4);
+            this.gMp3Mono.Name = "gMp3Mono";
+            this.gMp3Mono.Size = new System.Drawing.Size(52, 17);
+            this.gMp3Mono.TabIndex = 29;
+            this.gMp3Mono.Text = "Mono";
+            this.tt.SetToolTip(this.gMp3Mono, "Stream using 1 audio channel (mono)\r\n    (there is really no need to choose this)" +
+        "");
+            this.gMp3Mono.UseVisualStyleBackColor = true;
+            this.gMp3Mono.CheckedChanged += new System.EventHandler(this.gMp3Mono_CheckedChanged);
+            // 
             // gMp3Stereo
             // 
             this.gMp3Stereo.AutoSize = true;
@@ -671,6 +694,28 @@
             this.tt.SetToolTip(this.gMp3Stereo, "Stream using 2 audio channels (stereo)");
             this.gMp3Stereo.UseVisualStyleBackColor = true;
             this.gMp3Stereo.CheckedChanged += new System.EventHandler(this.gMp3Stereo_CheckedChanged);
+            // 
+            // panel1
+            // 
+            this.panel1.Controls.Add(this.gOggMono);
+            this.panel1.Controls.Add(this.gOggStereo);
+            this.panel1.Location = new System.Drawing.Point(206, 155);
+            this.panel1.Name = "panel1";
+            this.panel1.Size = new System.Drawing.Size(139, 45);
+            this.panel1.TabIndex = 42;
+            // 
+            // gOggMono
+            // 
+            this.gOggMono.AutoSize = true;
+            this.gOggMono.Location = new System.Drawing.Point(6, 4);
+            this.gOggMono.Name = "gOggMono";
+            this.gOggMono.Size = new System.Drawing.Size(52, 17);
+            this.gOggMono.TabIndex = 37;
+            this.gOggMono.Text = "Mono";
+            this.tt.SetToolTip(this.gOggMono, "Stream using 1 audio channel (mono)\r\n    (there is really no need to choose this)" +
+        "");
+            this.gOggMono.UseVisualStyleBackColor = true;
+            this.gOggMono.CheckedChanged += new System.EventHandler(this.gOggMono_CheckedChanged);
             // 
             // gOggStereo
             // 
@@ -711,19 +756,6 @@
             this.tt.SetToolTip(this.gRecOGG, "Record a copy of your streams as OGG/Vorbis");
             this.gRecOGG.UseVisualStyleBackColor = true;
             this.gRecOGG.CheckedChanged += new System.EventHandler(this.gRecOGG_CheckedChanged);
-            // 
-            // gMp3Mono
-            // 
-            this.gMp3Mono.AutoSize = true;
-            this.gMp3Mono.Location = new System.Drawing.Point(6, 4);
-            this.gMp3Mono.Name = "gMp3Mono";
-            this.gMp3Mono.Size = new System.Drawing.Size(52, 17);
-            this.gMp3Mono.TabIndex = 29;
-            this.gMp3Mono.Text = "Mono";
-            this.tt.SetToolTip(this.gMp3Mono, "Stream using 1 audio channel (mono)\r\n    (there is really no need to choose this)" +
-        "");
-            this.gMp3Mono.UseVisualStyleBackColor = true;
-            this.gMp3Mono.CheckedChanged += new System.EventHandler(this.gMp3Mono_CheckedChanged);
             // 
             // gOggEnable
             // 
@@ -884,19 +916,6 @@
         "lity, just terrible)");
             this.gOggBitrate.UseVisualStyleBackColor = true;
             this.gOggBitrate.CheckedChanged += new System.EventHandler(this.gOggBitrate_CheckedChanged);
-            // 
-            // gOggMono
-            // 
-            this.gOggMono.AutoSize = true;
-            this.gOggMono.Location = new System.Drawing.Point(6, 4);
-            this.gOggMono.Name = "gOggMono";
-            this.gOggMono.Size = new System.Drawing.Size(52, 17);
-            this.gOggMono.TabIndex = 37;
-            this.gOggMono.Text = "Mono";
-            this.tt.SetToolTip(this.gOggMono, "Stream using 1 audio channel (mono)\r\n    (there is really no need to choose this)" +
-        "");
-            this.gOggMono.UseVisualStyleBackColor = true;
-            this.gOggMono.CheckedChanged += new System.EventHandler(this.gOggMono_CheckedChanged);
             // 
             // tpTags
             // 
@@ -1241,6 +1260,7 @@
             // pFooter
             // 
             this.pFooter.BackColor = System.Drawing.SystemColors.ControlLight;
+            this.pFooter.Controls.Add(this.gVU);
             this.pFooter.Controls.Add(this.pButtons);
             this.pFooter.Controls.Add(this.label1);
             this.pFooter.Controls.Add(this.label2);
@@ -1285,7 +1305,7 @@
             this.gSplash.CheckAlign = System.Drawing.ContentAlignment.TopLeft;
             this.gSplash.Checked = true;
             this.gSplash.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.gSplash.Location = new System.Drawing.Point(12, 24);
+            this.gSplash.Location = new System.Drawing.Point(12, 14);
             this.gSplash.Margin = new System.Windows.Forms.Padding(12, 3, 3, 3);
             this.gSplash.Name = "gSplash";
             this.gSplash.Size = new System.Drawing.Size(167, 17);
@@ -1385,23 +1405,21 @@
             this.hSoundcard.TabIndex = 0;
             this.hSoundcard.Text = "Soundcard";
             // 
-            // panel1
+            // gVU
             // 
-            this.panel1.Controls.Add(this.gOggMono);
-            this.panel1.Controls.Add(this.gOggStereo);
-            this.panel1.Location = new System.Drawing.Point(206, 155);
-            this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(139, 45);
-            this.panel1.TabIndex = 42;
-            // 
-            // panel2
-            // 
-            this.panel2.Controls.Add(this.gMp3Mono);
-            this.panel2.Controls.Add(this.gMp3Stereo);
-            this.panel2.Location = new System.Drawing.Point(17, 155);
-            this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(139, 45);
-            this.panel2.TabIndex = 43;
+            this.gVU.AutoSize = true;
+            this.gVU.CheckAlign = System.Drawing.ContentAlignment.TopLeft;
+            this.gVU.Checked = true;
+            this.gVU.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.gVU.Location = new System.Drawing.Point(12, 37);
+            this.gVU.Margin = new System.Windows.Forms.Padding(12, 3, 3, 3);
+            this.gVU.Name = "gVU";
+            this.gVU.Size = new System.Drawing.Size(75, 17);
+            this.gVU.TabIndex = 52;
+            this.gVU.Text = "VU meters";
+            this.tt.SetToolTip(this.gVU, "420 lensflare bling");
+            this.gVU.UseVisualStyleBackColor = true;
+            this.gVU.CheckedChanged += new System.EventHandler(this.gVU_CheckedChanged);
             // 
             // ConfigSC
             // 
@@ -1424,6 +1442,10 @@
             this.tpServer.PerformLayout();
             this.tpEncoders.ResumeLayout(false);
             this.tpEncoders.PerformLayout();
+            this.panel2.ResumeLayout(false);
+            this.panel2.PerformLayout();
+            this.panel1.ResumeLayout(false);
+            this.panel1.PerformLayout();
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             this.groupBox2.ResumeLayout(false);
@@ -1439,10 +1461,6 @@
             this.pButtons.ResumeLayout(false);
             this.pTabs.ResumeLayout(false);
             this.pTabs.PerformLayout();
-            this.panel1.ResumeLayout(false);
-            this.panel1.PerformLayout();
-            this.panel2.ResumeLayout(false);
-            this.panel2.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -1553,5 +1571,6 @@
         private System.Windows.Forms.CheckBox gTagAuto;
         private System.Windows.Forms.Panel panel2;
         private System.Windows.Forms.Panel panel1;
+        private System.Windows.Forms.CheckBox gVU;
     }
 }

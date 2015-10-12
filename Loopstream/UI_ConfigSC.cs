@@ -310,6 +310,7 @@ namespace Loopstream
             gTestDevs.Checked = settings.testDevs;
             gUnavail.Checked = settings.showUnavail;
             gSplash.Checked = settings.splash;
+            gVU.Checked = settings.vu;
             gRecPCM.Checked = settings.recPCM;
             gRecMP3.Checked = settings.recMp3;
             gRecOGG.Checked = settings.recOgg;
@@ -944,6 +945,11 @@ namespace Loopstream
         {
             int n = getValue(gRate);
             if (n >= 0) settings.samplerate = n;
+        }
+
+        private void gVU_CheckedChanged(object sender, EventArgs e)
+        {
+            settings.vu = gVU.Checked;
         }
     }
 }

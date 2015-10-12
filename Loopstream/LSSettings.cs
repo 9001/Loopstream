@@ -151,6 +151,7 @@ namespace Loopstream
 
         public bool testDevs;
         public bool splash;
+        public bool vu;
         public bool recPCM;
         public bool recMp3;
         public bool recOgg;
@@ -207,6 +208,7 @@ namespace Loopstream
             mixer.apply(presets[0]);
             testDevs = true;
             splash = true;
+            vu = true;
             recMp3 = true;
             recOgg = true;
             recPCM = false;

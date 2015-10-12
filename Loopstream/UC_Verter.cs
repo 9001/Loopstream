@@ -95,8 +95,8 @@ namespace Loopstream
                 int top = gOSlider.Height - _level;
                 giSlider.Bounds = new Rectangle(0, top - 2, gOSlider.Width, _level + 2);
                 giSlider.Text = timeScale ?
-                    (Math.Round(level / 200.0,2) + " s\n") :
-                    (Math.Round(level/2.55,0) + " %\n");
+                    (Math.Round(level / 200.0,2) + " s") :
+                    (Math.Round(level/2.55,0) + " %");
                 //gLabel.Text = level.ToString();
 
                 inval = inval || _level <= 40 || _level >= 255 + 40;
@@ -107,6 +107,8 @@ namespace Loopstream
                 }
             }
         }
+        public Color A_GRAD_1 { get { return giSlider.A_GRAD_1; } set { giSlider.A_GRAD_1 = value; } }
+        public Color A_GRAD_2 { get { return giSlider.A_GRAD_2; } set { giSlider.A_GRAD_2 = value; } }
 
         private void gLabel_Click(object sender, EventArgs e)
         {

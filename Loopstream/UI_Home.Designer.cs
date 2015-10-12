@@ -93,6 +93,8 @@
             // 
             // gMusic
             // 
+            this.gMusic.A_GRAD_1 = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(220)))), ((int)(((byte)(255)))));
+            this.gMusic.A_GRAD_2 = System.Drawing.Color.Blue;
             this.gMusic.BackColor = System.Drawing.SystemColors.ControlLight;
             this.gMusic.canToggle = true;
             this.gMusic.enabled = true;
@@ -107,6 +109,8 @@
             // 
             // gOut
             // 
+            this.gOut.A_GRAD_1 = System.Drawing.Color.Magenta;
+            this.gOut.A_GRAD_2 = System.Drawing.Color.Red;
             this.gOut.BackColor = System.Drawing.SystemColors.ControlLight;
             this.gOut.canToggle = true;
             this.gOut.enabled = true;
@@ -121,6 +125,8 @@
             // 
             // gMic
             // 
+            this.gMic.A_GRAD_1 = System.Drawing.Color.FromArgb(((int)(((byte)(214)))), ((int)(((byte)(214)))), ((int)(((byte)(0)))));
+            this.gMic.A_GRAD_2 = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(160)))), ((int)(((byte)(0)))));
             this.gMic.BackColor = System.Drawing.SystemColors.ControlLight;
             this.gMic.canToggle = true;
             this.gMic.enabled = true;
@@ -135,6 +141,8 @@
             // 
             // gSpeed
             // 
+            this.gSpeed.A_GRAD_1 = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(128)))), ((int)(((byte)(0)))));
+            this.gSpeed.A_GRAD_2 = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(0)))));
             this.gSpeed.BackColor = System.Drawing.SystemColors.ControlLight;
             this.gSpeed.canToggle = false;
             this.gSpeed.enabled = true;

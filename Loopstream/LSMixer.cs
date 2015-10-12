@@ -44,10 +44,13 @@ namespace Loopstream
             Out
         };
 
-        public LSMixer(LSSettings settings)
+        LLabel[] bars;
+
+        public LSMixer(LSSettings settings, LLabel[] bars)
         {
             Logger.mix.a("creating");
             this.settings = settings;
+            this.bars = bars;
             isLQ = null;
             doMagic();
         }
@@ -148,6 +151,16 @@ namespace Loopstream
                 Logger.mix.a("mic.startRec"); micCap.StartRecording();
             }
             Logger.mix.a("mixOut.play (ready)"); mixOut.Play();
+
+            if (settings.vu)
+            {
+                recVol.enVU = true;
+                micVol.enVU = true;
+                outVol.enVU = true;
+                bars[0].src = recVol;
+                bars[1].src = micVol;
+                bars[2].src = outVol;
+            }
 
             if (!string.IsNullOrEmpty(lq)) isLQ = lq;
 

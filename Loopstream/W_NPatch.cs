@@ -317,15 +317,20 @@ namespace NPatch
         float absDelta;
         public bool muted;
 
+        //public event EventHandler vuc;
+        public bool enVU;
+        public double VU { get; private set; }
         public float curVol { get { return currentVolume; } set { } }
 
-        public VolumeSlider() { }
+        public VolumeSlider() { enVU = false; VU = 1; }
         
         public VolumeSlider(ISampleProvider source, bool initiallySilent = false)
         {
             this.source = source;
             currentVolume = 1;
             targetVolume = 1;
+            enVU = false;
+            VU = 1;
         }
 
         public void SetVolume(float volume)
@@ -351,33 +356,51 @@ namespace NPatch
 
         public int Read(float[] buffer, int offset, int count)
         {
-            int sourceSamplesRead = source.Read(buffer, offset, count);
-            lock (lockObject)
+            try
             {
-                if (currentVolume == targetVolume && targetVolume == 0 || muted)
-                {
-                    ClearBuffer(buffer, offset, count);
-                }
-                else
-                {
-                    int sample = 0;
-                    while (sample < sourceSamplesRead)
-                    {
-                        if (Math.Abs(targetVolume - currentVolume) > absDelta * 1.5)
-                        {
-                            currentVolume += volumeDelta;
-                        }
-                        else currentVolume = targetVolume;
+                int sourceSamplesRead = source.Read(buffer, offset, count);
 
-                        for (int ch = 0; ch < source.WaveFormat.Channels; ch++)
+                double amp = 0;
+                if (enVU)
+                {
+                    for (int a = 0; a < sourceSamplesRead; a++)
+                    {
+                        amp = Math.Max(amp, buffer[offset + a]);
+                    }
+                    VU = amp;
+                }
+                lock (lockObject)
+                {
+                    if (currentVolume == targetVolume && targetVolume == 0 || muted)
+                    {
+                        ClearBuffer(buffer, offset, count);
+                    }
+                    else
+                    {
+                        int sample = 0;
+                        while (sample < sourceSamplesRead)
                         {
-                            buffer[offset + sample++] *= currentVolume;
+                            if (Math.Abs(targetVolume - currentVolume) > absDelta * 1.5)
+                            {
+                                currentVolume += volumeDelta;
+                            }
+                            else currentVolume = targetVolume;
+
+                            for (int ch = 0; ch < source.WaveFormat.Channels; ch++)
+                            {
+                                buffer[offset + sample++] *= currentVolume;
+                            }
                         }
                     }
                 }
+                //Console.WriteLine("{0:000000} {1:000000}", count, sourceSamplesRead);
+                return sourceSamplesRead;
             }
-            //Console.WriteLine("{0:000000} {1:000000}", count, sourceSamplesRead);
-            return sourceSamplesRead;
+            catch (Exception ex)
+            {
+                System.Windows.Forms.MessageBox.Show("VolumeSlider::Read>\n\n" + ex.ToString());
+                return -1;
+            }
         }
 
         private static void ClearBuffer(float[] buffer, int offset, int count)

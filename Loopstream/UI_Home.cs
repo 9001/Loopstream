@@ -56,6 +56,7 @@ namespace Loopstream
             t.Start();
         }
 
+        int loads = 0;
         void t_Tick(object sender, EventArgs e)
         {
             ((Timer)sender).Stop();
@@ -75,6 +76,11 @@ namespace Loopstream
             }
             splash.unvis();
 
+            if (++loads > 1)
+            {
+                MessageBox.Show("Critical semantical error, load sequencye fucskdjflks");
+                return;
+            }
             settings = LSSettings.load();
             settings.runTests(splash, false);
             isPresetLoad = true;
@@ -167,6 +173,8 @@ namespace Loopstream
             };
             invalOnNext = false;
             lqMessage = null;
+
+            //gSpeed.giSlider.A_LEVEL = 1;
 
             Timer tTitle = new Timer();
             tTitle.Tick += tTitle_Tick;
@@ -279,27 +287,29 @@ namespace Loopstream
                 }
                 else return;
             }
-            if (settings.testDevs && (
-                settings.devOut == null ||
-                settings.devRec == null ||
-                settings.devOut.wf == null ||
-                settings.devRec.wf == null || (
-                settings.devMic != null &&
-                settings.devMic.wf == null)))
-            {
-                MessageBox.Show("The soundcard devices you selected have been disabled or removed." +
-                    "\r\n\r\nPlease check your privilege...uh, settings before connecting.",
-                    "oh snap nigga", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                return;
-            }
 
             if (gConnect.Text == "Connect")
             {
+                if (settings.testDevs && (
+                    settings.devOut == null ||
+                    settings.devRec == null ||
+                    settings.devOut.wf == null ||
+                    settings.devRec.wf == null /*|| (
+                    settings.devMic != null &&
+                    settings.devMic.wf == null)*/))
+                {
+                    // TODO: Fix devMic != null when disabled (deserializing bug?)
+
+                    MessageBox.Show("The soundcard devices you selected have been disabled or removed." +
+                        "\r\n\r\nPlease check your privilege...uh, settings before connecting.",
+                        "oh snap nigga", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
+                }
                 Program.ni.ContextMenu.MenuItems[1].Text = "Disconnect";
                 daText = "D I S C O N N E C T";
                 gConnect.Text = daText;
                 tag = new LSTag(settings);
-                mixer = new LSMixer(settings);
+                mixer = new LSMixer(settings, new LLabel[] { gMusic.giSlider, gMic.giSlider, gOut.giSlider });
                 pcm = new LSPcmFeed(settings, mixer.lameOutlet);
             }
             else
