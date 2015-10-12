@@ -3,6 +3,11 @@
 + new feature
 ~ other change
 
+2013-07-28, 19:52:36 - Loopstream 1.0.0.0
+  = GUI only breaks if other windows move over it
+  + Reconnect on drop
+  ~ Renamed project
+
 2013-07-28, 08:09:21 - Loopstream 0.9.2.0
   = GUI redrawing added, doesn't really work
   + Soundcard selection filters awol devices

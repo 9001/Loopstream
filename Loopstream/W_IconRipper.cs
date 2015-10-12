@@ -7,7 +7,7 @@ using System.Text;
 using System.Runtime.InteropServices;
 using System.Collections;
 
-namespace LoopStream
+namespace Loopstream
 {
     public class IconExtractor : IDisposable
     {

@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace LoopStream
+namespace Loopstream
 {
     public class LLabel : Label
     {
@@ -20,7 +20,7 @@ namespace LoopStream
         public LLabel()
             : base()
         {
-            //bg = Bitmap.FromFile(@"C:\Users\ed\Documents\Visual Studio 2012\Projects\LoopStream\LoopStream\res\volbar.png");
+            //bg = Bitmap.FromFile(@"C:\Users\ed\Documents\Visual Studio 2012\Projects\Loopstream\Loopstream\res\volbar.png");
             bg = new Bitmap(16, 16);
             w = bg.Width;
             h = bg.Height;

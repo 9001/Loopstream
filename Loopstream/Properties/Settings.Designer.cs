@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace LoopStream.Properties {
+namespace Loopstream.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]

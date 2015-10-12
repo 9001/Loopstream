@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 
-namespace LoopStream
+namespace Loopstream
 {
     public class LibMp3LameException : Exception
     {

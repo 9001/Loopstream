@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LoopStream", "LoopStream\LoopStream.csproj", "{B9218FDB-D5A1-422F-BA2E-5B5326DDCEEC}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Loopstream", "Loopstream\Loopstream.csproj", "{B9218FDB-D5A1-422F-BA2E-5B5326DDCEEC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

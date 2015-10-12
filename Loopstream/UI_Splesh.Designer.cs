@@ -1,4 +1,4 @@
-﻿namespace LoopStream
+﻿namespace Loopstream
 {
     partial class Splesh
     {
@@ -73,7 +73,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.BackgroundImage = global::LoopStream.Properties.Resources.splesh;
+            this.BackgroundImage = global::Loopstream.Properties.Resources.splesh;
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
             this.ClientSize = new System.Drawing.Size(600, 496);
             this.Controls.Add(this.label3);

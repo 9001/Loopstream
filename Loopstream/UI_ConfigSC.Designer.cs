@@ -1,4 +1,4 @@
-﻿namespace LoopStream
+﻿namespace Loopstream
 {
     partial class ConfigSC
     {
@@ -817,7 +817,7 @@
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.SizableToolWindow;
             this.Name = "ConfigSC";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "LoopStream Config";
+            this.Text = "Loopstream Config";
             this.Load += new System.EventHandler(this.ConfigSC_Load);
             this.groupBox4.ResumeLayout(false);
             this.groupBox4.PerformLayout();

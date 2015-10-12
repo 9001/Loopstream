@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
 
-namespace LoopStream
+namespace Loopstream
 {
     public class LSSettings
     {
@@ -98,7 +98,7 @@ namespace LoopStream
             mp3.channels = LSChannels.stereo;
             mp3.ext = "mp3";
             ogg = new LSParams();
-            ogg.enabled = true;
+            ogg.enabled = false;
             ogg.compression = LSCompression.q;
             ogg.bitrate = 192;
             ogg.quality = 5;
@@ -160,7 +160,7 @@ namespace LoopStream
                 {
                     dev.test();
                 }
-                /*using (System.IO.StreamWriter sw = new System.IO.StreamWriter("LoopStream.devs", false, Encoding.UTF8))
+                /*using (System.IO.StreamWriter sw = new System.IO.StreamWriter("Loopstream.devs", false, Encoding.UTF8))
                 {
                     foreach (LSDevice dev in devs)
                     {
@@ -215,7 +215,7 @@ namespace LoopStream
         public void save()
         {
             XmlSerializer x = new XmlSerializer(this.GetType());
-            using (var s = System.IO.File.OpenWrite("LoopStream.ini"))
+            using (var s = System.IO.File.OpenWrite("Loopstream.ini"))
             {
                 byte[] ver = System.Text.Encoding.UTF8.GetBytes(version().ToString("x") + "\n");
                 s.Write(ver, 0, ver.Length);
@@ -226,11 +226,11 @@ namespace LoopStream
         {
             LSSettings ret;
             XmlSerializer x = new XmlSerializer(typeof(LSSettings));
-            if (System.IO.File.Exists("LoopStream.ini"))
+            if (System.IO.File.Exists("Loopstream.ini"))
             {
                 try
                 {
-                    string str = System.IO.File.ReadAllText("LoopStream.ini", Encoding.UTF8);
+                    string str = System.IO.File.ReadAllText("Loopstream.ini", Encoding.UTF8);
                     string ver = str.Substring(0, str.IndexOf('\n'));
                     str = str.Substring(ver.Length + 1);
                     if (str.EndsWith(">>"))
@@ -254,7 +254,7 @@ namespace LoopStream
                             System.Windows.Forms.MessageBoxButtons.OK,
                             System.Windows.Forms.MessageBoxIcon.Information);
                     }
-                    //using (var s = System.IO.File.OpenRead("LoopStream.ini"))
+                    //using (var s = System.IO.File.OpenRead("Loopstream.ini"))
                     {
                         ret = (LSSettings)x.Deserialize(s);
                     }
@@ -263,7 +263,7 @@ namespace LoopStream
                 {
                     ret = new LSSettings();
                     System.Windows.Forms.MessageBox.Show(
-                        "Failed to load settings:\r\n«LoopStream.ini» is probably from an old version of the program.\r\n\r\nDetailed information:\r\n" + e.Message + "\r\n" + e.StackTrace,
+                        "Failed to load settings:\r\n«Loopstream.ini» is probably from an old version of the program.\r\n\r\nDetailed information:\r\n" + e.Message + "\r\n" + e.StackTrace,
                         "Default settings",
                         System.Windows.Forms.MessageBoxButtons.OK,
                         System.Windows.Forms.MessageBoxIcon.Information);
@@ -275,7 +275,7 @@ namespace LoopStream
                 catch (Exception e)
                 {
                     System.Windows.Forms.MessageBox.Show(
-                        "Failed to initialize settings object:\r\nPossibly from an outdated version of «LoopStream.ini», though more likely a developer fuckup. Go tell ed this:\r\n\r\n" +
+                        "Failed to initialize settings object:\r\nPossibly from an outdated version of «Loopstream.ini», though more likely a developer fuckup. Go tell ed this:\r\n\r\n" +
                         e.Message + "\r\n\r\n" + e.Source + "\r\n\r\n" + e.InnerException + "\r\n\r\n" + e.StackTrace);
                 }
             }

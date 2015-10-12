@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 
-namespace LoopStream
+namespace Loopstream
 {
     class DFC
     {
@@ -37,7 +37,7 @@ namespace LoopStream
         bool extracting = false;
         void exthread()
         {
-            using (Stream stream = System.Reflection.Assembly.GetExecutingAssembly().GetManifestResourceStream("LoopStream.res.tools.dfc"))
+            using (Stream stream = System.Reflection.Assembly.GetExecutingAssembly().GetManifestResourceStream("Loopstream.res.tools.dfc"))
             {
                 if (stream == null)
                 {

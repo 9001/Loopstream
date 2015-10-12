@@ -7,8 +7,8 @@
     <ProjectGuid>{B9218FDB-D5A1-422F-BA2E-5B5326DDCEEC}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>LoopStream</RootNamespace>
-    <AssemblyName>LoopStream</AssemblyName>
+    <RootNamespace>Loopstream</RootNamespace>
+    <AssemblyName>Loopstream</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile>Client</TargetFrameworkProfile>
@@ -150,6 +150,7 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="res\logo.png" />
     <EmbeddedResource Include="res\sc.wav" />
     <None Include="res\fx2.mp3" />
     <None Include="res\fx2.wav" />

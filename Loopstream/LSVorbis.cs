@@ -5,14 +5,11 @@ using System.IO;
 using System.Linq;
 using System.Text;
 
-namespace LoopStream
+namespace Loopstream
 {
     public class LSVorbis : LSEncoder
     {
-        public override Stream stdin { get; set; }
-        public override Stream stdout { get; set; }
-
-        public LSVorbis(LSSettings settings, LSPcmFeed pimp)
+        public LSVorbis(LSSettings settings, LSPcmFeed pimp) : base()
         {
             this.pimp = pimp;
             this.settings = settings;
@@ -44,8 +41,8 @@ namespace LoopStream
             {
                 Console.WriteLine(mod.ModuleName + " // " + mod.FileName);
             }
-            stdin = proc.StandardInput.BaseStream;
-            stdout = proc.StandardOutput.BaseStream;
+            pstdin = proc.StandardInput.BaseStream;
+            pstdout = proc.StandardOutput.BaseStream;
             dump = settings.recOgg;
             enc = settings.ogg;
             makeShouter();

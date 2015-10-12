@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace LoopStream
+namespace Loopstream
 {
     public class LSPcmFeed
     {
@@ -27,7 +27,7 @@ namespace LoopStream
         {
             lock (locker)
             {
-                quitting = 1 + encoders.Count;
+                quitting = 2 + encoders.Count;
             }
             for (int a = 0; a < 100; a++)
             {
@@ -39,7 +39,7 @@ namespace LoopStream
             }
             foreach (LSEncoder enc in encoders)
             {
-                enc.Kill();
+                enc.Dispose();
             }
         }
         void dicks()
@@ -49,13 +49,16 @@ namespace LoopStream
             System.IO.FileStream w = null;
             if (settings.recPCM)
             {
-                w = new System.IO.FileStream(string.Format("LoopStream-{0}.pcm", DateTime.Now.ToString("yyyy-MM-dd_HH.mm.ss")), System.IO.FileMode.Create);
+                w = new System.IO.FileStream(string.Format("Loopstream-{0}.pcm", DateTime.Now.ToString("yyyy-MM-dd_HH.mm.ss")), System.IO.FileMode.Create);
             }
 
             // Create encoders first, but do not feed data
             if (settings.mp3.enabled) encoders.Add(new LSLame(settings, this));
             if (settings.ogg.enabled) encoders.Add(new LSVorbis(settings, this));
             // Note that encoders handle creation of and connecting to shouters
+
+            // start the thread watching encoders/shouters and restarting the crashed ones
+            new System.Threading.Thread(new System.Threading.ThreadStart(medic)).Start();
 
             // Finally, reposition PCM pointer to minimize latency
             // (and chance of lost packets because icecast a bitch)
@@ -70,10 +73,17 @@ namespace LoopStream
                 {
                     //Console.Write('.');
                     int i = wp16.Read(buffer, 0, (outlet.avail() / 4) * 4);
-                    foreach (LSEncoder enc in encoders)
+                    lock (locker)
                     {
-                        enc.stdin.Write(buffer, 0, i);
-                        enc.stdin.Flush();
+                        for (int a = 0; a < encoders.Count; a++)
+                        {
+                            LSEncoder enc = encoders[a];
+                            if (!enc.crashed && enc.stdin != null)
+                            {
+                                enc.stdin.Write(buffer, 0, i);
+                                enc.stdin.Flush();
+                            }
+                        }
                     }
                     if (w != null)
                     {
@@ -84,6 +94,47 @@ namespace LoopStream
             }
             Console.WriteLine("shutting down encoder prism");
             if (w != null) w.Close();
+        }
+
+        void medic()
+        {
+            while (true)
+            {
+                if (qt()) break;
+                for (int a = 0; a < encoders.Count; a++)
+                {
+                    LSEncoder enc = encoders[a];
+                    if (enc.crashed)
+                    {
+                        enc.Dispose();
+                        try
+                        {
+                            if (enc.enc.ext == "mp3")
+                            {
+                                enc = new LSLame(settings, this);
+                            }
+                            else if (enc.enc.ext == "ogg")
+                            {
+                                enc = new LSVorbis(settings, this);
+                            }
+                            else
+                            {
+                                System.Windows.Forms.MessageBox.Show("this shouldn't happen");
+                                Program.kill();
+                            }
+                            lock (locker)
+                            {
+                                encoders[a] = enc;
+                            }
+                        }
+                        catch
+                        {
+                            Program.ni.ShowBalloonTip(1000, "Connection error", "Failed to restart " + enc.enc.ext, System.Windows.Forms.ToolTipIcon.Error);
+                        }
+                    }
+                }
+                System.Threading.Thread.Sleep(10);
+            }
         }
 
         public bool qt()

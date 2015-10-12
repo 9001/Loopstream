@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace LoopStream
+namespace Loopstream
 {
     public partial class Verter : UserControl
     {
@@ -89,7 +89,7 @@ namespace LoopStream
                 giSlider.Text = timeScale ?
                     (Math.Round(level / 200.0,2) + " s\n") :
                     (Math.Round(level/2.55,0) + " %\n");
-                gLabel.Text = level.ToString();
+                //gLabel.Text = level.ToString();
 
                 inval = inval || _level <= 40 || _level >= 255 + 40;
                 if (inval)

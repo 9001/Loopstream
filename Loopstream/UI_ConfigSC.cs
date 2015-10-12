@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using NAudio.CoreAudioApi;
 
-namespace LoopStream
+namespace Loopstream
 {
     public partial class ConfigSC : Form
     {
@@ -35,7 +35,7 @@ namespace LoopStream
             sb.AppendLine(((LSDevice)gOutS.SelectedItem).id + "\t" + gOutS.SelectedItem);
             sb.AppendLine(((LSDevice)gOneS.SelectedItem).id + "\t" + gOneS.SelectedItem);
             sb.AppendLine(((LSDevice)gTwoS.SelectedItem).id + "\t" + gTwoS.SelectedItem);
-            System.IO.File.WriteAllText("LoopStream.ini", sb.ToString());*/
+            System.IO.File.WriteAllText("Loopstream.ini", sb.ToString());*/
             apply(true);
         }
 
@@ -408,7 +408,7 @@ namespace LoopStream
             {
                 if (disregardEvents) return;
                 unFX();
-                fx_stream = System.Reflection.Assembly.GetExecutingAssembly().GetManifestResourceStream("LoopStream.res.sc.wav");
+                fx_stream = System.Reflection.Assembly.GetExecutingAssembly().GetManifestResourceStream("Loopstream.res.sc.wav");
                 //fx_mp3 = new NAudio.Wave.Mp3FileReader(fx_stream);
                 fx_wav = new NAudio.Wave.WaveFileReader(fx_stream);
                 fx_out = new NAudio.Wave.WasapiOut(dev.mm, NAudio.CoreAudioApi.AudioClientShareMode.Shared, false, 100);

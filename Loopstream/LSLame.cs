@@ -5,13 +5,10 @@ using System.IO;
 using System.Linq;
 using System.Text;
 
-namespace LoopStream
+namespace Loopstream
 {
     public class LSLame : LSEncoder
     {
-        public override Stream stdin { get; set; }
-        public override Stream stdout { get; set; }
-
         public LSLame(LSSettings settings, LSPcmFeed pimp)
         {
             this.pimp = pimp;
@@ -41,8 +38,8 @@ namespace LoopStream
                 }
                 catch { }
             }
-            stdin = proc.StandardInput.BaseStream;
-            stdout = proc.StandardOutput.BaseStream;
+            pstdin = proc.StandardInput.BaseStream;
+            pstdout = proc.StandardOutput.BaseStream;
             dump = settings.recMp3;
             enc = settings.mp3;
             makeShouter();

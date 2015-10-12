@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace LoopStream
+namespace Loopstream
 {
     public partial class Splesh : Form
     {
@@ -33,6 +33,17 @@ namespace LoopStream
 
         public void vis()
         {
+            /*MessageBox.Show(
+                "Hello there!\r\n" +
+                "\r\n" +
+                "Since this is your first run, here's a\r\n" +
+                "short list of things that don't work yet:\r\n" +
+                "\r\n" +
+                "    - Streaming to OGG/Vorbis\r\n" +
+                "       (icecast disconnects when you stream silence)\r\n" +
+                "\r\n" +
+                "That's about it.\r\n" +
+                "Enjoy streaming!");*/
             label1.Visible = label2.Visible = label3.Visible = true;
             Application.DoEvents();
         }

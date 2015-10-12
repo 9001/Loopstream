@@ -14,10 +14,12 @@ using System.Windows.Forms;
  * 
  * Program.debug = false
  * DFC.CHECK_MD5 = true
- * LoopStream.exe sign
+ * LSSettings ver.check
+ * assembly version
+ * Loopstream.exe sign
  */
 
-namespace LoopStream
+namespace Loopstream
 {
     public partial class Home : Form
     {
@@ -327,6 +329,7 @@ namespace LoopStream
             }
             else
             {
+                settings.presets[preset].apply(settings.mixer);
                 gLoad_Click(sender, e);
             }
         }
@@ -352,13 +355,13 @@ namespace LoopStream
             }
             string app, str = "";
             app = "CAPTURE_ENDPOINT = " + settings.devRec.mm.ToString() + "\r\n";
-            File.AppendAllText("LoopStream.log", app);
+            File.AppendAllText("Loopstream.log", app);
             str += app;
 
             wdt_waveIn = new NAudio.Wave.WasapiLoopbackCapture(settings.devRec.mm);
 
             app = "WASAPI_FMT = " + LSDevice.stringer(wdt_waveIn) + "\r\n";
-            File.AppendAllText("LoopStream.log", app);
+            File.AppendAllText("Loopstream.log", app);
             str += app;
 
             Clipboard.Clear();
@@ -367,8 +370,8 @@ namespace LoopStream
                 "Capture will begin when you press OK; please open a media player and start listening to some music.\r\n\r\n" +
                 "While you wait, the following text is on your clipboard... Paste it in irc (Ctrl-V)\r\n\r\n" + str);
 
-            wdt_v = File.OpenWrite("LoopStream.raw");
-            wdt_writer = new NAudio.Wave.WaveFileWriter("LoopStream.wav", wdt_waveIn.WaveFormat);
+            wdt_v = File.OpenWrite("Loopstream.raw");
+            wdt_writer = new NAudio.Wave.WaveFileWriter("Loopstream.wav", wdt_waveIn.WaveFormat);
             wdt_waveIn.DataAvailable += wdt_OnDataAvailable;
             wdt_waveIn.StartRecording();
             while (true)
@@ -380,7 +383,7 @@ namespace LoopStream
                 val += 2;
             }
             gMic.level = 0;
-            if (DialogResult.Yes == MessageBox.Show("Test finished! The soundclip has been recorded to LoopStream.wav in the " +
+            if (DialogResult.Yes == MessageBox.Show("Test finished! The soundclip has been recorded to Loopstream.wav in the " +
                     "same folder as this .exe, more specifically here:\r\n\r\n" + Application.StartupPath + "\r\n\r\n" +
                     "Could you uploading this to pomf.se? Thanks!", "Open browser?", MessageBoxButtons.YesNo))
             {
@@ -422,6 +425,11 @@ namespace LoopStream
             {
                 inval();
             }
+        }
+
+        private void gGit_Click(object sender, EventArgs e)
+        {
+            System.Diagnostics.Process.Start("http://github.com/9001/loopstream");
         }
     }
 }

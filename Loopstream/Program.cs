@@ -5,7 +5,7 @@ using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace LoopStream
+namespace Loopstream
 {
     static class Program
     {
@@ -41,7 +41,7 @@ namespace LoopStream
                 AppDomain.CurrentDomain.AssemblyResolve += (sender, dargs) =>
                 {
                     //log.WriteLine(DateTime.UtcNow.Ticks + "  " + dargs.Name + " // " + dargs.RequestingAssembly);
-                    String resourceName = "LoopStream.lib." +
+                    String resourceName = "Loopstream.lib." +
                         //new AssemblyName(dargs.Name).Name + ".dll";
                         dargs.Name.Substring(0, dargs.Name.IndexOf(", ")) + ".dll";
                     
@@ -62,7 +62,10 @@ namespace LoopStream
                 ie.Dispose();
             }
             else icon = new System.Drawing.Icon(@"..\..\res\loopstream.ico");
-            tools = "LoopStreamTools\\";
+            tools = System.Windows.Forms.Application.ExecutablePath;
+            tools = tools.Substring(tools.Replace('\\', '/').LastIndexOf('/') + 1);
+            tools = tools.Split('.')[0];
+            tools += "Tools\\";
 
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
@@ -74,8 +77,8 @@ namespace LoopStream
         [Obsolete()]
         static System.Reflection.Assembly CurrentDomain_AssemblyResolve(object sender, ResolveEventArgs args)
         {
-            string ns = "LoopStream";
-            // Project -> LoopStream Properties -> Resources -> Add existing file -> *.dll
+            string ns = "Loopstream";
+            // Project -> Loopstream Properties -> Resources -> Add existing file -> *.dll
             // No further actions required. Also next line is workaround for win7 custom themes
             if (args.Name.Contains("PresentationFramework")) return null;
             string dllname = args.Name.Contains(',')
