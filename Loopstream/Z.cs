@@ -143,5 +143,17 @@ namespace Loopstream
             ReadProcessMemory(handle, adr, buf, sizeof(byte) * buf.Length, out ret);
             return ret;
         }
+
+        public int read(IntPtr adr, byte[] buf, int[] ofs)
+        {
+            byte[] u32 = new byte[4];
+            foreach (int o in ofs)
+            {
+                int i = read(adr, u32);
+                if (i < u32.Length) return -1;
+                adr = new IntPtr(BitConverter.ToUInt32(u32, 0) + o);
+            }
+            return read(adr, buf);
+        }
     }
 }

@@ -3,6 +3,11 @@
 + new feature
 ~ other change
 
+2013-08-13, 22:10:29 - Loopstream 1.2.7.5
+  + Memory sniffer can follow pointers
+  + Tags for MPCHC, FamiTracker, SoundCloud, YouTube
+  ~ Warning on bad sample rate config
+
 2013-08-11, 01:13:07 - Loopstream 1.2.7.4
   + Proper logging framework with history display
   ~ Warning if soundcard config no longer valid

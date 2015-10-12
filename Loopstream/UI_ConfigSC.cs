@@ -51,6 +51,40 @@ namespace Loopstream
                 MessageBox.Show("Sorry, you need to select all three audio devices.");
                 return;
             }
+            int[] samplerates = {
+                8000, 11025, 16000, 22050, 32000,
+                44100, 48000, 88200, 96000
+            };
+            bool sampleOk = false;
+            foreach (int sr in samplerates)
+            {
+                if (settings.samplerate == sr)
+                {
+                    sampleOk = true;
+                }
+            }
+            if (!sampleOk)
+            {
+                string msg = "";
+                foreach (int i in samplerates)
+                {
+                    msg += i.ToString("#,##0")
+                        .Replace(',', '\'')
+                        .Replace('.', '\'') + "\n";
+                }
+                if (DialogResult.Yes ==
+                    MessageBox.Show("Your samplerate is most likely fucked up.\n\n" +
+                    "You probably want 44'100.  Wanna cancel and fix it?\n\n" +
+                    "Here are some choices:\n\n" +
+                    msg.Trim('\n'), "bad samplerate",
+                    MessageBoxButtons.YesNo,
+                    MessageBoxIcon.Warning))
+                {
+                    return;
+                }
+            }
+
+
 
             string smp = "";
             string fail = "";
@@ -385,7 +419,7 @@ namespace Loopstream
         {
             try
             {
-                string host = gHost.Text.Split(':')[0];
+                string host = gHost.Text.Replace(" ","").Split(':')[0];
                 int port = Convert.ToInt32(gHost.Text.Split(':')[1]);
                 settings.host = host;
                 settings.port = port;
@@ -677,7 +711,7 @@ namespace Loopstream
             if (gMeta.SelectedIndex == 0) return;
             settings.meta.apply((LSSettings.LSMeta)gMeta.SelectedItem);
             loadMetaReader(false);
-            if (settings.meta.reader == LSSettings.LSMeta.Reader.ProcessMemory)
+            if (settings.meta.reader == LSSettings.LSMeta.Reader.ProcessMemory && !disregardEvents)
             {
                 // TODO: Clean this up
                 //       (was thrown in in a hurry when I realized

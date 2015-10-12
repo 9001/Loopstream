@@ -173,19 +173,6 @@ namespace Loopstream
             tTitle.Interval = 200;
             tTitle.Start();
             showhide();
-
-            if (settings.testDevs &&
-                settings.devOut == null ||
-                settings.devRec == null ||
-                settings.devOut.wf == null ||
-                settings.devRec.wf == null || (
-                settings.devMic != null &&
-                settings.devMic.wf == null))
-            {
-                MessageBox.Show("The soundcard devices you selected have been disabled or removed." +
-                    "\r\n\r\nPlease check your privilege...uh, settings before connecting.",
-                    "oh snap nigga", MessageBoxButtons.OK, MessageBoxIcon.Information);
-            }
         }
 
         bool invalOnNext;
@@ -292,6 +279,20 @@ namespace Loopstream
                 }
                 else return;
             }
+            if (settings.testDevs && (
+                settings.devOut == null ||
+                settings.devRec == null ||
+                settings.devOut.wf == null ||
+                settings.devRec.wf == null || (
+                settings.devMic != null &&
+                settings.devMic.wf == null)))
+            {
+                MessageBox.Show("The soundcard devices you selected have been disabled or removed." +
+                    "\r\n\r\nPlease check your privilege...uh, settings before connecting.",
+                    "oh snap nigga", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+
             if (gConnect.Text == "Connect")
             {
                 Program.ni.ContextMenu.MenuItems[1].Text = "Disconnect";

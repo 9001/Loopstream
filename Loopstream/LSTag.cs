@@ -145,9 +145,20 @@ namespace Loopstream
                             }
                             arg = args[1];
                         }
+                        int[] steps = new int[0];
+                        if (arg.Contains('*'))
+                        {
+                            string[] args = arg.Split('*');
+                            steps = new int[args.Length-1];
+                            for (int b = 1; b < args.Length; b++)
+                            {
+                                steps[b - 1] = Convert.ToInt32(args[b], 16);
+                            }
+                            arg = args[0];
+                        }
                         ofs += Convert.ToInt32(arg, 16);
                         ret += a == 0 ? "" : " - ";
-                        int len = mem.read(ofs, raw);
+                        int len = mem.read(ofs, raw, steps);
                         if (len <= 0)
                         {
                             ret += "(read error)";
