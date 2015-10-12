@@ -122,18 +122,26 @@
             this.pFooter = new System.Windows.Forms.Panel();
             this.gVU = new System.Windows.Forms.CheckBox();
             this.pButtons = new System.Windows.Forms.Panel();
+            this.gCancel = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.gSplash = new System.Windows.Forms.CheckBox();
             this.pTabs = new System.Windows.Forms.Panel();
             this.label5 = new System.Windows.Forms.Label();
+            this.label12 = new System.Windows.Forms.Label();
+            this.tt = new System.Windows.Forms.ToolTip(this.components);
+            this.tpOSD = new System.Windows.Forms.TabPage();
+            this.gCPoor = new System.Windows.Forms.CheckBox();
+            this.gLPoor = new System.Windows.Forms.TextBox();
+            this.label16 = new System.Windows.Forms.Label();
+            this.label27 = new System.Windows.Forms.Label();
+            this.gLDrop = new System.Windows.Forms.TextBox();
+            this.gCDrop = new System.Windows.Forms.CheckBox();
             this.hTags = new Loopstream.TLabel();
             this.hEncoders = new Loopstream.TLabel();
             this.hServer = new Loopstream.TLabel();
             this.hSoundcard = new Loopstream.TLabel();
-            this.label12 = new System.Windows.Forms.Label();
-            this.tt = new System.Windows.Forms.ToolTip(this.components);
-            this.gCancel = new System.Windows.Forms.Button();
+            this.hOSD = new Loopstream.TLabel();
             this.pWrapper.SuspendLayout();
             this.tc.SuspendLayout();
             this.tpSoundcard.SuspendLayout();
@@ -149,6 +157,7 @@
             this.pFooter.SuspendLayout();
             this.pButtons.SuspendLayout();
             this.pTabs.SuspendLayout();
+            this.tpOSD.SuspendLayout();
             this.SuspendLayout();
             // 
             // gOutS
@@ -380,6 +389,7 @@
             this.tc.Controls.Add(this.tpServer);
             this.tc.Controls.Add(this.tpEncoders);
             this.tc.Controls.Add(this.tpTags);
+            this.tc.Controls.Add(this.tpOSD);
             this.tc.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tc.Location = new System.Drawing.Point(0, 17);
             this.tc.Name = "tc";
@@ -1286,6 +1296,17 @@
             this.pButtons.Size = new System.Drawing.Size(303, 65);
             this.pButtons.TabIndex = 41;
             // 
+            // gCancel
+            // 
+            this.gCancel.Location = new System.Drawing.Point(170, 6);
+            this.gCancel.Name = "gCancel";
+            this.gCancel.Size = new System.Drawing.Size(121, 50);
+            this.gCancel.TabIndex = 53;
+            this.gCancel.Text = "A p p l y   o n l y";
+            this.tt.SetToolTip(this.gCancel, "Apply this configuration only for this session");
+            this.gCancel.UseVisualStyleBackColor = true;
+            this.gCancel.Click += new System.EventHandler(this.button2_Click);
+            // 
             // label1
             // 
             this.label1.BackColor = System.Drawing.SystemColors.ButtonShadow;
@@ -1324,6 +1345,7 @@
             // 
             this.pTabs.BackColor = System.Drawing.SystemColors.ControlLight;
             this.pTabs.Controls.Add(this.label5);
+            this.pTabs.Controls.Add(this.hOSD);
             this.pTabs.Controls.Add(this.hTags);
             this.pTabs.Controls.Add(this.hEncoders);
             this.pTabs.Controls.Add(this.hServer);
@@ -1342,6 +1364,94 @@
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(542, 1);
             this.label5.TabIndex = 5;
+            // 
+            // label12
+            // 
+            this.label12.BackColor = System.Drawing.SystemColors.Control;
+            this.label12.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.label12.Location = new System.Drawing.Point(0, 34);
+            this.label12.Name = "label12";
+            this.label12.Size = new System.Drawing.Size(542, 10);
+            this.label12.TabIndex = 1;
+            // 
+            // tt
+            // 
+            this.tt.ShowAlways = true;
+            this.tt.UseAnimation = false;
+            this.tt.UseFading = false;
+            // 
+            // tpOSD
+            // 
+            this.tpOSD.Controls.Add(this.label27);
+            this.tpOSD.Controls.Add(this.gLDrop);
+            this.tpOSD.Controls.Add(this.gCDrop);
+            this.tpOSD.Controls.Add(this.label16);
+            this.tpOSD.Controls.Add(this.gLPoor);
+            this.tpOSD.Controls.Add(this.gCPoor);
+            this.tpOSD.Location = new System.Drawing.Point(4, 25);
+            this.tpOSD.Name = "tpOSD";
+            this.tpOSD.Size = new System.Drawing.Size(534, 275);
+            this.tpOSD.TabIndex = 4;
+            this.tpOSD.Text = "OSD";
+            this.tpOSD.UseVisualStyleBackColor = true;
+            // 
+            // gCPoor
+            // 
+            this.gCPoor.AutoSize = true;
+            this.gCPoor.Location = new System.Drawing.Point(23, 20);
+            this.gCPoor.Name = "gCPoor";
+            this.gCPoor.Size = new System.Drawing.Size(214, 17);
+            this.gCPoor.TabIndex = 0;
+            this.gCPoor.Text = "Warn me when connection drops below";
+            this.gCPoor.UseVisualStyleBackColor = true;
+            this.gCPoor.CheckedChanged += new System.EventHandler(this.gCPoor_CheckedChanged);
+            // 
+            // gLPoor
+            // 
+            this.gLPoor.Location = new System.Drawing.Point(243, 18);
+            this.gLPoor.Name = "gLPoor";
+            this.gLPoor.Size = new System.Drawing.Size(44, 20);
+            this.gLPoor.TabIndex = 1;
+            this.gLPoor.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.gLPoor.TextChanged += new System.EventHandler(this.gLPoor_TextChanged);
+            // 
+            // label16
+            // 
+            this.label16.AutoSize = true;
+            this.label16.Location = new System.Drawing.Point(288, 21);
+            this.label16.Name = "label16";
+            this.label16.Size = new System.Drawing.Size(120, 13);
+            this.label16.TabIndex = 2;
+            this.label16.Text = "%       (stream is lagging)";
+            // 
+            // label27
+            // 
+            this.label27.AutoSize = true;
+            this.label27.Location = new System.Drawing.Point(288, 58);
+            this.label27.Name = "label27";
+            this.label27.Size = new System.Drawing.Size(114, 13);
+            this.label27.TabIndex = 5;
+            this.label27.Text = "%       (connection lost)";
+            // 
+            // gLDrop
+            // 
+            this.gLDrop.Location = new System.Drawing.Point(243, 55);
+            this.gLDrop.Name = "gLDrop";
+            this.gLDrop.Size = new System.Drawing.Size(44, 20);
+            this.gLDrop.TabIndex = 4;
+            this.gLDrop.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.gLDrop.TextChanged += new System.EventHandler(this.gLDrop_TextChanged);
+            // 
+            // gCDrop
+            // 
+            this.gCDrop.AutoSize = true;
+            this.gCDrop.Location = new System.Drawing.Point(23, 57);
+            this.gCDrop.Name = "gCDrop";
+            this.gCDrop.Size = new System.Drawing.Size(214, 17);
+            this.gCDrop.TabIndex = 3;
+            this.gCDrop.Text = "Warn me when connection drops below";
+            this.gCDrop.UseVisualStyleBackColor = true;
+            this.gCDrop.CheckedChanged += new System.EventHandler(this.gCDrop_CheckedChanged);
             // 
             // hTags
             // 
@@ -1395,31 +1505,18 @@
             this.hSoundcard.TabIndex = 0;
             this.hSoundcard.Text = "Soundcard";
             // 
-            // label12
+            // hOSD
             // 
-            this.label12.BackColor = System.Drawing.SystemColors.Control;
-            this.label12.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.label12.Location = new System.Drawing.Point(0, 34);
-            this.label12.Name = "label12";
-            this.label12.Size = new System.Drawing.Size(542, 10);
-            this.label12.TabIndex = 1;
-            // 
-            // tt
-            // 
-            this.tt.ShowAlways = true;
-            this.tt.UseAnimation = false;
-            this.tt.UseFading = false;
-            // 
-            // gCancel
-            // 
-            this.gCancel.Location = new System.Drawing.Point(170, 6);
-            this.gCancel.Name = "gCancel";
-            this.gCancel.Size = new System.Drawing.Size(121, 50);
-            this.gCancel.TabIndex = 53;
-            this.gCancel.Text = "A p p l y   o n l y";
-            this.tt.SetToolTip(this.gCancel, "Apply this configuration only for this session");
-            this.gCancel.UseVisualStyleBackColor = true;
-            this.gCancel.Click += new System.EventHandler(this.button2_Click);
+            this.hOSD.AutoSize = true;
+            this.hOSD.BackColor = System.Drawing.SystemColors.ControlLight;
+            this.hOSD.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.hOSD.Location = new System.Drawing.Point(336, 0);
+            this.hOSD.Margin = new System.Windows.Forms.Padding(0);
+            this.hOSD.Name = "hOSD";
+            this.hOSD.Padding = new System.Windows.Forms.Padding(14, 15, 14, 0);
+            this.hOSD.Size = new System.Drawing.Size(72, 35);
+            this.hOSD.TabIndex = 6;
+            this.hOSD.Text = "OSD";
             // 
             // ConfigSC
             // 
@@ -1461,6 +1558,8 @@
             this.pButtons.ResumeLayout(false);
             this.pTabs.ResumeLayout(false);
             this.pTabs.PerformLayout();
+            this.tpOSD.ResumeLayout(false);
+            this.tpOSD.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -1572,5 +1671,13 @@
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.CheckBox gVU;
         private System.Windows.Forms.Button gCancel;
+        private System.Windows.Forms.TabPage tpOSD;
+        private System.Windows.Forms.Label label27;
+        private System.Windows.Forms.TextBox gLDrop;
+        private System.Windows.Forms.CheckBox gCDrop;
+        private System.Windows.Forms.Label label16;
+        private System.Windows.Forms.TextBox gLPoor;
+        private System.Windows.Forms.CheckBox gCPoor;
+        private TLabel hOSD;
     }
 }

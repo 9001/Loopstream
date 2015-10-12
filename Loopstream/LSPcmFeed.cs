@@ -98,8 +98,7 @@ namespace Loopstream
                                 if (!enc.crashed && enc.stdin != null)
                                 {
                                     Logger.pcm.a("writing to " + enc.enc.ext);
-                                    enc.stdin.Write(buffer, 0, i);
-                                    enc.stdin.Flush();
+                                    enc.eat(buffer, i);
                                 }
                             }
                         }
@@ -115,9 +114,9 @@ namespace Loopstream
                     //if (toclip.Count > 1000) break;
                 }
             }
-            catch
+            catch (Exception ex)
             {
-                System.Windows.Forms.MessageBox.Show("pcm reader / enc prism just died\r\n\r\nthought you might want to know");
+                System.Windows.Forms.MessageBox.Show("pcm reader / enc prism just died\n\nthought you might want to know\n\n===========================\n" + ex.Message + "\n" + ex.StackTrace);
             }
             //StringBuilder sb = new StringBuilder();
             //foreach (string str in toclip) sb.AppendLine(str);

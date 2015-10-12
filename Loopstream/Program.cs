@@ -22,6 +22,7 @@ namespace Loopstream
         [STAThread]
         static void Main(string[] args)
         {
+            //new UI_Msg("poor", "").ShowDialog();
             //Console.WriteLine(LSSettings.version().ToString("x"));
             //Program.kill();
 

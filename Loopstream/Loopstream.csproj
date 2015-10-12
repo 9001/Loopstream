@@ -100,11 +100,23 @@
       <DependentUpon>UI_ConfigSC.cs</DependentUpon>
     </Compile>
     <Compile Include="DFC.cs" />
+    <Compile Include="UI_Graph.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI_Graph.Designer.cs">
+      <DependentUpon>UI_Graph.cs</DependentUpon>
+    </Compile>
     <Compile Include="UI_Home.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="UI_Home.Designer.cs">
       <DependentUpon>UI_Home.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI_Msg.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI_Msg.Designer.cs">
+      <DependentUpon>UI_Msg.cs</DependentUpon>
     </Compile>
     <Compile Include="UI_Status.cs">
       <SubType>Form</SubType>
@@ -150,6 +162,9 @@
     <EmbeddedResource Include="UI_ConfigSC.resx">
       <DependentUpon>UI_ConfigSC.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="UI_Graph.resx">
+      <DependentUpon>UI_Graph.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="UI_Home.resx">
       <DependentUpon>UI_Home.cs</DependentUpon>
     </EmbeddedResource>
@@ -157,6 +172,9 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <SubType>Designer</SubType>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI_Msg.resx">
+      <DependentUpon>UI_Msg.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UI_Splesh.resx">
       <DependentUpon>UI_Splesh.cs</DependentUpon>
@@ -182,6 +200,8 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="res\msg_drop.png" />
+    <EmbeddedResource Include="res\msg_poor.png" />
     <None Include="res\logo.png" />
     <EmbeddedResource Include="res\sc.wav" />
     <None Include="res\fx2.mp3" />

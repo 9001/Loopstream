@@ -135,8 +135,11 @@ namespace Loopstream
             }
             catch (Exception e)
             {
-                MessageBox.Show("Server connection error:\n\n" + e.Message + " (" + e.Source + ")",
-                    "Stream abort", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Program.ni.ShowBalloonTip(9999, "Server connection error",
+                    e.Message + " (" + e.Source + ")",
+                    ToolTipIcon.Error);
+                System.Threading.Thread.Sleep(200);
+                crashed = true;
                 return;
             }
             if (str.StartsWith("HTTP/1.0 401 Unauthorized"))
@@ -151,6 +154,7 @@ namespace Loopstream
                 stampee = 0;
                 stdin = pstdin;
                 stdout = pstdout;
+                s.WriteTimeout = 1000;
                 stamps = new long[32];
                 chunks = new long[32];
                 long v = DateTime.UtcNow.Ticks / 10000;
@@ -167,6 +171,21 @@ namespace Loopstream
             {
                 MessageBox.Show("Unknown radio server error:\n\n" + str,
                     "Stream abort", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        public void eat(byte[] buffer, int c)
+        {
+            try
+            {
+                stdin.Write(buffer, 0, c);
+                stdin.Flush();
+            }
+            catch
+            {
+                logger.a("encoder write failed");
+                enc.FIXME_kbps = -1;
+                crashed = true;
             }
         }
 

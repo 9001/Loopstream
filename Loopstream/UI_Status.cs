@@ -11,12 +11,14 @@ namespace Loopstream
 {
     public partial class UI_Status : Form
     {
-        public UI_Status()
+        public UI_Status(LSSettings settings)
         {
+            this.settings = settings;
             InitializeComponent();
         }
 
         Timer t;
+        LSSettings settings;
 
         private void UI_Status_Load(object sender, EventArgs e)
         {
@@ -100,6 +102,12 @@ namespace Loopstream
             Clipboard.Clear();
             Clipboard.SetText(sb.ToString());
             MessageBox.Show("ok");
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            new UI_Graph(settings).Show();
+            this.Close();
         }
     }
 }

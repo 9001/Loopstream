@@ -164,6 +164,9 @@ namespace Loopstream
         public bool autoconn;
         public bool autohide;
 
+        public bool warn_poor, warn_drop;
+        public double lim_poor, lim_drop;
+
         public LSSettings()
         {
             s_devRec = s_devMic = s_devOut = null;
@@ -220,6 +223,10 @@ namespace Loopstream
             showUnavail = false;
             autoconn = false;
             autohide = false;
+
+            warn_poor = warn_drop = true;
+            lim_poor = 0.95;
+            lim_drop = 0.8;
             init();
         }
 
@@ -389,6 +396,12 @@ namespace Loopstream
                         {
                             if (pre.xRec < 1) pre.xRec = 1;
                             if (pre.xMic < 1) pre.xMic = 1;
+                        }
+                        if (ret.lim_drop <= 0 || ret.lim_poor <= 0)
+                        {
+                            ret.warn_poor = ret.warn_drop = true;
+                            ret.lim_poor = 0.9;
+                            ret.lim_drop = 0.6;
                         }
                     }
                 }

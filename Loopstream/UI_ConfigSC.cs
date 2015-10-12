@@ -261,7 +261,7 @@ namespace Loopstream
             ((Timer)sender).Stop();
             initForm();
 
-            tabHeader = new TLabel[] { hSoundcard, hServer, hEncoders, hTags };
+            tabHeader = new TLabel[] { hSoundcard, hServer, hEncoders, hTags, hOSD };
             pTabs.BringToFront();
             for (int a = 0; a < tabHeader.Length; a++)
             {
@@ -356,6 +356,11 @@ namespace Loopstream
             gRecOGG.Checked = settings.recOgg;
             gAutoconn.Checked = settings.autoconn;
             gAutohide.Checked = settings.autohide;
+
+            gCPoor.Checked = settings.warn_poor;
+            gCDrop.Checked = settings.warn_drop;
+            gLPoor.Text = Math.Round(settings.lim_poor * 100) + "";
+            gLDrop.Text = Math.Round(settings.lim_drop * 100) + "";
 
             gTagAuto.Checked = settings.tagAuto;
             gReader.Items.Clear();
@@ -1275,6 +1280,28 @@ namespace Loopstream
                 MessageBox.Show("Critical HTTPd error:\n\n" + e.Message + "\n\n" + e.StackTrace,
                     "HTTPd crash", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+        }
+
+        private void gCPoor_CheckedChanged(object sender, EventArgs e)
+        {
+            settings.warn_poor = gCPoor.Checked;
+        }
+
+        private void gCDrop_CheckedChanged(object sender, EventArgs e)
+        {
+            settings.warn_drop = gCDrop.Checked;
+        }
+
+        private void gLPoor_TextChanged(object sender, EventArgs e)
+        {
+            int n = getValue(gLPoor);
+            if (n >= 0) settings.lim_poor = n / 100.0;
+        }
+
+        private void gLDrop_TextChanged(object sender, EventArgs e)
+        {
+            int n = getValue(gLDrop);
+            if (n >= 0) settings.lim_drop = n / 100.0;
         }
     }
 }

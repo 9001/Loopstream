@@ -38,6 +38,8 @@ namespace Loopstream
         LSMixer mixer;
         LSPcmFeed pcm;
         LSTag tag;
+        bool popEn, popFilt;
+        UI_Msg popPoor, popDrop;
         Control[] invals; //sorry
         string lqMessage; //sorry
         string daText = "Connect";
@@ -149,6 +151,9 @@ namespace Loopstream
             gB.preset = settings.presets[1];
             gC.preset = settings.presets[2];
             gD.preset = settings.presets[3];
+
+            popPoor = popDrop = null;
+            popEn = popFilt = false;
 
             this.Bounds = myBounds;
             splash.Focus();
@@ -348,11 +353,13 @@ namespace Loopstream
                 tag = new LSTag(settings);
                 mixer = new LSMixer(settings, new LLabel[] { gMusic.giSlider, gMic.giSlider, gOut.giSlider });
                 pcm = new LSPcmFeed(settings, mixer.lameOutlet);
+                popEn = true;
             }
             else
             {
                 Program.ni.ContextMenu.MenuItems[1].Text = "Connect";
                 if (pMessage.Visible) gLowQ_Click(sender, e);
+                popEn = false;
 
                 daText = "disconnecting...";
                 gConnect.Enabled = false;
@@ -437,7 +444,7 @@ namespace Loopstream
 
         private void label3_Click(object sender, EventArgs e)
         {
-            new UI_Status().Show();
+            new UI_Status(settings).Show();
         }
         void helloworld(object sender, EventArgs e)
         {
@@ -575,6 +582,54 @@ namespace Loopstream
 
             if (settings.mixer.xRec < gMusic.boost) gMusic.boost = settings.mixer.xRec;
             if (settings.mixer.xMic < gMic.boost) gMic.boost = settings.mixer.xMic;
+
+            double f, f_mp3, f_ogg;
+            f = f_mp3 = f_ogg = -1;
+            if (settings.mp3.FIXME_kbps >= 0)
+            {
+                f_mp3 = settings.mp3.FIXME_kbps * 1.0 / settings.mp3.bitrate;
+            }
+            // TODO: ogg
+            f = f_mp3 >= 0 ? f_mp3 : f_ogg;
+            lock (Logger.bitrate)
+            {
+                Logger.bitrate.Add(Math.Max(settings.mp3.FIXME_kbps, 0));
+            }
+            if (popEn && popFilt)
+            {
+                if (settings.warn_drop && settings.lim_drop > f)
+                {
+                    if (popPoor != null && popPoor.sactive) { popPoor.Dispose(); popPoor = null; }
+                    if (popDrop == null || !popDrop.sactive)
+                    {
+                        popDrop = new UI_Msg("drop", "");
+                        popDrop.Show();
+                    }
+                }
+                else if (settings.warn_poor && settings.lim_poor > f)
+                {
+                    if (popDrop != null && popDrop.sactive) { popDrop.Dispose(); popDrop = null; }
+                    if (popPoor == null || !popPoor.sactive)
+                    {
+                        popPoor = new UI_Msg("poor", "");
+                        popPoor.Show();
+                    }
+                }
+                else
+                {
+                    if (popPoor != null && popPoor.sactive) { popPoor.Dispose(); popPoor = null; }
+                    if (popDrop != null && popDrop.sactive) { popDrop.Dispose(); popDrop = null; }
+                }
+            }
+            else
+            {
+                if (f >= Math.Max(settings.lim_poor, settings.lim_drop))
+                {
+                    popFilt = popEn;
+                }
+                if (popPoor != null && popPoor.sactive) { popPoor.Dispose(); popPoor = null; }
+                if (popDrop != null && popDrop.sactive) { popDrop.Dispose(); popDrop = null; }
+            }
         }
 
         long lastclick = 0;

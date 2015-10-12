@@ -3,6 +3,11 @@
 + new feature
 ~ other change
 
+2013-10-07, 22:29:35 - Loopstream 1.3.4.5
+  + Popup notifications on lag and disconnect
+  = Better detection of stream drops
+  + Network graph
+
 2013-09-22, 04:38:05 - Loopstream 1.3.4.2
   ~ Deplete VU meters if stream stops
   ~ Mixer preset tweaks
