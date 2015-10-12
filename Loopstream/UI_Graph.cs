@@ -22,8 +22,8 @@ namespace Loopstream
         Brush brush;
         Brush penbrush;
         LSSettings settings;
-        Color cgrad;
-        Brush grad;
+        Color cmgrad, cograd;
+        LinearGradientBrush mgrad, ograd;
         Pen red, orn, grn, bg;
 
         private void UI_Graph_Load(object sender, EventArgs e)
@@ -42,10 +42,14 @@ namespace Loopstream
             int dr = SystemColors.Control.R - SystemColors.ControlText.R;
             int dg = SystemColors.Control.G - SystemColors.ControlText.G;
             int db = SystemColors.Control.B - SystemColors.ControlText.B;
-            cgrad = Color.FromArgb(
-                SystemColors.Control.R - dr / 3,
-                SystemColors.Control.G - dg / 3,
+            cmgrad = Color.FromArgb(
+                SystemColors.Control.R - dr / 6,
+                SystemColors.Control.G - dg / 4,
                 SystemColors.Control.B - db / 3);
+            cograd = Color.FromArgb(
+                SystemColors.Control.R - dr / 4,
+                SystemColors.Control.G - dg / 3,
+                SystemColors.Control.B - db / 6);
 
             pictureBox1.BackgroundImage = null;
             penbrush = SystemBrushes.ControlText;
@@ -58,10 +62,38 @@ namespace Loopstream
             t.Start();
         }
 
+        void paintshit(List<double> datta, int numPoints, double mulX, double mulY, int bw, int bh, Graphics g, LinearGradientBrush grad, Color cbase)
+        {
+            PointF[] points = new PointF[numPoints];
+            lock (datta)
+            {
+                int s = 0;
+                int samples = datta.Count;
+                for (; s < (points.Length - 2) - samples; s++)
+                {
+                    points[s + 1] = new PointF((float)(s * mulX), bh);
+                }
+                int ofs = (points.Length - 2) - samples;
+                s = Math.Max(0, samples - (points.Length - 2));
+                for (; s < samples; s++)
+                {
+                    points[s + ofs + 1] = new PointF((float)((s + ofs) * mulX),
+                        (float)(bh - datta[s] * mulY));
+                }
+                points[0] = new PointF(0f, bh);
+                points[points.Length - 1] = new PointF(bw, bh);
+            }
+            GraphicsPath gp = new GraphicsPath();
+            gp.AddLines(points);
+            g.FillPath(grad, gp);
+            g.DrawPath(new Pen(cbase, 2f), gp);
+        }
+
         void t_Tick(object sender, EventArgs e)
         {
             Bitmap b = new Bitmap(pictureBox1.Width, pictureBox1.Height);
-            grad = new LinearGradientBrush(Point.Empty, new Point(0, b.Height), cgrad, SystemColors.Control);
+            mgrad = new LinearGradientBrush(Point.Empty, new Point(0, b.Height), cmgrad, SystemColors.Control);
+            ograd = new LinearGradientBrush(Point.Empty, new Point(0, b.Height), cograd, SystemColors.Control);
             using (Graphics g = Graphics.FromImage(b))
             {
                 g.CompositingMode = System.Drawing.Drawing2D.CompositingMode.SourceOver;
@@ -69,34 +101,40 @@ namespace Loopstream
                 g.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.Low;
                 g.PixelOffsetMode = System.Drawing.Drawing2D.PixelOffsetMode.HighSpeed;
                 g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighSpeed;
-                PointF[] points = new PointF[60 * 5 + 2]; // 1 sample per 200msec
-                double mulX = b.Width * 1.0 / (points.Length - 2);
-                double mulY = b.Height * 1.0 / (settings.mp3.bitrate * 1.1);
-                g.FillRectangle(brush, 0, 0, b.Width, b.Height);
-                lock (Logger.bitrate)
-                {
-                    int s = 0;
-                    int samples = Logger.bitrate.Count;
-                    for (; s < (points.Length - 2) - samples; s++)
-                    {
-                        points[s + 1] = new PointF((float)(s * mulX), b.Height);
-                    }
-                    int ofs = (points.Length - 2) - samples;
-                    s = Math.Max(0, samples - (points.Length - 2));
-                    for (; s < samples; s++)
-                    {
-                        points[s + ofs + 1] = new PointF((float)((s + ofs) * mulX),
-                            (float)(b.Height - Logger.bitrate[s] * mulY));
-                    }
-                    points[0] = new PointF(0f, b.Height);
-                    points[points.Length - 1] = new PointF(b.Width, b.Height);
-                }
-                GraphicsPath gp = new GraphicsPath();
-                gp.AddLines(points);
-                g.FillPath(grad, gp);
+                int numPoints = 60 * 5 + 2; // 1 sample per 200msec
+                
+                /*double factOGG = 0;
+                lock(Logger.bitrateo)
+                    foreach (double d in Logger.bitrateo)
+                        factOGG = Math.Max(factOGG, d);
+                factOGG *= 1.1;
+                double factMP3 = settings.mp3.bitrate * 1.1;*/
+                long maxbitrate = Math.Max(
+                    settings.mp3.bitrate, (
+                    settings.ogg.compression == LSSettings.LSCompression.q ? (
+                    settings.ogg.quality == 0 ? 80 :
+                    settings.ogg.quality == 1 ? 96 :
+                    settings.ogg.quality == 2 ? 112 :
+                    settings.ogg.quality == 3 ? 128 :
+                    settings.ogg.quality == 4 ? 160 :
+                    settings.ogg.quality == 5 ? 192 :
+                    settings.ogg.quality == 6 ? 224 :
+                    settings.ogg.quality == 7 ? 256 :
+                    settings.ogg.quality == 8 ? 320 :
+                    settings.ogg.quality == 9 ? 500 :
+                    settings.ogg.quality == 10 ? 1000 : 128) :
+                    settings.ogg.bitrate));
+                double fact = maxbitrate * 1.1;
 
-                string str = settings.mp3.bitrate + "kbps";
-                int ty = (int)(b.Height - settings.mp3.bitrate * mulY);
+                double mulY = b.Height * 1.0 / fact;
+                double mulX = b.Width * 1.0 / (numPoints - 2);
+                g.FillRectangle(brush, 0, 0, b.Width, b.Height);
+                
+                paintshit(Logger.bitratem, numPoints, mulX, mulY, b.Width, b.Height, g, mgrad, cmgrad);
+                paintshit(Logger.bitrateo, numPoints, mulX, mulY, b.Width, b.Height, g, ograd, cograd);
+
+                string str = maxbitrate + "kbps";
+                int ty = (int)(b.Height - maxbitrate * mulY);
                 SizeF sz = g.MeasureString(str, this.Font);
                 g.DrawLine(grn, 0, ty, b.Width, ty);
                 //g.DrawLine(bg, 0, ty - 1, b.Width, ty - 1);

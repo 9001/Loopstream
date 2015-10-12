@@ -101,7 +101,7 @@ namespace Loopstream
                     "ice-private: {9}{0}" +
                     "ice-public: {10}{0}" +
                     "ice-description: {11}{0}" +
-                    "ice-audio-info: ice-samplerate={12};ice-channels={13};ice-bitrate={14}{0}{0}",
+                    "ice-audio-info: ice-samplerate={12};ice-channels={13};ice-bitrate={8}{0}{0}",
 
                     "\r\n",
                     settings.mount,

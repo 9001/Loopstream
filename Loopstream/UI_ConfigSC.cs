@@ -421,7 +421,7 @@ namespace Loopstream
                 {
                     foreach (ComboBox l in lb)
                     {
-                        if (lsd.wf != null || settings.showUnavail)
+                        if (lsd.wf != null || settings.showUnavail || !settings.testDevs)
                         {
                             l.Items.Add(lsd);
                         }

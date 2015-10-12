@@ -20,6 +20,7 @@ namespace Loopstream
             locker = new object();
             shuttingDown = false;
             quitting = 0;
+            makeSilenceFill();
             this.outlet = outlet;
             this.settings = settings;
             encoders = new List<LSEncoder>();
@@ -92,13 +93,41 @@ namespace Loopstream
                         Logger.pcm.a("locking for write");
                         lock (locker)
                         {
+                            int _soffMono = soffMono;
+                            int _soffStereo = soffStereo;
                             for (int a = 0; a < encoders.Count; a++)
                             {
                                 LSEncoder enc = encoders[a];
                                 if (!enc.crashed && enc.stdin != null)
                                 {
-                                    Logger.pcm.a("writing to " + enc.enc.ext);
-                                    enc.eat(buffer, i);
+                                    bool silence = false;
+                                    if (enc.GetType() == typeof(LSVorbis))
+                                    {
+                                        silence = true;
+                                        for (int ofs = 1; ofs < i; ofs += 16)
+                                        {
+                                            int v = buffer[ofs];
+                                            if (v > 0x80) v = 255 - v;
+                                            if (v > 1)
+                                            {
+                                                silence = false;
+                                                break;
+                                            }
+                                        }
+                                        if (silence)
+                                        {
+                                            Logger.pcm.a("SILENCE to " + enc.enc.ext);
+                                            soffMono = _soffMono;
+                                            soffStereo = _soffStereo;
+                                            bool stereo = enc.enc.channels == LSSettings.LSChannels.stereo;
+                                            enc.eat(barf(i, stereo), i);
+                                        }
+                                    }
+                                    if (!silence)
+                                    {
+                                        Logger.pcm.a("writing to " + enc.enc.ext);
+                                        enc.eat(buffer, i);
+                                    }
                                 }
                             }
                         }
@@ -185,6 +214,62 @@ namespace Loopstream
                 }
             }
             return false;
+        }
+
+        int soffMono;
+        int soffStereo;
+        byte[] silenceMono;
+        byte[] silenceStereo;
+        void makeSilenceFill()
+        {
+            int skip = 0x2C;
+            soffMono = soffStereo = 0;
+            System.IO.Stream fx_stream = System.Reflection.Assembly.GetExecutingAssembly().GetManifestResourceStream("Loopstream.res.logo.wav");
+            silenceMono = new byte[fx_stream.Length - skip];
+            fx_stream.Read(silenceMono, 0, skip);
+            fx_stream.Read(silenceMono, 0, silenceMono.Length);
+
+            silenceStereo = new byte[silenceMono.Length * 2];
+            for (int a = 0; a < silenceMono.Length; a+=2)
+            {
+                silenceStereo[2 * a + 0] = silenceMono[a + 0];
+                silenceStereo[2 * a + 1] = silenceMono[a + 1];
+                //silenceStereo[2 * a + 2] = silenceMono[a + 0];
+                //silenceStereo[2 * a + 3] = silenceMono[a + 1];
+                if (2 * a + 512 + 7 < silenceStereo.Length)
+                {
+                    silenceStereo[2 * a + 512 + 6] = silenceMono[a + 0];
+                    silenceStereo[2 * a + 512 + 7] = silenceMono[a + 1];
+                }
+            }
+        }
+        byte[] barf(int count, bool stereo)
+        {
+            byte[] raw = stereo ? silenceStereo : silenceMono;
+            int ofs = stereo ? soffStereo : soffMono;
+            
+            int rem = count;
+            byte[] ret = new byte[rem];
+            while (rem > 0)
+            {
+                int cpy = Math.Min(raw.Length - ofs, rem);
+                Array.Copy(raw, ofs, ret, ret.Length - rem, cpy);
+                ofs += cpy;
+                rem -= cpy;
+                if (ofs >= raw.Length)
+                {
+                    ofs = 0;
+                }
+            }
+            if (stereo)
+            {
+                soffStereo = ofs;
+            }
+            else
+            {
+                soffMono = ofs;
+            }
+            return ret;
         }
     }
 }

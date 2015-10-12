@@ -336,9 +336,9 @@ namespace Loopstream
                     settings.devOut == null ||
                     settings.devRec == null ||
                     settings.devOut.wf == null ||
-                    settings.devRec.wf == null /*|| (
+                    settings.devRec.wf == null || (
                     settings.devMic != null &&
-                    settings.devMic.wf == null)*/))
+                    settings.devMic.wf == null)))
                 {
                     // TODO: Fix devMic != null when disabled (deserializing bug?)
 
@@ -589,11 +589,19 @@ namespace Loopstream
             {
                 f_mp3 = settings.mp3.FIXME_kbps * 1.0 / settings.mp3.bitrate;
             }
+            if (settings.ogg.FIXME_kbps >= 0)
+            {
+                f_ogg = settings.ogg.FIXME_kbps * 1.0 / 24;
+            }
             // TODO: ogg
             f = f_mp3 >= 0 ? f_mp3 : f_ogg;
-            lock (Logger.bitrate)
+            lock (Logger.bitratem)
             {
-                Logger.bitrate.Add(Math.Max(settings.mp3.FIXME_kbps, 0));
+                Logger.bitratem.Add(Math.Max(settings.mp3.FIXME_kbps, 0));
+            }
+            lock (Logger.bitrateo)
+            {
+                Logger.bitrateo.Add(Math.Max(settings.ogg.FIXME_kbps, 0));
             }
             if (popEn && popFilt)
             {

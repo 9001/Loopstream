@@ -200,6 +200,7 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="res\logo.wav" />
     <EmbeddedResource Include="res\msg_drop.png" />
     <EmbeddedResource Include="res\msg_poor.png" />
     <None Include="res\logo.png" />

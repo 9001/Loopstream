@@ -14,10 +14,11 @@ namespace Loopstream
     public class Logger
     {
         public static Logger mp3, ogg, pcm, med, mix, tag, app;
-        public static List<double> bitrate;
+        public static List<double> bitratem, bitrateo;
         public static void init()
         {
-            bitrate = new List<double>();
+            bitratem = new List<double>();
+            bitrateo = new List<double>();
             pcm = new Logger();
             med = new Logger();
             mix = new Logger();
