@@ -693,5 +693,30 @@ namespace Loopstream
                 tagvis = pTag.Visible = false;
             }
         }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                //gTag.Text = tag.tag.tag;
+                gTag.Text = LSTag.get(settings.meta, false).tag;
+            }
+            catch (Exception ex)
+            {
+                System.Windows.Forms.MessageBox.Show("Can't let you do that, Dave.\n(please start streaming first)\n\n" + ex.Message + "\n" + ex.StackTrace);
+            }
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                tag.set(gTag.Text);
+            }
+            catch (Exception ex)
+            {
+                System.Windows.Forms.MessageBox.Show("Can't let you do that, Dave.\n(please start streaming first)\n\n" + ex.Message + "\n" + ex.StackTrace);
+            }
+        }
     }
 }

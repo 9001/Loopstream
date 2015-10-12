@@ -3,6 +3,9 @@
 + new feature
 ~ other change
 
+2013-10-31, 17:14:10 - Loopstream 1.3.4.8
+  + Buttons for reading/sending custom tags
+
 2013-10-30, 01:04:49 - Loopstream 1.3.4.7
   = Avoid ogg/Vorbis drops by streaming "noise" during silence :)
   + Additional network graph element: Expected transfer rate
