@@ -108,6 +108,10 @@
             this.pTagsAdvanced2 = new System.Windows.Forms.Panel();
             this.gLatinize = new System.Windows.Forms.CheckBox();
             this.pTagAdvanced1 = new System.Windows.Forms.Panel();
+            this.gEncoding = new System.Windows.Forms.TextBox();
+            this.gBounce = new System.Windows.Forms.TextBox();
+            this.label28 = new System.Windows.Forms.Label();
+            this.gYield = new System.Windows.Forms.TextBox();
             this.gResetTags = new System.Windows.Forms.LinkLabel();
             this.gURLDecode = new System.Windows.Forms.CheckBox();
             this.gDelete = new System.Windows.Forms.Button();
@@ -115,7 +119,6 @@
             this.gEncodingL = new System.Windows.Forms.Label();
             this.label24 = new System.Windows.Forms.Label();
             this.label18 = new System.Windows.Forms.Label();
-            this.gEncoding = new System.Windows.Forms.TextBox();
             this.gReader = new System.Windows.Forms.ComboBox();
             this.label19 = new System.Windows.Forms.Label();
             this.gTest = new System.Windows.Forms.CheckBox();
@@ -130,13 +133,24 @@
             this.gDescBox = new System.Windows.Forms.Panel();
             this.gDescText = new System.Windows.Forms.TextBox();
             this.label29 = new System.Windows.Forms.Label();
-            this.tpOSD = new System.Windows.Forms.TabPage();
+            this.tpTriggers = new System.Windows.Forms.TabPage();
+            this.label30 = new System.Windows.Forms.Label();
+            this.gEvAudioP = new System.Windows.Forms.TextBox();
+            this.gEvType = new System.Windows.Forms.ComboBox();
+            this.gEvDelete = new System.Windows.Forms.Button();
+            this.gEvOverwrite = new System.Windows.Forms.Button();
+            this.gEvSave = new System.Windows.Forms.Button();
             this.label27 = new System.Windows.Forms.Label();
-            this.gLDrop = new System.Windows.Forms.TextBox();
-            this.gCDrop = new System.Windows.Forms.CheckBox();
+            this.gEvUploadP = new System.Windows.Forms.TextBox();
+            this.gEvUploadC = new System.Windows.Forms.CheckBox();
+            this.label26 = new System.Windows.Forms.Label();
+            this.gEvAudioS = new System.Windows.Forms.TextBox();
+            this.gEvAudioC = new System.Windows.Forms.CheckBox();
+            this.label20 = new System.Windows.Forms.Label();
+            this.gEvMouseS = new System.Windows.Forms.TextBox();
+            this.gEvMouseC = new System.Windows.Forms.CheckBox();
             this.label16 = new System.Windows.Forms.Label();
-            this.gLPoor = new System.Windows.Forms.TextBox();
-            this.gCPoor = new System.Windows.Forms.CheckBox();
+            this.gEvList = new System.Windows.Forms.ListBox();
             this.pFooter = new System.Windows.Forms.Panel();
             this.button1 = new System.Windows.Forms.Button();
             this.gVU = new System.Windows.Forms.CheckBox();
@@ -149,8 +163,7 @@
             this.label5 = new System.Windows.Forms.Label();
             this.label12 = new System.Windows.Forms.Label();
             this.tt = new System.Windows.Forms.ToolTip(this.components);
-            this.gYield = new System.Windows.Forms.TextBox();
-            this.hOSD = new Loopstream.TLabel();
+            this.hTriggers = new Loopstream.TLabel();
             this.hTags = new Loopstream.TLabel();
             this.hEncoders = new Loopstream.TLabel();
             this.hServer = new Loopstream.TLabel();
@@ -168,7 +181,7 @@
             this.pTagsAdvanced2.SuspendLayout();
             this.pTagAdvanced1.SuspendLayout();
             this.gDescBox.SuspendLayout();
-            this.tpOSD.SuspendLayout();
+            this.tpTriggers.SuspendLayout();
             this.pFooter.SuspendLayout();
             this.pButtons.SuspendLayout();
             this.pTabs.SuspendLayout();
@@ -423,7 +436,7 @@
             this.tc.Controls.Add(this.tpServer);
             this.tc.Controls.Add(this.tpEncoders);
             this.tc.Controls.Add(this.tpTags);
-            this.tc.Controls.Add(this.tpOSD);
+            this.tc.Controls.Add(this.tpTriggers);
             this.tc.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tc.Location = new System.Drawing.Point(0, 17);
             this.tc.Name = "tc";
@@ -1236,6 +1249,9 @@
             // pTagAdvanced1
             // 
             this.pTagAdvanced1.BackColor = System.Drawing.SystemColors.Control;
+            this.pTagAdvanced1.Controls.Add(this.gEncoding);
+            this.pTagAdvanced1.Controls.Add(this.gBounce);
+            this.pTagAdvanced1.Controls.Add(this.label28);
             this.pTagAdvanced1.Controls.Add(this.gYield);
             this.pTagAdvanced1.Controls.Add(this.gResetTags);
             this.pTagAdvanced1.Controls.Add(this.gURLDecode);
@@ -1244,7 +1260,6 @@
             this.pTagAdvanced1.Controls.Add(this.gEncodingL);
             this.pTagAdvanced1.Controls.Add(this.label24);
             this.pTagAdvanced1.Controls.Add(this.label18);
-            this.pTagAdvanced1.Controls.Add(this.gEncoding);
             this.pTagAdvanced1.Controls.Add(this.gReader);
             this.pTagAdvanced1.Controls.Add(this.label19);
             this.pTagAdvanced1.Controls.Add(this.gTest);
@@ -1262,6 +1277,47 @@
             this.pTagAdvanced1.Size = new System.Drawing.Size(534, 204);
             this.pTagAdvanced1.TabIndex = 63;
             this.pTagAdvanced1.Visible = false;
+            // 
+            // gEncoding
+            // 
+            this.gEncoding.Location = new System.Drawing.Point(262, 145);
+            this.gEncoding.Name = "gEncoding";
+            this.gEncoding.Size = new System.Drawing.Size(110, 20);
+            this.gEncoding.TabIndex = 50;
+            this.tt.SetToolTip(this.gEncoding, "Which character encoding to use when decoding bytes");
+            this.gEncoding.Visible = false;
+            this.gEncoding.TextChanged += new System.EventHandler(this.gEncoding_TextChanged);
+            this.gEncoding.MouseEnter += new System.EventHandler(this.gHost_MouseEnter);
+            this.gEncoding.MouseLeave += new System.EventHandler(this.gHost_MouseLeave);
+            // 
+            // gBounce
+            // 
+            this.gBounce.Location = new System.Drawing.Point(100, 145);
+            this.gBounce.Name = "gBounce";
+            this.gBounce.Size = new System.Drawing.Size(96, 20);
+            this.gBounce.TabIndex = 66;
+            this.tt.SetToolTip(this.gBounce, "How many identical reads are required before a tag is confirmed");
+            this.gBounce.TextChanged += new System.EventHandler(this.gBounce_TextChanged);
+            this.gBounce.MouseEnter += new System.EventHandler(this.gHost_MouseEnter);
+            this.gBounce.MouseLeave += new System.EventHandler(this.gHost_MouseLeave);
+            // 
+            // label28
+            // 
+            this.label28.AutoSize = true;
+            this.label28.Location = new System.Drawing.Point(20, 148);
+            this.label28.Name = "label28";
+            this.label28.Size = new System.Drawing.Size(57, 13);
+            this.label28.TabIndex = 65;
+            this.label28.Text = "Debounce";
+            // 
+            // gYield
+            // 
+            this.gYield.Location = new System.Drawing.Point(426, 67);
+            this.gYield.Name = "gYield";
+            this.gYield.Size = new System.Drawing.Size(100, 20);
+            this.gYield.TabIndex = 53;
+            this.tt.SetToolTip(this.gYield, "How often Loopstream will look for new metadata (in miliseconds)");
+            this.gYield.TextChanged += new System.EventHandler(this.gYield_TextChanged);
             // 
             // gResetTags
             // 
@@ -1318,7 +1374,7 @@
             // gEncodingL
             // 
             this.gEncodingL.AutoSize = true;
-            this.gEncodingL.Location = new System.Drawing.Point(19, 148);
+            this.gEncodingL.Location = new System.Drawing.Point(210, 148);
             this.gEncodingL.Name = "gEncodingL";
             this.gEncodingL.Size = new System.Drawing.Size(52, 13);
             this.gEncodingL.TabIndex = 61;
@@ -1342,18 +1398,6 @@
             this.label18.Size = new System.Drawing.Size(42, 13);
             this.label18.TabIndex = 39;
             this.label18.Text = "Reader";
-            // 
-            // gEncoding
-            // 
-            this.gEncoding.Location = new System.Drawing.Point(100, 145);
-            this.gEncoding.Name = "gEncoding";
-            this.gEncoding.Size = new System.Drawing.Size(100, 20);
-            this.gEncoding.TabIndex = 50;
-            this.tt.SetToolTip(this.gEncoding, "Which character encoding to use when decoding bytes");
-            this.gEncoding.Visible = false;
-            this.gEncoding.TextChanged += new System.EventHandler(this.gEncoding_TextChanged);
-            this.gEncoding.MouseEnter += new System.EventHandler(this.gHost_MouseEnter);
-            this.gEncoding.MouseLeave += new System.EventHandler(this.gHost_MouseLeave);
             // 
             // gReader
             // 
@@ -1381,7 +1425,7 @@
             // gTest
             // 
             this.gTest.AutoSize = true;
-            this.gTest.Location = new System.Drawing.Point(303, 44);
+            this.gTest.Location = new System.Drawing.Point(304, 44);
             this.gTest.Name = "gTest";
             this.gTest.Size = new System.Drawing.Size(226, 17);
             this.gTest.TabIndex = 52;
@@ -1511,92 +1555,189 @@
             this.label29.Text = " ";
             this.label29.Click += new System.EventHandler(this.label29_Click);
             // 
-            // tpOSD
+            // tpTriggers
             // 
-            this.tpOSD.Controls.Add(this.label27);
-            this.tpOSD.Controls.Add(this.gLDrop);
-            this.tpOSD.Controls.Add(this.gCDrop);
-            this.tpOSD.Controls.Add(this.label16);
-            this.tpOSD.Controls.Add(this.gLPoor);
-            this.tpOSD.Controls.Add(this.gCPoor);
-            this.tpOSD.Location = new System.Drawing.Point(4, 25);
-            this.tpOSD.Name = "tpOSD";
-            this.tpOSD.Size = new System.Drawing.Size(534, 275);
-            this.tpOSD.TabIndex = 4;
-            this.tpOSD.Text = "OSD";
-            this.tpOSD.UseVisualStyleBackColor = true;
+            this.tpTriggers.Controls.Add(this.label30);
+            this.tpTriggers.Controls.Add(this.gEvAudioP);
+            this.tpTriggers.Controls.Add(this.gEvType);
+            this.tpTriggers.Controls.Add(this.gEvDelete);
+            this.tpTriggers.Controls.Add(this.gEvOverwrite);
+            this.tpTriggers.Controls.Add(this.gEvSave);
+            this.tpTriggers.Controls.Add(this.label27);
+            this.tpTriggers.Controls.Add(this.gEvUploadP);
+            this.tpTriggers.Controls.Add(this.gEvUploadC);
+            this.tpTriggers.Controls.Add(this.label26);
+            this.tpTriggers.Controls.Add(this.gEvAudioS);
+            this.tpTriggers.Controls.Add(this.gEvAudioC);
+            this.tpTriggers.Controls.Add(this.label20);
+            this.tpTriggers.Controls.Add(this.gEvMouseS);
+            this.tpTriggers.Controls.Add(this.gEvMouseC);
+            this.tpTriggers.Controls.Add(this.label16);
+            this.tpTriggers.Controls.Add(this.gEvList);
+            this.tpTriggers.Location = new System.Drawing.Point(4, 25);
+            this.tpTriggers.Name = "tpTriggers";
+            this.tpTriggers.Size = new System.Drawing.Size(534, 275);
+            this.tpTriggers.TabIndex = 4;
+            this.tpTriggers.Text = "Triggers";
+            this.tpTriggers.UseVisualStyleBackColor = true;
+            // 
+            // label30
+            // 
+            this.label30.AutoSize = true;
+            this.label30.Location = new System.Drawing.Point(367, 246);
+            this.label30.Name = "label30";
+            this.label30.Size = new System.Drawing.Size(47, 13);
+            this.label30.TabIndex = 16;
+            this.label30.Text = "seconds";
+            // 
+            // gEvAudioP
+            // 
+            this.gEvAudioP.Enabled = false;
+            this.gEvAudioP.Location = new System.Drawing.Point(154, 243);
+            this.gEvAudioP.Name = "gEvAudioP";
+            this.gEvAudioP.Size = new System.Drawing.Size(70, 20);
+            this.gEvAudioP.TabIndex = 15;
+            // 
+            // gEvType
+            // 
+            this.gEvType.FormattingEnabled = true;
+            this.gEvType.Location = new System.Drawing.Point(154, 164);
+            this.gEvType.Name = "gEvType";
+            this.gEvType.Size = new System.Drawing.Size(123, 21);
+            this.gEvType.TabIndex = 1;
+            // 
+            // gEvDelete
+            // 
+            this.gEvDelete.Location = new System.Drawing.Point(457, 220);
+            this.gEvDelete.Name = "gEvDelete";
+            this.gEvDelete.Size = new System.Drawing.Size(69, 23);
+            this.gEvDelete.TabIndex = 14;
+            this.gEvDelete.Text = "Delete";
+            this.gEvDelete.UseVisualStyleBackColor = true;
+            this.gEvDelete.Click += new System.EventHandler(this.gEvDelete_Click);
+            // 
+            // gEvOverwrite
+            // 
+            this.gEvOverwrite.Location = new System.Drawing.Point(369, 191);
+            this.gEvOverwrite.Name = "gEvOverwrite";
+            this.gEvOverwrite.Size = new System.Drawing.Size(157, 23);
+            this.gEvOverwrite.TabIndex = 13;
+            this.gEvOverwrite.Text = "Overwrite  seleced";
+            this.gEvOverwrite.UseVisualStyleBackColor = true;
+            this.gEvOverwrite.Click += new System.EventHandler(this.gEvOverwrite_Click);
+            // 
+            // gEvSave
+            // 
+            this.gEvSave.Location = new System.Drawing.Point(369, 162);
+            this.gEvSave.Name = "gEvSave";
+            this.gEvSave.Size = new System.Drawing.Size(157, 23);
+            this.gEvSave.TabIndex = 12;
+            this.gEvSave.Text = "Save  new  trigger";
+            this.gEvSave.UseVisualStyleBackColor = true;
+            this.gEvSave.Click += new System.EventHandler(this.gEvSave_Click);
             // 
             // label27
             // 
             this.label27.AutoSize = true;
-            this.label27.Location = new System.Drawing.Point(289, 57);
+            this.label27.Location = new System.Drawing.Point(230, 194);
             this.label27.Name = "label27";
-            this.label27.Size = new System.Drawing.Size(114, 13);
-            this.label27.TabIndex = 5;
-            this.label27.Text = "%       (connection lost)";
+            this.label27.Size = new System.Drawing.Size(43, 13);
+            this.label27.TabIndex = 11;
+            this.label27.Text = "percent";
             // 
-            // gLDrop
+            // gEvUploadP
             // 
-            this.gLDrop.Location = new System.Drawing.Point(244, 54);
-            this.gLDrop.Name = "gLDrop";
-            this.gLDrop.Size = new System.Drawing.Size(44, 20);
-            this.gLDrop.TabIndex = 4;
-            this.gLDrop.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            this.tt.SetToolTip(this.gLDrop, "The required music flow threshold to show the notification.");
-            this.gLDrop.TextChanged += new System.EventHandler(this.gLDrop_TextChanged);
-            this.gLDrop.MouseEnter += new System.EventHandler(this.gHost_MouseEnter);
-            this.gLDrop.MouseLeave += new System.EventHandler(this.gHost_MouseLeave);
+            this.gEvUploadP.Enabled = false;
+            this.gEvUploadP.Location = new System.Drawing.Point(154, 191);
+            this.gEvUploadP.Name = "gEvUploadP";
+            this.gEvUploadP.Size = new System.Drawing.Size(70, 20);
+            this.gEvUploadP.TabIndex = 10;
             // 
-            // gCDrop
+            // gEvUploadC
             // 
-            this.gCDrop.AutoSize = true;
-            this.gCDrop.Location = new System.Drawing.Point(24, 56);
-            this.gCDrop.Name = "gCDrop";
-            this.gCDrop.Size = new System.Drawing.Size(214, 17);
-            this.gCDrop.TabIndex = 3;
-            this.gCDrop.Text = "Warn me when connection drops below";
-            this.tt.SetToolTip(this.gCDrop, "This will show a notification when Loopstream\r\nthinks that you are at the verge o" +
-        "f dropping.\r\n    (BETA FEATURE)\r\n");
-            this.gCDrop.UseVisualStyleBackColor = true;
-            this.gCDrop.CheckedChanged += new System.EventHandler(this.gCDrop_CheckedChanged);
-            this.gCDrop.MouseEnter += new System.EventHandler(this.gHost_MouseEnter);
-            this.gCDrop.MouseLeave += new System.EventHandler(this.gHost_MouseLeave);
+            this.gEvUploadC.AutoSize = true;
+            this.gEvUploadC.Location = new System.Drawing.Point(8, 193);
+            this.gEvUploadC.Name = "gEvUploadC";
+            this.gEvUploadC.Size = new System.Drawing.Size(126, 17);
+            this.gEvUploadC.TabIndex = 9;
+            this.gEvUploadC.Text = "Broadcast rate below";
+            this.gEvUploadC.UseVisualStyleBackColor = true;
+            this.gEvUploadC.CheckedChanged += new System.EventHandler(this.gEvUploadC_CheckedChanged);
+            // 
+            // label26
+            // 
+            this.label26.AutoSize = true;
+            this.label26.Location = new System.Drawing.Point(230, 246);
+            this.label26.Name = "label26";
+            this.label26.Size = new System.Drawing.Size(61, 13);
+            this.label26.TabIndex = 8;
+            this.label26.Text = "percent for ";
+            // 
+            // gEvAudioS
+            // 
+            this.gEvAudioS.Enabled = false;
+            this.gEvAudioS.Location = new System.Drawing.Point(293, 243);
+            this.gEvAudioS.Name = "gEvAudioS";
+            this.gEvAudioS.Size = new System.Drawing.Size(70, 20);
+            this.gEvAudioS.TabIndex = 7;
+            // 
+            // gEvAudioC
+            // 
+            this.gEvAudioC.AutoSize = true;
+            this.gEvAudioC.Location = new System.Drawing.Point(8, 245);
+            this.gEvAudioC.Name = "gEvAudioC";
+            this.gEvAudioC.Size = new System.Drawing.Size(124, 17);
+            this.gEvAudioC.TabIndex = 6;
+            this.gEvAudioC.Text = "Audio signal is below";
+            this.gEvAudioC.UseVisualStyleBackColor = true;
+            this.gEvAudioC.CheckedChanged += new System.EventHandler(this.gEvAudioC_CheckedChanged);
+            // 
+            // label20
+            // 
+            this.label20.AutoSize = true;
+            this.label20.Location = new System.Drawing.Point(230, 220);
+            this.label20.Name = "label20";
+            this.label20.Size = new System.Drawing.Size(47, 13);
+            this.label20.TabIndex = 5;
+            this.label20.Text = "seconds";
+            // 
+            // gEvMouseS
+            // 
+            this.gEvMouseS.Enabled = false;
+            this.gEvMouseS.Location = new System.Drawing.Point(154, 217);
+            this.gEvMouseS.Name = "gEvMouseS";
+            this.gEvMouseS.Size = new System.Drawing.Size(70, 20);
+            this.gEvMouseS.TabIndex = 4;
+            // 
+            // gEvMouseC
+            // 
+            this.gEvMouseC.AutoSize = true;
+            this.gEvMouseC.Location = new System.Drawing.Point(8, 219);
+            this.gEvMouseC.Name = "gEvMouseC";
+            this.gEvMouseC.Size = new System.Drawing.Size(137, 17);
+            this.gEvMouseC.TabIndex = 3;
+            this.gEvMouseC.Text = "No mouse movement in";
+            this.gEvMouseC.UseVisualStyleBackColor = true;
+            this.gEvMouseC.CheckedChanged += new System.EventHandler(this.gEvMouseC_CheckedChanged);
             // 
             // label16
             // 
             this.label16.AutoSize = true;
-            this.label16.Location = new System.Drawing.Point(289, 20);
+            this.label16.Location = new System.Drawing.Point(44, 167);
             this.label16.Name = "label16";
-            this.label16.Size = new System.Drawing.Size(120, 13);
+            this.label16.Size = new System.Drawing.Size(110, 13);
             this.label16.TabIndex = 2;
-            this.label16.Text = "%       (stream is lagging)";
+            this.label16.Text = "When conditions met:";
             // 
-            // gLPoor
+            // gEvList
             // 
-            this.gLPoor.Location = new System.Drawing.Point(244, 17);
-            this.gLPoor.Name = "gLPoor";
-            this.gLPoor.Size = new System.Drawing.Size(44, 20);
-            this.gLPoor.TabIndex = 1;
-            this.gLPoor.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            this.tt.SetToolTip(this.gLPoor, "The required music flow threshold to show the notification.");
-            this.gLPoor.TextChanged += new System.EventHandler(this.gLPoor_TextChanged);
-            this.gLPoor.MouseEnter += new System.EventHandler(this.gHost_MouseEnter);
-            this.gLPoor.MouseLeave += new System.EventHandler(this.gHost_MouseLeave);
-            // 
-            // gCPoor
-            // 
-            this.gCPoor.AutoSize = true;
-            this.gCPoor.Location = new System.Drawing.Point(24, 19);
-            this.gCPoor.Name = "gCPoor";
-            this.gCPoor.Size = new System.Drawing.Size(214, 17);
-            this.gCPoor.TabIndex = 0;
-            this.gCPoor.Text = "Warn me when connection drops below";
-            this.tt.SetToolTip(this.gCPoor, "This will show a notification when Loopstream\r\nthinks that your internet is about" +
-        " to fail.\r\n    (BETA FEATURE)");
-            this.gCPoor.UseVisualStyleBackColor = true;
-            this.gCPoor.CheckedChanged += new System.EventHandler(this.gCPoor_CheckedChanged);
-            this.gCPoor.MouseEnter += new System.EventHandler(this.gHost_MouseEnter);
-            this.gCPoor.MouseLeave += new System.EventHandler(this.gHost_MouseLeave);
+            this.gEvList.FormattingEnabled = true;
+            this.gEvList.HorizontalScrollbar = true;
+            this.gEvList.Location = new System.Drawing.Point(8, 8);
+            this.gEvList.Name = "gEvList";
+            this.gEvList.Size = new System.Drawing.Size(518, 147);
+            this.gEvList.TabIndex = 0;
+            this.gEvList.SelectedIndexChanged += new System.EventHandler(this.gEvList_SelectedIndexChanged);
             // 
             // pFooter
             // 
@@ -1703,7 +1844,7 @@
             // 
             this.pTabs.BackColor = System.Drawing.SystemColors.ControlLight;
             this.pTabs.Controls.Add(this.label5);
-            this.pTabs.Controls.Add(this.hOSD);
+            this.pTabs.Controls.Add(this.hTriggers);
             this.pTabs.Controls.Add(this.hTags);
             this.pTabs.Controls.Add(this.hEncoders);
             this.pTabs.Controls.Add(this.hServer);
@@ -1738,27 +1879,18 @@
             this.tt.UseAnimation = false;
             this.tt.UseFading = false;
             // 
-            // gYield
+            // hTriggers
             // 
-            this.gYield.Location = new System.Drawing.Point(426, 67);
-            this.gYield.Name = "gYield";
-            this.gYield.Size = new System.Drawing.Size(100, 20);
-            this.gYield.TabIndex = 53;
-            this.tt.SetToolTip(this.gYield, "How often Loopstream will look for new metadata (in miliseconds)");
-            this.gYield.TextChanged += new System.EventHandler(this.gYield_TextChanged);
-            // 
-            // hOSD
-            // 
-            this.hOSD.AutoSize = true;
-            this.hOSD.BackColor = System.Drawing.SystemColors.ControlLight;
-            this.hOSD.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.hOSD.Location = new System.Drawing.Point(336, 0);
-            this.hOSD.Margin = new System.Windows.Forms.Padding(0);
-            this.hOSD.Name = "hOSD";
-            this.hOSD.Padding = new System.Windows.Forms.Padding(14, 15, 14, 0);
-            this.hOSD.Size = new System.Drawing.Size(72, 35);
-            this.hOSD.TabIndex = 6;
-            this.hOSD.Text = "OSD";
+            this.hTriggers.AutoSize = true;
+            this.hTriggers.BackColor = System.Drawing.SystemColors.ControlLight;
+            this.hTriggers.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.hTriggers.Location = new System.Drawing.Point(336, 0);
+            this.hTriggers.Margin = new System.Windows.Forms.Padding(0);
+            this.hTriggers.Name = "hTriggers";
+            this.hTriggers.Padding = new System.Windows.Forms.Padding(14, 15, 14, 0);
+            this.hTriggers.Size = new System.Drawing.Size(94, 35);
+            this.hTriggers.TabIndex = 6;
+            this.hTriggers.Text = "Triggers";
             // 
             // hTags
             // 
@@ -1849,8 +1981,8 @@
             this.pTagAdvanced1.PerformLayout();
             this.gDescBox.ResumeLayout(false);
             this.gDescBox.PerformLayout();
-            this.tpOSD.ResumeLayout(false);
-            this.tpOSD.PerformLayout();
+            this.tpTriggers.ResumeLayout(false);
+            this.tpTriggers.PerformLayout();
             this.pFooter.ResumeLayout(false);
             this.pFooter.PerformLayout();
             this.pButtons.ResumeLayout(false);
@@ -1961,14 +2093,8 @@
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.CheckBox gVU;
         private System.Windows.Forms.Button gCancel;
-        private System.Windows.Forms.TabPage tpOSD;
-        private System.Windows.Forms.Label label27;
-        private System.Windows.Forms.TextBox gLDrop;
-        private System.Windows.Forms.CheckBox gCDrop;
-        private System.Windows.Forms.Label label16;
-        private System.Windows.Forms.TextBox gLPoor;
-        private System.Windows.Forms.CheckBox gCPoor;
-        private TLabel hOSD;
+        private System.Windows.Forms.TabPage tpTriggers;
+        private TLabel hTriggers;
         private System.Windows.Forms.Button gTarget;
         private System.Windows.Forms.CheckBox gURLDecode;
         private System.Windows.Forms.Button button1;
@@ -1987,5 +2113,24 @@
         private System.Windows.Forms.Button gTagimport;
         private System.Windows.Forms.Button gTagexport;
         private System.Windows.Forms.TextBox gYield;
+        private System.Windows.Forms.Button gEvDelete;
+        private System.Windows.Forms.Button gEvOverwrite;
+        private System.Windows.Forms.Button gEvSave;
+        private System.Windows.Forms.Label label27;
+        private System.Windows.Forms.TextBox gEvUploadP;
+        private System.Windows.Forms.CheckBox gEvUploadC;
+        private System.Windows.Forms.Label label26;
+        private System.Windows.Forms.TextBox gEvAudioS;
+        private System.Windows.Forms.CheckBox gEvAudioC;
+        private System.Windows.Forms.Label label20;
+        private System.Windows.Forms.TextBox gEvMouseS;
+        private System.Windows.Forms.CheckBox gEvMouseC;
+        private System.Windows.Forms.Label label16;
+        private System.Windows.Forms.ComboBox gEvType;
+        private System.Windows.Forms.ListBox gEvList;
+        private System.Windows.Forms.TextBox gBounce;
+        private System.Windows.Forms.Label label28;
+        private System.Windows.Forms.Label label30;
+        private System.Windows.Forms.TextBox gEvAudioP;
     }
 }

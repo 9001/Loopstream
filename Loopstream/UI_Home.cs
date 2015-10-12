@@ -38,8 +38,8 @@ namespace Loopstream
         LSMixer mixer;
         LSPcmFeed pcm;
         LSTag tag;
-        bool popEn, popFilt;
-        UI_Msg popPoor, popDrop;
+        bool assumeConnected, popFilt;
+        UI_Msg popPoor, popDrop, popSign, popQuit;
         Control[] invals; //sorry
         string lqMessage; //sorry
         string daText = "Connect";
@@ -137,8 +137,8 @@ namespace Loopstream
             gC.preset = settings.presets[2];
             gD.preset = settings.presets[3];
 
-            popPoor = popDrop = null;
-            popEn = popFilt = false;
+            popPoor = popDrop = popSign = popQuit = null;
+            assumeConnected = popFilt = false;
 
             z("Layout gManualTags");
             gManualTags.Font = new System.Drawing.Font(gManualTags.Font.FontFamily, gManualTags.Font.SizeInPoints * 0.8f);
@@ -162,7 +162,7 @@ namespace Loopstream
             if (settings.autoconn)
             {
                 z("Autoconn was true");
-                gConnect_Click(sender, e);
+                connect();
             }
 
             // please don't look
@@ -192,10 +192,10 @@ namespace Loopstream
             tKonami.Interval = 10;
             //tKonami.Start();
 
-            Timer tTitle = new Timer();
-            tTitle.Tick += tTitle_Tick;
-            tTitle.Interval = 200;
-            tTitle.Start();
+            Timer manMachineInterfaceManager = new Timer();
+            manMachineInterfaceManager.Tick += manMachineInterfaceManager_manageWidgets;
+            manMachineInterfaceManager.Interval = 200;
+            manMachineInterfaceManager.Start();
             
             z("showhide"); showhide();
             z("skinner"); hookskinner(this.Controls);
@@ -320,6 +320,21 @@ namespace Loopstream
                 System.Diagnostics.Process.Start("http://r-a-d.io/ed/loopstream");
                 return true;
             }
+            int nPreset = -1;
+            if (keyData == Keys.D1) nPreset = 0;
+            if (keyData == Keys.D2) nPreset = 1;
+            if (keyData == Keys.D3) nPreset = 2;
+            if (keyData == Keys.D4) nPreset = 3;
+            if (nPreset >= 0)
+            {
+                settings.mixer.apply(settings.presets[nPreset]);
+                mixerPresetChanged(null, null);
+            }
+            if (keyData == Keys.Q && mixer != null) mixer.MuteChannel(LSMixer.Slider.Music, settings.mixer.bRec);
+            if (keyData == Keys.W && mixer != null) mixer.MuteChannel(LSMixer.Slider.Mic, settings.mixer.bMic);
+            if (keyData == Keys.R && mixer != null) mixer.MuteChannel(LSMixer.Slider.Out, settings.mixer.bOut);
+            if (keyData == Keys.C) gConnect_Click(null, null);
+            if (keyData == Keys.S) gSettings_Click(null, null);
             //this.Text = keyData.ToString();
             if (tKonami != null)
             {
@@ -443,7 +458,7 @@ namespace Loopstream
             }
         }
 
-        private void gConnect_Click(object sender, EventArgs e)
+        void connect()
         {
             if (settings.devRec == null || settings.devOut == null)
             {
@@ -451,7 +466,7 @@ namespace Loopstream
                     "Please take a minute to adjust your settings\n\n(soundcard and radio server)",
                     "Audio endpoint is null", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning))
                 {
-                    gSettings_Click(sender, e);
+                    gSettings_Click(null, null);
 
                     if (settings.devRec == null || settings.devOut == null)
                     {
@@ -462,9 +477,7 @@ namespace Loopstream
                 else return;
             }
 
-            if (gConnect.Text == "Connect")
-            {
-                if (settings.testDevs && (
+            if (settings.testDevs && (
                     settings.devOut == null ||
                     settings.devRec == null ||
                     settings.devOut.wf == null ||
@@ -472,37 +485,49 @@ namespace Loopstream
                     settings.devMic != null &&
                     settings.devMic.id != null &&
                     settings.devMic.wf == null)))
-                {
-                    // TODO: Fix devMic != null when disabled (deserializing bug?)
+            {
+                // TODO: Fix devMic != null when disabled (deserializing bug?)
 
-                    MessageBox.Show("The soundcard devices you selected have been disabled or removed." +
-                        "\r\n\r\nPlease check your privilege...uh, settings before connecting.",
-                        "oh snap nigga", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    return;
-                }
-                Program.ni.ContextMenu.MenuItems[1].Text = "Disconnect";
-                daText = "D I S C O N N E C T";
-                gConnect.Text = daText;
-                tag = new LSTag(settings);
-                mixer = new LSMixer(settings, new LLabel[] { gMusic.giSlider, gMic.giSlider, gOut.giSlider });
-                pcm = new LSPcmFeed(settings, mixer.lameOutlet);
-                popEn = true;
+                MessageBox.Show("The soundcard devices you selected have been disabled or removed." +
+                    "\r\n\r\nPlease check your privilege...uh, settings before connecting.",
+                    "oh snap nigga", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+            Program.ni.ContextMenu.MenuItems[1].Text = "Disconnect";
+            daText = "D I S C O N N E C T";
+            gConnect.Text = daText;
+            tag = new LSTag(settings);
+            mixer = new LSMixer(settings, new LLabel[] { gMusic.giSlider, gMic.giSlider, gOut.giSlider });
+            pcm = new LSPcmFeed(settings, mixer.lameOutlet);
+            assumeConnected = true;
+        }
+
+        void disconnect()
+        {
+            Program.ni.ContextMenu.MenuItems[1].Text = "Connect";
+            if (pMessage.Visible) gLowQ_Click(null, null);
+            assumeConnected = false;
+
+            daText = "disconnecting...";
+            gConnect.Enabled = false;
+            gConnect.Text = daText;
+            Application.DoEvents();
+
+            System.Threading.Thread t = new System.Threading.Thread(new System.Threading.ThreadStart(discthread));
+            //t.Priority = System.Threading.ThreadPriority.Highest;
+            t.Name = "LS_DISC";
+            t.Start();
+        }
+
+        private void gConnect_Click(object sender, EventArgs e)
+        {
+            if (gConnect.Text == "Connect")
+            {
+                connect();
             }
             else
             {
-                Program.ni.ContextMenu.MenuItems[1].Text = "Connect";
-                if (pMessage.Visible) gLowQ_Click(sender, e);
-                popEn = false;
-
-                daText = "disconnecting...";
-                gConnect.Enabled = false;
-                gConnect.Text = daText;
-                Application.DoEvents();
-
-                System.Threading.Thread t = new System.Threading.Thread(new System.Threading.ThreadStart(discthread));
-                //t.Priority = System.Threading.ThreadPriority.Highest;
-                t.Name = "LS_DISC";
-                t.Start();
+                disconnect();
             }
         }
 
@@ -688,7 +713,8 @@ namespace Loopstream
             System.Diagnostics.Process.Start("http://github.com/9001/loopstream");
         }
 
-        void tTitle_Tick(object sender, EventArgs e)
+        Point lastMousePosition = Point.Empty;
+        void manMachineInterfaceManager_manageWidgets(object sender, EventArgs e)
         {
             if (mixer != null && mixer.isLQ != null)
             {
@@ -697,13 +723,60 @@ namespace Loopstream
                 this.Height += 64;
                 pMessage.Visible = true;
             }
+
+            bool connected = assumeConnected && tag != null;
+            long now = DateTime.UtcNow.Ticks / 10000;
+            if (!connected)
+            {
+                foreach (LSSettings.LSTrigger ev in LSSettings.singleton.triggers)
+                {
+                    ev.lastAudio = now;
+                    ev.lastMouse = now;
+                }
+            }
+            else
+            {
+                Point mousepos = Cursor.Position;
+                if (mousepos.X != lastMousePosition.X ||
+                    mousepos.Y != lastMousePosition.Y)
+                {
+                    lastMousePosition = mousepos;
+                    foreach (LSSettings.LSTrigger ev in LSSettings.singleton.triggers)
+                    {
+                        ev.lastMouse = now;
+                    }
+                }
+                if (gMusic != null &&
+                    gMusic.giSlider != null &&
+                    gMusic.giSlider.src != null)
+                {
+                    if (gMusic.giSlider.src.vuAge < 16)
+                    {
+                        foreach (LSSettings.LSTrigger ev in LSSettings.singleton.triggers)
+                        {
+                            if (gMusic.giSlider.src.VU >= ev.pAudio)
+                            {
+                                ev.lastAudio = now;
+                            }
+                        }
+                    }
+                }
+            }
             if (tag == null) return;
+
+
+
+
 
             if (settings.mp3.FIXME_kbps <= 1 && settings.ogg.FIXME_kbps <= 1)
             {
                 if (daText == "Connect")
                 {
                     this.Text = wincap;
+                    if (popPoor != null && popPoor.sactive) { popPoor.Dispose(); popPoor = null; }
+                    if (popDrop != null && popDrop.sactive) { popDrop.Dispose(); popDrop = null; }
+                    if (popSign != null && popSign.sactive) { popSign.Dispose(); popSign = null; }
+                    if (popQuit != null && popQuit.sactive) { popQuit.Dispose(); popQuit = null; }
                 }
                 else
                 {
@@ -752,9 +825,10 @@ namespace Loopstream
             {
                 Logger.bitrateo.Add(Math.Max(settings.ogg.FIXME_kbps, 0));
             }
-            if (popEn && popFilt)
+            
+            /*if (assumeConnected && popFilt)
             {
-                if (settings.warn_drop && settings.lim_drop > f)
+                if (settings.warn_drop_DEPRECATED && settings.lim_drop_DEPRECATED > f)
                 {
                     if (popPoor != null && popPoor.sactive) { popPoor.Dispose(); popPoor = null; }
                     if (popDrop == null || !popDrop.sactive)
@@ -763,7 +837,7 @@ namespace Loopstream
                         popDrop.Show();
                     }
                 }
-                else if (settings.warn_poor && settings.lim_poor > f)
+                else if (settings.warn_poor_DEPRECATED && settings.lim_poor_DEPRECATED > f)
                 {
                     if (popDrop != null && popDrop.sactive) { popDrop.Dispose(); popDrop = null; }
                     if (popPoor == null || !popPoor.sactive)
@@ -780,12 +854,109 @@ namespace Loopstream
             }
             else
             {
-                if (f >= Math.Max(settings.lim_poor, settings.lim_drop))
+                if (f >= Math.Max(settings.lim_poor_DEPRECATED, settings.lim_drop_DEPRECATED))
                 {
-                    popFilt = popEn;
+                    popFilt = assumeConnected;
                 }
                 if (popPoor != null && popPoor.sactive) { popPoor.Dispose(); popPoor = null; }
                 if (popDrop != null && popDrop.sactive) { popDrop.Dispose(); popDrop = null; }
+            }*/
+
+            if (connected && popFilt)
+            {
+                foreach (LSSettings.LSTrigger ev in LSSettings.singleton.triggers)
+                {
+                    ev.lastNet = f;
+                }
+                LSSettings.LSTrigger.Until prev = new LSSettings.LSTrigger.Until();
+                prev.required = prev.msec = int.MaxValue;
+                
+                LSSettings.LSTrigger show = null;
+                foreach (LSSettings.LSTrigger ev in LSSettings.singleton.triggers)
+                {
+                    LSSettings.LSTrigger.Until until = ev.until(now);
+                    if (until.msec <= prev.msec ||
+                        until.msec < until.required / 2)
+                    {
+                        show = ev;
+                        prev = until;
+                    }
+                }
+                if (popPoor != null && popPoor.sactive && (show == null || show.eType != LSSettings.LSTrigger.EventType.WARN_CONN_POOR || show.until(now).msec > 0)) { popPoor.Dispose(); popPoor = null; }
+                if (popDrop != null && popDrop.sactive && (show == null || show.eType != LSSettings.LSTrigger.EventType.WARN_CONN_DROP || show.until(now).msec > 0)) { popDrop.Dispose(); popDrop = null; }
+                if (popSign != null && popSign.sactive && (show == null || show.eType != LSSettings.LSTrigger.EventType.WARN_NO_AUDIO || show.until(now).msec > 100)) { popSign.Dispose(); popSign = null; }
+                if (popQuit != null && popQuit.sactive)
+                {
+                    if (show == null || show.eType != LSSettings.LSTrigger.EventType.DISCONNECT)
+                    {
+                        popQuit.Dispose(); popQuit = null;
+                    }
+                    else
+                    {
+                        LSSettings.LSTrigger.Until remain = show.until(now);
+                        if (remain.msec > remain.required / 2)
+                        {
+                            popQuit.Dispose(); popQuit = null;
+                        }
+                    }
+                }
+                if (show != null && show.until(now).msec <= 0)
+                {
+                    if (show.eType == LSSettings.LSTrigger.EventType.WARN_CONN_POOR && (popPoor == null || !popPoor.sactive))
+                    {
+                        popPoor = new UI_Msg("poor", "");
+                        popPoor.Show();
+                    }
+                    if (show.eType == LSSettings.LSTrigger.EventType.WARN_CONN_DROP && (popDrop == null || !popDrop.sactive))
+                    {
+                        popDrop = new UI_Msg("drop", "");
+                        popDrop.Show();
+                    }
+                    if (show.eType == LSSettings.LSTrigger.EventType.WARN_NO_AUDIO && (popSign == null || !popSign.sactive))
+                    {
+                        popSign = new UI_Msg("audio", "");
+                        popSign.Show();
+                    }
+                    if (show.eType == LSSettings.LSTrigger.EventType.DISCONNECT)
+                    {
+                        if (popQuit != null)
+                        {
+                            popQuit.setMsg("0");
+                        }
+                        disconnect();
+                    }
+                }
+                else if (show != null && show.eType == LSSettings.LSTrigger.EventType.DISCONNECT)
+                {
+                    LSSettings.LSTrigger.Until remain = show.until(now);
+                    if (remain.msec <= remain.required / 2)
+                    {
+                        string msg = Math.Ceiling(remain.msec / 1000.0).ToString();
+
+                        if (popQuit == null)
+                        {
+                            popQuit = new UI_Msg("quit", msg);
+                            popQuit.Show();
+                        }
+                        else
+                        {
+                            popQuit.setMsg(msg);
+                        }
+                    }
+                }
+            }
+            else
+            {
+                double max = 0;
+                foreach (LSSettings.LSTrigger ev in LSSettings.singleton.triggers)
+                {
+                    if (ev.eType == LSSettings.LSTrigger.EventType.WARN_CONN_POOR ||
+                        ev.eType == LSSettings.LSTrigger.EventType.WARN_CONN_DROP)
+                    {
+                        max = Math.Max(max, ev.pUpload);
+                    }
+                }
+                if (f > max) popFilt = assumeConnected;
             }
         }
 

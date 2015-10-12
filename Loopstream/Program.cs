@@ -86,7 +86,7 @@ namespace Loopstream
             tools = tools.Split('.')[0];
             tools += "Tools\\";
 
-            System.Diagnostics.Process.GetCurrentProcess().PriorityClass = System.Diagnostics.ProcessPriorityClass.High;
+            System.Diagnostics.Process.GetCurrentProcess().PriorityClass = System.Diagnostics.ProcessPriorityClass.AboveNormal;
             
             Logger.init();
             Skinner.init();

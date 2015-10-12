@@ -280,6 +280,8 @@
     <EmbeddedResource Include="res\volbar.png" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="res\msg_audio.png" />
+    <EmbeddedResource Include="res\msg_quit.png" />
     <EmbeddedResource Include="lib\NAudio.dll" />
     <EmbeddedResource Include="lib\NAudio.WindowsMediaFormat.dll" />
     <Content Include="loopstream.ico" />

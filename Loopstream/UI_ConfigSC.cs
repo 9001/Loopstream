@@ -260,26 +260,19 @@ namespace Loopstream
             tPop.Interval = tt.InitialDelay;
             tPop.Tick += tPop_Tick;
         }
-        Panel[] tabPage;
         TLabel[] tabHeader;
         void t_Tick(object sender, EventArgs e)
         {
             ((Timer)sender).Stop();
             initForm();
 
-            tabHeader = new TLabel[] { hSoundcard, hServer, hEncoders, hTags, hOSD };
+            tabHeader = new TLabel[] { hSoundcard, hServer, hEncoders, hTags, hTriggers };
             pTabs.BringToFront();
             for (int a = 0; a < tabHeader.Length; a++)
             {
                 tabHeader[a].MouseDown += tabHeader_MouseDown;
             }
             tabHeader_MouseDown(tabHeader[0], new MouseEventArgs(System.Windows.Forms.MouseButtons.Left, 1, 20, 10, 0));
-
-            if (settings.pass == "hackme")
-            {
-                gUnhide.Checked = true;
-            }
-            hookFocus(this.Controls);
 
             if (!System.IO.File.Exists("Loopstream.ini"))
             {
@@ -383,10 +376,10 @@ namespace Loopstream
             gAutoconn.Checked = settings.autoconn;
             gAutohide.Checked = settings.autohide;
 
-            gCPoor.Checked = settings.warn_poor;
-            gCDrop.Checked = settings.warn_drop;
-            gLPoor.Text = Math.Round(settings.lim_poor * 100) + "";
-            gLDrop.Text = Math.Round(settings.lim_drop * 100) + "";
+            //gCPoor_DEPRECATED.Checked = settings.warn_poor_DEPRECATED;
+            //gCDrop_DEPRECATED.Checked = settings.warn_drop_DEPRECATED;
+            //gLPoor_DEPRECATED.Text = Math.Round(settings.lim_poor_DEPRECATED * 100) + "";
+            //gLDrop_DEPRECATED.Text = Math.Round(settings.lim_drop_DEPRECATED * 100) + "";
 
             gTagAuto.Checked = settings.tagAuto;
             gReader.Items.Clear();
@@ -398,7 +391,23 @@ namespace Loopstream
             gTarget.Visible = false;
             gMake32.Visible = false;
             loadMetaReader(true);
+
+
+            if (settings.pass == "hackme")
+            {
+                gUnhide.Checked = true;
+            }
+            hookFocus(this.Controls);
+
+
+            var event_types = Enum.GetValues(typeof(LSSettings.LSTrigger.EventType));
+            foreach (var et in event_types)
+            {
+                gEvType.Items.Add(et);
+            }
+            loadTriggers();
             
+
             disregardEvents = false;
         }
 
@@ -1007,6 +1016,18 @@ namespace Loopstream
             settings.latin = gLatinize.Checked;
         }
 
+        void loadTriggers()
+        {
+            gEvList.Items.Clear();
+            settings.triggers.Sort();
+            //settings.triggers.Sort((a, b) => a.eType - b.eType);
+            foreach (LSSettings.LSTrigger ev in settings.triggers)
+            {
+                gEvList.Items.Add(ev);
+            }
+            gEvList.SelectedItem = 0;
+        }
+
         void loadMetaReader(bool redoPresets)
         {
             if (redoPresets)
@@ -1040,6 +1061,7 @@ namespace Loopstream
             gSource.Text = settings.meta.src;
             gPattern.Text = settings.meta.ptn;
             gFreq.Text = settings.meta.freq.ToString();
+            gBounce.Text = settings.meta.bnc.ToString();
             gName.Text = settings.meta.tit;
             gEncoding.Text = settings.meta.enc.WebName;
             gURLDecode.Checked = settings.meta.urldecode;
@@ -1389,24 +1411,24 @@ namespace Loopstream
 
         private void gCPoor_CheckedChanged(object sender, EventArgs e)
         {
-            settings.warn_poor = gCPoor.Checked;
+            //settings.warn_poor_DEPRECATED = gCPoor_DEPRECATED.Checked;
         }
 
         private void gCDrop_CheckedChanged(object sender, EventArgs e)
         {
-            settings.warn_drop = gCDrop.Checked;
+            //settings.warn_drop_DEPRECATED = gCDrop_DEPRECATED.Checked;
         }
 
         private void gLPoor_TextChanged(object sender, EventArgs e)
         {
-            int n = getValue(gLPoor);
-            if (n >= 0) settings.lim_poor = n / 100.0;
+            //int n = getValue(gLPoor_DEPRECATED);
+            //if (n >= 0) settings.lim_poor_DEPRECATED = n / 100.0;
         }
 
         private void gLDrop_TextChanged(object sender, EventArgs e)
         {
-            int n = getValue(gLDrop);
-            if (n >= 0) settings.lim_drop = n / 100.0;
+            //int n = getValue(gLDrop_DEPRECATED);
+            //if (n >= 0) settings.lim_drop_DEPRECATED = n / 100.0;
         }
 
         private void gTarget_Click(object sender, EventArgs e)
@@ -1750,6 +1772,115 @@ namespace Loopstream
             }
             //this.Text = settings.meta.yi.assert();
             gPattern_TextChanged(sender, e);
+        }
+
+        private void gEvList_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            var ev = (LSSettings.LSTrigger)gEvList.SelectedItem;
+            if (ev == null)
+            {
+                gEvUploadC.Checked = false;
+                gEvMouseC.Checked = false;
+                gEvAudioC.Checked = false;
+                gEvUploadP.Text = "";
+                gEvMouseS.Text = "";
+                gEvAudioP.Text = "";
+                gEvAudioS.Text = "";
+                return;
+            }
+            gEvUploadC.Checked = ev.bUpload;
+            gEvMouseC.Checked = ev.bMouse;
+            gEvAudioC.Checked = ev.bAudio;
+
+            gEvType.SelectedItem = ev.eType;
+            gEvMouseS.Text = ev.sMouse.ToString();
+            gEvAudioS.Text = ev.sAudio.ToString();
+            gEvAudioP.Text = Math.Round(ev.pAudio * 100).ToString();
+            gEvUploadP.Text = Math.Round(ev.pUpload * 100).ToString();
+        }
+
+        private void gEvUploadC_CheckedChanged(object sender, EventArgs e)
+        {
+            gEvUploadP.Enabled = gEvUploadC.Checked;
+        }
+
+        private void gEvMouseC_CheckedChanged(object sender, EventArgs e)
+        {
+            gEvMouseS.Enabled = gEvMouseC.Checked;
+        }
+
+        private void gEvAudioC_CheckedChanged(object sender, EventArgs e)
+        {
+            gEvAudioP.Enabled = gEvAudioC.Checked;
+            gEvAudioS.Enabled = gEvAudioC.Checked;
+        }
+
+        LSSettings.LSTrigger makeTrigger()
+        {
+            return new LSSettings.LSTrigger(
+
+                (LSSettings.LSTrigger.EventType)gEvType.SelectedItem,
+
+                gEvUploadC.Checked,
+                Convert.ToDouble(gEvUploadP.Text) / 100,
+
+                gEvAudioC.Checked,
+                Convert.ToDouble(gEvAudioP.Text) / 100,
+                Convert.ToInt32(gEvAudioS.Text),
+
+                gEvMouseC.Checked,
+                Convert.ToInt32(gEvMouseS.Text)
+            );
+        }
+
+        private void gEvSave_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                settings.triggers.Add(makeTrigger());
+                loadTriggers();
+            }
+            catch
+            {
+                MessageBox.Show("Bad input.   Trigger not saved.");
+            }
+        }
+
+        private void gEvOverwrite_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                int i = settings.triggers.IndexOf((LSSettings.LSTrigger)gEvList.SelectedItem);
+                settings.triggers[i] = makeTrigger();
+                loadTriggers();
+            }
+            catch
+            {
+                MessageBox.Show("Bad input.   Trigger not updated.");
+            }
+        }
+
+        private void gEvDelete_Click(object sender, EventArgs e)
+        {
+            int i = gEvList.SelectedIndex;
+            settings.triggers.RemoveAt(settings.triggers.IndexOf((LSSettings.LSTrigger)gEvList.SelectedItem));
+            loadTriggers();
+
+
+            if (i < gEvList.Items.Count)
+            {
+                gEvList.SelectedIndex = i;
+            }
+            else if (gEvList.Items.Count > 0)
+            {
+                gEvList.SelectedIndex = 0;
+            }
+        }
+
+        private void gBounce_TextChanged(object sender, EventArgs e)
+        {
+            int n = getValue(gBounce);
+            if (n >= 0) settings.meta.bnc = n;
         }
     }
 }

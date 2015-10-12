@@ -3,6 +3,11 @@
 + new feature
 ~ other change
 
+2014-05-30, 16:01:54 - Loopstream 1.3.9.0
+  + Drunk proof: Disconnect when there is no mouse activity
+  + Tag reader: Debouncer to filter stuff like "Loading..." etc
+  + Hotkeys: mixer(1,2,3,4,q,w,r) (C)onnect (S)ettings
+
 2014-04-25, 21:03:24 - Loopstream 1.3.8.0
   + Rightclick volume slider to lock boost (do not autoreduce past lock)
   = 7.7.3.1 ni desrever emaceb sgaT

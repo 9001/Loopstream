@@ -292,6 +292,8 @@ namespace Loopstream
             ));
         }
 
+        long bouncer;
+        string lastTag;
         void feeder()
         {
             Est[] est = {
@@ -299,6 +301,8 @@ namespace Loopstream
                 settings.ogg.enabled ? new Est("", settings.ogg) : null,
             };
             Logger.tag.a("active");
+            bouncer = settings.meta.bnc;
+            lastTag = null;
             while (!quitting)
             {
                 LSSettings.LSMeta m = settings.meta;
@@ -306,14 +310,23 @@ namespace Loopstream
                 manual = tag;
                 if (!string.IsNullOrEmpty(tag.tag) && tag.ok)
                 {
-                    foreach (Est e in est)
+                    long now = DateTime.UtcNow.Ticks / 10000;
+                    if (lastTag != tag.tag)
                     {
-                        if (e != null &&
-                            e.tag != tag.tag &&
-                            e.enc.FIXME_kbps > 0)
+                        lastTag = tag.tag;
+                        bouncer = settings.meta.bnc;
+                    }
+                    if (--bouncer < 0)
+                    {
+                        foreach (Est e in est)
                         {
-                            e.tag = tag.tag;
-                            sendTags(e);
+                            if (e != null &&
+                                e.tag != tag.tag &&
+                                e.enc.FIXME_kbps > 0)
+                            {
+                                e.tag = tag.tag;
+                                sendTags(e);
+                            }
                         }
                     }
                 }

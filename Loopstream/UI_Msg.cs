@@ -14,20 +14,49 @@ namespace Loopstream
     public partial class UI_Msg : Form
     {
         public bool sactive;
-
         string s_bg, s_msg;
+        Font fnt;
+
         public UI_Msg(string bg, string msg)
         {
             s_bg = bg;
-            s_msg = msg;
             sactive = true;
             InitializeComponent();
             FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
+            fnt = new System.Drawing.Font(this.Font.FontFamily, 36);
+            setMsg(msg);
+        }
+
+        public void setMsg(string msg)
+        {
+            if (msg != s_msg)
+            {
+                s_msg = msg;
+                asdf();
+            }
+        }
+        
+        void asdf()
+        {
             using (Stream stream = System.Reflection.Assembly.GetExecutingAssembly().GetManifestResourceStream("Loopstream.res.msg_" + s_bg + ".png"))
             {
                 Bitmap bm = new Bitmap(stream);
                 Width = bm.Width;
                 Height = bm.Height;
+                if (s_msg != null)
+                {
+                    using (Graphics g = Graphics.FromImage(bm))
+                    {
+                        SizeF sz = g.MeasureString(s_msg, fnt);
+                        // (297-220)/2 + 220 = 258.5
+                        // (134-108)/2 + 108 = 121
+                        PointF pt = new PointF(
+                            258.5f - sz.Width / 2f,
+                            121.0f - sz.Height / 2.25f);
+
+                        g.DrawString(s_msg, fnt, Brushes.Salmon, pt);
+                    }
+                }
                 OHSHIT(bm, 255);
                 Screen scr = Screen.FromControl(this);
                 this.Bounds = new Rectangle(

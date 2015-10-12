@@ -143,14 +143,14 @@ namespace Loopstream
                 g.DrawString(str, this.Font, penbrush, 8f, (float)(ty - Math.Ceiling(sz.Height) + 1));
 
                 str = "Connection Lost";
-                ty = (int)(b.Height - settings.mp3.bitrate * mulY * settings.lim_drop);
+                ty = (int)(b.Height - settings.mp3.bitrate * mulY * settings.lim_drop_DEPRECATED);
                 g.DrawLine(red, 0, ty, b.Width, ty);
                 //g.DrawLine(bg, 0, ty - 1, b.Width, ty - 1);
                 //g.DrawLine(bg, 0, ty + 1, b.Width, ty + 1);
                 g.DrawString(str, this.Font, penbrush, 8f, (float)(ty + 1));
 
                 str = "Poor Connection";
-                ty = (int)(b.Height - settings.mp3.bitrate * mulY * settings.lim_poor);
+                ty = (int)(b.Height - settings.mp3.bitrate * mulY * settings.lim_poor_DEPRECATED);
                 g.DrawLine(orn, 0, ty, b.Width, ty);
                 //g.DrawLine(bg, 0, ty - 1, b.Width, ty - 1);
                 //g.DrawLine(bg, 0, ty + 1, b.Width, ty + 1);
