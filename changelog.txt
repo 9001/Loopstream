@@ -3,6 +3,9 @@
 + new feature
 ~ other change
 
+2013-08-05, 21:09:51 - Loopstream 1.2.6.0
+  = YOUR SOUNDCARD WORKS PERFECTLY would crash the program if interrupted
+
 2013-08-04, 17:25:13 - Loopstream 1.2.5.0
   + Manual tags
   = Fixed a crash in the splash screen

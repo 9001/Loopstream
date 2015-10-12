@@ -527,13 +527,14 @@ namespace Loopstream
         }
         void unFX()
         {
-            if (fx_wav != null)
+            try
             {
-                fx_out.Stop();
-                fx_out.Dispose();
-                fx_wav.Dispose();
-                fx_stream.Dispose();
+                if (fx_out != null) fx_out.Stop();
+                if (fx_out != null) fx_out.Dispose();
+                if (fx_wav != null) fx_wav.Dispose();
+                if (fx_stream != null) fx_stream.Dispose();
             }
+            catch { }
         }
 
         private void gMp3Enable_CheckedChanged(object sender, EventArgs e)
