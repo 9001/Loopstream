@@ -135,6 +135,8 @@ namespace Loopstream
             recVol.SetVolume((float)settings.mixer.vRec);
             micVol.SetVolume((float)settings.mixer.vMic);
             outVol.SetVolume((float)settings.mixer.vOut);
+            recVol.boost = (float)settings.mixer.xRec;
+            micVol.boost = (float)settings.mixer.xMic;
             recVol.muted = !settings.mixer.bRec;
             micVol.muted = !settings.mixer.bMic;
             outVol.muted = !settings.mixer.bOut;
@@ -194,9 +196,27 @@ namespace Loopstream
             if (slider == Slider.Out) outVol.muted = !notMuted;
         }
 
+        public void BoostChannel(Slider slider, float boost)
+        {
+            Logger.mix.a("boost " + slider + " to " + boost);
+            if (slider == Slider.Music) recVol.boost = boost;
+            if (slider == Slider.Mic) micVol.boost = boost;
+        }
+
         void recDev_DataAvailable_03(object sender, WaveInEventArgs e)
         {
             recIn.AddSamples(e.Buffer, 0, e.BytesRecorded);
+
+            if (recVol.attenuated)
+            {
+                recVol.attenuated = false;
+                settings.mixer.xRec = recVol.boost;
+            }
+            if (micVol.attenuated)
+            {
+                micVol.attenuated = false;
+                settings.mixer.xMic = micVol.boost;
+            }
         }
 
         void micDev_DataAvailable_03(object sender, WaveInEventArgs e)

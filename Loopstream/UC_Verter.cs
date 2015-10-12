@@ -16,6 +16,7 @@ namespace Loopstream
         {
             InitializeComponent();
             _enabled = true;
+            _boost = 1;
             defaultFG = gLabel.ForeColor;
             defaultBG = gLabel.BackColor;
             w8fuckOn = new Padding(0, 4, 0, 0);
@@ -36,7 +37,7 @@ namespace Loopstream
         Color defaultBG;
         Padding w8fuckOn;
         Padding w8fuckOff;
-        public enum EventType { set, slide, mute };
+        public enum EventType { set, slide, mute, boost };
         public EventType eventType;
         bool _enabled;
         public bool enabled
@@ -80,6 +81,19 @@ namespace Loopstream
                 gLabel.Enabled = value;
             }
         }
+        double _boost;
+        public double boost
+        {
+            get
+            {
+                return _boost;
+            }
+            set
+            {
+                _boost = Math.Max(1, value);
+                level = level;
+            }
+        }
         int _level;
         public int level
         {
@@ -94,9 +108,15 @@ namespace Loopstream
                 _level = Math.Min(Math.Max(value, -40), 295) + 40;
                 int top = gOSlider.Height - _level;
                 giSlider.Bounds = new Rectangle(0, top - 2, gOSlider.Width, _level + 2);
-                giSlider.Text = timeScale ?
+                string txt = timeScale ?
                     (Math.Round(level / 200.0,2) + " s") :
                     (Math.Round(level/2.55,0) + " %");
+
+                if (_boost > 1 && CanBoost)
+                {
+                    txt = _boost.ToString("0.0") + " x\n" + txt;
+                }
+                giSlider.Text = txt;
                 //gLabel.Text = level.ToString();
 
                 inval = inval || _level <= 40 || _level >= 255 + 40;
@@ -107,6 +127,7 @@ namespace Loopstream
                 }
             }
         }
+        public bool CanBoost { get; set; }
         public Color A_GRAD_1 { get { return giSlider.A_GRAD_1; } set { giSlider.A_GRAD_1 = value; } }
         public Color A_GRAD_2 { get { return giSlider.A_GRAD_2; } set { giSlider.A_GRAD_2 = value; } }
 
@@ -128,6 +149,8 @@ namespace Loopstream
         long clickTime = -1;
         int clickOffset = -1;
         Point clickPosition = Point.Empty;
+        double oldBoost = -1;
+
         private void slider_MouseDown(object sender, MouseEventArgs e)
         {
             if (e.Button == System.Windows.Forms.MouseButtons.Left)
@@ -136,6 +159,7 @@ namespace Loopstream
                 clickOffset = ((Control)sender).Top + 40;
                 clickPosition = Cursor.Position;
                 slideDelta = level - (gOSlider.Height - e.Y - clickOffset);
+                oldBoost = -1;
                 //gLabel.Text = slideDelta.ToString();
             }
         }
@@ -164,9 +188,28 @@ namespace Loopstream
                 fuckoff = false;
                 return;
             }
-            level = slideDelta + gOSlider.Height - e.Y - clickOffset;
+            if (dx > 100 && oldBoost < 0 && CanBoost)
+            {
+                oldBoost = boost;
+                clickPosition = mouse;
+            }
+            else if (oldBoost >= 1)
+            {
+                //double delta = (mouse.X - clickPosition.X) * 0.005;
+                //boost = Math.Max(1, oldBoost + delta);
+                double pow = (mouse.X - clickPosition.X) / 200.0;
+                pow = pow < 0 ? pow - 1 : pow + 1;
+                boost *= pow < 0 ? 1 / -pow : pow;
+                eventType = EventType.boost;
+                clickPosition = mouse;
+                level = level;
+            }
+            else
+            {
+                level = slideDelta + gOSlider.Height - e.Y - clickOffset;
+                eventType = EventType.set;
+            }
             clickTime -= 1000;
-            eventType = EventType.set;
             emit();
             Application.DoEvents();
             if (sender == giSlider)

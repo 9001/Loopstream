@@ -144,8 +144,8 @@ namespace Loopstream
             double alevel = vs == null ? 0 : vs.VU;
             olevel =
                 alevel > olevel ?
-                alevel * 0.5 + olevel * 0.5 :
-                alevel * 0.1 + olevel * 0.9;
+                alevel * 0.30 + olevel * 0.70 :
+                alevel * 0.06 + olevel * 0.94;
             this.Invalidate();
         }
         protected override void OnPaintBackground(PaintEventArgs pevent)

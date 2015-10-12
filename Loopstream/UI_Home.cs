@@ -219,6 +219,8 @@ namespace Loopstream
             settings.mixer.bRec = gMusic.enabled;
             settings.mixer.bMic = gMic.enabled;
             settings.mixer.bOut = gOut.enabled;
+            settings.mixer.xRec = gMusic.boost;
+            settings.mixer.xMic = gMic.boost;
 
             if (mixer != null)
             {
@@ -231,14 +233,21 @@ namespace Loopstream
                 if (sender == gMusic) sl = LSMixer.Slider.Music;
                 if (sender == gMic) sl = LSMixer.Slider.Mic;
                 double dur = 0;
-                if (((Verter)sender).eventType == Verter.EventType.slide)
+
+                Verter.EventType et = ((Verter)sender).eventType;
+
+                if (et == Verter.EventType.slide)
                 {
                     //dur = (float)(settings.mixer.vSpd);
                     dur = settings.mixer.vSpd;
                 }
-                if (((Verter)sender).eventType == Verter.EventType.mute)
+                if (et == Verter.EventType.mute)
                 {
                     mixer.MuteChannel(sl, ((Verter)sender).enabled);
+                }
+                else if (et == Verter.EventType.boost)
+                {
+                    mixer.BoostChannel(sl, (float)((Verter)sender).boost);
                 }
                 else
                 {
@@ -256,6 +265,8 @@ namespace Loopstream
             gMusic.enabled = settings.mixer.bRec;
             gMic.enabled = settings.mixer.bMic;
             gOut.enabled = settings.mixer.bOut;
+            gMusic.boost = settings.mixer.xRec;
+            gMic.boost = settings.mixer.xMic;
 
             // you should probably fix this
             if (mixer != null)
@@ -266,6 +277,11 @@ namespace Loopstream
                 gSlider_valueChanged(gMusic, null);
                 gSlider_valueChanged(gMic, null);
                 gSlider_valueChanged(gOut, null);
+
+                gMusic.eventType = Verter.EventType.boost;
+                gMic.eventType = Verter.EventType.boost;
+                gSlider_valueChanged(gMusic, null);
+                gSlider_valueChanged(gMic, null);
             }
         }
 
@@ -525,6 +541,9 @@ namespace Loopstream
             {
                 gConnect.Enabled = true;
             }
+
+            if (settings.mixer.xRec < gMusic.boost) gMusic.boost = settings.mixer.xRec;
+            if (settings.mixer.xMic < gMic.boost) gMic.boost = settings.mixer.xMic;
         }
 
         long lastclick = 0;

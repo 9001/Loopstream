@@ -13,19 +13,22 @@ namespace Loopstream
         {
             public double vRec, vMic, vSpd, vOut;
             public bool bRec, bMic, bOut;
+            public double xRec, xMic;
 
             public LSPreset()
             {
             }
-            public LSPreset(double srec, double smic, double sspd, double sout, bool erec, bool emic, bool eout)
+            public LSPreset(double vrec, double vmic, double vspd, double vout, bool brec, bool bmic, bool bout, double xrec, double xmic)
             {
-                vRec = srec;
-                vMic = smic;
-                vSpd = sspd;
-                vOut = sout;
-                bRec = erec;
-                bMic = emic;
-                bOut = eout;
+                vRec = vrec;
+                vMic = vmic;
+                vSpd = vspd;
+                vOut = vout;
+                bRec = brec;
+                bMic = bmic;
+                bOut = bout;
+                xRec = xrec;
+                xMic = xmic;
             }
             public void apply(LSPreset preset)
             {
@@ -36,6 +39,8 @@ namespace Loopstream
                 bRec = preset.bRec;
                 bMic = preset.bMic;
                 bOut = preset.bOut;
+                xRec = preset.xRec;
+                xMic = preset.xMic;
             }
         }
 
@@ -197,10 +202,10 @@ namespace Loopstream
             metas = new List<LSMeta>();
 
             presets = new LSPreset[] {
-                new LSPreset(1.00, 0, 0.6, 1, true, true, false),
-                new LSPreset(0.25, 1, 0.6, 1, true, true, false),
-                new LSPreset(1.00, 0, 0.6, 1, true, true, true),
-                new LSPreset(0.25, 1, 0.6, 1, true, true, true),
+                new LSPreset(1.00, 0, 0.6, 1, true, true, false, 1, 1),
+                new LSPreset(0.25, 1, 0.6, 1, true, true, false, 1, 1),
+                new LSPreset(1.00, 0, 0.6, 1, true, true, true, 1, 1),
+                new LSPreset(0.25, 1, 0.6, 1, true, true, true, 1, 1),
             };
             //presets[0] = new LSPreset(1, 1, 0.32, 1, true, true, true); //DEBUG
             //presets[0] = new LSPreset(0.5, 0.875, 0.32, 0.75, true, true, true); //DEBUG
@@ -374,6 +379,17 @@ namespace Loopstream
                     //using (var s = System.IO.File.OpenRead("Loopstream.ini"))
                     {
                         ret = (LSSettings)x.Deserialize(s);
+
+                        //
+                        //  Upgrade from v1.2.8.0
+                        //
+                        if (ret.mixer.xRec < 1) ret.mixer.xRec = 1;
+                        if (ret.mixer.xMic < 1) ret.mixer.xMic = 1;
+                        foreach (LSSettings.LSPreset pre in ret.presets)
+                        {
+                            if (pre.xRec < 1) pre.xRec = 1;
+                            if (pre.xMic < 1) pre.xMic = 1;
+                        }
                     }
                 }
                 catch (Exception e)

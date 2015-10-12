@@ -317,6 +317,9 @@ namespace NPatch
         float absDelta;
         public bool muted;
 
+        public float boost;
+        public bool attenuated;
+
         //public event EventHandler vuc;
         public bool enVU;
         public double VU { get; private set; }
@@ -331,6 +334,9 @@ namespace NPatch
             targetVolume = 1;
             enVU = false;
             VU = 1;
+
+            attenuated = false;
+            boost = 1;
         }
 
         public void SetVolume(float volume)
@@ -367,10 +373,12 @@ namespace NPatch
                     {
                         amp = Math.Max(amp, buffer[offset + a]);
                     }
-                    VU = amp;
+                    amp *= boost;
+                    VU = amp > 1 ? 1 : amp;
                 }
                 lock (lockObject)
                 {
+                    float nboost = boost;
                     if (currentVolume == targetVolume && targetVolume == 0 || muted)
                     {
                         ClearBuffer(buffer, offset, count);
@@ -388,9 +396,20 @@ namespace NPatch
 
                             for (int ch = 0; ch < source.WaveFormat.Channels; ch++)
                             {
-                                buffer[offset + sample++] *= currentVolume;
+                                float v = buffer[offset + sample] * currentVolume * nboost;
+                                if (v > 1)
+                                {
+                                    nboost /= v;
+                                    v = 1;
+                                }
+                                buffer[offset + sample++] = v;
                             }
                         }
+                    }
+                    if (nboost < boost)
+                    {
+                        boost = nboost;
+                        attenuated = true;
                     }
                 }
                 //Console.WriteLine("{0:000000} {1:000000}", count, sourceSamplesRead);
