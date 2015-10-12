@@ -15,11 +15,15 @@ namespace Loopstream
         public string manual;
         LSSettings settings;
         bool haveFailed;
+        bool quitting;
 
         public LSTag(LSSettings set)
         {
+            Logger.tag.a("init");
+
             tag = "";
             settings = set;
+            quitting = false;
             haveFailed = false;
             latin1 = Encoding.GetEncoding("ISO_8859-1");
             
@@ -30,8 +34,14 @@ namespace Loopstream
             t.Start();
         }
 
+        public void Dispose()
+        {
+            quitting = true;
+        }
+
         public void set(string str)
         {
+            Logger.tag.a("set " + str);
             manual = str;
         }
 
@@ -164,6 +174,7 @@ namespace Loopstream
 
         public static string get(LSSettings.LSMeta m, string raw)
         {
+            Logger.tag.a("get " + raw);
             if (m.reader == LSSettings.LSMeta.Reader.ProcessMemory)
             {
                 throw new Exception("if you are seeing this, go whine to ed");
@@ -193,7 +204,8 @@ namespace Loopstream
                 settings.mp3.enabled ? new Est("", settings.mp3) : null,
                 settings.ogg.enabled ? new Est("", settings.ogg) : null,
             };
-            while (true)
+            Logger.tag.a("active");
+            while (!quitting)
             {
                 LSSettings.LSMeta m = settings.meta;
                 tag = settings.tagAuto ? get(m, false) : manual;
@@ -213,6 +225,7 @@ namespace Loopstream
                 }
                 System.Threading.Thread.Sleep(settings.meta.freq);
             }
+            Logger.tag.a("disposed");
         }
 
         void sendTags(Est est)
@@ -230,6 +243,7 @@ namespace Loopstream
             }
             try
             {
+                Logger.tag.a("send " + est.enc.ext + " " + est.tag);
                 using (System.Net.WebClient wc = new System.Net.WebClient())
                 {
                     wc.Headers.Add("Authorization: Basic " + auth);
@@ -241,6 +255,7 @@ namespace Loopstream
                         est.enc.ext,
                         meta));
 
+                    Logger.tag.a(est.enc.ext + " socket ok");
                     if (!haveFailed && !msg.Contains("<return>1</return>"))
                     {
                         haveFailed = true;
@@ -254,6 +269,7 @@ namespace Loopstream
             }
             catch
             {
+                Logger.tag.a(est.enc.ext + " send fail");
                 tag = "Meta-fail " + est.enc.ext;
             }
         }

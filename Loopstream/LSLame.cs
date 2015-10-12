@@ -11,8 +11,11 @@ namespace Loopstream
     {
         public LSLame(LSSettings settings, LSPcmFeed pimp)
         {
+            logger = Logger.mp3;
+
             this.pimp = pimp;
             this.settings = settings;
+            logger.a("creating lame object");
             proc = new System.Diagnostics.Process();
             proc.StartInfo.FileName = Program.tools + "lame.exe";
             proc.StartInfo.WorkingDirectory = Program.tools.Trim('\\');
@@ -28,16 +31,22 @@ namespace Loopstream
                 (settings.mp3.channels == LSSettings.LSChannels.stereo ? "j" : "s -a"),
                 settings.samplerate);
 
+            logger.a("starting lame");
             proc.Start();
             while (true)
             {
+                logger.a("waiting for lame");
                 try
                 {
                     proc.Refresh();
                     if (proc.Modules.Count > 1) break;
+
+                    logger.a("modules: " + proc.Modules.Count);
+                    System.Threading.Thread.Sleep(10);
                 }
                 catch { }
             }
+            logger.a("lame running");
             pstdin = proc.StandardInput.BaseStream;
             pstdout = proc.StandardOutput.BaseStream;
             dump = settings.recMp3;

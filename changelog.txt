@@ -3,6 +3,12 @@
 + new feature
 ~ other change
 
+2013-08-11, 01:13:07 - Loopstream 1.2.7.4
+  + Proper logging framework with history display
+  ~ Warning if soundcard config no longer valid
+  ~ Connect button says Disconnect when online
+  = Race condition in LAME startup
+
 2013-08-05, 21:09:51 - Loopstream 1.2.6.0
   = YOUR SOUNDCARD WORKS PERFECTLY would crash the program if interrupted
 

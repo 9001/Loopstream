@@ -334,7 +334,8 @@ namespace Loopstream
 
                     int myVer = version();
                     int iniVer = Convert.ToInt32(ver, 16);
-                    if (myVer != iniVer)
+                    //if (myVer != iniVer)
+                    if (iniVer < 0x01020600)
                     {
                         byte[] bver = BitConverter.GetBytes(iniVer);
                         Array.Reverse(bver);

@@ -9,13 +9,16 @@ namespace Loopstream
     {
         int quitting;
         object locker;
+        bool shuttingDown;
         LSSettings settings;
         List<LSEncoder> encoders;
         NPatch.Fork.Outlet outlet;
         NAudio.Wave.SampleProviders.SampleToWaveProvider16 wp16;
         public LSPcmFeed(LSSettings settings, NPatch.Fork.Outlet outlet)
         {
+            Logger.pcm.a("pcm init");
             locker = new object();
+            shuttingDown = false;
             quitting = 0;
             this.outlet = outlet;
             this.settings = settings;
@@ -25,32 +28,36 @@ namespace Loopstream
             t.Name = "LSPcm_Prism";
             t.Start();
         }
-        public void Dispose()
+        public void Dispose(ref string tex)
         {
-            lock (locker)
+            Logger.pcm.a("dispose called");
+            shuttingDown = true;
+            quitting = 2 + encoders.Count;
+            System.Threading.Thread.Sleep(1000);
+
+            /*for (int a = 0; a < 10; a++)
             {
-                quitting = 2 + encoders.Count;
-            }
-            for (int a = 0; a < 100; a++)
-            {
-                lock (locker)
-                {
-                    if (quitting <= 0) break;
-                }
+                if (quitting <= 0) break;
                 System.Threading.Thread.Sleep(1);
-            }
+            }*/
+            Logger.pcm.a("nuke encoders");
             foreach (LSEncoder enc in encoders)
             {
+                Logger.pcm.a("nuke " + enc.enc.ext);
                 enc.Dispose();
             }
+            Logger.pcm.a("disposed");
+            tex = "disconnected";
         }
         void dicks()
         {
+            Logger.pcm.a("prism thread");
             long bufSize = settings.samplerate * 10;
             byte[] buffer = new byte[bufSize * 4];
             System.IO.FileStream w = null;
             if (settings.recPCM)
             {
+                Logger.pcm.a("open dump target");
                 w = new System.IO.FileStream(string.Format("Loopstream-{0}.pcm", DateTime.Now.ToString("yyyy-MM-dd_HH.mm.ss")), System.IO.FileMode.Create);
             }
 
@@ -69,39 +76,60 @@ namespace Loopstream
             //outlet.setReadPtr(0.2);
             
             // PCM reader loop, passing on to encoders/shouters
-            while (true)
+            //List<string> toclip = new List<string>();
+            try
             {
-                if (qt()) break;
-                int avail = outlet.avail();
-                if (avail > 1024)
+                while (true)
                 {
-                    //Console.Write('.');
-                    int i = wp16.Read(buffer, 0, (outlet.avail() / 4) * 4);
-                    lock (locker)
+                    if (qt()) break;
+                    int avail = outlet.avail();
+                    if (avail > 1024)
                     {
-                        for (int a = 0; a < encoders.Count; a++)
+                        //Console.Write('.');
+                        Logger.pcm.a("reading pcm data");
+                        int i = wp16.Read(buffer, 0, (outlet.avail() / 4) * 4);
+                        //toclip.Add((DateTime.UtcNow.Ticks / 10000) + ", " + i);
+                        Logger.pcm.a("locking for write");
+                        lock (locker)
                         {
-                            LSEncoder enc = encoders[a];
-                            if (!enc.crashed && enc.stdin != null)
+                            for (int a = 0; a < encoders.Count; a++)
                             {
-                                enc.stdin.Write(buffer, 0, i);
-                                enc.stdin.Flush();
+                                LSEncoder enc = encoders[a];
+                                if (!enc.crashed && enc.stdin != null)
+                                {
+                                    Logger.pcm.a("writing to " + enc.enc.ext);
+                                    enc.stdin.Write(buffer, 0, i);
+                                    enc.stdin.Flush();
+                                }
                             }
                         }
+                        if (w != null)
+                        {
+                            Logger.pcm.a("writing to dump");
+                            w.Write(buffer, 0, i);
+                        }
                     }
-                    if (w != null)
-                    {
-                        w.Write(buffer, 0, i);
-                    }
+                    Logger.pcm.a("waiting for pcm data");
+                    System.Threading.Thread.Sleep(70); // value selected by fair dice roll
+
+                    //if (toclip.Count > 1000) break;
                 }
-                System.Threading.Thread.Sleep(10);
             }
+            catch
+            {
+                System.Windows.Forms.MessageBox.Show("pcm reader / enc prism just died\r\n\r\nthought you might want to know");
+            }
+            //StringBuilder sb = new StringBuilder();
+            //foreach (string str in toclip) sb.AppendLine(str);
+            //System.IO.File.WriteAllText("asdf", sb.ToString());
+
             Console.WriteLine("shutting down encoder prism");
             if (w != null) w.Close();
         }
 
         void medic()
         {
+            Logger.med.a("active");
             while (true)
             {
                 if (qt()) break;
@@ -110,6 +138,7 @@ namespace Loopstream
                     LSEncoder enc = encoders[a];
                     if (enc.crashed)
                     {
+                        Logger.pcm.a("resurrecting " + enc.enc.ext);
                         enc.Dispose();
                         try
                         {
@@ -130,23 +159,28 @@ namespace Loopstream
                             {
                                 encoders[a] = enc;
                             }
+                            Logger.pcm.a("resurrected " + enc.enc.ext);
                         }
                         catch
                         {
+                            Logger.pcm.a("resurrect failure: " + enc.enc.ext);
                             Program.ni.ShowBalloonTip(1000, "Connection error", "Failed to restart " + enc.enc.ext, System.Windows.Forms.ToolTipIcon.Error);
                         }
                     }
                 }
                 System.Threading.Thread.Sleep(10);
             }
+            Logger.med.a("disposed");
         }
 
         public bool qt()
         {
+            return shuttingDown;
             lock (locker)
             {
                 if (quitting > 0)
                 {
+                    Logger.pcm.a("qt()--");
                     quitting--;
                     return true;
                 }

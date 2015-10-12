@@ -352,11 +352,11 @@
             // 
             this.label3.AutoSize = true;
             this.label3.ForeColor = System.Drawing.SystemColors.ControlDark;
-            this.label3.Location = new System.Drawing.Point(103, 161);
+            this.label3.Location = new System.Drawing.Point(90, 161);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(60, 13);
+            this.label3.Size = new System.Drawing.Size(71, 13);
             this.label3.TabIndex = 9;
-            this.label3.Text = "test wasapi";
+            this.label3.Text = "Status viewer";
             this.label3.Click += new System.EventHandler(this.label3_Click);
             // 
             // gSettings

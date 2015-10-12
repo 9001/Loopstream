@@ -11,8 +11,11 @@ namespace Loopstream
     {
         public LSVorbis(LSSettings settings, LSPcmFeed pimp) : base()
         {
+            logger = Logger.ogg;
+
             this.pimp = pimp;
             this.settings = settings;
+            logger.a("creating oggenc object");
             proc = new System.Diagnostics.Process();
             proc.StartInfo.FileName = Program.tools + "oggenc2.exe";
             proc.StartInfo.WorkingDirectory = Program.tools.Trim('\\');
@@ -27,20 +30,26 @@ namespace Loopstream
                 (settings.ogg.compression == LSSettings.LSCompression.cbr ? settings.ogg.bitrate : settings.ogg.quality),
                 (settings.ogg.channels == LSSettings.LSChannels.stereo ? "" : "--downmix"));
 
+            logger.a("starting oggenc");
             proc.Start();
             while (true)
             {
+                logger.a("waiting for oggenc");
                 try
                 {
                     proc.Refresh();
                     if (proc.Modules.Count > 1) break;
+
+                    logger.a("modules: " + proc.Modules.Count);
+                    System.Threading.Thread.Sleep(10);
                 }
                 catch { }
             }
-            foreach (System.Diagnostics.ProcessModule mod in proc.Modules)
+            /*foreach (System.Diagnostics.ProcessModule mod in proc.Modules)
             {
                 Console.WriteLine(mod.ModuleName + " // " + mod.FileName);
-            }
+            }*/
+            logger.a("oggenc running");
             pstdin = proc.StandardInput.BaseStream;
             pstdout = proc.StandardOutput.BaseStream;
             dump = settings.recOgg;

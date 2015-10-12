@@ -13,6 +13,7 @@ namespace Loopstream
         object locker;
         protected bool dump;
         protected Process proc;
+        protected Logger logger;
         protected LSPcmFeed pimp;
         protected LSSettings settings;
         public LSSettings.LSParams enc;
@@ -42,6 +43,7 @@ namespace Loopstream
 
         protected void makeShouter()
         {
+            logger.a("make shouter");
             System.Net.Sockets.NetworkStream prepS;
             string ver = Application.ProductVersion;
             string auth = "source:" + settings.pass;
@@ -100,12 +102,16 @@ namespace Loopstream
             string str = "(no reply)";
             try
             {
+                logger.a("making socket");
                 tc = new System.Net.Sockets.TcpClient();
                 tc.Connect(settings.host, settings.port);
+                logger.a("socket connected");
                 prepS = tc.GetStream();
                 prepS.Write(header, 0, header.Length);
+                logger.a("headers sent");
                 int i = prepS.Read(header, 0, header.Length);
                 str = System.Text.Encoding.UTF8.GetString(header, 0, i);
+                logger.a("socket alive");
             }
             catch (Exception e)
             {
@@ -120,6 +126,7 @@ namespace Loopstream
             }
             else if (str.StartsWith("HTTP/1.0 200 OK"))
             {
+                logger.a("bootstrap");
                 s = prepS;
                 stampee = 0;
                 stdin = pstdin;
@@ -148,6 +155,7 @@ namespace Loopstream
         public long[] stamps;
         protected void reader()
         {
+            logger.a("reader thread");
             System.IO.FileStream m = null;
             if (dump)
             {
@@ -157,38 +165,52 @@ namespace Loopstream
             }
             long bufSize = settings.samplerate * 10;
             byte[] buffer = new byte[bufSize * 4];
-            while (true)
+            try
             {
-                if (pimp.qt()) break;
-                //Console.Write('!');
-                int i = stdout.Read(buffer, 0, 4096);
-                if (m != null)
+                while (true)
                 {
-                    m.Write(buffer, 0, i);
+                    if (pimp.qt()) break;
+                    //Console.Write('!');
+                    logger.a("awaiting encoder output");
+                    int i = stdout.Read(buffer, 0, 4096);
+                    if (m != null)
+                    {
+                        logger.a("writing file");
+                        m.Write(buffer, 0, i);
+                    }
+                    try
+                    {
+                        logger.a("writing socket");
+                        s.Write(buffer, 0, i);
+                    }
+                    catch
+                    {
+                        logger.a("socket write failed");
+                        enc.FIXME_kbps = -1;
+                        crashed = true;
+                        break;
+                    }
+
+                    // speed measuring
+                    logger.a("speed measure");
+                    lock (locker)
+                    {
+                        chunks[stampee] = i;
+                        stamps[stampee] = DateTime.UtcNow.Ticks / 10000;
+                        stampee = ++stampee < stamps.Length ? stampee : 0;
+                    }
                 }
-                try
-                {
-                    s.Write(buffer, 0, i);
-                }
-                catch
-                {
-                    enc.FIXME_kbps = -1;
-                    crashed = true;
-                    break;
-                }
-                
-                // speed measuring
-                lock (locker)
-                {
-                    chunks[stampee] = i;
-                    stamps[stampee] = DateTime.UtcNow.Ticks / 10000;
-                    stampee = ++stampee < stamps.Length ? stampee : 0;
-                }
+            }
+            catch (Exception ex)
+            {
+                logger.a("encoder readloop crash");
+                //Program.ni.ShowBalloonTip("an encoder reading thread just crashed\r\n\r\nthought you might want to know");
             }
             string fn = proc.StartInfo.FileName;
             fn = fn.Substring(fn.Replace('\\', '/').LastIndexOf('/') + 1).Split('.')[0];
             Console.WriteLine("shutting down " + fn);
             if (m != null) m.Close();
+            logger.a("mp3data readloop closed");
         }
 
         void counter()
@@ -210,16 +232,28 @@ namespace Loopstream
 
         public void Dispose()
         {
+            logger.a("dispose called");
             enc.FIXME_kbps = -1;
             stdin = stdout = null;
             crashed = true;
-            proc.Kill();
             try
             {
+                logger.a("proc dispose");
+                proc.Kill();
+            }
+            catch
+            {
+                logger.a("proc dispose failure");
+                // how can you kill that which is already dead
+            }
+            try
+            {
+                logger.a("socket dispose");
                 tc.Close();
             }
             catch
             {
+                logger.a("socket dispose failure");
                 // you took a nuke to the head and you're worrying about a socket?
             }
         }

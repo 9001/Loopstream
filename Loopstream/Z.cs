@@ -11,6 +11,94 @@ using System.Windows.Forms;
 
 namespace Loopstream
 {
+    public class Logger
+    {
+        public static Logger mp3, ogg, pcm, med, mix, tag, app;
+        public static void init()
+        {
+            pcm = new Logger();
+            med = new Logger();
+            mix = new Logger();
+            mp3 = new Logger();
+            ogg = new Logger();
+            tag = new Logger();
+            app = new Logger();
+        }
+        public long i, msg;
+        
+        Entry[] buf;
+        public class Entry
+        {
+            public long tick;
+            public long num;
+            public string msg;
+            public Entry()
+            {
+                tick = num = -1;
+                msg = "";
+            }
+        }
+        
+        object locker;
+        public Logger()
+        {
+            locker = new object();
+            
+            i = msg = 0;
+            buf = new Entry[1024];
+            for (int a = 0; a < buf.Length; a++)
+            {
+                buf[a] = new Entry();
+            }
+        }
+        public override string ToString()
+        {
+            Entry e;
+            lock (locker)
+            {
+                e = buf[i];
+            }
+            if (e.tick <= 0) return "not active";
+            return new DateTime(e.tick, DateTimeKind.Utc)
+                .ToString("yyyy-MM-dd HH:mm:ss.ffff") +
+                " " + e.num.ToString().PadLeft(7) +
+                " | " + e.msg;
+        }
+        public void a(string text)
+        {
+            lock (locker)
+            {
+                if (text == buf[i].msg)
+                {
+                    buf[i].num = ++msg;
+                    return;
+                }
+                if (++i >= buf.Length) i = 0;
+                Entry e = buf[i];
+                e.msg = text;
+                e.num = ++msg;
+                e.tick = DateTime.UtcNow.Ticks;
+            }
+        }
+        public string compile()
+        {
+            StringBuilder ret = new StringBuilder();
+            lock (locker)
+            {
+                long o = i;
+                while (true)
+                {
+                    if (buf[i].num >= 0)
+                    {
+                        ret.AppendLine(ToString());
+                    }
+                    if (--i < 0) i = buf.Length - 1;
+                    if (i == o) break;
+                }
+            }
+            return ret.ToString();
+        }
+    }
     public class LSMem
     {
         [Flags]

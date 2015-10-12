@@ -40,6 +40,8 @@ namespace Loopstream
         LSTag tag;
         Control[] invals; //sorry
         string lqMessage; //sorry
+        string daText = "Connect";
+        string wincap;
 
         private void Form1_Load(object sender, EventArgs e)
         {
@@ -57,9 +59,8 @@ namespace Loopstream
         void t_Tick(object sender, EventArgs e)
         {
             ((Timer)sender).Stop();
-            this.Text += " v" + Application.ProductVersion
-                //+ "-kilim-1"
-                ;
+            wincap = this.Text + " v" + Application.ProductVersion;
+            this.Text = wincap;
             
             DFC.coreTest();
             if (Directory.Exists(@"..\..\tools\"))
@@ -172,6 +173,19 @@ namespace Loopstream
             tTitle.Interval = 200;
             tTitle.Start();
             showhide();
+
+            if (settings.testDevs &&
+                settings.devOut == null ||
+                settings.devRec == null ||
+                settings.devOut.wf == null ||
+                settings.devRec.wf == null || (
+                settings.devMic != null &&
+                settings.devMic.wf == null))
+            {
+                MessageBox.Show("The soundcard devices you selected have been disabled or removed." +
+                    "\r\n\r\nPlease check your privilege...uh, settings before connecting.",
+                    "oh snap nigga", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
         }
 
         bool invalOnNext;
@@ -280,20 +294,38 @@ namespace Loopstream
             }
             if (gConnect.Text == "Connect")
             {
-                gConnect.Text = "D I S C O N N E C T";
+                Program.ni.ContextMenu.MenuItems[1].Text = "Disconnect";
+                daText = "D I S C O N N E C T";
+                gConnect.Text = daText;
                 tag = new LSTag(settings);
                 mixer = new LSMixer(settings);
                 pcm = new LSPcmFeed(settings, mixer.lameOutlet);
             }
             else
             {
+                Program.ni.ContextMenu.MenuItems[1].Text = "Connect";
                 if (pMessage.Visible) gLowQ_Click(sender, e);
-                gConnect.Text = "Connect";
-                mixer.Dispose();
-                pcm.Dispose();
+
+                daText = "disconnecting...";
+                gConnect.Enabled = false;
+                gConnect.Text = daText;
+                Application.DoEvents();
+
+                System.Threading.Thread t = new System.Threading.Thread(new System.Threading.ThreadStart(discthread));
+                t.Name = "LS_DISC";
+                t.Start();
             }
-            //Program.ni.ContextMenuStrip.Items[1].Text = gConnect.Text == "Connect" ? "Connect" : "Disconnect";
-            Program.ni.ContextMenu.MenuItems[1].Text = gConnect.Text == "Connect" ? "Connect" : "Disconnect";
+        }
+
+        void discthread()
+        {
+            daText = "kill_tag";
+            tag.Dispose();
+            daText = "kill_pcm";
+            pcm.Dispose(ref daText);
+            daText = "kill_mixer";
+            mixer.Dispose(ref daText);
+            daText = "Connect";
         }
 
         private void gSettings_Click(object sender, EventArgs e)
@@ -346,6 +378,10 @@ namespace Loopstream
         }
 
         private void label3_Click(object sender, EventArgs e)
+        {
+            new UI_Status().Show();
+        }
+        void helloworld(object sender, EventArgs e)
         {
             if (settings.devRec == null || settings.devRec.mm == null)
             {
@@ -448,14 +484,35 @@ namespace Loopstream
                 pMessage.Visible = true;
             }
             if (tag == null) return;
-            this.Text = string.Format("{0:0.00} // {1:0.00} // {2}",
-                Math.Round(settings.mp3.FIXME_kbps, 2),
-                Math.Round(settings.ogg.FIXME_kbps, 2),
-                tag.tag);
+
+            if (settings.mp3.FIXME_kbps <= 1 && settings.ogg.FIXME_kbps <= 1)
+            {
+                if (daText == "Connect")
+                {
+                    this.Text = wincap;
+                }
+                else
+                {
+                    this.Text = "- C O N N E C T I N G -";
+                }
+            }
+            else
+            {
+                this.Text = string.Format("{0:0.00} // {1:0.00} // {2}",
+                    Math.Round(settings.mp3.FIXME_kbps, 2),
+                    Math.Round(settings.ogg.FIXME_kbps, 2),
+                    tag.tag);
+            }
             
             if (settings.tagAuto)
             {
                 gTag.Text = tag.tag;
+            }
+            
+            gConnect.Text = daText;
+            if (daText == "Connect")
+            {
+                gConnect.Enabled = true;
             }
         }
 

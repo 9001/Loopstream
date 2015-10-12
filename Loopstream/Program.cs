@@ -14,7 +14,7 @@ namespace Loopstream
         public static NotifyIcon ni;
         public static string tools;
         public static bool SIGNMODE;
-        public static System.IO.StreamWriter log;
+        //public static System.IO.StreamWriter log;
 
         /// <summary>
         /// The main entry point for the application.
@@ -68,7 +68,8 @@ namespace Loopstream
             tools = tools.Substring(tools.Replace('\\', '/').LastIndexOf('/') + 1);
             tools = tools.Split('.')[0];
             tools += "Tools\\";
-
+            
+            Logger.init();
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(new Home());

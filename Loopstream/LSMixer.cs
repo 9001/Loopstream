@@ -27,13 +27,14 @@ namespace Loopstream
         public NPatch.Fork.Outlet lameOutlet;
         public string isLQ;
 
-        public void Dispose()
+        public void Dispose(ref string tex)
         {
-            if (recCap != null) recCap.StopRecording();
-            if (micCap != null) micCap.StopRecording();
-            if (mixOut != null) mixOut.Dispose();
-            if (recRe != null) recRe.Dispose();
-            if (micRe != null) micRe.Dispose();
+            Logger.mix.a("dispose recCap"); tex = "recCap"; if (recCap != null) recCap.StopRecording();
+            Logger.mix.a("dispose micCap"); tex = "micCap"; if (micCap != null) micCap.StopRecording();
+            Logger.mix.a("dispose mixOut"); tex = "mixOut"; if (mixOut != null) mixOut.Dispose();
+            Logger.mix.a("dispose recRe"); tex = "recRe"; if (recRe != null) recRe.Dispose();
+            Logger.mix.a("dispose micRe"); tex = "micRe"; if (micRe != null) micRe.Dispose();
+            Logger.mix.a("disposed");
         }
 
         public enum Slider
@@ -45,6 +46,7 @@ namespace Loopstream
 
         public LSMixer(LSSettings settings)
         {
+            Logger.mix.a("creating");
             this.settings = settings;
             isLQ = null;
             doMagic();
@@ -52,18 +54,21 @@ namespace Loopstream
 
         void doMagic()
         {
+            Logger.mix.a("doMagic");
             string lq = "";
             recRe = micRe = null;
             ISampleProvider recProv, micProv;
             format = WaveFormat.CreateIeeeFloatWaveFormat(settings.samplerate, 2);
             //mixer = new MixingSampleProvider(format);
             mixa = new NPatch.Mixa(format);
-            
+
+            Logger.mix.a("create rec");
             recCap = new WasapiLoopbackCapture(settings.devRec.mm);
             recCap.DataAvailable += recDev_DataAvailable_03;
             recIn = new BufferedWaveProvider(recCap.WaveFormat);
             if (recCap.WaveFormat.SampleRate != settings.samplerate)
             {
+                Logger.mix.a("create rec resampler");
                 recRe = new MediaFoundationResampler(recIn, settings.samplerate);
                 recRe.ResamplerQuality = 60;
                 lq += "Incorrect samplerate on music device, resampling\n" +
@@ -76,14 +81,17 @@ namespace Loopstream
             recProv = new WaveToSampleProvider((IWaveProvider)recRe ?? (IWaveProvider)recIn);
             recVol = new NPatch.VolumeSlider(recProv);
             mixa.AddMixerInput(recVol);
-
+            Logger.mix.a("rec done");
+            
             if (settings.devMic != null && settings.devMic.mm != null)
             {
+                Logger.mix.a("create mic");
                 micCap = new WasapiCapture(settings.devMic.mm);
                 micCap.DataAvailable += micDev_DataAvailable_03;
                 micIn = new BufferedWaveProvider(micCap.WaveFormat);
                 if (micCap.WaveFormat.SampleRate != settings.samplerate)
                 {
+                    Logger.mix.a("create mic resampler");
                     micRe = new MediaFoundationResampler(micIn, settings.samplerate);
                     micRe.ResamplerQuality = 60;
                     lq += "Incorrect samplerate on microphone device, resampling\n" +
@@ -96,17 +104,21 @@ namespace Loopstream
                 micProv = new WaveToSampleProvider((IWaveProvider)micRe ?? (IWaveProvider)micIn);
                 if (micCap.WaveFormat.Channels == 1)
                 {
+                    Logger.mix.a("mic mono2stereo");
                     micProv = new MonoToStereoSampleProvider(micProv);
                 }
                 else if (settings.micLeft != settings.micRight)
                 {
+                    Logger.mix.a("mic chanselector");
                     micProv = new NPatch.ChannelSelector(micProv, settings.micLeft ? 0 : 1);
                 }
                 micVol = new NPatch.VolumeSlider(micProv);
                 mixa.AddMixerInput(micVol);
+                Logger.mix.a("mic done");
             }
             else
             {
+                Logger.mix.a("mic skipped");
                 micVol = new NPatch.VolumeSlider();
             }
 
@@ -116,24 +128,26 @@ namespace Loopstream
             outVol = new NPatch.VolumeSlider(fork.providers[0]);
             muxer = new SampleToWaveProvider(outVol);
 
+            Logger.mix.a("init mixer vol");
             recVol.SetVolume((float)settings.mixer.vRec);
             micVol.SetVolume((float)settings.mixer.vMic);
             outVol.SetVolume((float)settings.mixer.vOut);
             recVol.muted = !settings.mixer.bRec;
             micVol.muted = !settings.mixer.bMic;
             outVol.muted = !settings.mixer.bOut;
-            
+
+            Logger.mix.a("create mixOut");
             mixOut = new WasapiOut(settings.devOut.mm,
                 AudioClientShareMode.Shared, false, 100);
 
-            mixOut.Init(outVol);
-            recCap.StartRecording();
+            Logger.mix.a("init mixOut"); mixOut.Init(outVol);
+            Logger.mix.a("rec.startRec"); recCap.StartRecording();
             //System.Threading.Thread.Sleep(100);
             if (settings.devMic != null && settings.devMic.mm != null)
             {
-                micCap.StartRecording();
+                Logger.mix.a("mic.startRec"); micCap.StartRecording();
             }
-            mixOut.Play();
+            Logger.mix.a("mixOut.play (ready)"); mixOut.Play();
 
             if (!string.IsNullOrEmpty(lq)) isLQ = lq;
 
@@ -149,6 +163,7 @@ namespace Loopstream
 
         public void FadeVolume(Slider slider, float vol, double seconds)
         {
+            Logger.mix.a("fadeVol " + slider + " to " + vol + " over " + seconds);
             if (slider == Slider.Music) recVol.SetVolume(vol, seconds);
             if (slider == Slider.Mic) micVol.SetVolume(vol, seconds);
             if (slider == Slider.Out) outVol.SetVolume(vol, seconds);
@@ -157,6 +172,7 @@ namespace Loopstream
 
         public void MuteChannel(Slider slider, bool notMuted)
         {
+            Logger.mix.a("mute " + slider + " " + !notMuted);
             //if (slider == Slider.Music) recVol.SetVolume(notMuted ? (float)settings.mixer.vRec : 0);
             //if (slider == Slider.Mic) micVol.SetVolume(notMuted ? (float)settings.mixer.vMic : 0);
             //if (slider == Slider.Out) outVol.SetVolume(notMuted ? (float)settings.mixer.vOut : 0);
