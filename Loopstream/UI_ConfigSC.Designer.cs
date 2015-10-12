@@ -89,13 +89,14 @@
             this.gOggBitrate = new System.Windows.Forms.RadioButton();
             this.gOggMono = new System.Windows.Forms.RadioButton();
             this.tpTags = new System.Windows.Forms.TabPage();
+            this.gTagAuto = new System.Windows.Forms.CheckBox();
             this.gMeta = new System.Windows.Forms.ComboBox();
-            this.label16 = new System.Windows.Forms.Label();
             this.gTagsAdvanced = new System.Windows.Forms.Button();
             this.pTagsAdvanced2 = new System.Windows.Forms.Panel();
             this.gDelete = new System.Windows.Forms.Button();
             this.gLatinize = new System.Windows.Forms.CheckBox();
             this.pTagAdvanced1 = new System.Windows.Forms.Panel();
+            this.label26 = new System.Windows.Forms.Label();
             this.gGroup = new System.Windows.Forms.TextBox();
             this.label17 = new System.Windows.Forms.Label();
             this.gEncodingL = new System.Windows.Forms.Label();
@@ -124,12 +125,14 @@
             this.gSplash = new System.Windows.Forms.CheckBox();
             this.pTabs = new System.Windows.Forms.Panel();
             this.label5 = new System.Windows.Forms.Label();
+            this.label12 = new System.Windows.Forms.Label();
+            this.tt = new System.Windows.Forms.ToolTip(this.components);
             this.hTags = new Loopstream.TLabel();
             this.hEncoders = new Loopstream.TLabel();
             this.hServer = new Loopstream.TLabel();
             this.hSoundcard = new Loopstream.TLabel();
-            this.label12 = new System.Windows.Forms.Label();
-            this.tt = new System.Windows.Forms.ToolTip(this.components);
+            this.panel1 = new System.Windows.Forms.Panel();
+            this.panel2 = new System.Windows.Forms.Panel();
             this.pWrapper.SuspendLayout();
             this.tc.SuspendLayout();
             this.tpSoundcard.SuspendLayout();
@@ -143,6 +146,8 @@
             this.pFooter.SuspendLayout();
             this.pButtons.SuspendLayout();
             this.pTabs.SuspendLayout();
+            this.panel1.SuspendLayout();
+            this.panel2.SuspendLayout();
             this.SuspendLayout();
             // 
             // gOutS
@@ -463,7 +468,7 @@
             this.gRate.Text = "44100";
             this.tt.SetToolTip(this.gRate, "The sample rate to stream at (same for both MP3 and OGG)\r\n    (internet and CD st" +
         "andard is 44100)");
-            this.gRate.TextChanged += new System.EventHandler(this.gOggQualityV_TextChanged);
+            this.gRate.TextChanged += new System.EventHandler(this.gRate_TextChanged);
             this.gRate.MouseEnter += new System.EventHandler(this.gHost_MouseEnter);
             this.gRate.MouseLeave += new System.EventHandler(this.gHost_MouseLeave);
             // 
@@ -639,16 +644,14 @@
             // tpEncoders
             // 
             this.tpEncoders.BackColor = System.Drawing.SystemColors.Control;
-            this.tpEncoders.Controls.Add(this.gMp3Stereo);
-            this.tpEncoders.Controls.Add(this.gOggStereo);
+            this.tpEncoders.Controls.Add(this.panel2);
+            this.tpEncoders.Controls.Add(this.panel1);
             this.tpEncoders.Controls.Add(this.gMp3Enable);
             this.tpEncoders.Controls.Add(this.gRecOGG);
-            this.tpEncoders.Controls.Add(this.gMp3Mono);
             this.tpEncoders.Controls.Add(this.gOggEnable);
             this.tpEncoders.Controls.Add(this.gRecMP3);
             this.tpEncoders.Controls.Add(this.groupBox1);
             this.tpEncoders.Controls.Add(this.groupBox2);
-            this.tpEncoders.Controls.Add(this.gOggMono);
             this.tpEncoders.Location = new System.Drawing.Point(4, 25);
             this.tpEncoders.Name = "tpEncoders";
             this.tpEncoders.Size = new System.Drawing.Size(534, 275);
@@ -659,7 +662,7 @@
             // 
             this.gMp3Stereo.AutoSize = true;
             this.gMp3Stereo.Checked = true;
-            this.gMp3Stereo.Location = new System.Drawing.Point(91, 159);
+            this.gMp3Stereo.Location = new System.Drawing.Point(74, 4);
             this.gMp3Stereo.Name = "gMp3Stereo";
             this.gMp3Stereo.Size = new System.Drawing.Size(56, 17);
             this.gMp3Stereo.TabIndex = 30;
@@ -673,7 +676,7 @@
             // 
             this.gOggStereo.AutoSize = true;
             this.gOggStereo.Checked = true;
-            this.gOggStereo.Location = new System.Drawing.Point(280, 159);
+            this.gOggStereo.Location = new System.Drawing.Point(74, 4);
             this.gOggStereo.Name = "gOggStereo";
             this.gOggStereo.Size = new System.Drawing.Size(56, 17);
             this.gOggStereo.TabIndex = 38;
@@ -712,7 +715,7 @@
             // gMp3Mono
             // 
             this.gMp3Mono.AutoSize = true;
-            this.gMp3Mono.Location = new System.Drawing.Point(23, 159);
+            this.gMp3Mono.Location = new System.Drawing.Point(6, 4);
             this.gMp3Mono.Name = "gMp3Mono";
             this.gMp3Mono.Size = new System.Drawing.Size(52, 17);
             this.gMp3Mono.TabIndex = 29;
@@ -885,7 +888,7 @@
             // gOggMono
             // 
             this.gOggMono.AutoSize = true;
-            this.gOggMono.Location = new System.Drawing.Point(212, 159);
+            this.gOggMono.Location = new System.Drawing.Point(6, 4);
             this.gOggMono.Name = "gOggMono";
             this.gOggMono.Size = new System.Drawing.Size(52, 17);
             this.gOggMono.TabIndex = 37;
@@ -898,8 +901,8 @@
             // tpTags
             // 
             this.tpTags.BackColor = System.Drawing.SystemColors.Control;
+            this.tpTags.Controls.Add(this.gTagAuto);
             this.tpTags.Controls.Add(this.gMeta);
-            this.tpTags.Controls.Add(this.label16);
             this.tpTags.Controls.Add(this.gTagsAdvanced);
             this.tpTags.Controls.Add(this.pTagsAdvanced2);
             this.tpTags.Controls.Add(this.pTagAdvanced1);
@@ -908,6 +911,17 @@
             this.tpTags.Size = new System.Drawing.Size(534, 275);
             this.tpTags.TabIndex = 3;
             this.tpTags.Text = "Tags";
+            // 
+            // gTagAuto
+            // 
+            this.gTagAuto.AutoSize = true;
+            this.gTagAuto.Location = new System.Drawing.Point(24, 19);
+            this.gTagAuto.Name = "gTagAuto";
+            this.gTagAuto.Size = new System.Drawing.Size(246, 17);
+            this.gTagAuto.TabIndex = 65;
+            this.gTagAuto.Text = "Read tags automatically from this media player:";
+            this.gTagAuto.UseVisualStyleBackColor = true;
+            this.gTagAuto.CheckedChanged += new System.EventHandler(this.gTagMan_CheckedChanged);
             // 
             // gMeta
             // 
@@ -920,15 +934,6 @@
             this.tt.SetToolTip(this.gMeta, "These are all the media players that Loopstream has built-in support for.\r\nIf you" +
         " can\'t find yours, ask an adult to fill in the [Advanced] config!");
             this.gMeta.SelectedIndexChanged += new System.EventHandler(this.gMeta_SelectedIndexChanged);
-            // 
-            // label16
-            // 
-            this.label16.AutoSize = true;
-            this.label16.Location = new System.Drawing.Point(22, 21);
-            this.label16.Name = "label16";
-            this.label16.Size = new System.Drawing.Size(173, 13);
-            this.label16.TabIndex = 36;
-            this.label16.Text = "Choose a media player from the list:";
             // 
             // gTagsAdvanced
             // 
@@ -977,6 +982,7 @@
             // pTagAdvanced1
             // 
             this.pTagAdvanced1.BackColor = System.Drawing.SystemColors.Control;
+            this.pTagAdvanced1.Controls.Add(this.label26);
             this.pTagAdvanced1.Controls.Add(this.gGroup);
             this.pTagAdvanced1.Controls.Add(this.label17);
             this.pTagAdvanced1.Controls.Add(this.gEncodingL);
@@ -1004,6 +1010,16 @@
             this.pTagAdvanced1.Size = new System.Drawing.Size(534, 204);
             this.pTagAdvanced1.TabIndex = 63;
             this.pTagAdvanced1.Visible = false;
+            // 
+            // label26
+            // 
+            this.label26.AutoSize = true;
+            this.label26.Location = new System.Drawing.Point(413, 27);
+            this.label26.Name = "label26";
+            this.label26.Size = new System.Drawing.Size(49, 13);
+            this.label26.TabIndex = 65;
+            this.label26.Text = "534, 204";
+            this.label26.Visible = false;
             // 
             // gGroup
             // 
@@ -1302,6 +1318,21 @@
             this.label5.Size = new System.Drawing.Size(542, 1);
             this.label5.TabIndex = 5;
             // 
+            // label12
+            // 
+            this.label12.BackColor = System.Drawing.SystemColors.Control;
+            this.label12.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.label12.Location = new System.Drawing.Point(0, 34);
+            this.label12.Name = "label12";
+            this.label12.Size = new System.Drawing.Size(542, 10);
+            this.label12.TabIndex = 1;
+            // 
+            // tt
+            // 
+            this.tt.ShowAlways = true;
+            this.tt.UseAnimation = false;
+            this.tt.UseFading = false;
+            // 
             // hTags
             // 
             this.hTags.AutoSize = true;
@@ -1354,20 +1385,23 @@
             this.hSoundcard.TabIndex = 0;
             this.hSoundcard.Text = "Soundcard";
             // 
-            // label12
+            // panel1
             // 
-            this.label12.BackColor = System.Drawing.SystemColors.Control;
-            this.label12.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.label12.Location = new System.Drawing.Point(0, 34);
-            this.label12.Name = "label12";
-            this.label12.Size = new System.Drawing.Size(542, 10);
-            this.label12.TabIndex = 1;
+            this.panel1.Controls.Add(this.gOggMono);
+            this.panel1.Controls.Add(this.gOggStereo);
+            this.panel1.Location = new System.Drawing.Point(206, 155);
+            this.panel1.Name = "panel1";
+            this.panel1.Size = new System.Drawing.Size(139, 45);
+            this.panel1.TabIndex = 42;
             // 
-            // tt
+            // panel2
             // 
-            this.tt.ShowAlways = true;
-            this.tt.UseAnimation = false;
-            this.tt.UseFading = false;
+            this.panel2.Controls.Add(this.gMp3Mono);
+            this.panel2.Controls.Add(this.gMp3Stereo);
+            this.panel2.Location = new System.Drawing.Point(17, 155);
+            this.panel2.Name = "panel2";
+            this.panel2.Size = new System.Drawing.Size(139, 45);
+            this.panel2.TabIndex = 43;
             // 
             // ConfigSC
             // 
@@ -1405,6 +1439,10 @@
             this.pButtons.ResumeLayout(false);
             this.pTabs.ResumeLayout(false);
             this.pTabs.PerformLayout();
+            this.panel1.ResumeLayout(false);
+            this.panel1.PerformLayout();
+            this.panel2.ResumeLayout(false);
+            this.panel2.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -1487,7 +1525,6 @@
         private System.Windows.Forms.Label label18;
         private System.Windows.Forms.Label gResult;
         private System.Windows.Forms.ComboBox gMeta;
-        private System.Windows.Forms.Label label16;
         private System.Windows.Forms.Label label23;
         private System.Windows.Forms.Button gStore;
         private System.Windows.Forms.TextBox gName;
@@ -1512,5 +1549,9 @@
         private System.Windows.Forms.Button gTagsAdvanced;
         private System.Windows.Forms.Label label25;
         private System.Windows.Forms.TextBox gGroup;
+        private System.Windows.Forms.Label label26;
+        private System.Windows.Forms.CheckBox gTagAuto;
+        private System.Windows.Forms.Panel panel2;
+        private System.Windows.Forms.Panel panel1;
     }
 }

@@ -81,10 +81,22 @@ namespace Loopstream
                 freq = meta.freq;
                 grp = meta.grp;
             }
+            public bool eq(LSMeta meta)
+            {
+                return
+                    src == meta.src &&
+                    ptn == meta.ptn &&
+                    tit == meta.tit &&
+                    encoding == meta.encoding &&
+                    reader == meta.reader &&
+                    freq == meta.freq &&
+                    grp == meta.grp;
+            }
         }
         public List<LSMeta> metas;
         public LSMeta meta;
         public bool latin;
+        public bool tagAuto;
 
         public enum LSCompression { cbr, q };
         public enum LSChannels { mono, stereo }
@@ -106,11 +118,11 @@ namespace Loopstream
         [XmlIgnore]
         public LSDevice[] devs;
         [XmlIgnore]
-        public LSDevice devRec { get { return _devRec; } set { _devRec = value; s_devRec = value.id; } }
+        public LSDevice devRec { get { return _devRec; } set { _devRec = value; s_devRec = value == null? "" : value.id; } }
         [XmlIgnore]
-        public LSDevice devMic { get { return _devMic; } set { _devMic = value; s_devMic = value.id; } }
+        public LSDevice devMic { get { return _devMic; } set { _devMic = value; s_devMic = value == null ? "" : value.id; } }
         [XmlIgnore]
-        public LSDevice devOut { get { return _devOut; } set { _devOut = value; s_devOut = value.id; } }
+        public LSDevice devOut { get { return _devOut; } set { _devOut = value; s_devOut = value == null ? "" : value.id; } }
 
         public LSPreset mixer;
         public LSPreset[] presets;
@@ -139,8 +151,8 @@ namespace Loopstream
         public LSSettings()
         {
             s_devRec = s_devMic = s_devOut = null;
-            micLeft = false;
-            micRight = true;
+            micLeft = true;
+            micRight = false;
             mp3 = new LSParams();
             mp3.enabled = true;
             mp3.compression = LSCompression.cbr;
@@ -169,6 +181,7 @@ namespace Loopstream
             pubstream = false;
 
             latin = false;
+            tagAuto = true;
             meta = new LSMeta();
             metas = new List<LSMeta>();
 
@@ -207,12 +220,16 @@ namespace Loopstream
                 add.mm = device;
                 add.isRec = device.DataFlow == NAudio.CoreAudioApi.DataFlow.Capture;
                 add.isPlay = device.DataFlow == NAudio.CoreAudioApi.DataFlow.Render;
+                if (device.DataFlow == NAudio.CoreAudioApi.DataFlow.All)
+                {
+                    add.isRec = add.isPlay = true;
+                }
                 add.name = device.ToString();
                 add.id = device.ID;
                 ldev.Add(add);
             }
             devs = ldev.ToArray();
-            if (!string.IsNullOrEmpty(s_devRec)) devRec = getDevByID(s_devRec);
+            if (!string.IsNullOrEmpty(s_devRec)) devRec = getDevByID(s_devRec); // ?? devs.First(x => x.isPlay);
             if (!string.IsNullOrEmpty(s_devMic)) devMic = getDevByID(s_devMic);
             if (!string.IsNullOrEmpty(s_devOut)) devOut = getDevByID(s_devOut);
         }

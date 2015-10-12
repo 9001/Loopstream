@@ -171,6 +171,7 @@ namespace Loopstream
             tTitle.Tick += tTitle_Tick;
             tTitle.Interval = 200;
             tTitle.Start();
+            showhide();
         }
 
         bool invalOnNext;
@@ -286,6 +287,7 @@ namespace Loopstream
             }
             else
             {
+                if (pMessage.Visible) gLowQ_Click(sender, e);
                 gConnect.Text = "Connect";
                 mixer.Dispose();
                 pcm.Dispose();
@@ -298,6 +300,7 @@ namespace Loopstream
         {
             this.Hide();
             new ConfigSC(settings).ShowDialog();
+            showhide();
             this.Show();
         }
 
@@ -449,6 +452,11 @@ namespace Loopstream
                 Math.Round(settings.mp3.FIXME_kbps, 2),
                 Math.Round(settings.ogg.FIXME_kbps, 2),
                 tag.tag);
+            
+            if (settings.tagAuto)
+            {
+                gTag.Text = tag.tag;
+            }
         }
 
         long lastclick = 0;
@@ -473,8 +481,36 @@ namespace Loopstream
         {
             pMessage.Visible = false;
             this.Height -= 64;
-            MessageBox.Show(lqMessage);
+            if (sender == gLowQ) MessageBox.Show(lqMessage);
             lqMessage = null;
+        }
+
+        private void gTag_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                e.Handled = true;
+                Application.DoEvents();
+                gTag.Text = gTag.Text.Replace("\r", "").Replace("\n", "");
+                gTag.SelectionStart = gTag.Text.Length;
+                gTag.SelectionLength = 0;
+                if (tag != null) tag.set(gTag.Text);
+            }
+        }
+
+        bool tagvis = false;
+        void showhide()
+        {
+            if (!settings.tagAuto && !tagvis)
+            {
+                tagvis = pTag.Visible = true;
+                this.Height += pTag.Height;
+            }
+            else if (settings.tagAuto && tagvis)
+            {
+                this.Height -= pTag.Height;
+                tagvis = pTag.Visible = false;
+            }
         }
     }
 }

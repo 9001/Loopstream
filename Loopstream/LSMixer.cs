@@ -19,6 +19,7 @@ namespace Loopstream
         MediaFoundationResampler recRe, micRe;
         NPatch.VolumeSlider recVol, micVol, outVol;
         MixingSampleProvider mixer;
+        NPatch.Mixa mixa;
         SampleToWaveProvider muxer;
         WasapiOut mixOut;
         NPatch.Fork fork;
@@ -54,8 +55,9 @@ namespace Loopstream
             string lq = "";
             recRe = micRe = null;
             ISampleProvider recProv, micProv;
-            format = WaveFormat.CreateIeeeFloatWaveFormat(44100, 2);
-            mixer = new MixingSampleProvider(format);
+            format = WaveFormat.CreateIeeeFloatWaveFormat(settings.samplerate, 2);
+            //mixer = new MixingSampleProvider(format);
+            mixa = new NPatch.Mixa(format);
             
             recCap = new WasapiLoopbackCapture(settings.devRec.mm);
             recCap.DataAvailable += recDev_DataAvailable_03;
@@ -72,9 +74,8 @@ namespace Loopstream
                     LSDevice.stringer(recCap.WaveFormat) + "\n\n";
             }
             recProv = new WaveToSampleProvider((IWaveProvider)recRe ?? (IWaveProvider)recIn);
-            //recProv = new NPatch.ChannelSelector(recProv, settings.micLeft ? 0 : 1);
             recVol = new NPatch.VolumeSlider(recProv);
-            mixer.AddMixerInput(recVol);
+            mixa.AddMixerInput(recVol);
 
             if (settings.devMic != null && settings.devMic.mm != null)
             {
@@ -102,18 +103,19 @@ namespace Loopstream
                     micProv = new NPatch.ChannelSelector(micProv, settings.micLeft ? 0 : 1);
                 }
                 micVol = new NPatch.VolumeSlider(micProv);
-                mixer.AddMixerInput(micVol);
+                mixa.AddMixerInput(micVol);
             }
             else
             {
                 micVol = new NPatch.VolumeSlider();
             }
 
-            fork = new NPatch.Fork(mixer, 2);
+            //mixer.ReadFully = true;
+            fork = new NPatch.Fork(mixa, 2);
             lameOutlet = fork.providers[1];
             outVol = new NPatch.VolumeSlider(fork.providers[0]);
             muxer = new SampleToWaveProvider(outVol);
-            //mixer_valueChanged(null, null);
+
             recVol.SetVolume((float)settings.mixer.vRec);
             micVol.SetVolume((float)settings.mixer.vMic);
             outVol.SetVolume((float)settings.mixer.vOut);
@@ -124,9 +126,10 @@ namespace Loopstream
             mixOut = new WasapiOut(settings.devOut.mm,
                 AudioClientShareMode.Shared, false, 100);
 
-            mixOut.Init(muxer);
+            mixOut.Init(outVol);
             recCap.StartRecording();
-            if (settings.devMic.mm != null)
+            //System.Threading.Thread.Sleep(100);
+            if (settings.devMic != null && settings.devMic.mm != null)
             {
                 micCap.StartRecording();
             }
@@ -149,6 +152,7 @@ namespace Loopstream
             if (slider == Slider.Music) recVol.SetVolume(vol, seconds);
             if (slider == Slider.Mic) micVol.SetVolume(vol, seconds);
             if (slider == Slider.Out) outVol.SetVolume(vol, seconds);
+            //Console.WriteLine("VOLFADE " + vol);
         }
 
         public void MuteChannel(Slider slider, bool notMuted)

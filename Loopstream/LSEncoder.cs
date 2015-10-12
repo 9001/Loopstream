@@ -129,8 +129,12 @@ namespace Loopstream
                 long v = DateTime.UtcNow.Ticks / 10000;
                 for (int a = 0; a < stamps.Length; a++) stamps[a] = v;
                 Program.ni.ShowBalloonTip(1000, "Loopstream Connected", "Streaming to " + settings.mount + "." + enc.ext, ToolTipIcon.Info);
-                new System.Threading.Thread(new System.Threading.ThreadStart(reader)).Start();
-                new System.Threading.Thread(new System.Threading.ThreadStart(counter)).Start();
+                System.Threading.Thread tr = new System.Threading.Thread(new System.Threading.ThreadStart(reader));
+                tr.Name = "LSEnc_Reader";
+                tr.Start();
+                System.Threading.Thread tc = new System.Threading.Thread(new System.Threading.ThreadStart(counter));
+                tc.Name = "LSEnc_Counter";
+                tc.Start();
             }
             else
             {

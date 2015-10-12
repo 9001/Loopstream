@@ -8,11 +8,100 @@ using System.IO;
 
 namespace NPatch
 {
+    public class Mixa : ISampleProvider
+    {
+        float[] buf;
+        List<ISampleProvider> sources;
+        public WaveFormat WaveFormat { get; set; }
+        public Mixa(WaveFormat wf)
+        {
+            if (wf.Encoding != WaveFormatEncoding.IeeeFloat)
+            {
+                throw new ArgumentException("Mixer wave format must be IEEE float");
+            }
+            this.sources = new List<ISampleProvider>();
+            this.WaveFormat = wf;
+        }
+        public void AddMixerInput(ISampleProvider mixerInput)
+        {
+            lock (sources)
+            {
+                sources.Add(mixerInput);
+            }
+            if (this.WaveFormat.SampleRate != mixerInput.WaveFormat.SampleRate ||
+                this.WaveFormat.Channels != mixerInput.WaveFormat.Channels)
+            {
+                throw new ArgumentException("All mixer inputs must have the same WaveFormat");
+            }
+        }
+        public int Read(float[] buffer, int offset, int count)
+        {
+            int ret = 0;
+            buf = NAudio.Utils.BufferHelpers.Ensure(buf, count);
+            lock (sources)
+            {
+                for (int s = 0; s < sources.Count; s++)
+                {
+                    int i = sources[s].Read(buf, 0, count);
+                    if (s == 0)
+                    {
+                        ret = i;
+                        for (int a = 0; a < i; a++)
+                        {
+                            buffer[a] = buf[a];
+                        }
+                    }
+                    else
+                    {
+                        for (int a = 0; a < i; a++)
+                        {
+                            buffer[a] += buf[a];
+                        }
+                    }
+                }
+            }
+            //Console.WriteLine(ret);
+            return ret;
+        }
+        public int oRead(float[] buffer, int offset, int count)
+        {
+            int outputSamples = 0;
+            float[] sourceBuffer = new float[count];// NAudio.Utils.BufferHelpers.Ensure(sourceBuffer, count);
+            lock (sources)
+            {
+                int index = sources.Count - 1;
+                while (index >= 0)
+                {
+                    var source = sources[index];
+                    int samplesRead = source.Read(sourceBuffer, 0, count);
+                    int outIndex = offset;
+                    for (int n = 0; n < samplesRead; n++)
+                    {
+                        if (n >= outputSamples)
+                        {
+                            buffer[outIndex++] = sourceBuffer[n];
+                        }
+                        else
+                        {
+                            buffer[outIndex++] += sourceBuffer[n];
+                        }
+                    }
+                    outputSamples = Math.Max(samplesRead, outputSamples);
+                    if (samplesRead == 0)
+                    {
+                        sources.RemoveAt(index);
+                    }
+                    index--;
+                }
+            }
+            Console.WriteLine(outputSamples);
+            return outputSamples;
+        }
+    }
     public class Fork
     {
         public class Outlet : ISampleProvider
         {
-            System.IO.FileStream fs;
             Fork fork;
             float[] buf;
             bool iterated;
@@ -107,8 +196,9 @@ namespace NPatch
                 {
                     int i = iWrite;
                     i -= (int)((this.WaveFormat.SampleRate * this.WaveFormat.Channels) / latency);
-                    if (iWrite < 0 && iterated) iWrite += buf.Length; // ok
-                    else iWrite = 0; // latency lower than requested
+                    if (i < 0 && iterated) i += buf.Length; // ok
+                    else i = 0; // latency lower than requested
+                    iRead = i;
                 }
             }
         }
@@ -148,6 +238,7 @@ namespace NPatch
                 {
                     o.Write(buf, 0, i);
                 }
+                //Console.WriteLine(i);
             }
         }
     }
@@ -233,6 +324,8 @@ namespace NPatch
         public VolumeSlider(ISampleProvider source, bool initiallySilent = false)
         {
             this.source = source;
+            currentVolume = 1;
+            targetVolume = 1;
         }
 
         public void SetVolume(float volume)
@@ -248,6 +341,11 @@ namespace NPatch
             {
                 volumeDelta = (float)(volumeDelta / (seconds * source.WaveFormat.SampleRate));
                 absDelta = Math.Abs(volumeDelta);
+            }
+            else
+            {
+                absDelta = 0;
+                currentVolume = volume;
             }
         }
 

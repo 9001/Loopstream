@@ -61,6 +61,10 @@
             this.gA = new System.Windows.Forms.Button();
             this.pMessage = new System.Windows.Forms.Panel();
             this.gLowQ = new System.Windows.Forms.Label();
+            this.pTag = new System.Windows.Forms.Panel();
+            this.label1 = new System.Windows.Forms.Label();
+            this.label2 = new System.Windows.Forms.Label();
+            this.gTag = new System.Windows.Forms.TextBox();
             this.box_sliders.SuspendLayout();
             this.box_top.SuspendLayout();
             this.box_bottom.SuspendLayout();
@@ -69,6 +73,7 @@
             this.box_menu.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.pMessage.SuspendLayout();
+            this.pTag.SuspendLayout();
             this.SuspendLayout();
             // 
             // box_sliders
@@ -83,7 +88,7 @@
             this.box_sliders.Location = new System.Drawing.Point(0, 0);
             this.box_sliders.Margin = new System.Windows.Forms.Padding(3, 3, 9, 3);
             this.box_sliders.Name = "box_sliders";
-            this.box_sliders.Size = new System.Drawing.Size(476, 412);
+            this.box_sliders.Size = new System.Drawing.Size(476, 392);
             this.box_sliders.TabIndex = 4;
             // 
             // gMusic
@@ -192,7 +197,7 @@
             this.box_bottom.Controls.Add(this.box_bottom_light);
             this.box_bottom.Controls.Add(this.box_bottom_graden);
             this.box_bottom.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.box_bottom.Location = new System.Drawing.Point(0, 307);
+            this.box_bottom.Location = new System.Drawing.Point(0, 287);
             this.box_bottom.Name = "box_bottom";
             this.box_bottom.Size = new System.Drawing.Size(476, 105);
             this.box_bottom.TabIndex = 11;
@@ -265,7 +270,7 @@
             this.box_menu_outer.Location = new System.Drawing.Point(476, 0);
             this.box_menu_outer.Margin = new System.Windows.Forms.Padding(9, 3, 3, 3);
             this.box_menu_outer.Name = "box_menu_outer";
-            this.box_menu_outer.Size = new System.Drawing.Size(177, 412);
+            this.box_menu_outer.Size = new System.Drawing.Size(177, 392);
             this.box_menu_outer.TabIndex = 5;
             // 
             // box_menu
@@ -287,7 +292,7 @@
             this.box_menu.Dock = System.Windows.Forms.DockStyle.Right;
             this.box_menu.Location = new System.Drawing.Point(0, 0);
             this.box_menu.Name = "box_menu";
-            this.box_menu.Size = new System.Drawing.Size(177, 412);
+            this.box_menu.Size = new System.Drawing.Size(177, 392);
             this.box_menu.TabIndex = 10;
             // 
             // pictureBox1
@@ -320,7 +325,7 @@
             this.box_menu_light.Location = new System.Drawing.Point(1, 0);
             this.box_menu_light.Margin = new System.Windows.Forms.Padding(3, 0, 9, 0);
             this.box_menu_light.Name = "box_menu_light";
-            this.box_menu_light.Size = new System.Drawing.Size(1, 412);
+            this.box_menu_light.Size = new System.Drawing.Size(1, 392);
             this.box_menu_light.TabIndex = 14;
             // 
             // box_menu_dark
@@ -329,7 +334,7 @@
             this.box_menu_dark.Dock = System.Windows.Forms.DockStyle.Left;
             this.box_menu_dark.Location = new System.Drawing.Point(0, 0);
             this.box_menu_dark.Name = "box_menu_dark";
-            this.box_menu_dark.Size = new System.Drawing.Size(1, 412);
+            this.box_menu_dark.Size = new System.Drawing.Size(1, 392);
             this.box_menu_dark.TabIndex = 13;
             // 
             // gConnect
@@ -455,6 +460,51 @@
             this.gLowQ.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.gLowQ.Click += new System.EventHandler(this.gLowQ_Click);
             // 
+            // pTag
+            // 
+            this.pTag.Controls.Add(this.label1);
+            this.pTag.Controls.Add(this.label2);
+            this.pTag.Controls.Add(this.gTag);
+            this.pTag.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.pTag.Location = new System.Drawing.Point(0, 392);
+            this.pTag.Name = "pTag";
+            this.pTag.Size = new System.Drawing.Size(653, 20);
+            this.pTag.TabIndex = 17;
+            this.pTag.Visible = false;
+            // 
+            // label1
+            // 
+            this.label1.BackColor = System.Drawing.SystemColors.ControlLightLight;
+            this.label1.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.label1.Location = new System.Drawing.Point(0, 18);
+            this.label1.Margin = new System.Windows.Forms.Padding(3, 0, 9, 0);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(653, 1);
+            this.label1.TabIndex = 16;
+            this.label1.Visible = false;
+            // 
+            // label2
+            // 
+            this.label2.BackColor = System.Drawing.SystemColors.ControlDark;
+            this.label2.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.label2.Location = new System.Drawing.Point(0, 19);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(653, 1);
+            this.label2.TabIndex = 15;
+            this.label2.Visible = false;
+            // 
+            // gTag
+            // 
+            this.gTag.BackColor = System.Drawing.SystemColors.Control;
+            this.gTag.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.gTag.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.gTag.Location = new System.Drawing.Point(0, 0);
+            this.gTag.Multiline = true;
+            this.gTag.Name = "gTag";
+            this.gTag.Size = new System.Drawing.Size(653, 20);
+            this.gTag.TabIndex = 0;
+            this.gTag.KeyDown += new System.Windows.Forms.KeyEventHandler(this.gTag_KeyDown);
+            // 
             // Home
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -462,6 +512,7 @@
             this.ClientSize = new System.Drawing.Size(653, 416);
             this.Controls.Add(this.box_menu_outer);
             this.Controls.Add(this.box_sliders);
+            this.Controls.Add(this.pTag);
             this.Controls.Add(this.pMessage);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.MaximizeBox = false;
@@ -480,6 +531,8 @@
             this.box_menu.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.pMessage.ResumeLayout(false);
+            this.pTag.ResumeLayout(false);
+            this.pTag.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -519,6 +572,10 @@
         private System.Windows.Forms.PictureBox pictureBox1;
         private System.Windows.Forms.Panel pMessage;
         private System.Windows.Forms.Label gLowQ;
+        private System.Windows.Forms.Panel pTag;
+        private System.Windows.Forms.TextBox gTag;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label label2;
 
     }
 }

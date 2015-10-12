@@ -237,6 +237,7 @@ namespace Loopstream
             gOutS.SelectedItem = settings.devOut;
             gLeft.Checked = settings.micLeft;
             gRight.Checked = settings.micRight;
+            gRate.Text = settings.samplerate.ToString();
 
             if (settings.devMic == null ||
                 settings.devMic.mm == null)
@@ -281,6 +282,7 @@ namespace Loopstream
             gAutoconn.Checked = settings.autoconn;
             gAutohide.Checked = settings.autohide;
 
+            gTagAuto.Checked = settings.tagAuto;
             gReader.Items.Add(LSSettings.LSMeta.Reader.WindowCaption);
             gReader.Items.Add(LSSettings.LSMeta.Reader.File);
             gReader.Items.Add(LSSettings.LSMeta.Reader.Website);
@@ -671,6 +673,7 @@ namespace Loopstream
 
         private void gMeta_SelectedIndexChanged(object sender, EventArgs e)
         {
+            if (gMeta.SelectedIndex == 0) return;
             settings.meta.apply((LSSettings.LSMeta)gMeta.SelectedItem);
             loadMetaReader(false);
             if (settings.meta.reader == LSSettings.LSMeta.Reader.ProcessMemory)
@@ -855,6 +858,7 @@ namespace Loopstream
             if (redoPresets)
             {
                 gMeta.Items.Clear();
+                gMeta.Items.Add("(custom)");
                 foreach (LSSettings.LSMeta meta in settings.metas)
                 {
                     gMeta.Items.Add(meta);
@@ -871,9 +875,10 @@ namespace Loopstream
             gGroup.Text = settings.meta.grp.ToString();
             if (redoPresets)
             {
+                gMeta.SelectedIndex = 0;
                 foreach (LSSettings.LSMeta m in settings.metas)
                 {
-                    if (m.tit == settings.meta.tit)
+                    if (m.eq(settings.meta))
                     {
                         gMeta.SelectedItem = m;
                         return;
@@ -886,6 +891,17 @@ namespace Loopstream
         {
             int n = getValue(gGroup);
             if (n >= 0) settings.meta.grp = n;
+        }
+
+        private void gTagMan_CheckedChanged(object sender, EventArgs e)
+        {
+            settings.tagAuto = gTagAuto.Checked;
+        }
+
+        private void gRate_TextChanged(object sender, EventArgs e)
+        {
+            int n = getValue(gRate);
+            if (n >= 0) settings.samplerate = n;
         }
     }
 }

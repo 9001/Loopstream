@@ -18,7 +18,9 @@ namespace Loopstream
         public void extract(Label pb)
         {
             icp = new ICP();
-            new System.Threading.Thread(new System.Threading.ThreadStart(exthread)).Start();
+            System.Threading.Thread t = new System.Threading.Thread(new System.Threading.ThreadStart(exthread));
+            t.Name = "DFC_Extracter";
+            t.Start();
             while (!extracting)
             {
                 System.Threading.Thread.Sleep(1);

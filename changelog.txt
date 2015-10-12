@@ -3,6 +3,12 @@
 + new feature
 ~ other change
 
+2013-08-04, 17:25:13 - Loopstream 1.2.5.0
+  + Manual tags
+  = Fixed a crash in the splash screen
+  ~ Tagged threads for debugging purposes
+  = Custom channel muxer that probably fixed some bug
+
 2013-08-01, 00:16:11 - Loopstream 1.2.0.0
   + Samplerate conversion
   + Shitty debug logger

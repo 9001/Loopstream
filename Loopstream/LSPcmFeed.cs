@@ -21,7 +21,9 @@ namespace Loopstream
             this.settings = settings;
             encoders = new List<LSEncoder>();
             wp16 = new NAudio.Wave.SampleProviders.SampleToWaveProvider16(outlet);
-            new System.Threading.Thread(new System.Threading.ThreadStart(dicks)).Start();
+            System.Threading.Thread t = new System.Threading.Thread(new System.Threading.ThreadStart(dicks));
+            t.Name = "LSPcm_Prism";
+            t.Start();
         }
         public void Dispose()
         {
@@ -58,11 +60,13 @@ namespace Loopstream
             // Note that encoders handle creation of and connecting to shouters
 
             // start the thread watching encoders/shouters and restarting the crashed ones
-            new System.Threading.Thread(new System.Threading.ThreadStart(medic)).Start();
+            System.Threading.Thread t = new System.Threading.Thread(new System.Threading.ThreadStart(medic));
+            t.Name = "LSPcm_Medic";
+            t.Start();
 
             // Finally, reposition PCM pointer to minimize latency
             // (and chance of lost packets because icecast a bitch)
-            outlet.setReadPtr(0.2);
+            //outlet.setReadPtr(0.2);
             
             // PCM reader loop, passing on to encoders/shouters
             while (true)

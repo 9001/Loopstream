@@ -12,6 +12,7 @@ namespace Loopstream
         string auth;
         Encoding latin1;
         public string tag;
+        public string manual;
         LSSettings settings;
         bool haveFailed;
 
@@ -24,7 +25,14 @@ namespace Loopstream
             
             auth = "source:" + settings.pass;
             auth = Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(auth)); 
-            new System.Threading.Thread(new System.Threading.ThreadStart(feeder)).Start();
+            System.Threading.Thread t = new System.Threading.Thread(new System.Threading.ThreadStart(feeder));
+            t.Name = "LSTag_Feeder";
+            t.Start();
+        }
+
+        public void set(string str)
+        {
+            manual = str;
         }
 
         public static string get(LSSettings.LSMeta m, bool getRaw)
@@ -188,7 +196,8 @@ namespace Loopstream
             while (true)
             {
                 LSSettings.LSMeta m = settings.meta;
-                tag = get(m, false);
+                tag = settings.tagAuto ? get(m, false) : manual;
+                manual = tag;
                 if (!string.IsNullOrEmpty(tag))
                 {
                     foreach (Est e in est)

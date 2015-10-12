@@ -63,12 +63,12 @@ namespace Loopstream
 
         private void Splesh_MouseClick(object sender, MouseEventArgs e)
         {
-            gtfo();
+            //gtfo();
         }
 
         private void Splesh_KeyPress(object sender, KeyPressEventArgs e)
         {
-            gtfo();
+            //gtfo();
         }
 
         public void gtfo()
@@ -109,25 +109,29 @@ namespace Loopstream
             {
                 shreds.Add(a);
             }
-            using (Graphics g = Graphics.FromHwnd(this.Handle))
+            try
             {
-                Brush brush = new SolidBrush(Color.FromArgb(0,255,0));
-                Pen pen = new Pen(brush);
-                int ticker = 0;
-                while (shreds.Count > 0)
+                using (Graphics g = Graphics.FromHwnd(this.Handle))
                 {
-                    int i = random.Next(shreds.Count/8) + 7 * shreds.Count / 8;
-                    int line = shreds[i];
-                    shreds.RemoveAt(i);
-                    
-                    g.DrawLine(pen, 0, line, w, line);
-                    Application.DoEvents();
-                    if (++ticker % 20 == 0)
+                    Brush brush = new SolidBrush(Color.FromArgb(0, 255, 0));
+                    Pen pen = new Pen(brush);
+                    int ticker = 0;
+                    while (shreds.Count > 0)
                     {
-                        System.Threading.Thread.Sleep(10);
+                        int i = random.Next(shreds.Count / 8) + 7 * shreds.Count / 8;
+                        int line = shreds[i];
+                        shreds.RemoveAt(i);
+
+                        g.DrawLine(pen, 0, line, w, line);
+                        Application.DoEvents();
+                        if (++ticker % 20 == 0)
+                        {
+                            System.Threading.Thread.Sleep(10);
+                        }
                     }
                 }
             }
+            catch { }
             this.Close();
             this.Dispose();
         }
