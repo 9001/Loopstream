@@ -48,6 +48,7 @@ namespace Loopstream
         int iKonami = 0;
         Timer tKonami = null;
         Keys[] cKonami;
+        List<SFXNode> sfxes;
 
         private void Form1_Load(object sender, EventArgs e)
         {
@@ -81,7 +82,7 @@ namespace Loopstream
                 Program.kill();
             }
             if (Directory.Exists(Program.tools) &&
-                !File.Exists(Program.tools + @"web\png\win95.png"))
+                !File.Exists(Program.tools + @"sfx\horn.mp3")) // @"web\png\win95.png"))
             {
                 z("outdated tools; deleting");
                 Directory.Delete(Program.tools, true);
@@ -89,7 +90,7 @@ namespace Loopstream
             if (!Directory.Exists(Program.tools))
             {
                 splash.vis();
-                z("outdated tools; deleting");
+                z("extracting tools");
                 new DFC().extract(splash.pb);
             }
             Logger.app.a("extract sequence done");
@@ -147,6 +148,33 @@ namespace Loopstream
                 (int)(pictureBox1.Left + (pictureBox1.Width - gManualTags.Width) / 1.85),
                 (int)(pictureBox1.Top + (pictureBox1.Height - gManualTags.Height) / 1.9));
 
+            z("DJ Effects");
+            sfxes = new List<SFXNode>();
+            try
+            {
+                Size szb = new Size(68, 25);
+                Point pto = new Point(16, 14);
+                string[] files = Directory.GetFiles(Program.tools + "sfx");
+                Array.Sort(files);
+                int n = 0;
+                foreach (string f in files)
+                {
+                    Button b = new Button();
+                    b.Text = f.Substring(f.Replace("\\", "/").LastIndexOf('/') + 1).Replace(".mp3", "");
+                    b.Size = szb;
+                    b.Location = pto;
+                    if (++n > 4)
+                    {
+                        //b.Height++;
+                        n = 0;
+                    }
+                    psfx.Controls.Add(b);
+                    pto.Y += b.Height + b.Margin.Bottom;
+                    b.Click += new EventHandler(b_Click);
+                }
+            }
+            catch { }
+
             z("Position form");
             this.Bounds = myBounds;
             splash.Focus();
@@ -200,6 +228,44 @@ namespace Loopstream
             z("showhide"); showhide();
             z("skinner"); hookskinner(this.Controls);
             //Program.popception();
+        }
+
+        class SFXNode
+        {
+            public bool done;
+            NAudio.Wave.Mp3FileReader fx_mp3;
+            NAudio.Wave.WasapiOut fx_out;
+            public SFXNode(string title)
+            {
+                done = false;
+                fx_mp3 = new NAudio.Wave.Mp3FileReader(Program.tools + "sfx\\" + title + ".mp3");
+                fx_out = new NAudio.Wave.WasapiOut(LSSettings.singleton.devRec.mm, NAudio.CoreAudioApi.AudioClientShareMode.Shared, false, 100);
+                fx_out.PlaybackStopped += new EventHandler<NAudio.Wave.StoppedEventArgs>(fx_out_PlaybackStopped);
+                fx_out.Init(fx_mp3);
+                fx_out.Play();
+            }
+            void fx_out_PlaybackStopped(object sender, NAudio.Wave.StoppedEventArgs e)
+            {
+                try
+                {
+                    if (fx_out != null) fx_out.Dispose();
+                    if (fx_mp3 != null) fx_mp3.Dispose();
+                }
+                catch { }
+                done = true;
+            }
+        }
+        void b_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                sfxes.Add(new SFXNode(((Button)sender).Text));
+                while (sfxes.Count > 0 && sfxes[0].done)
+                {
+                    sfxes.RemoveAt(0);
+                }
+            }
+            catch { }
         }
 
         double shake = 1;
@@ -320,21 +386,24 @@ namespace Loopstream
                 System.Diagnostics.Process.Start("http://r-a-d.io/ed/loopstream");
                 return true;
             }
-            int nPreset = -1;
-            if (keyData == Keys.D1) nPreset = 0;
-            if (keyData == Keys.D2) nPreset = 1;
-            if (keyData == Keys.D3) nPreset = 2;
-            if (keyData == Keys.D4) nPreset = 3;
-            if (nPreset >= 0)
+            if (!gTag.Focused)
             {
-                settings.mixer.apply(settings.presets[nPreset]);
-                mixerPresetChanged(null, null);
+                int nPreset = -1;
+                if (keyData == Keys.D1) nPreset = 0;
+                if (keyData == Keys.D2) nPreset = 1;
+                if (keyData == Keys.D3) nPreset = 2;
+                if (keyData == Keys.D4) nPreset = 3;
+                if (nPreset >= 0)
+                {
+                    settings.mixer.apply(settings.presets[nPreset]);
+                    mixerPresetChanged(null, null);
+                }
+                if (keyData == Keys.Q && mixer != null) mixer.MuteChannel(LSMixer.Slider.Music, settings.mixer.bRec);
+                if (keyData == Keys.W && mixer != null) mixer.MuteChannel(LSMixer.Slider.Mic, settings.mixer.bMic);
+                if (keyData == Keys.R && mixer != null) mixer.MuteChannel(LSMixer.Slider.Out, settings.mixer.bOut);
+                if (keyData == Keys.C) gConnect_Click(null, null);
+                if (keyData == Keys.S) gSettings_Click(null, null);
             }
-            if (keyData == Keys.Q && mixer != null) mixer.MuteChannel(LSMixer.Slider.Music, settings.mixer.bRec);
-            if (keyData == Keys.W && mixer != null) mixer.MuteChannel(LSMixer.Slider.Mic, settings.mixer.bMic);
-            if (keyData == Keys.R && mixer != null) mixer.MuteChannel(LSMixer.Slider.Out, settings.mixer.bOut);
-            if (keyData == Keys.C) gConnect_Click(null, null);
-            if (keyData == Keys.S) gSettings_Click(null, null);
             //this.Text = keyData.ToString();
             if (tKonami != null)
             {

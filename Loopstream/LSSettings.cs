@@ -107,7 +107,7 @@ namespace Loopstream
                 {
                     return eType - ev.eType;
                 }
-                return lowest() - ev.lowest();
+                return highest() - ev.highest();
             }
 
             public int lowest()
@@ -149,6 +149,7 @@ namespace Loopstream
                 if (bAudio)
                 {
                     long rem = sAudio * 1000 - (now - lastAudio);
+                    if (lastAudio < 0) rem = int.MaxValue;
                     if (rem > ret.msec)
                     {
                         ret.isAudio = true;
@@ -159,6 +160,7 @@ namespace Loopstream
                 if (bMouse)
                 {
                     long rem = sMouse * 1000 - (now - lastMouse);
+                    if (lastMouse < 0) rem = int.MaxValue;
                     if (rem > ret.msec)
                     {
                         ret.isAudio = false;
@@ -336,6 +338,7 @@ namespace Loopstream
                                         mset.Add(new YieldMember(strText));
                                         strText = "";
                                     }
+                                    // TODO: can throw, see 1401474325860.zm
                                     int v = Convert.ToInt32(strBref.Trim('{', '}'));
                                     mset.Add(new YieldMember(v));
                                     max = Math.Max(max, v);
@@ -914,7 +917,7 @@ namespace Loopstream
             triggers.AddRange(new LSTrigger[] {
                 new LSTrigger(LSTrigger.EventType.WARN_CONN_POOR, true,  0.9,  false, 0.05,  0, false, 0),
                 new LSTrigger(LSTrigger.EventType.WARN_CONN_DROP, true,  0.75, false, 0.05,  0, false, 0),
-                new LSTrigger(LSTrigger.EventType.WARN_NO_AUDIO,  false, 0,    true,  0.05,  5, false, 0),
+                new LSTrigger(LSTrigger.EventType.WARN_NO_AUDIO,  false, 0,    true,  0.05, 10, false, 0),
                 new LSTrigger(LSTrigger.EventType.DISCONNECT,     false, 0,    true,  0.05, 60, true,  60),
                 new LSTrigger(LSTrigger.EventType.DISCONNECT,     false, 0,    false, 0.05,  0, true,  1800)
             });

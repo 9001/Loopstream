@@ -155,7 +155,7 @@ namespace Loopstream
                 alevel > olevel ?
                 alevel * 0.30 + olevel * 0.70 :
                 alevel * 0.06 + olevel * 0.94;
-            this.Text = alevel.ToString();
+            //this.Text = alevel.ToString();
             this.Invalidate();
         }
         protected override void OnPaintBackground(PaintEventArgs pevent)

@@ -3,6 +3,11 @@
 + new feature
 ~ other change
 
+2014-05-30, 21:40:31 - Loopstream 1.3.9.2
+  + Soundboard
+  = Hotkeys would trigger when typing tags
+  = Tag reader: Bad regex could crash stuff
+
 2014-05-30, 16:01:54 - Loopstream 1.3.9.0
   + Drunk proof: Disconnect when there is no mouse activity
   + Tag reader: Debouncer to filter stuff like "Loading..." etc

@@ -501,19 +501,29 @@ namespace Loopstream
             }
         }
 
+        void indicateOK(TextBox tb)
+        {
+            tb.BackColor = SystemColors.Window;
+            tb.ForeColor = SystemColors.WindowText;
+        }
+
+        void indicateError(TextBox tb)
+        {
+            tb.BackColor = Color.Firebrick;
+            tb.ForeColor = Color.Gold;
+        }
+
         int getValue(TextBox tb)
         {
             int v;
             if (Int32.TryParse(tb.Text, out v))
             {
-                tb.BackColor = SystemColors.Window;
-                tb.ForeColor = SystemColors.WindowText;
+                indicateOK(tb);
                 return v;
             }
             else
             {
-                tb.BackColor = Color.Firebrick;
-                tb.ForeColor = Color.Gold;
+                indicateError(tb);
                 return -1;
             }
         }
@@ -1766,11 +1776,20 @@ namespace Loopstream
 
         private void gYield_TextChanged(object sender, EventArgs e)
         {
-            if (sender == gYield)
+            try
             {
-                settings.meta.yield = gYield.Text;
+                if (sender == gYield)
+                {
+                    settings.meta.yield = gYield.Text;
+                }
+                //this.Text = settings.meta.yi.assert();
+                indicateOK(gYield);
             }
-            //this.Text = settings.meta.yi.assert();
+            catch (Exception ex)
+            {
+                indicateError(gYield);
+                return;
+            }
             gPattern_TextChanged(sender, e);
         }
 
@@ -1837,8 +1856,10 @@ namespace Loopstream
         {
             try
             {
-                settings.triggers.Add(makeTrigger());
+                LSSettings.LSTrigger ev = makeTrigger();
+                settings.triggers.Add(ev);
                 loadTriggers();
+                gEvList.SelectedItem = ev;
             }
             catch
             {
@@ -1851,8 +1872,10 @@ namespace Loopstream
             try
             {
                 int i = settings.triggers.IndexOf((LSSettings.LSTrigger)gEvList.SelectedItem);
-                settings.triggers[i] = makeTrigger();
+                LSSettings.LSTrigger ev = makeTrigger();
+                settings.triggers[i] = ev;
                 loadTriggers();
+                gEvList.SelectedItem = ev;
             }
             catch
             {
