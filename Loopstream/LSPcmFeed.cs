@@ -7,6 +7,7 @@ namespace Loopstream
 {
     public class LSPcmFeed
     {
+        int res_cd;
         int quitting;
         object locker;
         bool shuttingDown;
@@ -20,6 +21,7 @@ namespace Loopstream
             locker = new object();
             shuttingDown = false;
             quitting = 0;
+            res_cd = 0;
             makeSilenceFill();
             this.outlet = outlet;
             this.settings = settings;
@@ -166,6 +168,10 @@ namespace Loopstream
                     LSEncoder enc = encoders[a];
                     if (enc.crashed)
                     {
+                        if (res_cd == 0) Logger.pcm.a("pending resurrect " + enc.enc.ext);
+                        if (++res_cd < 50) continue;
+                        res_cd = 0;
+
                         Logger.pcm.a("resurrecting " + enc.enc.ext);
                         enc.Dispose();
                         try

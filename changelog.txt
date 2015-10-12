@@ -3,6 +3,10 @@
 + new feature
 ~ other change
 
+2014-12-08, 15:31:02 - Loopstream 1.3.11.2
+  = Cooldown on reconnecting after connection drops
+  ~ Remember if socket fallback for tags is in use
+
 2014-09-13, 23:05:42 - Loopstream 1.3.11.0
   = Fix glitchy audio when volume boost lock is challenged by LOUD NOISES
   + Mixer test mode (if server address is blank in settings)

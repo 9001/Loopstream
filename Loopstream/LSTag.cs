@@ -349,7 +349,7 @@ namespace Loopstream
                 meta = Chencode.HonkHonk(meta);
                 //meta = est.tag;
             }
-            if (!socket_fallback)
+            if (!socket_fallback && !settings.tagsock)
             {
                 try
                 {
@@ -389,7 +389,7 @@ namespace Loopstream
                     //tag = new LSTD(false, "Meta-fail " + est.enc.ext, "(unknown error)");
                 }
             }
-            if (socket_fallback)
+            if (socket_fallback || settings.tagsock)
             {
                 try
                 {

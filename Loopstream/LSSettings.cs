@@ -525,6 +525,7 @@ namespace Loopstream
         public string host, user, pass, mount;
         public string title, description, genre, url;
         public bool pubstream;
+        public bool tagsock;
 
         public bool testDevs;
         public bool splash;

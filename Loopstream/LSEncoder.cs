@@ -8,6 +8,11 @@ using System.Windows.Forms;
 
 namespace Loopstream
 {
+    public class LSFrame
+    {
+
+    }
+
     public class LSEncoder
     {
         object locker;
@@ -25,6 +30,9 @@ namespace Loopstream
         protected Stream pstdout { get; set; }
         public bool crashed { get; private set; }
         public bool aborted { get; private set; }
+
+        public int iFrame;
+        public LSFrame[] frames;
 
         System.Net.Sockets.TcpClient tc;
         System.Net.Sockets.NetworkStream s;
