@@ -116,7 +116,7 @@ namespace Loopstream
         public class LSMeta
         {
             public enum Reader { WindowCaption, File, Website, ProcessMemory };
-            public string src, ptn, tit;
+            public string src, ptn, tit, desc;
             [XmlIgnore]
             public Encoding enc;
             public string encoding { get { return enc.WebName; } set { enc = Encoding.GetEncoding(value); } }
@@ -140,7 +140,8 @@ namespace Loopstream
                 string parserPattern,
                 int keepGroup = 1,
                 string textEncoding = "utf-8",
-                bool urlDecode = false)
+                bool urlDecode = false,
+                string description = "")
             {
                 reader = r;
                 tit = profileTitle;
@@ -150,6 +151,7 @@ namespace Loopstream
                 encoding = textEncoding;
                 grp = keepGroup;
                 urldecode = urlDecode;
+                desc = description;
             }
             public override string ToString()
             {
@@ -175,6 +177,7 @@ namespace Loopstream
                 target.freq = src.freq;
                 target.grp = src.grp;
                 target.urldecode = src.urldecode;
+                target.desc = src.desc;
             }
             public bool eq(LSMeta meta)
             {
@@ -187,6 +190,7 @@ namespace Loopstream
                     freq == meta.freq &&
                     grp == meta.grp &&
                     urldecode == meta.urldecode;
+                // description left out intentionally
             }
         }
         public List<LSMeta> metas;
@@ -337,33 +341,196 @@ namespace Loopstream
         {
             if (metas.Count == 0)
             {
-                metas.AddRange(new LSMeta[] {
-                    new LSMeta(LSMeta.Reader.WindowCaption, "Foobar 2000", "foobar2000", 500,
-                        @" *(.*[^ ]) *( - foobar2000$|\[foobar2000 v([0-9\.]*)\]$)"),
-                    new LSMeta(LSMeta.Reader.ProcessMemory, "iTunes 64bit 11.0.4.4", "itunes", 500,
-                        "iTunes.dll+15C4D52, iTunes.dll+15C4952", 1, "utf-16"),
-                    new LSMeta(LSMeta.Reader.WindowCaption, "Mieda Player Classic HomeCinema", "mpc-hc", 500,
-                        @" *(.*[^ ]) *"),
-                    new LSMeta(LSMeta.Reader.WindowCaption, "VLC", "vlc", 500,
-                        @" *(.*[^ ]) * - VLC media player"),
-                    new LSMeta(LSMeta.Reader.WindowCaption, "Winamp", "winamp", 500,
-                        @"([0-9]*\. )? *(.*[^ ]) * - Winamp$", 2),
-                    new LSMeta(LSMeta.Reader.File, "------------------------------------------", "tag.txt", 1000, ""),
-
-                    new LSMeta(LSMeta.Reader.ProcessMemory, "FamiTracker v0.4.2", "ft042", 1000,
-                        "ft042.exe+156b98*8c*680, ft042.exe+156b98*8c*480", 1, "utf-16"),
-                    //new LSMeta(LSMeta.Reader.ProcessMemory, "FamiTracker v0.4.2 (slimeball mod)", "ft042", 1000,
-                        //"sunsoft.exe+156b98*8c*680, sunsoft.exe+156b98*8c*480", 1, "utf-16"),
-                        //"c7400*44*200, c7400*44*0", 1, "utf-16"),
-                    new LSMeta(LSMeta.Reader.WindowCaption, "Firefox - Soundcloud", "firefox", 500,
-                        @"^▶  *(.*[^ ]) *- Mozilla Firefox"),
-                    new LSMeta(LSMeta.Reader.WindowCaption, "Firefox - YouTube", "firefox", 500,
-                        @"^▶  *(.*[^ ]) *- YouTube - Mozilla Firefox"),
-                    new LSMeta(LSMeta.Reader.Website, "other icecast mount", "http://wessie.info:1130/", 2000,
-                        "<tr>\\n<td><h3>Mount Point /main.mp3</h3></td>.*?<td>Current Song:</td>\\n<td class=\"streamdata\">(.*?)</td>"),
-                    new LSMeta(LSMeta.Reader.Website, "NI Traktor  (requires Loopstream Plugin)", "http://localhost:42069/status2.xsl", 1000,
-                        "\\n<pre>(.*)</pre>\\n", 1, "utf-8", true)
-                });
+                resetMetas();
+            }
+        }
+        public void resetMetas()
+        {
+            metas.Clear();
+            metas.AddRange(new LSMeta[] {
+                new LSMeta(
+                    LSMeta.Reader.WindowCaption,
+                    "Foobar 2000",
+                    "foobar2000",
+                    500,
+                    @" *(.*[^ ]) *( - foobar2000$|\[foobar2000 v([0-9\.]*)\]$)",
+                    1,
+                    "utf-8",
+                    false,
+                    "H4sIAAAAAAAEAHWRMU8DMQyF9/sVbzmJSlBVjGyoLVKHAoIyVR3Mna+JmksqJ9fj/j1OQAgGtsj2e++zszM24iwcOWG0zkGYWkxhEDyE8E5yu1gstOPbMCLZ5PgaGI1tDIY4kHMTogljRDOIsE+4l2RjAvkWuzw+r6pNlw1Bwqqx/gjS6ZhCj2S4z4ZBYL+GGkP+yN8Ev2PRBekpJdWrwCb0NMEHpQ5y0pCd0R1KhpriZb182m7Xj6v16o9LzDZ4TYpH0r5tcIXOivLOUJCXwQ29j6URuQlams2rZ8ek5j2dGHHQiEwq3IcLgy8sUzJ5LetLdlfuBhV39qj27Fol1o7X2nkqOWeKSbUf1CQ33VXVvqZytxo3OOzrwlof/qnnd/fzOZ+am6aNwgEAAA=="
+                ),
+                new LSMeta(
+                    LSMeta.Reader.ProcessMemory,
+                    "iTunes 64bit 11.0.4.4  (BROKEN (PROBABLY))",
+                    "itunes",
+                    500,
+                    "iTunes.dll+15C4D52, iTunes.dll+15C4952",
+                    1,
+                    "utf-16",
+                    false,
+                    "H4sIAAAAAAAEAE1RzU7DMAy+9ym+G0yaKpAm7pyA+3gAt3Mba1lcGpeyt8fuJkRPaeLv18ckFY/TrB11+bqDlnzFqvO5YhVLsMTgH+oN3zxX0YLn5/apPbQH6AA5LoXrHlRON2SMvxw6+Rtvm+bD+ZZ8Kg+Gc9F1D4g9VBQ1UIUM+IAUY6cw9VM1yvnODHYa0EhSWryrC9Qk5pz350TB404G6YUyVrqGrZHNpIx4nU2qbe6OYpn3qOpqiTapmavOFidCr5cps7Er0DosGRe2pKe2+SyDDy2FtreIN87sP07ba6n8tXDpGV6iJTJPhmo61a3CsOB3AapZxnRDJSqjA8o9ood5U3SZLozXyU3ABdFxgCPsPvAlIrnNzoN5IVOmK89Ng3/f49b/mXkKpMVafauDOGGVzWKUThhVT7HRyBtd+VDP1YeZw/DuFzHtZE8RAgAA"
+                ),
+                new LSMeta(
+                    LSMeta.Reader.WindowCaption,
+                    "Mieda Player Classic HomeCinema",
+                    "mpc-hc",
+                    500,
+                    @" *(.*[^ ]) *",
+                    1,
+                    "utf-8",
+                    false,
+                    "H4sIAAAAAAAEAE2RvW7DMAyEdz3FIbOT7l2zdClQIH0BxqJjtfoxSDmO376U0wTxIvhE3n2kTvPEAg1pioxJyhDsrAXC5FFHBucahLGE7MuCyreKMuDz67j/OHbuZ9ZqtalcQ76A8gqdqGcF1a1bK0k13ZuPb41NrKFGPjjnvsegz9CeMq4sK5g0xBVnBvnmz74BLUV+jaKOoBhRzEcwRVpZtAOpzskIXLO3xGBUb/ccPFL7WcSGgRYjtVwfdOv3CHkrSOwD/Xs+520W787h/h1HyhfeqnenMkvPO2AIHD0GKQm7NPX7sTfRiFuVDWfbUGRK3D1cimx3TXvAHfjGaGvo7Nd2t5YZCxnt61O8Mlnj4Q8Cgn3ovAEAAA=="
+                ),
+                new LSMeta(
+                    LSMeta.Reader.WindowCaption,
+                    "VLC",
+                    "vlc",
+                    500,
+                    @" *(.*[^ ]) * - VLC media player",
+                    1,
+                    "utf-8",
+                    false,
+                    "H4sIAAAAAAAEAGWRwWrDMAyG73mKn55ayPIOJZcdOtih7O7WciJw7CCrzfr2k2MGg/lkydKvT7/PKetMgsLLGgmr5MCRejxJXjXJ0Qk04+NzfHsfe2ysM3Ii3HiC5xBIKN1pGIbuOhOUvhWHr8uIhTw7rNG9SA7WFiNuBKElP8kjSF5gg0HJI4f9qqw2ucN+CpsqWMEFhghOhT3tdUfgBEvswepUSdLQdecCZ7qcJoOjRIG1t7KmXYk2Tj5vbQx8piZcAfal/lP3nbUmXHJeiwq5pa1RuyzyDdpNBcdsBlYhyyzVrfpSSMzEk5FdZ1vi7lI14FEoPCK2KrwJq+H+ml4QTKd9x1+OMvwAo4V1mqUBAAA="
+                ),
+                new LSMeta(
+                    LSMeta.Reader.WindowCaption,
+                    "Winamp",
+                    "winamp",
+                    500,
+                    @"([0-9]*\. )? *(.*[^ ]) * - Winamp$",
+                    2,
+                    "utf-8",
+                    false,
+                    "H4sIAAAAAAAEAF2QzWrDMBCE736KweckUHoo5FboA5RSKD2u7VW8VD9GWtf123cth5ZEFyFm95sZfbKCYtKRM6acnHjGMko/IjMNBSYg8CCEydNqQ4vEIS1QUc8HoJttH44koxNFSJnRpzB56Ul5ODXNCzuaveJDIoXJxOjkMmdSSRFiDgll3IjmtHl4KQqOmlfEOXRmSVrFopQVydXH1d/LF5+bBvt5eHw64TnrRjjifRuxezdumuZ9nMuhbr+SKue4wyzDX3Px/lxpxyPeOKRvvoYocMn7tPCAbrXG7akFXE6h8jq+SIwSLzfx7kAUV5SJei4277aPojiAnCWpO+1t8haT9b1jVDb/KNq9VfufgQ124/4Lus7FPNsBAAA="
+                ),
+                new LSMeta(
+                    LSMeta.Reader.File,
+                    "---------------------------------------------------",
+                    "tag.txt",
+                    1000,
+                    ""
+                ),
+                new LSMeta(
+                    LSMeta.Reader.ProcessMemory,
+                    "FamiTracker v0.4.2",
+                    "ft042",
+                    1000,
+                    "ft042.exe+156b98*8c*680, ft042.exe+156b98*8c*480",
+                    1,
+                    "utf-16",
+                    false,
+                    "H4sIAAAAAAAEAJ1Sy26DMBC8+ytWOaYE0SqN6JFDI0VqpSrhBwxehCVjW7ZpyN93jUNaRWoP5Qaz89hhKw1cfHLdogCc+GAVgtHQmzMEA6NHCD3ChzMtev+Og3EXcMgFupzVEeEhoNPQSVQCpI8UAdwDh4YTmwvhiJlBZ5QyZ8KaC2HWSE08CI5LFZ0SnOc5Y5CeLhTbpxwnfHh83jUv5bps17uyyH6BtmXB2F46H2KKq21Uro714VRntJ1VXOqYAKMV6ZywNVrczdeH+u01n1NsNrCXNBArWCZMN78ORoxU1eoWZQUgNUEkZlNbi0RlLV5FeqpYYCsHrkCPQ0MNFFPaIVrP7GS0kI/U9c/vPnV77S+LqvQHk0MxlW2S+Y47Z8Jl/n+q1Pq9bDwB6JwZ/lBHOgpNi94sSMxhGOlayK1yQfrAvgADvUSJgAIAAA=="
+                ),
+                new LSMeta(
+                    LSMeta.Reader.Website,
+                    "other icecast mount",
+                    "http://wessie.info:1130/",
+                    2000,
+                    "<tr>\\n<td><h3>Mount Point /[^<]*</h3></td>.*?<td>Current Song:</td>\\n<td class=\"streamdata\">(.*?)</td>",
+                    1,
+                    "utf-8",
+                    true,
+                    "H4sIAAAAAAAEAE2QsW7DMAxEd38FtyRA0A/o1rFApyIdMtIWbQuWRYOiYPjve0pSoIQmkXx3x2/hQD4LfZjH4sQ50C16EhpNV2IKMnJNTnGQgTFQnL0W2niSt677KTLWRKMamSQ+Yp6AUAANkya8Am5ap5m+VLfnF/buUuiTlqw7+uy08oKfrFQkF7l2ffVH41SIU9GHw164+kE6/kO9d3etNHCmoDTouiVxSQfMOFuQQGWO8D7+wfYmdmBl5+zwQa3O6MZCeAgbc3wQEALpDWMUM3hlUzgjV5ph+ma8OEJjp5dDcTQXs9gnubygrzoj5iqcr9RkT+3WMS80ia2c4UdrCkAQY7XBd4M8fAwC4c10Ml7L9em7HaHlufwCFqKqebUBAAA="
+                ),
+                new LSMeta(
+                    LSMeta.Reader.Website,
+                    "NI Traktor  (requires Loopstream Plugin)",
+                    "http://localhost:42069/status2.xsl",
+                    1000,
+                    "\\n<pre>(.*)</pre>\\n",
+                    1,
+                    "utf-8",
+                    true,
+                    "H4sIAAAAAAAEAMtUSE7MK1FISs3JTC1LVajML1UoSczJTk1RyE1VyMwryVcoycgsBgCrdlFBJgAAAA=="
+                ),
+                new LSMeta(
+                    LSMeta.Reader.WindowCaption,
+                    "[OLD]   SoundCloud, YouTube, Spotify   (Firefox/Nightly)",
+                    "firefox",
+                    500,
+                    @"^▶  *(.*?[^ ]) *(- YouTube|- Spotify)? - (Mozilla Firefox|Nightly|Google Chrome)$",
+                    1,
+                    "utf-8",
+                    false,
+                    "H4sIAAAAAAAEAF2OwU7EMAxE7/mKOYKE+gF7XCQuwB4ACXF0G7e1lMZV4tANX0+6C0LCt/HMs+eYdMuc8sFhn2f9khAID5J41HPb3LzwVAIlUPQ4yTRbqLfOvXOfxfiXe9US/X3Q4q/6Q8tb6fnHXNVkrM65J9U1W2JaMFCExlDRlIfRlDEmXWAzgwaTT0Z/7dbMvnNHzoaNKkwxyrnlJB+AR+b1wizshbAGqo2QCELmlRLZ351Notetcyc1bqiMqFowU3u1lGCyhv/ZfAeUzJcHfTHTiJ6DbnuJzIGHVmmWYd61UZrYum/5+dbEUQEAAA=="
+                ),
+                new LSMeta(
+                    LSMeta.Reader.WindowCaption,
+                    "[OLD]   SoundCloud, YouTube, Spotify   (Google Chrome)",
+                    "chrome",
+                    500,
+                    @"^▶  *(.*?[^ ]) *(- YouTube|- Spotify)? - (Mozilla Firefox|Nightly|Google Chrome)$",
+                    1,
+                    "utf-8",
+                    false,
+                    "H4sIAAAAAAAEAF1Ou07EMBDs/RXzASgfcOVdQQGiAQlRrpPNZSXHa3nXhPw9zh0IielG8zxX3YyrnQIOPKpeE+OyVF05hHeOJs6/6qu2PF2StunOP7S9tcg/YlGXeQ8hPKsW88q0YqQMzWlHZxOcroa5V8MXBo0un4x4f9DFOIQzm2OjHa6Y5av7xE7AE3O5ZVaehFAS7T0hGQTjQpX8r2eTPOk2hBd17lGZsWvDQn1qbcmlpP9eewCa8W0gNnfNiJx0O04YJx77pUXG5eBO9co+fAO4pXCwNwEAAA=="
+                ),
+                new LSMeta(
+                    LSMeta.Reader.WindowCaption,
+                    "[OLD]   Google Music   (Firefox/Nightly)",
+                    "firefox",
+                    500,
+                    @"^ *(.*?[^ ])  *- Google Play Music - (Mozilla Firefox|Nightly|Google Chrome)$",
+                    1,
+                    "utf-8",
+                    false,
+                    "H4sIAAAAAAAEAF2OsU7EQAxE+/2KKUFC+YArr4AC7goaaidxEkubdbT2klu+ns0hhMR0Y8+z55x1N852Cjh00S+JkfAsmSe9tcnDO88lUgalEVeZF4/1MYQP7k2cf7kX1TkyLsVkCIfeVDfzzLRioARNsaK5EU6zYcq6whcGDS6fjP6nRVv2XTizOXaqcMUkt5YTOwGvzNudWXkUwhapNkISCMYbZfK/O7ukUfcuXNW5oTKhasFC7dVaossW/2ftCSjG9wd9cdeEnqPuRwnjyEOrtMiwHN4pz+zdNyKeob87AQAA"
+                ),
+                new LSMeta(
+                    LSMeta.Reader.WindowCaption,
+                    "[OLD]   Google Music   (Google Chrome)",
+                    "chrome",
+                    500,
+                    @"^ *(.*?[^ ])  *- Google Play Music - (Mozilla Firefox|Nightly|Google Chrome)$",
+                    1,
+                    "utf-8",
+                    false,
+                    "H4sIAAAAAAAEAF1OOW7DMBDs+Yp5QKAHuHSKFDna1CtqJS5AcQXuyox+H8ouDHi6wZzXqs242iXgxIfqkhnvqerKIfzyaOL8on7vJjGc+FLdzCvTikgFWvKBziY4LYa5l8ATg6LLjTE+tro4DuHK5mh0wBWz/HWf2AX4ZN7umZUnIWyZjp6QAoLxRpX82dOkTNqG8KPOPSozDt2RqE+te3bZ8qvX3oDd+D4w7u5aMHLWdp4wzhz7pSQxndypLuzDP1meK+UhAQAA"
+                ),
+                new LSMeta(
+                    LSMeta.Reader.File,
+                    "---------------------------------------------------",
+                    "tag.txt",
+                    1000,
+                    ""
+                ),
+                new LSMeta(
+                    LSMeta.Reader.WindowCaption,
+                    "[NEW, BETA]    SoundCloud, YouTube, Spotify",
+                    "*",
+                    2000,
+                    @"^▶  *(.*?[^ ]) *(- YouTube|- Spotify)? - (Mozilla Firefox|Nightly|Google Chrome)$",
+                    1,
+                    "utf-8",
+                    false,
+                    "H4sIAAAAAAAEADWQwU7DMAyG73mK/wFQuXNkEpzgsqGJo9t4jbU0rhKnJTw9GQPf7O+39cnPWffCuTw53OpNvyVGwotkvugXHvEuc7DY7vhVdY6MQ8i6sHNnHosY/y8ftSZ/iFr9vf/Ueqoj/8FVTS7NOXcKUlCC1uixa75CEnjj3DBJnupSjNLEDwClHhDrSUOgTdIMUxjlmQ0LpUoxtgH4SN3B2A/uaN0emmIDjV20xzOThwUGTSZbH9HYTxfFlXn9BQt7IayRGuebC6HwSpmMMd6/0y2S1334AVmHD/ktAQAA"
+                ),
+                new LSMeta(
+                    LSMeta.Reader.WindowCaption,
+                    "[NEW, BETA]    Google Music",
+                    "*",
+                    2000,
+                    @"^ *(.*?[^ ])  *- Google Play Music - (Mozilla Firefox|Nightly|Google Chrome)$",
+                    1,
+                    "utf-8",
+                    false,
+                    "H4sIAAAAAAAEADWQsU7EQAxE+3zFfAAKPSVIR3U0gK52dk3Wus068joJua9nw8GUnrHnyc+mW2WrTx0OnfUmORNOYvyl33jEm4zJ8363X1XHzHhJphN33YWHKs7/y3/ueakSukMfSSpq0iVHbGpXSAGvbDuCWFim6lQCPwBUWkC8JR2JVikjXOFkIzsmKgvlvPfAZ2ltzrHv3r1xQkveQUMrbXFjivDEoOCythEN7XRVXJnnX2PiKIQ50852sBAqz2TkjOH+h0ZRom79D62BL9YXAQAA"
+                ),
+            });
+            metaDec();
+        }
+        void metaEnc()
+        {
+            foreach (LSMeta meta in metas)
+            {
+                meta.desc = Z.gze(meta.desc.Replace("\r", ""));
+            }
+        }
+        void metaDec()
+        {
+            foreach (LSMeta meta in metas)
+            {
+                meta.desc = Z.gzd(meta.desc).Replace("\r", "").Replace("\n", "\r\n");
             }
         }
         public void resetPresets()
@@ -435,6 +602,7 @@ namespace Loopstream
         }
         public void save()
         {
+            metaEnc();
             XmlSerializer x = new XmlSerializer(this.GetType());
             using (var s = new System.IO.FileStream("Loopstream.ini", System.IO.FileMode.Create))
             {
@@ -442,6 +610,7 @@ namespace Loopstream
                 s.Write(ver, 0, ver.Length);
                 x.Serialize(s, this);
             }
+            metaDec();
         }
         public static LSSettings load()
         {
@@ -506,6 +675,11 @@ namespace Loopstream
                     ret.init();
                     ret.mp3.FIXME_kbps =
                     ret.ogg.FIXME_kbps = -1;
+                    try
+                    {
+                        ret.metaDec();
+                    }
+                    catch { }
                     return ret;
                 }
                 catch (Exception e)

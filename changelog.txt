@@ -3,6 +3,9 @@
 + new feature
 ~ other change
 
+2014-01-24, 02:51:54 - Loopstream 1.3.6.7
+  + Descriptions for tag reader profiles
+
 2014-01-22, 00:32:51 - Loopstream 1.3.6.4
   + Icecast server presets
   + Custom icecast usernames

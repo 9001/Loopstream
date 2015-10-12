@@ -77,6 +77,7 @@ namespace Loopstream
             rnd = new Random();
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
+            //Application.Run(new UI_Winlist());
             Application.Run(new Home());
         }
 

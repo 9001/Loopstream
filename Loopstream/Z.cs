@@ -11,6 +11,100 @@ using System.Windows.Forms;
 
 namespace Loopstream
 {
+    public class EnumHandles
+    {
+        [DllImport("user32.dll")]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        static extern bool EnumWindows(EnumWindowsProc lpEnumFunc, IntPtr lParam);
+        delegate bool EnumWindowsProc(int hwnd, int lParam);
+
+        static bool blocker = false;
+        static List<int> list = null;
+        public static bool Hadd(int hwnd, int lParam)
+        {
+            list.Add(hwnd);
+            return true;
+        }
+        public static int[] Run()
+        {
+            if (blocker) return new int[0];
+            blocker = true;
+            if (list != null) list.Clear();
+            else list = new List<int>();
+            EnumWindowsProc enumWindowsProc = new EnumWindowsProc(EnumHandles.Hadd);
+            EnumWindows(enumWindowsProc, IntPtr.Zero);
+            int[] ret = list.ToArray();
+            list.Clear();
+            blocker = false;
+            return ret;
+        }
+    }
+
+    public class Z
+    {
+        public static string lze(string plain)
+        {
+            byte[] bytes = Encoding.UTF8.GetBytes(plain);
+            MemoryStream msi = new MemoryStream(bytes);
+            MemoryStream mso = new MemoryStream();
+            SevenZip.Compression.LZMA.Encoder enc = new SevenZip.Compression.LZMA.Encoder();
+            enc.WriteCoderProperties(mso);
+            mso.Write(BitConverter.GetBytes(msi.Length), 0, 8);
+            enc.Code(msi, mso, msi.Length, -1, null);
+            bytes = mso.ToArray();
+            return Convert.ToBase64String(bytes);
+        }
+
+        public static string lzd(string b64)
+        {
+            byte[] bytes = Convert.FromBase64String(b64);
+            MemoryStream msi = new MemoryStream(bytes);
+            MemoryStream mso = new MemoryStream();
+            SevenZip.Compression.LZMA.Decoder dec = new SevenZip.Compression.LZMA.Decoder();
+            byte[] props = new byte[5]; msi.Read(props, 0, 5);
+            byte[] length = new byte[8]; msi.Read(length, 0, 8);
+            long len = BitConverter.ToInt64(length, 0);
+            dec.SetDecoderProperties(props);
+            dec.Code(msi, mso, msi.Length, len, null);
+            bytes = mso.ToArray();
+            return Encoding.UTF8.GetString(bytes);
+        }
+
+        public static string gze(string plain)
+        {
+            using (var msi = new MemoryStream(Encoding.UTF8.GetBytes(plain)))
+            {
+                using (var mso = new MemoryStream())
+                {
+                    using (var gz = new System.IO.Compression.GZipStream(mso, System.IO.Compression.CompressionMode.Compress))
+                    {
+                        msi.CopyTo(gz);
+                        gz.Close();
+                        byte[] bytes = mso.ToArray();
+                        return Convert.ToBase64String(bytes);
+                    }
+                }
+            }
+        }
+
+        public static string gzd(string b64)
+        {
+            using (var msi = new MemoryStream(Convert.FromBase64String(b64)))
+            {
+                using (var gz = new System.IO.Compression.GZipStream(msi, System.IO.Compression.CompressionMode.Decompress))
+                {
+                    using (var mso = new MemoryStream())
+                    {
+                        gz.CopyTo(mso);
+                        gz.Close();
+                        byte[] bytes = mso.ToArray();
+                        return Encoding.UTF8.GetString(bytes);
+                    }
+                }
+            }
+        }
+    }
+
     public class Logger
     {
         public static Logger mp3, ogg, pcm, med, mix, tag, app;

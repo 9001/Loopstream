@@ -29,6 +29,7 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ConfigSC));
             this.gOutS = new System.Windows.Forms.ComboBox();
             this.gTwoS = new System.Windows.Forms.ComboBox();
             this.gOneS = new System.Windows.Forms.ComboBox();
@@ -96,37 +97,38 @@
             this.gOggQualityV = new System.Windows.Forms.TextBox();
             this.gOggBitrate = new System.Windows.Forms.RadioButton();
             this.tpTags = new System.Windows.Forms.TabPage();
+            this.gRunTest = new System.Windows.Forms.Button();
+            this.gMake32 = new System.Windows.Forms.Button();
             this.gTagAuto = new System.Windows.Forms.CheckBox();
+            this.gTarget = new System.Windows.Forms.Button();
             this.gMeta = new System.Windows.Forms.ComboBox();
             this.gTagsAdvanced = new System.Windows.Forms.Button();
             this.pTagsAdvanced2 = new System.Windows.Forms.Panel();
-            this.gDelete = new System.Windows.Forms.Button();
             this.gLatinize = new System.Windows.Forms.CheckBox();
             this.pTagAdvanced1 = new System.Windows.Forms.Panel();
+            this.gResetTags = new System.Windows.Forms.LinkLabel();
             this.gURLDecode = new System.Windows.Forms.CheckBox();
-            this.gTarget = new System.Windows.Forms.Button();
-            this.label26 = new System.Windows.Forms.Label();
+            this.gDelete = new System.Windows.Forms.Button();
             this.gGroup = new System.Windows.Forms.TextBox();
             this.label17 = new System.Windows.Forms.Label();
             this.gEncodingL = new System.Windows.Forms.Label();
             this.label24 = new System.Windows.Forms.Label();
-            this.gResult = new System.Windows.Forms.Label();
             this.label18 = new System.Windows.Forms.Label();
             this.gEncoding = new System.Windows.Forms.TextBox();
             this.gReader = new System.Windows.Forms.ComboBox();
             this.label19 = new System.Windows.Forms.Label();
             this.gTest = new System.Windows.Forms.CheckBox();
             this.gFreq = new System.Windows.Forms.TextBox();
-            this.label20 = new System.Windows.Forms.Label();
-            this.gReload = new System.Windows.Forms.Button();
             this.label22 = new System.Windows.Forms.Label();
-            this.label28 = new System.Windows.Forms.Label();
             this.gPattern = new System.Windows.Forms.TextBox();
             this.label23 = new System.Windows.Forms.Label();
             this.label21 = new System.Windows.Forms.Label();
             this.gStore = new System.Windows.Forms.Button();
             this.gSource = new System.Windows.Forms.TextBox();
             this.gName = new System.Windows.Forms.TextBox();
+            this.gDescBox = new System.Windows.Forms.Panel();
+            this.gDescText = new System.Windows.Forms.TextBox();
+            this.label29 = new System.Windows.Forms.Label();
             this.tpOSD = new System.Windows.Forms.TabPage();
             this.label27 = new System.Windows.Forms.Label();
             this.gLDrop = new System.Windows.Forms.TextBox();
@@ -163,6 +165,7 @@
             this.tpTags.SuspendLayout();
             this.pTagsAdvanced2.SuspendLayout();
             this.pTagAdvanced1.SuspendLayout();
+            this.gDescBox.SuspendLayout();
             this.tpOSD.SuspendLayout();
             this.pFooter.SuspendLayout();
             this.pButtons.SuspendLayout();
@@ -737,6 +740,7 @@
             this.gURL.Size = new System.Drawing.Size(409, 20);
             this.gURL.TabIndex = 24;
             this.gURL.Text = "https://github.com/9001/loopstream";
+            this.tt.SetToolTip(this.gURL, "This is the stream URL as it appears on the icecast status page.");
             this.gURL.TextChanged += new System.EventHandler(this.gURL_TextChanged);
             this.gURL.MouseEnter += new System.EventHandler(this.gHost_MouseEnter);
             this.gURL.MouseLeave += new System.EventHandler(this.gHost_MouseLeave);
@@ -748,6 +752,7 @@
             this.gTitle.Size = new System.Drawing.Size(409, 20);
             this.gTitle.TabIndex = 21;
             this.gTitle.Text = "Loopstream";
+            this.tt.SetToolTip(this.gTitle, "This is the stream title as it appears on the icecast status page.");
             this.gTitle.TextChanged += new System.EventHandler(this.gTitle_TextChanged);
             this.gTitle.MouseEnter += new System.EventHandler(this.gHost_MouseEnter);
             this.gTitle.MouseLeave += new System.EventHandler(this.gHost_MouseLeave);
@@ -759,6 +764,7 @@
             this.gGenre.Size = new System.Drawing.Size(409, 20);
             this.gGenre.TabIndex = 23;
             this.gGenre.Text = "Post-Avant Jazzcore";
+            this.tt.SetToolTip(this.gGenre, "This is the stream genre as it appears on the icecast status page.");
             this.gGenre.TextChanged += new System.EventHandler(this.gGenre_TextChanged);
             this.gGenre.MouseEnter += new System.EventHandler(this.gHost_MouseEnter);
             this.gGenre.MouseLeave += new System.EventHandler(this.gHost_MouseLeave);
@@ -770,6 +776,7 @@
             this.gDescription.Size = new System.Drawing.Size(409, 20);
             this.gDescription.TabIndex = 22;
             this.gDescription.Text = "Cave Explorer Committee";
+            this.tt.SetToolTip(this.gDescription, "This is the stream description as it appears on the icecast status page.");
             this.gDescription.TextChanged += new System.EventHandler(this.gDescription_TextChanged);
             this.gDescription.MouseEnter += new System.EventHandler(this.gHost_MouseEnter);
             this.gDescription.MouseLeave += new System.EventHandler(this.gHost_MouseLeave);
@@ -1076,16 +1083,46 @@
             // tpTags
             // 
             this.tpTags.BackColor = System.Drawing.SystemColors.Control;
+            this.tpTags.Controls.Add(this.gRunTest);
+            this.tpTags.Controls.Add(this.gMake32);
             this.tpTags.Controls.Add(this.gTagAuto);
+            this.tpTags.Controls.Add(this.gTarget);
             this.tpTags.Controls.Add(this.gMeta);
             this.tpTags.Controls.Add(this.gTagsAdvanced);
             this.tpTags.Controls.Add(this.pTagsAdvanced2);
             this.tpTags.Controls.Add(this.pTagAdvanced1);
+            this.tpTags.Controls.Add(this.gDescBox);
             this.tpTags.Location = new System.Drawing.Point(4, 25);
             this.tpTags.Name = "tpTags";
             this.tpTags.Size = new System.Drawing.Size(534, 275);
             this.tpTags.TabIndex = 3;
             this.tpTags.Text = "Tags";
+            // 
+            // gRunTest
+            // 
+            this.gRunTest.Location = new System.Drawing.Point(378, 241);
+            this.gRunTest.Name = "gRunTest";
+            this.gRunTest.Size = new System.Drawing.Size(148, 23);
+            this.gRunTest.TabIndex = 69;
+            this.gRunTest.Text = "Test this configuration";
+            this.tt.SetToolTip(this.gRunTest, "Loopstream tries to read tags with this config");
+            this.gRunTest.UseVisualStyleBackColor = true;
+            this.gRunTest.Click += new System.EventHandler(this.gRunTest_Click);
+            this.gRunTest.MouseEnter += new System.EventHandler(this.gHost_MouseEnter);
+            this.gRunTest.MouseLeave += new System.EventHandler(this.gHost_MouseLeave);
+            // 
+            // gMake32
+            // 
+            this.gMake32.Location = new System.Drawing.Point(21, 242);
+            this.gMake32.Name = "gMake32";
+            this.gMake32.Size = new System.Drawing.Size(351, 22);
+            this.gMake32.TabIndex = 67;
+            this.gMake32.Text = "Create a 32-bit copy of Loopstream.exe   ( to target 32-bit players)";
+            this.tt.SetToolTip(this.gMake32, resources.GetString("gMake32.ToolTip"));
+            this.gMake32.UseVisualStyleBackColor = true;
+            this.gMake32.Click += new System.EventHandler(this.gMake32_Click);
+            this.gMake32.MouseEnter += new System.EventHandler(this.gHost_MouseEnter);
+            this.gMake32.MouseLeave += new System.EventHandler(this.gHost_MouseLeave);
             // 
             // gTagAuto
             // 
@@ -1095,10 +1132,24 @@
             this.gTagAuto.Size = new System.Drawing.Size(246, 17);
             this.gTagAuto.TabIndex = 65;
             this.gTagAuto.Text = "Read tags automatically from this media player:";
+            this.tt.SetToolTip(this.gTagAuto, "Enable the automatic tag reading/sending functionality");
             this.gTagAuto.UseVisualStyleBackColor = true;
             this.gTagAuto.CheckedChanged += new System.EventHandler(this.gTagMan_CheckedChanged);
             this.gTagAuto.MouseEnter += new System.EventHandler(this.gHost_MouseEnter);
             this.gTagAuto.MouseLeave += new System.EventHandler(this.gHost_MouseLeave);
+            // 
+            // gTarget
+            // 
+            this.gTarget.Location = new System.Drawing.Point(21, 242);
+            this.gTarget.Name = "gTarget";
+            this.gTarget.Size = new System.Drawing.Size(351, 22);
+            this.gTarget.TabIndex = 66;
+            this.gTarget.Text = "Select which window to read tags from    ( source process + hwnd )";
+            this.tt.SetToolTip(this.gTarget, resources.GetString("gTarget.ToolTip"));
+            this.gTarget.UseVisualStyleBackColor = true;
+            this.gTarget.Click += new System.EventHandler(this.gTarget_Click);
+            this.gTarget.MouseEnter += new System.EventHandler(this.gHost_MouseEnter);
+            this.gTarget.MouseLeave += new System.EventHandler(this.gHost_MouseLeave);
             // 
             // gMeta
             // 
@@ -1129,7 +1180,6 @@
             // 
             // pTagsAdvanced2
             // 
-            this.pTagsAdvanced2.Controls.Add(this.gDelete);
             this.pTagsAdvanced2.Controls.Add(this.gLatinize);
             this.pTagsAdvanced2.Dock = System.Windows.Forms.DockStyle.Right;
             this.pTagsAdvanced2.Location = new System.Drawing.Point(332, 0);
@@ -1137,15 +1187,6 @@
             this.pTagsAdvanced2.Size = new System.Drawing.Size(202, 71);
             this.pTagsAdvanced2.TabIndex = 64;
             this.pTagsAdvanced2.Visible = false;
-            // 
-            // gDelete
-            // 
-            this.gDelete.Location = new System.Drawing.Point(1, 36);
-            this.gDelete.Name = "gDelete";
-            this.gDelete.Size = new System.Drawing.Size(118, 23);
-            this.gDelete.TabIndex = 46;
-            this.gDelete.Text = "Delete this preset";
-            this.gDelete.UseVisualStyleBackColor = true;
             // 
             // gLatinize
             // 
@@ -1165,24 +1206,20 @@
             // pTagAdvanced1
             // 
             this.pTagAdvanced1.BackColor = System.Drawing.SystemColors.Control;
+            this.pTagAdvanced1.Controls.Add(this.gResetTags);
             this.pTagAdvanced1.Controls.Add(this.gURLDecode);
-            this.pTagAdvanced1.Controls.Add(this.gTarget);
-            this.pTagAdvanced1.Controls.Add(this.label26);
+            this.pTagAdvanced1.Controls.Add(this.gDelete);
             this.pTagAdvanced1.Controls.Add(this.gGroup);
             this.pTagAdvanced1.Controls.Add(this.label17);
             this.pTagAdvanced1.Controls.Add(this.gEncodingL);
             this.pTagAdvanced1.Controls.Add(this.label24);
-            this.pTagAdvanced1.Controls.Add(this.gResult);
             this.pTagAdvanced1.Controls.Add(this.label18);
             this.pTagAdvanced1.Controls.Add(this.gEncoding);
             this.pTagAdvanced1.Controls.Add(this.gReader);
             this.pTagAdvanced1.Controls.Add(this.label19);
             this.pTagAdvanced1.Controls.Add(this.gTest);
             this.pTagAdvanced1.Controls.Add(this.gFreq);
-            this.pTagAdvanced1.Controls.Add(this.label20);
-            this.pTagAdvanced1.Controls.Add(this.gReload);
             this.pTagAdvanced1.Controls.Add(this.label22);
-            this.pTagAdvanced1.Controls.Add(this.label28);
             this.pTagAdvanced1.Controls.Add(this.gPattern);
             this.pTagAdvanced1.Controls.Add(this.label23);
             this.pTagAdvanced1.Controls.Add(this.label21);
@@ -1196,46 +1233,53 @@
             this.pTagAdvanced1.TabIndex = 63;
             this.pTagAdvanced1.Visible = false;
             // 
+            // gResetTags
+            // 
+            this.gResetTags.AutoSize = true;
+            this.gResetTags.LinkColor = System.Drawing.SystemColors.Highlight;
+            this.gResetTags.Location = new System.Drawing.Point(461, 17);
+            this.gResetTags.Name = "gResetTags";
+            this.gResetTags.Size = new System.Drawing.Size(65, 13);
+            this.gResetTags.TabIndex = 63;
+            this.gResetTags.TabStop = true;
+            this.gResetTags.Text = "RESET ALL";
+            this.tt.SetToolTip(this.gResetTags, "Restore the facetory-default metadata profiles.");
+            this.gResetTags.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.gResetTags_LinkClicked);
+            this.gResetTags.MouseEnter += new System.EventHandler(this.gHost_MouseEnter);
+            this.gResetTags.MouseLeave += new System.EventHandler(this.gHost_MouseLeave);
+            // 
             // gURLDecode
             // 
             this.gURLDecode.AutoSize = true;
-            this.gURLDecode.Location = new System.Drawing.Point(333, 41);
+            this.gURLDecode.Location = new System.Drawing.Point(213, 95);
             this.gURLDecode.Name = "gURLDecode";
-            this.gURLDecode.Size = new System.Drawing.Size(119, 17);
+            this.gURLDecode.Size = new System.Drawing.Size(318, 17);
             this.gURLDecode.TabIndex = 67;
-            this.gURLDecode.Text = "enable url decoding";
+            this.gURLDecode.Text = "Enable URL decoding   ( if you get things like \"&&amp;\" in tags)";
+            this.tt.SetToolTip(this.gURLDecode, "Tries to repair tags that orginate from a website or XML file.");
             this.gURLDecode.UseVisualStyleBackColor = true;
             this.gURLDecode.CheckedChanged += new System.EventHandler(this.gURLDecode_CheckedChanged);
             this.gURLDecode.MouseEnter += new System.EventHandler(this.gHost_MouseEnter);
             this.gURLDecode.MouseLeave += new System.EventHandler(this.gHost_MouseLeave);
             // 
-            // gTarget
+            // gDelete
             // 
-            this.gTarget.Location = new System.Drawing.Point(100, 168);
-            this.gTarget.Name = "gTarget";
-            this.gTarget.Size = new System.Drawing.Size(351, 22);
-            this.gTarget.TabIndex = 66;
-            this.gTarget.Text = "Select which window to read tags from    ( source process + hwnd )";
-            this.tt.SetToolTip(this.gTarget, "Reload buffered metadata for testing");
-            this.gTarget.UseVisualStyleBackColor = true;
-            this.gTarget.Click += new System.EventHandler(this.gTarget_Click);
-            this.gTarget.MouseEnter += new System.EventHandler(this.gHost_MouseEnter);
-            this.gTarget.MouseLeave += new System.EventHandler(this.gHost_MouseLeave);
-            // 
-            // label26
-            // 
-            this.label26.AutoSize = true;
-            this.label26.Location = new System.Drawing.Point(232, 18);
-            this.label26.Name = "label26";
-            this.label26.Size = new System.Drawing.Size(49, 13);
-            this.label26.TabIndex = 65;
-            this.label26.Text = "534, 204";
-            this.label26.Visible = false;
+            this.gDelete.Location = new System.Drawing.Point(303, 13);
+            this.gDelete.Name = "gDelete";
+            this.gDelete.Size = new System.Drawing.Size(148, 22);
+            this.gDelete.TabIndex = 46;
+            this.gDelete.Text = "Delete selected profile";
+            this.gDelete.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+            this.tt.SetToolTip(this.gDelete, "Delete the profile which is currently\r\nselected in the top-left dropdown box.");
+            this.gDelete.UseVisualStyleBackColor = true;
+            this.gDelete.Click += new System.EventHandler(this.gDelete_Click);
+            this.gDelete.MouseEnter += new System.EventHandler(this.gHost_MouseEnter);
+            this.gDelete.MouseLeave += new System.EventHandler(this.gHost_MouseLeave);
             // 
             // gGroup
             // 
             this.gGroup.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.gGroup.Location = new System.Drawing.Point(100, 92);
+            this.gGroup.Location = new System.Drawing.Point(100, 67);
             this.gGroup.Name = "gGroup";
             this.gGroup.Size = new System.Drawing.Size(22, 20);
             this.gGroup.TabIndex = 45;
@@ -1257,7 +1301,7 @@
             // gEncodingL
             // 
             this.gEncodingL.AutoSize = true;
-            this.gEncodingL.Location = new System.Drawing.Point(19, 173);
+            this.gEncodingL.Location = new System.Drawing.Point(19, 148);
             this.gEncodingL.Name = "gEncodingL";
             this.gEncodingL.Size = new System.Drawing.Size(52, 13);
             this.gEncodingL.TabIndex = 61;
@@ -1273,19 +1317,10 @@
             this.label24.Size = new System.Drawing.Size(534, 1);
             this.label24.TabIndex = 64;
             // 
-            // gResult
-            // 
-            this.gResult.AutoSize = true;
-            this.gResult.Location = new System.Drawing.Point(20, 18);
-            this.gResult.Name = "gResult";
-            this.gResult.Size = new System.Drawing.Size(206, 13);
-            this.gResult.TabIndex = 37;
-            this.gResult.Text = "Optionally, fill in the specification manually:";
-            // 
             // label18
             // 
             this.label18.AutoSize = true;
-            this.label18.Location = new System.Drawing.Point(19, 43);
+            this.label18.Location = new System.Drawing.Point(19, 18);
             this.label18.Name = "label18";
             this.label18.Size = new System.Drawing.Size(42, 13);
             this.label18.TabIndex = 39;
@@ -1293,7 +1328,7 @@
             // 
             // gEncoding
             // 
-            this.gEncoding.Location = new System.Drawing.Point(100, 170);
+            this.gEncoding.Location = new System.Drawing.Point(100, 145);
             this.gEncoding.Name = "gEncoding";
             this.gEncoding.Size = new System.Drawing.Size(100, 20);
             this.gEncoding.TabIndex = 50;
@@ -1307,10 +1342,10 @@
             // 
             this.gReader.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.gReader.FormattingEnabled = true;
-            this.gReader.Location = new System.Drawing.Point(100, 39);
+            this.gReader.Location = new System.Drawing.Point(100, 14);
             this.gReader.Margin = new System.Windows.Forms.Padding(3, 8, 3, 3);
             this.gReader.Name = "gReader";
-            this.gReader.Size = new System.Drawing.Size(227, 21);
+            this.gReader.Size = new System.Drawing.Size(187, 21);
             this.gReader.TabIndex = 41;
             this.tt.SetToolTip(this.gReader, "The method that Loopstream will use to aquire the Now Playing data");
             this.gReader.SelectedIndexChanged += new System.EventHandler(this.gReader_SelectedIndexChanged);
@@ -1320,7 +1355,7 @@
             // label19
             // 
             this.label19.AutoSize = true;
-            this.label19.Location = new System.Drawing.Point(19, 121);
+            this.label19.Location = new System.Drawing.Point(19, 96);
             this.label19.Name = "label19";
             this.label19.Size = new System.Drawing.Size(57, 13);
             this.label19.TabIndex = 41;
@@ -1329,11 +1364,11 @@
             // gTest
             // 
             this.gTest.AutoSize = true;
-            this.gTest.Location = new System.Drawing.Point(456, 68);
+            this.gTest.Location = new System.Drawing.Point(303, 44);
             this.gTest.Name = "gTest";
-            this.gTest.Size = new System.Drawing.Size(47, 17);
+            this.gTest.Size = new System.Drawing.Size(226, 17);
             this.gTest.TabIndex = 44;
-            this.gTest.Text = "Test";
+            this.gTest.Text = "Test settings whenever \"pattern\" changes";
             this.tt.SetToolTip(this.gTest, "Immediately display what your Pattern does");
             this.gTest.UseVisualStyleBackColor = true;
             this.gTest.CheckedChanged += new System.EventHandler(this.gTest_CheckedChanged);
@@ -1342,7 +1377,7 @@
             // 
             // gFreq
             // 
-            this.gFreq.Location = new System.Drawing.Point(100, 118);
+            this.gFreq.Location = new System.Drawing.Point(100, 93);
             this.gFreq.Name = "gFreq";
             this.gFreq.Size = new System.Drawing.Size(100, 20);
             this.gFreq.TabIndex = 47;
@@ -1351,50 +1386,19 @@
             this.gFreq.MouseEnter += new System.EventHandler(this.gHost_MouseEnter);
             this.gFreq.MouseLeave += new System.EventHandler(this.gHost_MouseLeave);
             // 
-            // label20
-            // 
-            this.label20.AutoSize = true;
-            this.label20.Location = new System.Drawing.Point(206, 121);
-            this.label20.Name = "label20";
-            this.label20.Size = new System.Drawing.Size(61, 13);
-            this.label20.TabIndex = 43;
-            this.label20.Text = "miliseconds";
-            // 
-            // gReload
-            // 
-            this.gReload.Location = new System.Drawing.Point(333, 64);
-            this.gReload.Name = "gReload";
-            this.gReload.Size = new System.Drawing.Size(118, 22);
-            this.gReload.TabIndex = 43;
-            this.gReload.Text = "Reload to memory";
-            this.tt.SetToolTip(this.gReload, "Reload buffered metadata for testing");
-            this.gReload.UseVisualStyleBackColor = true;
-            this.gReload.Click += new System.EventHandler(this.gReload_Click);
-            this.gReload.MouseEnter += new System.EventHandler(this.gHost_MouseEnter);
-            this.gReload.MouseLeave += new System.EventHandler(this.gHost_MouseLeave);
-            // 
             // label22
             // 
             this.label22.AutoSize = true;
-            this.label22.Location = new System.Drawing.Point(19, 95);
+            this.label22.Location = new System.Drawing.Point(19, 70);
             this.label22.Name = "label22";
             this.label22.Size = new System.Drawing.Size(41, 13);
             this.label22.TabIndex = 44;
             this.label22.Text = "Pattern";
             // 
-            // label28
-            // 
-            this.label28.AutoSize = true;
-            this.label28.Location = new System.Drawing.Point(453, 147);
-            this.label28.Name = "label28";
-            this.label28.Size = new System.Drawing.Size(50, 13);
-            this.label28.TabIndex = 57;
-            this.label28.Text = "(optional)";
-            // 
             // gPattern
             // 
             this.gPattern.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.gPattern.Location = new System.Drawing.Point(128, 92);
+            this.gPattern.Location = new System.Drawing.Point(128, 67);
             this.gPattern.Name = "gPattern";
             this.gPattern.Size = new System.Drawing.Size(398, 20);
             this.gPattern.TabIndex = 46;
@@ -1407,16 +1411,16 @@
             // label23
             // 
             this.label23.AutoSize = true;
-            this.label23.Location = new System.Drawing.Point(19, 147);
+            this.label23.Location = new System.Drawing.Point(19, 122);
             this.label23.Name = "label23";
-            this.label23.Size = new System.Drawing.Size(27, 13);
+            this.label23.Size = new System.Drawing.Size(56, 13);
             this.label23.TabIndex = 52;
-            this.label23.Text = "Title";
+            this.label23.Text = "Preset title";
             // 
             // label21
             // 
             this.label21.AutoSize = true;
-            this.label21.Location = new System.Drawing.Point(19, 69);
+            this.label21.Location = new System.Drawing.Point(19, 44);
             this.label21.Name = "label21";
             this.label21.Size = new System.Drawing.Size(41, 13);
             this.label21.TabIndex = 47;
@@ -1424,12 +1428,12 @@
             // 
             // gStore
             // 
-            this.gStore.Location = new System.Drawing.Point(333, 143);
+            this.gStore.Location = new System.Drawing.Point(378, 117);
             this.gStore.Name = "gStore";
-            this.gStore.Size = new System.Drawing.Size(118, 22);
+            this.gStore.Size = new System.Drawing.Size(148, 22);
             this.gStore.TabIndex = 49;
-            this.gStore.Text = "Save as preset";
-            this.tt.SetToolTip(this.gStore, "Save this config as a new preset");
+            this.gStore.Text = "Save to this preset";
+            this.tt.SetToolTip(this.gStore, "Save this config as a new profile, or\r\noverwrite a profile with the same name.");
             this.gStore.UseVisualStyleBackColor = true;
             this.gStore.Click += new System.EventHandler(this.gStore_Click);
             this.gStore.MouseEnter += new System.EventHandler(this.gHost_MouseEnter);
@@ -1437,25 +1441,58 @@
             // 
             // gSource
             // 
-            this.gSource.Location = new System.Drawing.Point(100, 66);
+            this.gSource.Location = new System.Drawing.Point(100, 41);
             this.gSource.Name = "gSource";
-            this.gSource.Size = new System.Drawing.Size(227, 20);
+            this.gSource.Size = new System.Drawing.Size(187, 20);
             this.gSource.TabIndex = 42;
-            this.tt.SetToolTip(this.gSource, "Where LoopStream will get the Now Playing data from");
+            this.tt.SetToolTip(this.gSource, "Where Loopstream will get the Now Playing data from");
             this.gSource.TextChanged += new System.EventHandler(this.gSource_TextChanged);
             this.gSource.MouseEnter += new System.EventHandler(this.gHost_MouseEnter);
             this.gSource.MouseLeave += new System.EventHandler(this.gHost_MouseLeave);
             // 
             // gName
             // 
-            this.gName.Location = new System.Drawing.Point(100, 144);
+            this.gName.Location = new System.Drawing.Point(100, 119);
             this.gName.Name = "gName";
-            this.gName.Size = new System.Drawing.Size(227, 20);
+            this.gName.Size = new System.Drawing.Size(272, 20);
             this.gName.TabIndex = 48;
             this.tt.SetToolTip(this.gName, "A title you\'d like to use for this config");
             this.gName.TextChanged += new System.EventHandler(this.gName_TextChanged);
             this.gName.MouseEnter += new System.EventHandler(this.gHost_MouseEnter);
             this.gName.MouseLeave += new System.EventHandler(this.gHost_MouseLeave);
+            // 
+            // gDescBox
+            // 
+            this.gDescBox.Controls.Add(this.gDescText);
+            this.gDescBox.Controls.Add(this.label29);
+            this.gDescBox.Location = new System.Drawing.Point(23, 64);
+            this.gDescBox.Name = "gDescBox";
+            this.gDescBox.Size = new System.Drawing.Size(488, 173);
+            this.gDescBox.TabIndex = 68;
+            // 
+            // gDescText
+            // 
+            this.gDescText.BackColor = System.Drawing.SystemColors.Control;
+            this.gDescText.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.gDescText.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.gDescText.Location = new System.Drawing.Point(0, 13);
+            this.gDescText.Multiline = true;
+            this.gDescText.Name = "gDescText";
+            this.gDescText.Size = new System.Drawing.Size(488, 160);
+            this.gDescText.TabIndex = 68;
+            this.gDescText.Text = resources.GetString("gDescText.Text");
+            this.gDescText.TextChanged += new System.EventHandler(this.gDescText_TextChanged);
+            // 
+            // label29
+            // 
+            this.label29.AutoSize = true;
+            this.label29.Dock = System.Windows.Forms.DockStyle.Top;
+            this.label29.Location = new System.Drawing.Point(0, 0);
+            this.label29.Name = "label29";
+            this.label29.Size = new System.Drawing.Size(10, 13);
+            this.label29.TabIndex = 69;
+            this.label29.Text = " ";
+            this.label29.Click += new System.EventHandler(this.label29_Click);
             // 
             // tpOSD
             // 
@@ -1784,6 +1821,8 @@
             this.pTagsAdvanced2.PerformLayout();
             this.pTagAdvanced1.ResumeLayout(false);
             this.pTagAdvanced1.PerformLayout();
+            this.gDescBox.ResumeLayout(false);
+            this.gDescBox.PerformLayout();
             this.tpOSD.ResumeLayout(false);
             this.tpOSD.PerformLayout();
             this.pFooter.ResumeLayout(false);
@@ -1870,7 +1909,6 @@
         private System.Windows.Forms.CheckBox gPublic;
         private System.Windows.Forms.ComboBox gReader;
         private System.Windows.Forms.Label label18;
-        private System.Windows.Forms.Label gResult;
         private System.Windows.Forms.ComboBox gMeta;
         private System.Windows.Forms.Label label23;
         private System.Windows.Forms.Button gStore;
@@ -1880,12 +1918,9 @@
         private System.Windows.Forms.Button gDelete;
         private System.Windows.Forms.TextBox gPattern;
         private System.Windows.Forms.Label label22;
-        private System.Windows.Forms.Label label20;
         private System.Windows.Forms.TextBox gFreq;
         private System.Windows.Forms.Label label19;
-        private System.Windows.Forms.Label label28;
         private System.Windows.Forms.CheckBox gTest;
-        private System.Windows.Forms.Button gReload;
         private System.Windows.Forms.Label gEncodingL;
         private System.Windows.Forms.TextBox gEncoding;
         private System.Windows.Forms.CheckBox gLatinize;
@@ -1896,7 +1931,6 @@
         private System.Windows.Forms.Button gTagsAdvanced;
         private System.Windows.Forms.Label label25;
         private System.Windows.Forms.TextBox gGroup;
-        private System.Windows.Forms.Label label26;
         private System.Windows.Forms.CheckBox gTagAuto;
         private System.Windows.Forms.Panel panel2;
         private System.Windows.Forms.Panel panel1;
@@ -1919,5 +1953,11 @@
         private System.Windows.Forms.Button gServerSave;
         private System.Windows.Forms.ComboBox gServerSel;
         private System.Windows.Forms.Button gServerDel;
+        private System.Windows.Forms.LinkLabel gResetTags;
+        private System.Windows.Forms.Button gMake32;
+        private System.Windows.Forms.Panel gDescBox;
+        private System.Windows.Forms.TextBox gDescText;
+        private System.Windows.Forms.Label label29;
+        private System.Windows.Forms.Button gRunTest;
     }
 }

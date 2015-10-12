@@ -29,6 +29,7 @@ namespace Loopstream
         bool disregardEvents;
         public LSSettings settings; //, apply;
         bool doRegexTests;
+        string welcomeText;
 
         private void gCancel_Click(object sender, EventArgs e)
         {
@@ -247,6 +248,7 @@ namespace Loopstream
 
         private void ConfigSC_Load(object sender, EventArgs e)
         {
+            welcomeText = gDescText.Text;
             this.Icon = Program.icon;
             disregardEvents = true;
             Timer t = new Timer();
@@ -392,6 +394,9 @@ namespace Loopstream
             gReader.Items.Add(LSSettings.LSMeta.Reader.File);
             gReader.Items.Add(LSSettings.LSMeta.Reader.Website);
             gReader.Items.Add(LSSettings.LSMeta.Reader.ProcessMemory);
+            
+            gTarget.Visible = false;
+            gMake32.Visible = false;
             loadMetaReader(true);
             
             disregardEvents = false;
@@ -834,7 +839,7 @@ namespace Loopstream
 
         private void gMeta_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (gMeta.SelectedIndex == 0) return;
+            if (gMeta.SelectedIndex == 0) { setDescText(welcomeText); return; }
             settings.meta.apply((LSSettings.LSMeta)gMeta.SelectedItem);
             loadMetaReader(false);
             if (settings.meta.reader == LSSettings.LSMeta.Reader.ProcessMemory && !disregardEvents)
@@ -843,15 +848,15 @@ namespace Loopstream
                 //       (was thrown in in a hurry when I realized
                 //        mempoke didn't work on 32bit apps from world of 64)
 
-                if (IntPtr.Size == 4)
+                /*if (IntPtr.Size == 4)
                 {
                     MessageBox.Show("I see you're running the 32bit version of Loopstream!\n\n" +
                         "If iTunes still doesn't produce correct tags with this edition of Loopstream, then the problem is probably that your version of iTunes is different from the one that Loopstream supports.\n\n" +
                         "Yes, iTunes is /that/ picky. Sorry :(");
                     return;
-                }
+                }*/
 
-                if (DialogResult.Yes == MessageBox.Show(
+                /*if (DialogResult.Yes == MessageBox.Show(
                     "This media player's a tricky one.\n\n" +
                     "If the tags you send appear to be bullshit,\n" +
                     "I can make a copy of myself that might\n" +
@@ -861,57 +866,8 @@ namespace Loopstream
                     MessageBoxButtons.YesNo,
                     MessageBoxIcon.Question))
                 {
-                    string fo = Application.ExecutablePath;
-                    using (System.IO.FileStream i = new System.IO.FileStream(fo, System.IO.FileMode.Open, System.IO.FileAccess.Read))
-                    {
-                        fo = fo.Substring(0, fo.LastIndexOf('.')) + "32.exe";
-                        using (System.IO.FileStream o = new System.IO.FileStream(fo, System.IO.FileMode.Create))
-                        {
-                            bool first = true;
-                            byte[] buf = new byte[8192];
-                            while (true)
-                            {
-                                int n = i.Read(buf, 0, buf.Length);
-                                if (first)
-                                {
-                                    first = false;
-                                    buf[0x218] = 3; //1=any
-                                }
-                                if (n <= 0) break;
-                                o.Write(buf, 0, n);
-                            }
-                        }
-                    }
-                    System.Diagnostics.Process rs = new System.Diagnostics.Process();
-                    rs.StartInfo.FileName = "Loopstream32.exe";
-                    rs.StartInfo.Arguments = "sign";
-                    rs.Start();
-                    Application.DoEvents();
-                    rs.Refresh();
-                    while (!rs.HasExited)
-                    {
-                        Application.DoEvents();
-                        System.Threading.Thread.Sleep(10);
-                    }
-                    for (int a = 0; a < 10; a++)
-                    {
-                        try
-                        {
-                            System.IO.File.Delete("Loopstream32.exe");
-                            System.IO.File.Move("Loopstream32.exe.exe", "Loopstream32.exe");
-                            break;
-                        }
-                        catch { }
-                        System.Threading.Thread.Sleep(100);
-                    }
                     
-                        System.Diagnostics.Process proc = new System.Diagnostics.Process();
-                        proc.StartInfo.FileName = "Loopstream32.exe";
-                        proc.Start();
-                        proc.Refresh();
-                        Program.kill();
-                    
-                }
+                }*/
             }
         }
 
@@ -922,15 +878,22 @@ namespace Loopstream
 
         private void gTagsAdvanced_Click(object sender, EventArgs e)
         {
-            pTagAdvanced1.Visible = pTagsAdvanced2.Visible = true;
-            gTagsAdvanced.Visible = false;
+            //gTagsAdvanced.Visible = !gTagsAdvanced.Visible;
+            pTagAdvanced1.Visible = pTagsAdvanced2.Visible = !pTagAdvanced1.Visible;
         }
 
         private void gReader_SelectedIndexChanged(object sender, EventArgs e)
         {
             settings.meta.reader = (LSSettings.LSMeta.Reader)gReader.SelectedItem;
             gTarget.Visible = settings.meta.reader == LSSettings.LSMeta.Reader.WindowCaption;
+            gMake32.Visible = settings.meta.reader == LSSettings.LSMeta.Reader.ProcessMemory;
             gEncoding.Visible = gEncodingL.Visible = (settings.meta.reader != LSSettings.LSMeta.Reader.WindowCaption);
+            gTarget.Enabled = string.IsNullOrWhiteSpace(settings.meta.src) || settings.meta.src.Trim() != "*";
+            gMake32.Enabled = IntPtr.Size != 4;
+            if (!gMake32.Enabled)
+            {
+                gMake32.Text = "currently running in 32-bit mode";
+            }
             if (!disregardEvents)
             {
                 if (settings.meta.reader == LSSettings.LSMeta.Reader.Website ||
@@ -947,7 +910,8 @@ namespace Loopstream
 
         private void gSource_TextChanged(object sender, EventArgs e)
         {
-            settings.meta.src = gSource.Text;
+            settings.meta.src = gSource.Text.Trim();
+            gTarget.Enabled = string.IsNullOrWhiteSpace(settings.meta.src) || settings.meta.src != "*";
         }
 
         string metaRaw = null;
@@ -957,21 +921,15 @@ namespace Loopstream
             bool mem = settings.meta.reader == LSSettings.LSMeta.Reader.ProcessMemory;
             if (gTest.Checked || mem)
             {
-                if (metaRaw == null) gReload_Click(sender, e);
+                metaRaw = LSTag.get(settings.meta, true).tag;
                 if (metaRaw == null)
                 {
-                    gResult.Text = "(metafetch failure)";
+                    this.Text = "(metafetch failure)";
                     return;
                 }
-                gResult.Text = mem ? metaRaw :
+                this.Text = mem ? metaRaw :
                     LSTag.get(settings.meta, metaRaw).tag.Replace("\r", "").Replace("\n", "");
             }
-        }
-
-        private void gReload_Click(object sender, EventArgs e)
-        {
-            metaRaw = LSTag.get(settings.meta, true).tag;
-            gPattern_TextChanged(sender, e);
         }
 
         private void gFreq_TextChanged(object sender, EventArgs e)
@@ -1008,9 +966,36 @@ namespace Loopstream
         private void gStore_Click(object sender, EventArgs e)
         {
             //settings.metas.Add(settings.meta);
-            settings.metas.Add(LSSettings.LSMeta.copy(settings.meta));
-            loadMetaReader(true);
-            gMeta.SelectedItem = settings.meta;
+            bool done = false;
+            foreach (LSSettings.LSMeta meta in settings.metas)
+            {
+                if (meta.tit == settings.meta.tit)
+                {
+                    if (DialogResult.Yes == MessageBox.Show(
+                        "About to OVERWRITE the existing profile:\n\n        «" + settings.meta.tit + "»\n\nContinue?",
+                        "Confirm OVERWRITE", MessageBoxButtons.YesNo, MessageBoxIcon.Question))
+                    {
+                        meta.apply(settings.meta);
+                        done = true;
+                    }
+                    if (!done) return;
+                }
+            }
+            if (!done)
+            {
+                if (DialogResult.Yes == MessageBox.Show(
+                    "About to create a NEW profile:\n\n        «" + settings.meta.tit + "»\n\nContinue?",
+                    "Confirm NEW profile", MessageBoxButtons.YesNo, MessageBoxIcon.Question))
+                {
+                    settings.metas.Add(LSSettings.LSMeta.copy(settings.meta));
+                    done = true;
+                }
+            }
+            if (done)
+            {
+                loadMetaReader(true);
+                gMeta.SelectedItem = settings.meta;
+            }
         }
 
         private void gLatinize_CheckedChanged(object sender, EventArgs e)
@@ -1034,6 +1019,20 @@ namespace Loopstream
             gReader.SelectedItem = settings.meta.reader;
             disregardEvents = reset; //fuck
 
+            if (!string.IsNullOrWhiteSpace(settings.meta.desc))
+            {
+                setDescText(settings.meta.desc);
+            }
+            else if (!string.IsNullOrWhiteSpace(settings.meta.tit))
+            {
+                setDescText("(no description is available for this profile)");
+                //gDescText.Text = "<" + settings.meta.tit + ">" + gMeta.SelectedIndex;
+            }
+            else
+            {
+                setDescText(welcomeText);
+            }
+
             gSource.Text = settings.meta.src;
             gPattern.Text = settings.meta.ptn;
             gFreq.Text = settings.meta.freq.ToString();
@@ -1043,6 +1042,7 @@ namespace Loopstream
             gLatinize.Checked = settings.latin;
             gTest.Checked = doRegexTests;
             gGroup.Text = settings.meta.grp.ToString();
+
             if (redoPresets)
             {
                 gMeta.SelectedIndex = 0;
@@ -1436,7 +1436,7 @@ namespace Loopstream
                 if (preset.presetName == presetName)
                 {
                     if (DialogResult.Yes == MessageBox.Show(
-                        "About to OVERWRITE the existing preset:\n\n        «" + preset.presetName + "»\n\nContinue?",
+                        "About to OVERWRITE the existing profile:\n\n        «" + preset.presetName + "»\n\nContinue?",
                         "Confirm OVERWRITE", MessageBoxButtons.YesNo, MessageBoxIcon.Question))
                     {
                         preset.SaveToProfile(settings);
@@ -1445,8 +1445,8 @@ namespace Loopstream
                 }
             }
             if (DialogResult.Yes == MessageBox.Show(
-                "About to create a NEW preset:\n\n        «" + presetName + "»\n\nContinue?",
-                "Confirm NEW preset", MessageBoxButtons.YesNo, MessageBoxIcon.Question))
+                "About to create a NEW profile:\n\n        «" + presetName + "»\n\nContinue?",
+                "Confirm NEW profile", MessageBoxButtons.YesNo, MessageBoxIcon.Question))
             {
                 LSSettings.LSServerPreset preset = new LSSettings.LSServerPreset();
                 preset.SaveToProfile(settings);
@@ -1459,13 +1459,151 @@ namespace Loopstream
         private void gServerDel_Click(object sender, EventArgs e)
         {
             LSSettings.LSServerPreset preset = (LSSettings.LSServerPreset)gServerSel.SelectedItem;
+            if (preset == null) return;
             if (DialogResult.Yes == MessageBox.Show(
-                        "About to DELETE the preset:\n\n        «" + preset.presetName + "»\n\nContinue?",
+                        "About to DELETE the profile:\n\n        «" + preset.presetName + "»\n\nContinue?",
                         "Confirm DELETE", MessageBoxButtons.YesNo, MessageBoxIcon.Question))
             {
                 settings.serverPresets.Remove(preset);
                 visualizeServerSettings();
             }
+        }
+
+        private void gDelete_Click(object sender, EventArgs e)
+        {
+            if (gMeta.SelectedIndex <= 0) return;
+            LSSettings.LSMeta meta = (LSSettings.LSMeta)gMeta.SelectedItem;
+            if (meta == null) return;
+
+            if (DialogResult.Yes == MessageBox.Show(
+                "Do you really want to DELETE this profile?\n\n        «" + meta.tit + "»",
+                "Confirm DELETION", MessageBoxButtons.YesNo, MessageBoxIcon.Question))
+            {
+                settings.metas.Remove(meta);
+                loadMetaReader(true);
+                gMeta.SelectedItem = settings.meta;
+            }
+        }
+
+        private void gMake32_Click(object sender, EventArgs e)
+        {
+            string fo = Application.ExecutablePath;
+            using (System.IO.FileStream i = new System.IO.FileStream(fo, System.IO.FileMode.Open, System.IO.FileAccess.Read))
+            {
+                fo = fo.Substring(0, fo.LastIndexOf('.')) + "32.exe";
+                using (System.IO.FileStream o = new System.IO.FileStream(fo, System.IO.FileMode.Create))
+                {
+                    bool first = true;
+                    byte[] buf = new byte[8192];
+                    while (true)
+                    {
+                        int n = i.Read(buf, 0, buf.Length);
+                        if (first)
+                        {
+                            first = false;
+                            buf[0x218] = 3; //1=any
+                        }
+                        if (n <= 0) break;
+                        o.Write(buf, 0, n);
+                    }
+                }
+            }
+            System.Diagnostics.Process rs = new System.Diagnostics.Process();
+            rs.StartInfo.FileName = "Loopstream32.exe";
+            rs.StartInfo.Arguments = "sign";
+            rs.Start();
+            Application.DoEvents();
+            rs.Refresh();
+            while (!rs.HasExited)
+            {
+                Application.DoEvents();
+                System.Threading.Thread.Sleep(10);
+            }
+            for (int a = 0; a < 10; a++)
+            {
+                try
+                {
+                    System.IO.File.Delete("Loopstream32.exe");
+                    System.IO.File.Move("Loopstream32.exe.exe", "Loopstream32.exe");
+                    break;
+                }
+                catch { }
+                System.Threading.Thread.Sleep(100);
+            }
+
+            System.Diagnostics.Process proc = new System.Diagnostics.Process();
+            proc.StartInfo.FileName = "Loopstream32.exe";
+            proc.Start();
+            proc.Refresh();
+            Program.kill();
+        }
+
+        private void gRunTest_Click(object sender, EventArgs e)
+        {
+            LSTag.LSTD td = LSTag.get(settings.meta, false);
+            if (td.ok)
+            {
+                MessageBox.Show("it works!  Well done bro.\nThe tags are displayed below.\n\n«" + td.tag + "»");
+            }
+            else
+            {
+                MessageBox.Show("Error:   " + td.tag + "\n\n===[ Description ]==========================\n\n" + td.error);
+            }
+        }
+
+        private void gResetTags_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            if (DialogResult.Yes == MessageBox.Show(
+                "About to perform a FACTORY RESET:\n\nDeleteing all your profiles and restoring the default ones.\n\nContinue?",
+                "Confirm factory reset", MessageBoxButtons.YesNo, MessageBoxIcon.Question))
+            {
+                settings.resetMetas();
+                loadMetaReader(true);
+                gMeta.SelectedIndex = 0;
+                gTagsAdvanced_Click(sender, e);
+            }
+        }
+
+        private void gDescText_TextChanged(object sender, EventArgs e)
+        {
+            if (sender == null || sender != gDescText || disregardEvents) return;
+
+            try
+            {
+                settings.meta.desc = gDescText.Text.Replace("\r", "");
+            }
+            catch { }
+            // idk if this is really necessary but too tired to think or test
+            try
+            {
+                foreach (LSSettings.LSMeta meta in settings.metas)
+                {
+                    if (meta.eq(settings.meta))
+                    {
+                        meta.desc = gDescText.Text.Replace("\r", "");
+                    }
+                }
+            }
+            catch { }
+        }
+
+        void setDescText(string str)
+        {
+            bool a = disregardEvents;
+            disregardEvents = true;
+            gDescText.Text = str
+                .Replace("\r", "")
+                .Replace("\n", "\r\n");
+            disregardEvents = a;
+        }
+
+        private void label29_Click(object sender, EventArgs e)
+        {
+            string ret = Z.gze(gDescText.Text.Replace("\r", ""));
+            //string ret = gDescText.Text.Replace("\r", "").Replace("\n", "\\n").Replace("\"", "\\\"");
+            setDescText(ret);
+            Clipboard.Clear();
+            Clipboard.SetText(ret);
         }
     }
 }

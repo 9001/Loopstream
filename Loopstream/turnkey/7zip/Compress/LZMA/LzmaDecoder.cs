@@ -250,7 +250,7 @@ namespace SevenZip.Compression.LZMA
 			while (nowPos64 < outSize64)
 			{
                 //progress.SetProgress((Int64)nowPos64, 0);//EDHACK
-                progress.SetProgress(inStream.Position, 0);
+                if (progress != null) progress.SetProgress(inStream.Position, 0);
 				// UInt64 next = Math.Min(nowPos64 + (1 << 18), outSize64);
 					// while(nowPos64 < next)
 				{

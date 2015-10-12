@@ -120,10 +120,31 @@
   <metadata name="tt.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>17, 17</value>
   </metadata>
-  <metadata name="tt.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>17, 17</value>
-  </metadata>
-  <metadata name="tt.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>17, 17</value>
-  </metadata>
+  <data name="gMake32.ToolTip" xml:space="preserve">
+    <value>Loopstream is running in 64-bit mode on your computer,
+meaning it will only have access to peek at other 64-bit apps.
+-----------------------------------------------------------------
+To spy on 32-bit media players,
+we need to run in 32-bit mode.</value>
+  </data>
+  <data name="gTarget.ToolTip" xml:space="preserve">
+    <value>If you have multiple web browser windows open,
+press this button to target a particular window.
+------------------------------------------------------
+By default, Loopstream will read tags from the
+window which most recently had focus.</value>
+  </data>
+  <data name="gDescText.Text" xml:space="preserve">
+    <value>
+Select a media player profile from the dropdown above.
+
+You can add support for more media players by tweaking
+existing profiles. Some regex knowledge may be required.
+
+You can also request support for additional players by getting in touch :-)
+--------- email:   tripflag@gmail.com
+------------- irc:   "ed" on rizon
+
+</value>
+  </data>
 </root>

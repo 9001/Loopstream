@@ -160,6 +160,12 @@ namespace Loopstream
             popPoor = popDrop = null;
             popEn = popFilt = false;
 
+            gManualTags.Font = new System.Drawing.Font(gManualTags.Font.FontFamily, gManualTags.Font.SizeInPoints * 0.8f);
+            gManualTags.Text = gManualTags.Text.ToUpper().Replace(" ", "  ");
+            gManualTags.Location = new Point(
+                (int)(pictureBox1.Left + (pictureBox1.Width - gManualTags.Width) / 1.85),
+                (int)(pictureBox1.Top + (pictureBox1.Height - gManualTags.Height) / 1.9));
+
             this.Bounds = myBounds;
             splash.Focus();
             //splash.BringToFront();
@@ -800,14 +806,19 @@ namespace Loopstream
         {
             if (!settings.tagAuto && !tagvis)
             {
+                this.SuspendLayout();
                 tagvis = pTag.Visible = true;
                 this.Height += pTag.Height;
+                this.ResumeLayout();
             }
             else if (settings.tagAuto && tagvis)
             {
+                this.SuspendLayout();
                 this.Height -= pTag.Height;
                 tagvis = pTag.Visible = false;
+                this.ResumeLayout();
             }
+            gManualTags.Checked = !settings.tagAuto;
         }
 
         private void gTagRead_Click(object sender, EventArgs e)
@@ -850,6 +861,12 @@ namespace Loopstream
                 proc.Start();
                 proc.WaitForExit();
             }
+        }
+
+        private void gManualTags_CheckedChanged(object sender, EventArgs e)
+        {
+            settings.tagAuto = !gManualTags.Checked;
+            showhide();
         }
     }
 }
