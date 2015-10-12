@@ -338,6 +338,7 @@ namespace Loopstream
                     settings.devOut.wf == null ||
                     settings.devRec.wf == null || (
                     settings.devMic != null &&
+                    settings.devMic.id != null &&
                     settings.devMic.wf == null)))
                 {
                     // TODO: Fix devMic != null when disabled (deserializing bug?)
