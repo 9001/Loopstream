@@ -180,6 +180,7 @@ namespace Loopstream
                     logger.a("kicker connected");
                     var ks = kc.GetStream();
                     ks.Write(kickrequest, 0, kickrequest.Length);
+                    ks.Flush();
                     logger.a("kicker sent");
                     int i = ks.Read(kickrequest, 0, kickrequest.Length);
                     string kickresult = System.Text.Encoding.UTF8.GetString(kickrequest, 0, i);

@@ -324,36 +324,155 @@ namespace Loopstream
 
         void sendTags(Est est)
         {
-            string meta;
+            string meta = est.tag;
+            meta = new string(meta.Reverse().ToArray());
             if (settings.latin)
             {
-                meta = Uri.EscapeUriString(latin1.GetString(Encoding.UTF8.GetBytes(est.tag))).Replace("+", "%2B");
+                meta = Uri.EscapeUriString(latin1.GetString(Encoding.UTF8.GetBytes(meta))).Replace("+", "%2B");
             }
             else
             {
                 //meta = Uri.EscapeUriString(est.tag).Replace("+", "%2B");
-                meta = Chencode.HonkHonk(est.tag);
+                meta = Chencode.HonkHonk(meta);
                 //meta = est.tag;
             }
-            try
+            if (!socket_fallback)
             {
-                Logger.tag.a("send " + est.enc.ext + " " + est.tag);
-                string url = string.Format(
-                    "http://{0}:{1}/admin/metadata?mode=updinfo&mount=/{2}.{3}&charset=UTF-8&song={4}",
-                    settings.host,
-                    settings.port,
-                    settings.mount,
-                    est.enc.ext,
-                    meta);
-
-                Logger.tag.a("url " + url);
-                using (System.Net.WebClient wc = new System.Net.WebClient())
+                try
                 {
-                    Logger.tag.a("made webclient");
-                    wc.Headers.Add("Authorization: Basic " + auth);
-                    string msg = wc.DownloadString(url);
+                    Logger.tag.a("wc_send: " + est.enc.ext + " " + est.tag);
+                    string url = string.Format(
+                        "http://{0}:{1}/admin/metadata?mode=updinfo&mount=/{2}.{3}&charset=UTF-8&song={4}",
+                        settings.host,
+                        settings.port,
+                        settings.mount,
+                        est.enc.ext,
+                        meta);
 
-                    Logger.tag.a(est.enc.ext + " socket ok: " + msg);
+                    Logger.tag.a("url: " + url);
+                    using (System.Net.WebClient wc = new System.Net.WebClient())
+                    {
+                        //throw new ExecutionEngineException();
+                        Logger.tag.a("made webclient");
+                        wc.Headers.Add("Authorization: Basic " + auth);
+                        string msg = wc.DownloadString(url);
+
+                        Logger.tag.a(est.enc.ext + " socket ok: " + msg);
+                        if (!haveFailed && !msg.Contains("<return>1</return>"))
+                        {
+                            haveFailed = true;
+                            msg = msg.Contains("<message>") ? msg.Substring(msg.IndexOf("<message>") + 9) : msg;
+                            msg = msg.Contains("</message>") ? msg.Substring(0, msg.LastIndexOf("</message>")) : msg;
+                            System.Windows.Forms.MessageBox.Show("Metadata broadcast failure:\r\n\r\n" + msg, "Tags failed",
+                                System.Windows.Forms.MessageBoxButtons.OK,
+                                System.Windows.Forms.MessageBoxIcon.Error);
+                        }
+                    }
+                }
+                catch (Exception e)
+                {
+                    socket_fallback = true;
+                    Logger.tag.a(est.enc.ext + " wc_send fail: " + e.Message);
+                    //tag = new LSTD(false, "Meta-fail " + est.enc.ext, "(unknown error)");
+                }
+            }
+            if (socket_fallback)
+            {
+                try
+                {
+                    Logger.tag.a("sck_send: " + est.enc.ext + " " + est.tag);
+                    string header = string.Format(
+                        "GET /admin/metadata?mode=updinfo&mount=/{1}.{2}&charset=UTF-8&song={3} HTTP/1.1{0}" +
+                        "Authorization: Basic {4}{0}" +
+                        "Host: {5}:{6}{0}" +
+                        "Connection: Close{0}{0}",
+                        "\r\n",
+                        settings.mount,
+                        est.enc.ext,
+                        meta,
+                        auth,
+                        settings.host,
+                        settings.port);
+
+                    Logger.tag.a(header.Replace(auth, "BASE_64_AUTH"));
+                    byte[] buffer = System.Text.Encoding.UTF8.GetBytes(header);
+                    var kc = new System.Net.Sockets.TcpClient();
+                    kc.Connect(settings.host, settings.port);
+                    Logger.tag.a("sck_connected");
+                    var ks = kc.GetStream();
+                    ks.Write(buffer, 0, buffer.Length);
+                    ks.Flush();
+                    Logger.tag.a("sck_sent");
+                    buffer = new byte[8192];
+
+                    /*var response = new List<byte>();
+                    byte[][] find1 = {
+                        System.Text.Encoding.UTF8.GetBytes("\nContent-Length:"),
+                        System.Text.Encoding.UTF8.GetBytes("\ncontent-length:"),
+                        System.Text.Encoding.UTF8.GetBytes("\ncontent-Length:"),
+                        System.Text.Encoding.UTF8.GetBytes("\nContent-length:"),
+                        System.Text.Encoding.UTF8.GetBytes("\nCONTENT-LENGTH:")
+                    };
+                    byte[] find2 = System.Text.Encoding.UTF8.GetBytes("\r\n\r\n");
+                    byte[] find3 = System.Text.Encoding.UTF8.GetBytes("\n\n");
+                    while (kc.Connected)
+                    {
+                        int i = ks.Read(buffer, 0, buffer.Length);
+                        if (i <= 0) break;
+                        for (int a = 0; a < i; a++) response.Add(buffer[a]);
+                        string tmp = latin1.GetString(response.ToArray());
+                        if (tmp.Length == i) System.Windows.Forms.MessageBox.Show(tmp);
+                        i = -1;
+                        for (int n = 0; n < find1.Length; n++)
+                        {
+                            i = find(response, find1[n], 0);
+                            if (i > 0) break;
+                        }
+                        if (i < 0) continue;
+                        i += find1[0].Length;
+                        
+                        int nl = find(response, find2, i);
+                        if (nl < 0)
+                            nl = find(response, find3, i);
+                        if (nl < 0) continue;
+
+                        while (response[i] == ' ') i++;
+                        List<byte> asdf = new List<byte>();
+                        while (
+                            response[i] != '\r' &&
+                            response[i] != '\n')
+                            asdf.Add(response[i]);
+
+                        int clen = Convert.ToInt32(System.Text.Encoding.UTF8.GetString(asdf.ToArray()));
+                        int red = response.Count - nl;
+                        if (clen - red < 5) break;
+                    }
+                    string msg = System.Text.Encoding.UTF8.GetString(response.ToArray());*/
+                    string msg = "";
+                    while (kc.Connected)
+                    {
+                        int i = ks.Read(buffer, 0, buffer.Length);
+                        if (i <= 0) break;
+                        msg += latin1.GetString(buffer, 0, i);
+
+                        int clen = msg.IndexOf("\ncontent-length:", StringComparison.OrdinalIgnoreCase);
+                        if (clen < 0) continue;
+                        clen += 16;
+                        int nl = msg.IndexOf("\r\n\r\n", clen);
+                        if (nl <= 0)
+                            nl = msg.IndexOf("\n\n", clen);
+                        if (nl <= 0) continue;
+
+                        while (msg[clen] == ' ' && clen < nl) clen++;
+                        clen = Convert.ToInt32(msg.Substring(clen, msg.IndexOf("\n", clen) - clen).Trim('\r', '\n', ' '));
+                        clen = (msg.Length - nl) - clen;
+                        if (clen < 8)
+                        {
+                            Logger.tag.a("got eof");
+                            break;
+                        }
+                    }
+                    Logger.tag.a("sck_ok: " + msg);
                     if (!haveFailed && !msg.Contains("<return>1</return>"))
                     {
                         haveFailed = true;
@@ -364,12 +483,35 @@ namespace Loopstream
                             System.Windows.Forms.MessageBoxIcon.Error);
                     }
                 }
+                catch (Exception e)
+                {
+                    Logger.tag.a(est.enc.ext + " sck_send fail: " + e.Message);
+                    tag = new LSTD(false, "Meta-fail " + est.enc.ext, "(unknown error)");
+                }
             }
-            catch
+        }
+
+        int find(List<byte> hs, byte[] ne, int o)
+        {
+            if (ne.Length > hs.Count - o)
             {
-                Logger.tag.a(est.enc.ext + " send fail");
-                tag = new LSTD(false, "Meta-fail " + est.enc.ext, "(unknown error)");
+                return -1;
             }
+            for (int i = o; i < hs.Count - ne.Length; i++)
+            {
+                bool yes = true;
+                for (int j = 0; j < ne.Length; j++)
+                {
+                    if (hs[i + j] != ne[j])
+                    {
+                        yes = false;
+                        break;
+                    }
+                }
+                if (yes)
+                    return i;
+            }
+            return -1;
         }
 
         private class Est

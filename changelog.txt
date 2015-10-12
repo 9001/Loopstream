@@ -3,6 +3,10 @@
 + new feature
 ~ other change
 
+2014-04-01, 18:21:08 - Loopstream 1.3.7.7
+  = Icecast kicker could fail, didn't flush
+  = Send tags by socket if user's .NET environment is broken
+
 2014-03-20, 00:47:41 - Loopstream 1.3.7.6
   = Memory sniffing zerolength strings caused badly formatted tags
   ~ More debug logging
