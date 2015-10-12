@@ -1,0 +1,32 @@
+	<h2>Sub-optimal Configuration Detected</h2>
+</div>
+TPL_REQUIRE_2
+<div id="wrap">
+	<p>Loopstream will broadcast in "CD Quality", meaning a level of detail
+	<br />(samplerate) of 44100Hz. Some of your audio devices use a different samplerate.</p>
+	
+	<hr />
+	
+	<p class="l">This means two things.</p>
+	
+	<ol>
+		<li>You never hear your music in full quality,
+			<br />since windows is "resampling" (converting) your music</li>
+	
+		<li>Loopstream will have to do the same, meaning:
+		<ul>
+			<li>sound quality is lowered further</li>
+			<li>there will be a 2 second delay</li>
+			<li>more load on your computer
+		</ul></li>
+	</ol>
+	<p style="margin:-.5em">&nbsp;</p>
+	
+	<p>I can help you configure your sound card correctly.</p>
+	<p>Wanna do that?</p>
+
+	<div id="devs">
+		<a href="/page/resample">Fix soundcard samplerate</a>
+		<a href="/page/done?serv">Continue with lower quality</a>
+	</div>
+</div>

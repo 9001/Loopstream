@@ -8,6 +8,10 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using NAudio.CoreAudioApi;
+using System.Text.RegularExpressions;
+using System.IO;
+using System.Net;
+using System.Net.Sockets;
 
 namespace Loopstream
 {
@@ -221,11 +225,7 @@ namespace Loopstream
                 "Same procedure like last year, do that on all\nof your recording devices, then hit OK.\n\n" +
                 "Thanks, now you're ready to fly!");
 
-            Splesh spl = new Splesh();
-            spl.Show();
-            Application.DoEvents();
-            settings.runTests(spl, true);
-            spl.gtfo();
+            reDevice();
             string bads = "";
             foreach (LSDevice dev in settings.devs)
             {
@@ -259,6 +259,46 @@ namespace Loopstream
         void t_Tick(object sender, EventArgs e)
         {
             ((Timer)sender).Stop();
+            initForm();
+
+            tabHeader = new TLabel[] { hSoundcard, hServer, hEncoders, hTags };
+            pTabs.BringToFront();
+            for (int a = 0; a < tabHeader.Length; a++)
+            {
+                tabHeader[a].MouseDown += tabHeader_MouseDown;
+            }
+            tabHeader_MouseDown(tabHeader[0], new MouseEventArgs(System.Windows.Forms.MouseButtons.Left, 1, 20, 10, 0));
+
+            tPop = new Timer();
+            tPop.Interval = tt.InitialDelay;
+            tPop.Tick += tPop_Tick;
+
+            if (!System.IO.File.Exists("Loopstream.ini"))
+            {
+                if (DialogResult.Yes == MessageBox.Show("Since this is your first time,  wanna use the setup wizard?\n\nThis will start your default web browser,\nand you might get a firewall warning", "Loopstream for Dummies", MessageBoxButtons.YesNo))
+                {
+                    new System.Threading.Thread(new System.Threading.ThreadStart(wizard)).Start();
+                }
+            }
+        }
+
+        protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
+        {
+            if (keyData == (Keys.F1))
+            {
+                new System.Threading.Thread(new System.Threading.ThreadStart(wizard)).Start();
+                return true;
+            }
+            return base.ProcessCmdKey(ref msg, keyData);
+        }
+
+        void initForm()
+        {
+            disregardEvents = true;
+            
+            gOneS.Items.Clear();
+            gTwoS.Items.Clear();
+            gOutS.Items.Clear();
             populate(true, gOutS, gOneS);
             populate(false, gTwoS);
             LSDevice nil = new LSDevice();
@@ -318,42 +358,23 @@ namespace Loopstream
             gAutohide.Checked = settings.autohide;
 
             gTagAuto.Checked = settings.tagAuto;
+            gReader.Items.Clear();
             gReader.Items.Add(LSSettings.LSMeta.Reader.WindowCaption);
             gReader.Items.Add(LSSettings.LSMeta.Reader.File);
             gReader.Items.Add(LSSettings.LSMeta.Reader.Website);
             gReader.Items.Add(LSSettings.LSMeta.Reader.ProcessMemory);
             loadMetaReader(true);
-
+            
             disregardEvents = false;
+        }
 
-            tabHeader = new TLabel[] { hSoundcard, hServer, hEncoders, hTags };
-            /*tabPage = new Panel[tabHeader.Length];
-            for (int a = 0; a < tabHeader.Length; a++)
-            {
-                tabPage[a] = new Panel();
-                while (tc.TabPages[a].Controls.Count > 0)
-                {
-                    Control c = tc.TabPages[a].Controls[0];
-                    Rectangle rect = c.Bounds;
-                    tc.TabPages[a].Controls.RemoveAt(0);
-                    tabPage[a].Controls.Add(c);
-                    c.Bounds = rect;
-                }
-                tabHeader[a].MouseDown += tabHeader_MouseDown;
-                tabPage[a].Dock = DockStyle.Fill;
-                pWrapper.Controls.Add(tabPage[a]);
-            }
-            tc.Dispose();*/
-            pTabs.BringToFront();
-            for (int a = 0; a < tabHeader.Length; a++)
-            {
-                tabHeader[a].MouseDown += tabHeader_MouseDown;
-            }
-            tabHeader_MouseDown(tabHeader[0], new MouseEventArgs(System.Windows.Forms.MouseButtons.Left, 1, 20, 10, 0));
-
-            tPop = new Timer();
-            tPop.Interval = tt.InitialDelay;
-            tPop.Tick += tPop_Tick;
+        void reDevice()
+        {
+            Splesh spl = new Splesh();
+            spl.Show();
+            Application.DoEvents();
+            settings.runTests(spl, true);
+            spl.gtfo();
         }
 
         void tabHeader_MouseDown(object sender, MouseEventArgs e)
@@ -362,8 +383,13 @@ namespace Loopstream
             TLabel ass = tabHeader[i];
             if (i > 0 && e.X < 8) i--;
             if (i < tabHeader.Length - 1 && e.X > ass.Width - 8) i++;
-            ass = tabHeader[i];
+            //ass = tabHeader[i];
+            setTab(i);
+        }
 
+        void setTab(int i)
+        {
+            TLabel ass = tabHeader[i];
             foreach (TLabel l in tabHeader)
             {
                 l.ForeColor = SystemColors.ControlDark;
@@ -838,13 +864,13 @@ namespace Loopstream
                     return;
                 }
                 gResult.Text = mem ? metaRaw :
-                    LSTag.get(settings.meta, metaRaw).Replace("\r", "").Replace("\n", "");
+                    LSTag.get(settings.meta, metaRaw).tag.Replace("\r", "").Replace("\n", "");
             }
         }
 
         private void gReload_Click(object sender, EventArgs e)
         {
-            metaRaw = LSTag.get(settings.meta, true);
+            metaRaw = LSTag.get(settings.meta, true).tag;
             gPattern_TextChanged(sender, e);
         }
 
@@ -950,6 +976,305 @@ namespace Loopstream
         private void gVU_CheckedChanged(object sender, EventArgs e)
         {
             settings.vu = gVU.Checked;
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        int httpd_port;
+        void oneshot()
+        {
+            System.Threading.Thread.Sleep(500);
+            System.Diagnostics.Process.Start(string.Format("http://127.0.0.1:{0}/", httpd_port));
+        }
+        void wizard()
+        {
+            try
+            {
+                bool quit = false;
+                Regex r = new Regex("^GET /(.*) HTTP/1..$");
+                string head = File.ReadAllText(Program.tools + "web\\head", System.Text.Encoding.UTF8);
+                string tail = File.ReadAllText(Program.tools + "web\\tail", System.Text.Encoding.UTF8);
+                TcpListener tl = new TcpListener(IPAddress.Any, 0);
+                tl.Start();
+                httpd_port = ((IPEndPoint)tl.LocalEndpoint).Port;
+                new System.Threading.Thread(new System.Threading.ThreadStart(oneshot)).Start();
+                while (!quit)
+                {
+                    try
+                    {
+                        byte[] data = { }, hdr = { };
+                        string ctype = "text/html; charset=utf-8";
+
+                        TcpClient tc = tl.AcceptTcpClient();
+                        NetworkStream s = tc.GetStream();
+                        StreamReader sr = new StreamReader(s);
+                        string action = sr.ReadLine();
+                        while (sr.ReadLine() != "") ;
+                        Match m = r.Match(action);
+                        if (false)
+                        {
+                            head = File.ReadAllText(Program.tools + "web\\head", System.Text.Encoding.UTF8);
+                            tail = File.ReadAllText(Program.tools + "web\\tail", System.Text.Encoding.UTF8);
+                        }
+                        if (m != null && m.Groups.Count > 1)
+                        {
+                            action = m.Groups[1].Value.Trim('\\', '/', ' ', '\t', '.');
+                            while (action.Contains("..")) action = action.Replace("..", "");
+                            while (action.Contains("//")) action = action.Replace("//", "");
+                            while (action.Contains("\\")) action = action.Replace("\\", "");
+
+                            if (action.Length < 3 ||
+                                action.StartsWith("index"))
+                            {
+                                action = "page/index";
+                            }
+                            if (action.Contains('?'))
+                            {
+                                string[] asdf = action.Split('?');
+                                action = asdf[0];
+                                string[] mods = asdf[1].Split('&');
+                                foreach (string mod in mods)
+                                {
+                                    if (mod == "resampling" && (
+                                        (settings.devRec == null || settings.devRec.wf == null || settings.devRec.wf.SampleRate != settings.samplerate) ||
+                                        (settings.devMic != null && settings.devMic.wf != null && settings.devMic.wf.SampleRate != settings.samplerate)))
+                                    {
+                                        action = "page/resampling";
+                                    }
+                                    if (mod == "reload")
+                                    {
+                                        this.Invoke((MethodInvoker)delegate
+                                        {
+                                            reDevice();
+                                            initForm();
+                                        });
+                                    }
+                                    if (mod == "clone")
+                                    {
+                                        this.Invoke((MethodInvoker)delegate
+                                        {
+                                            settings.devRec = settings.devOut;
+                                            initForm();
+                                        });
+                                    }
+                                    if (mod == "serv")
+                                    {
+                                        this.Invoke((MethodInvoker)delegate
+                                        {
+                                            setTab(1);
+                                        });
+                                    }
+                                    if (mod == "scp")
+                                    {
+                                        System.Diagnostics.Process proc = new System.Diagnostics.Process();
+                                        proc.StartInfo.Arguments = "shell32.dll,Control_RunDLL mmsys.cpl,,playback";
+                                        proc.StartInfo.FileName = "rundll32.exe";
+                                        proc.Start();
+                                    }
+                                    if (mod.Contains("="))
+                                    {
+                                        string trg = mod.Substring(0, mod.IndexOf('='));
+                                        string id = mod.Substring(trg.Length + 1);
+                                        id = id.Replace('-', '+').Replace('_', '/');
+                                        id = Encoding.UTF8.GetString(Convert.FromBase64String(id));
+
+                                        if (trg.Length == 1)
+                                        {
+                                            int ofs = Convert.ToInt32(trg);
+                                            ComboBox[] boxen = { gTwoS, gOneS, gOutS };
+                                            this.Invoke((MethodInvoker)delegate
+                                            {
+                                                boxen[ofs].SelectedItem = null;
+                                                boxen[ofs].SelectedItem = settings.getDevByID(id);
+                                            });
+                                            //data = Encoding.UTF8.GetBytes(head + "OK" + tail);
+                                        }
+                                        else
+                                        {
+                                            TextBox tb =
+                                                trg == "host" ? gHost :
+                                                trg == "pass" ? gPass :
+                                                trg == "mount" ? gMount :
+                                                null;
+
+                                            if (tb != null)
+                                            {
+                                                this.Invoke((MethodInvoker)delegate
+                                                {
+                                                    tb.Text = id;
+                                                    if (tb.BackColor != gName.BackColor)
+                                                    {
+                                                        data = Encoding.UTF8.GetBytes(head + "That " + trg + " is invalid!" + tail);
+                                                    }
+                                                });
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                            string[] ar = action.Split('/');
+                            if (ar[0] == "page" && data.Length == 0)
+                            {
+                                action = Program.tools + "web/" + action;
+                                action = action.Replace('/', '\\');
+                                string ret = "<h1>404 Not Found</h1><h2>" + action + "</h2>";
+                                if (File.Exists(action))
+                                {
+                                    ret = File.ReadAllText(action, Encoding.UTF8);
+                                    if (ret.Contains("TPL_OUT_DEV"))
+                                    {
+                                        string nam = "(ERROR: INVALID DEVICE)";
+                                        if (settings.devOut != null)
+                                        {
+                                            nam = settings.devOut.name;
+                                            nam = nam.StartsWith("OK - ") ? nam.Substring(5) : nam;
+                                        }
+                                        ret = ret.Replace("TPL_OUT_DEV", nam);
+                                    }
+                                    if (ret.Contains("TPL_REC_DEV"))
+                                    {
+                                        string nam = "(ERROR: INVALID DEVICE)";
+                                        if (settings.devRec != null)
+                                        {
+                                            nam = settings.devRec.name;
+                                            nam = nam.StartsWith("OK - ") ? nam.Substring(5) : nam;
+                                        }
+                                        ret = ret.Replace("TPL_REC_DEV", nam);
+                                    }
+                                    if (ret.Contains("TPL_BADSMP"))
+                                    {
+                                        StringBuilder sb = new StringBuilder();
+                                        LSDevice[] devs = { settings.devMic, settings.devRec };
+                                        foreach (LSDevice dev in devs)
+                                        {
+                                            if (dev != null && dev.wf != null && dev.wf.SampleRate != settings.samplerate)
+                                            {
+                                                string nam = dev.ToString();
+                                                nam = nam.StartsWith("OK - ") ? nam.Substring(5) : nam;
+
+                                                sb.AppendFormat("<a href=\"#\"><strong>{0}</strong> {1}</a>\n",
+                                                    dev.isRec ? "Recording tab:" : "Playback tab:",
+                                                    nam);
+                                            }
+                                        }
+                                        ret = ret.Replace("TPL_BADSMP", sb.ToString().Trim('\r', '\n'));
+                                    }
+                                    if (ret.Contains("TPL_DEV_"))
+                                    {
+                                        StringBuilder sb0 = new StringBuilder();
+                                        StringBuilder sb1 = new StringBuilder();
+                                        StringBuilder sb2 = new StringBuilder();
+                                        foreach (LSDevice dev in settings.devs)
+                                        {
+                                            if (dev.wf != null)
+                                            {
+                                                string nam = dev.ToString();
+                                                nam = nam.StartsWith("OK - ") ? nam.Substring(5) : nam;
+
+                                                string id = dev.id;
+                                                id = Convert.ToBase64String(Encoding.UTF8.GetBytes(id));
+                                                id = id.Replace('+', '-').Replace('/', '_');
+
+                                                if (dev.isPlay)
+                                                {
+                                                    if (settings.devOut != null && settings.devOut != dev)
+                                                    {
+                                                        sb1.AppendFormat("<a href=\"?1={0}#anchor\">{1}{2}</a>\n",
+                                                            id, settings.devRec == dev ? "(♫) " : "", nam);
+                                                    }
+                                                    sb2.AppendFormat("<a href=\"?2={0}#anchor\">{1}{2}</a>\n",
+                                                        id, settings.devOut == dev ? "(♫) " : "", nam);
+                                                }
+                                                else
+                                                {
+                                                    sb0.AppendFormat("<a href=\"?0={0}#anchor\">{1}{2}</a>\n",
+                                                        id, settings.devMic == dev ? "(♫) " : "", nam);
+                                                }
+                                            }
+                                        }
+                                        ret = ret
+                                            .Replace("TPL_DEV_0", sb0.ToString().Trim('\r', '\n'))
+                                            .Replace("TPL_DEV_1", sb1.ToString().Trim('\r', '\n'))
+                                            .Replace("TPL_DEV_2", sb2.ToString().Trim('\r', '\n'));
+                                    }
+                                }
+                                bool validateRec = ret.Contains("TPL_REQUIRE_1");
+                                bool validateOut = ret.Contains("TPL_REQUIRE_2");
+                                if (validateRec || validateOut)
+                                {
+                                    if ((validateRec && settings.devRec == null) ||
+                                        (validateOut && settings.devOut == null))
+                                    {
+                                        ret = "You did not select a device!";
+                                    }
+                                    ret = ret.Replace("TPL_REQUIRE_1", "");
+                                    ret = ret.Replace("TPL_REQUIRE_2", "");
+                                }
+                                data = Encoding.UTF8.GetBytes(head + ret + tail);
+                            }
+                            else if (ar[0] == "shutdown")
+                            {
+                                quit = true;
+                                data = Encoding.UTF8.GetBytes(head + "bye" + tail);
+                            }
+                            else
+                            {
+                                ctype =
+                                    ar[0] == "font" ? "font/woff" :
+                                    ar[0] == "jpg" ? "image/jpeg" :
+                                    ar[0] == "png" ? "image/png" :
+                                    "application/octet-stream";
+
+                                action = Program.tools + "web/" + action;
+                                action = action.Replace('/', '\\');
+                                string ret = "<h1>404 Not Found</h1><h2>" + action + "</h2>";
+                                if (File.Exists(action))
+                                {
+                                    data = File.ReadAllBytes(action);
+                                }
+                            }
+                        }
+
+                        data = data.Length > 0 ? data : Encoding.UTF8.GetBytes(
+                            head + "<h1>Loopstream HTTP Server Error" + tail);
+
+                        hdr = hdr.Length > 0 ? hdr : Encoding.UTF8.GetBytes(
+                            "HTTP/1.1 200 OK\r\n" +
+                            "Connection: Close\r\n" +
+                            "Cache-Control: no-cache, must-revalidate\r\n" +
+                            "Expires: Wed, 09 Sep 2009 09:09:09 GMT\r\n" +
+                            "Content-Type: " + ctype + "\r\n" +
+                            "Content-Length: " + data.Length + "\r\n" +
+                            "\r\n");
+                        s.Write(hdr, 0, hdr.Length);
+                        s.Write(data, 0, data.Length);
+                        s.Flush();
+                        s.Dispose();
+                        tc.Close();
+                    }
+                    catch (Exception e)
+                    {
+                        MessageBox.Show("Transient HTTPd error:\n\n" + e.Message + "\n\n" + e.StackTrace,
+                            "HTTPd glitch", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show("Critical HTTPd error:\n\n" + e.Message + "\n\n" + e.StackTrace,
+                    "HTTPd crash", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
     }
 }

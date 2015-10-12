@@ -68,6 +68,12 @@ namespace Loopstream
             {
                 splash.vis();
                 new DFC().make(splash.pb);
+                Program.kill();
+            }
+            if (Directory.Exists(Program.tools) &&
+                !File.Exists(Program.tools + @"web\png\scp1.png"))
+            {
+                Directory.Delete(Program.tools, true);
             }
             if (!Directory.Exists(Program.tools))
             {
@@ -139,6 +145,11 @@ namespace Loopstream
             cm.Items.Add(new ToolStripSeparator());
             cm.Items.Add(iExit);*/
 
+            gA.preset = settings.presets[0];
+            gB.preset = settings.presets[1];
+            gC.preset = settings.presets[2];
+            gD.preset = settings.presets[3];
+
             this.Bounds = myBounds;
             splash.Focus();
             //splash.BringToFront();
@@ -208,6 +219,16 @@ namespace Loopstream
             this.Visible = !this.Visible;
             //Program.ni.ContextMenuStrip.Items[0].Text = this.Visible ? "Hide" : "Show";
             Program.ni.ContextMenu.MenuItems[0].Text = this.Visible ? "Hide" : "Show";
+        }
+
+        protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
+        {
+            if (keyData == (Keys.F1))
+            {
+                System.Diagnostics.Process.Start("http://r-a-d.io/ed/loopstream");
+                return true;
+            }
+            return base.ProcessCmdKey(ref msg, keyData);
         }
 
         void gSlider_valueChanged(object sender, EventArgs e)
@@ -373,18 +394,22 @@ namespace Loopstream
             isPresetLoad = !isPresetLoad;
             if (isPresetLoad)
             {
-                gLoad.Text = "Load preset";
+                //MessageBox.Show("set gload load");
+                gLoad.Mode = UC_Troggle.Modes.Load;
             }
             else
             {
-                gLoad.Text = "[SAVE] preset";
+                //MessageBox.Show("set gload save");
+                gLoad.Mode = UC_Troggle.Modes.Save;
             }
         }
 
         private void gPreset_Click(object sender, EventArgs e)
         {
-            int preset = sender.GetType() == typeof(Button) ?
-                ((Control)sender).Text[0] - 'A' :
+            //MessageBox.Show(sender.ToString());
+
+            int preset = sender.GetType() == typeof(Pritch) ?
+                ((Pritch)sender).Text[0] - 'A' :
                 ((MenuItem)sender).Text[0] - 'A';
 
             if (isPresetLoad)
@@ -394,9 +419,15 @@ namespace Loopstream
             }
             else
             {
+                Pritch[] pritches = { gA, gB, gC, gD };
                 settings.presets[preset].apply(settings.mixer);
+                pritches[preset].preset = settings.presets[preset];
                 gLoad_Click(sender, e);
             }
+        }
+        private void gPreset_MouseClick(object sender, MouseEventArgs e)
+        {
+            gPreset_Click(sender, null);
         }
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
@@ -528,12 +559,12 @@ namespace Loopstream
                 this.Text = string.Format("{0:0.00} // {1:0.00} // {2}",
                     Math.Round(settings.mp3.FIXME_kbps, 2),
                     Math.Round(settings.ogg.FIXME_kbps, 2),
-                    tag.tag);
+                    tag.tag.tag);
             }
             
             if (settings.tagAuto)
             {
-                gTag.Text = tag.tag;
+                gTag.Text = tag.tag.tag;
             }
             
             gConnect.Text = daText;

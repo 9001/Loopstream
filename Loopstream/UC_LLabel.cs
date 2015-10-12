@@ -30,6 +30,7 @@ namespace Loopstream
             tinval = null;
             agrad1 = SystemColors.ScrollBar;
             agrad2 = SystemColors.ScrollBar;
+            //olevel = LicenseManager.UsageMode == LicenseUsageMode.Designtime ? 1 : 0;
             olevel = 0;
             applyGradient();
             //applyLevel();
@@ -130,7 +131,8 @@ namespace Loopstream
         }
         void applyLevel()
         {
-            if (tinval == null)
+            if (tinval == null &&
+                LicenseManager.UsageMode != LicenseUsageMode.Designtime)
             {
                 tinval = new Timer();
                 tinval.Interval = 25;

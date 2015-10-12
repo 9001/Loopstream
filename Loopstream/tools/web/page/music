@@ -1,0 +1,26 @@
+	<h2>Select Source Device</h2>
+</div>
+TPL_REQUIRE_2
+<div id="wrap">
+	<p>For this step, select a pair of headphones (or other sound output) that you do <strong>not</strong> need when streaming.</p>
+	<p><a href="/page/music?reload" onclick="return plswait();">Perform a rescan</a> if you have connected or disconnected any speakers or headphones recently.</p>
+	
+	<hr />
+	
+	<p>If you want more options, look for an extra LineOut-jack or <br />headphone socket on your computer. Find something to <br />plug in there, headphones or whatever.</p>
+	<p>You may also need to enable the output in MS Windows'<br />
+	<a href="/page/music?cp">Control Panel for sound</a> (rightclick everything and select Enable).</p>
+	<p>Remember, after any modifications, <a href="/page/music?reload" onclick="return plswait();">perform a rescan</a> to detect the changes.</p>
+	<p>One final note: Speakers in HDMI screens do work, but are not recommended<br />due to slightly more work during the next step.</p>
+	
+	<hr />
+	
+	<p>Earlier, you selected this as your primary sound device:<br />
+	<strong>TPL_OUT_DEV</strong></p>
+	<p>These are the <em>other</em> available (plugged in and working) headphones and speakers.</p>
+	<a name="anchor"></a>
+	<div id="devs">
+TPL_DEV_1
+	</div>
+	<a class="next" href="/page/player">Continue</a>
+</div>

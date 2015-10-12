@@ -1,0 +1,13 @@
+	<h2>Select Feedback Device</h2>
+</div>
+<div id="wrap">
+	<p>These are the available (plugged in and working) headphones and speakers.</p>
+	<p><a href="/page/out?reload" onclick="return plswait();">Perform a rescan</a> if you have connected or disconnected any speakers or headphones recently.
+	<hr />
+	<p>Please try all these options until you hear a voice from the speakers you use when streaming.</p>
+	<a name="anchor"></a>
+	<div id="devs">
+TPL_DEV_2
+	</div>
+	<a class="next" href="/page/fork">Continue</a>
+</div>

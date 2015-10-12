@@ -41,6 +41,11 @@ namespace Loopstream
             locker = new object();
         }
 
+        string esc(string raw)
+        {
+            return raw;
+        }
+
         protected void makeShouter()
         {
             logger.a("make shouter");
@@ -56,22 +61,31 @@ namespace Loopstream
                     "Authorization: Basic {3}{0}" +
                     "User-Agent: loopstream/{4}{0}" +
                     "Content-Type: audio/mpeg{0}" +
-                    "ice-name: Loopstream{0}" +
-                    "ice-public: 0{0}" +
-                    "ice-url: https://github.com/9001/loopstream{0}" +
-                    "ice-genre: Post-Avant Jazzcore{0}" +
-                    "ice-audio-info: channels={5};samplerate={6};{7}={8}{0}" +
-                    "ice-description: Wasapi Capture{0}{0}",
+                    "ice-name: {5}{0}" +
+                    "ice-public: {6}{0}" +
+                    "ice-url: {7}{0}" +
+                    "ice-genre: {8}{0}" +
+                    "ice-audio-info: channels={9};samplerate={10};{11}={12}{0}" +
+                    "ice-description: {13}{0}{0}",
 
                     "\r\n",
                     settings.mount,
                     enc.ext,
                     auth,
                     ver,
+
+                    esc(settings.title),
+                    settings.pubstream ? "1" : "0",
+                    esc(settings.url),
+                    esc(settings.genre),
+
                     enc.channels == LSSettings.LSChannels.stereo ? 2 : 1,
                     settings.samplerate,
                     enc.compression == LSSettings.LSCompression.cbr ? "bitrate" : "quality",
-                    enc.compression == LSSettings.LSCompression.cbr ? "" + enc.bitrate : enc.quality + ".0"));
+                    enc.compression == LSSettings.LSCompression.cbr ? "" + enc.bitrate : enc.quality + ".0",
+
+                    esc(settings.description)
+                ));
             }
             else
             {
@@ -80,21 +94,27 @@ namespace Loopstream
                     "Content-Type: application/ogg{0}" +
                     "Authorization: Basic {3}{0}" +
                     "User-Agent: loopstream/{4}{0}" +
-                    "ice-name: Loopstream{0}" +
-                    "ice-url: https://github.com/9001/loopstream{0}" +
-                    "ice-genre: Post-Avant Jazzcore{0}" +
-                    "ice-bitrate: {5}{0}" +
-                    "ice-private: 0{0}" +
-                    "ice-public: 0{0}" +
-                    "ice-description: Wasapi Capture{0}" +
-                    "ice-audio-info: ice-samplerate={6};ice-channels={5};ice-bitrate={5}{0}{0}",
+                    "ice-name: {5}{0}" +
+                    "ice-url: {6}{0}" +
+                    "ice-genre: {7}{0}" +
+                    "ice-bitrate: {8}{0}" +
+                    "ice-private: {9}{0}" +
+                    "ice-public: {10}{0}" +
+                    "ice-description: {11}{0}" +
+                    "ice-audio-info: ice-samplerate={12};ice-channels={13};ice-bitrate={14}{0}{0}",
 
                     "\r\n",
                     settings.mount,
                     enc.ext,
                     auth,
                     ver,
+                    esc(settings.title),
+                    esc(settings.url),
+                    esc(settings.genre),
                     enc.compression == LSSettings.LSCompression.cbr ? enc.bitrate + "" : "Quality " + enc.quality,
+                    settings.pubstream ? "0" : "1", // why
+                    settings.pubstream ? "1" : "0",
+                    esc(settings.description),
                     settings.samplerate,
                     enc.channels == LSSettings.LSChannels.stereo ? 2 : 1));
             }

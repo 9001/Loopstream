@@ -78,8 +78,20 @@
     <Compile Include="UC_Graden.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="UC_Pritch.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UC_Pritch.Designer.cs">
+      <DependentUpon>UC_Pritch.cs</DependentUpon>
+    </Compile>
     <Compile Include="UC_TLabel.cs">
       <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="UC_Troggle.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UC_Troggle.Designer.cs">
+      <DependentUpon>UC_Troggle.cs</DependentUpon>
     </Compile>
     <Compile Include="UI_ConfigSC.cs">
       <SubType>Form</SubType>
@@ -129,6 +141,12 @@
       <DependentUpon>UC_Verter.cs</DependentUpon>
     </Compile>
     <Compile Include="Z.cs" />
+    <EmbeddedResource Include="UC_Pritch.resx">
+      <DependentUpon>UC_Pritch.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UC_Troggle.resx">
+      <DependentUpon>UC_Troggle.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="UI_ConfigSC.resx">
       <DependentUpon>UI_ConfigSC.cs</DependentUpon>
     </EmbeddedResource>

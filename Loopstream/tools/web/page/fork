@@ -1,0 +1,16 @@
+	<h2>Configure Routing?</h2>
+</div>
+TPL_REQUIRE_2
+<div id="wrap">
+	<p>By default, Loopstream will broadcast everything, including software like Skype.</p>
+	<p>This also means that you cannot preview other music while stremaing.</p>
+
+	<hr />
+	<p>Do you want to fix this by configuring routing?</p>
+	<p>NOTE: This will requite some extra effort.</p>
+
+	<div id="devs">
+		<a href="/page/music">Configure routing</a>
+		<a href="/page/done?clone&resampling&serv">Stream everything</a>
+	</div>
+</div>

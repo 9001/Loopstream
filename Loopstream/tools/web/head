@@ -1,0 +1,164 @@
+<!DOCTYPE html><html><head>
+	<meta charset="utf-8" />
+	<title>LoopStream HTTP Server</title>
+	<style>
+@font-face {
+	font-family: 'Roboto';
+	font-style: normal;
+	src: url(/font/roboto/Roboto-Light.woff) format('woff');
+}
+@font-face {
+	font-family: 'Roboto';
+	font-style: italic;
+	src: url(/font/roboto/Roboto-Italic.woff) format('woff');
+}
+@font-face {
+	font-family: 'Roboto';
+	font-weight: bold;
+	src: url(/font/roboto/Roboto-Medium.woff) format('woff');
+}
+html, body {
+	margin: 0;
+	padding: 0;
+}
+html {
+	color: #000;
+	background: #f7f7f7;
+	font-family: 'Roboto', sans-serif;
+}
+a {
+	color: #06a;
+}
+#devs {
+	background: #fff;
+	padding: 1em 1em;
+	margin: 2em 0;
+	border-radius: 16px;
+	border-left: 8px solid #08c;
+	border-right: 8px solid #c08;
+	box-shadow: 0 4px 16px #ccc;
+}
+#devs a {
+	display: block;
+	padding: .4em 1em;
+	border-radius: 8px;
+	text-decoration: none;
+
+	transition: all 0.3s ease-in-out;
+	-o-transition: all 0.3s ease-in-out;
+	-moz-transition: all 0.3s ease-in-out;
+	-webkit-transition: all 0.3s ease-in-out;
+}
+#devs a+a {
+	border-top: 1px solid #ddd;
+}
+#devs a:hover {
+	padding-left: 1.5em;
+	padding-right: .5em;
+}
+#setdev {
+	position: absolute;
+	border: none;
+	height: 1px;
+	width: 1px;
+}
+#head {
+	font-family: 'Roboto', sans-serif;
+	border-bottom: 1px solid #bbb;
+	text-align: center;
+	background: #eee;
+	padding: 1em 0;
+	margin: 0;
+}
+#head h1, h2 {
+	font-weight: 100;
+	padding: .25em;
+	margin: 0;
+}
+#head h1 {
+	font-size: 1.5em;
+	border-bottom: 1px solid #ccc;
+}
+#head h2 {
+	font-size: 1.3em;
+	border-top: 1px solid #fff;
+}
+#wrap {
+	margin: 0 auto;
+	padding: 2em 0;
+	max-width: 800px;
+}
+p {
+	text-align: center;
+}
+.next {
+	display: block;
+	font-size: 2em;
+	text-align: center;
+	text-decoration: none;
+	padding: .3em 0;
+	color: #057;
+}
+.next:after {
+	content: ' ➢';
+}
+hr {
+	margin: 2em 0;
+	border: 1px solid #000;
+	border-color: #ccc #ccc #fff #fff;
+}
+#plswrap {
+	opacity: 0;
+	background: #ddd;
+	position: absolute;
+	display: none;
+	top: 0;
+	right: 0;
+	width: 100%;
+	height: 100%;
+}
+#deprecated {
+	transition: all 0.5s ease-in-out;
+	-o-transition: all 0.5s ease-in-out;
+	-moz-transition: all 0.5s ease-in-out;
+	-webkit-transition: all 0.5s ease-in-out;
+}
+#plswrap table,tr,td {
+	width: 100%;
+	height: 100%;
+	text-align: center;
+}
+#plswait h1 {
+	margin: 0;
+	border-bottom: 1px solid #bbb;
+	padding: .7em 2em;
+}
+#plswait h2 {
+	margin: 0;
+	background: #eee;
+	border-radius: 0 0 16px 16px;
+	padding: 1em 2em;
+}
+#plswait {
+	display: inline-block;
+	background: #fff;
+	border-radius: 16px;
+	box-shadow: 0 8px 32px #aaa;
+}
+.l {
+	text-align: left;
+}
+ol>li {
+	margin: 1em 0;
+}
+ul>li {
+	margin: .6em 0 .1em 0;
+	list-style-type: disc;
+}
+.cs {
+	display: block;
+	margin: 0 auto;
+}
+</style></head><body>
+<div id="head">
+	<h1>Loopstream Setup Wizard</h1>

@@ -1,0 +1,26 @@
+
+
+<iframe id="setdev" name="setdev"></iframe>
+
+<div id="plswrap"><table><tr><td>
+<div id="plswait">
+	<h1>Please wait...</h1>
+	<h2>This will take a sec.</h2>
+</div></td></tr></table></div>
+
+<script>
+var fadv = 0;
+var v = document.getElementById('plswrap');
+function fadein()
+{
+	fadv += (1-fadv) * 0.1;
+	v.style.opacity = fadv;
+	setTimeout('fadein();', 10);
+}
+function plswait()
+{
+	v.style.display = 'block';
+	fadein();
+	return true;
+}
+</script></body></html>

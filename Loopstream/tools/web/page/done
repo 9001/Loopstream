@@ -1,0 +1,13 @@
+	<h2>Finished</h2>
+</div>
+TPL_REQUIRE_1
+TPL_REQUIRE_2
+<div id="wrap">
+	<p style="font-size:2em">Almost done!</p>
+	<p>The «Server» tab is now open in the settings window.</p>
+	<p>Please fill in your icecast server details, and optionally select your
+	<br />media player in the «Tags» tab if you want metadata in your stream.</p>
+	<p>To view this tutorial again, press F1 in the settings window.</p>
+	<p>Thanks, and enjoy Loopstream!</p>
+	<a class="next" href="/shutdown">Finish</a>
+</div>

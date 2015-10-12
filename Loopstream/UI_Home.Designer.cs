@@ -47,18 +47,18 @@
             this.gConnect = new System.Windows.Forms.Button();
             this.label3 = new System.Windows.Forms.Label();
             this.gSettings = new System.Windows.Forms.Button();
-            this.gD = new System.Windows.Forms.Button();
             this.gExit = new System.Windows.Forms.Button();
-            this.gC = new System.Windows.Forms.Button();
-            this.gLoad = new System.Windows.Forms.Button();
-            this.gB = new System.Windows.Forms.Button();
-            this.gA = new System.Windows.Forms.Button();
             this.pMessage = new System.Windows.Forms.Panel();
             this.gLowQ = new System.Windows.Forms.Label();
             this.pTag = new System.Windows.Forms.Panel();
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.gTag = new System.Windows.Forms.TextBox();
+            this.gLoad = new Loopstream.UC_Troggle();
+            this.gD = new Loopstream.Pritch();
+            this.gC = new Loopstream.Pritch();
+            this.gB = new Loopstream.Pritch();
+            this.gA = new Loopstream.Pritch();
             this.gMusic = new Loopstream.Verter();
             this.gOut = new Loopstream.Verter();
             this.gMic = new Loopstream.Verter();
@@ -196,6 +196,11 @@
             // box_menu
             // 
             this.box_menu.BackColor = System.Drawing.SystemColors.ControlLight;
+            this.box_menu.Controls.Add(this.gLoad);
+            this.box_menu.Controls.Add(this.gD);
+            this.box_menu.Controls.Add(this.gC);
+            this.box_menu.Controls.Add(this.gB);
+            this.box_menu.Controls.Add(this.gA);
             this.box_menu.Controls.Add(this.pictureBox1);
             this.box_menu.Controls.Add(this.gGit);
             this.box_menu.Controls.Add(this.box_menu_light);
@@ -203,12 +208,7 @@
             this.box_menu.Controls.Add(this.gConnect);
             this.box_menu.Controls.Add(this.label3);
             this.box_menu.Controls.Add(this.gSettings);
-            this.box_menu.Controls.Add(this.gD);
             this.box_menu.Controls.Add(this.gExit);
-            this.box_menu.Controls.Add(this.gC);
-            this.box_menu.Controls.Add(this.gLoad);
-            this.box_menu.Controls.Add(this.gB);
-            this.box_menu.Controls.Add(this.gA);
             this.box_menu.Dock = System.Windows.Forms.DockStyle.Right;
             this.box_menu.Location = new System.Drawing.Point(0, 0);
             this.box_menu.Name = "box_menu";
@@ -290,17 +290,6 @@
             this.gSettings.UseVisualStyleBackColor = true;
             this.gSettings.Click += new System.EventHandler(this.gSettings_Click);
             // 
-            // gD
-            // 
-            this.gD.Location = new System.Drawing.Point(91, 317);
-            this.gD.Margin = new System.Windows.Forms.Padding(3, 0, 8, 0);
-            this.gD.Name = "gD";
-            this.gD.Size = new System.Drawing.Size(69, 39);
-            this.gD.TabIndex = 7;
-            this.gD.Text = "D";
-            this.gD.UseVisualStyleBackColor = true;
-            this.gD.Click += new System.EventHandler(this.gPreset_Click);
-            // 
             // gExit
             // 
             this.gExit.Location = new System.Drawing.Point(19, 115);
@@ -311,50 +300,6 @@
             this.gExit.Text = "Exit";
             this.gExit.UseVisualStyleBackColor = true;
             this.gExit.Click += new System.EventHandler(this.gExit_Click);
-            // 
-            // gC
-            // 
-            this.gC.Location = new System.Drawing.Point(19, 317);
-            this.gC.Margin = new System.Windows.Forms.Padding(8, 0, 0, 0);
-            this.gC.Name = "gC";
-            this.gC.Size = new System.Drawing.Size(69, 39);
-            this.gC.TabIndex = 6;
-            this.gC.Text = "C";
-            this.gC.UseVisualStyleBackColor = true;
-            this.gC.Click += new System.EventHandler(this.gPreset_Click);
-            // 
-            // gLoad
-            // 
-            this.gLoad.Location = new System.Drawing.Point(19, 359);
-            this.gLoad.Margin = new System.Windows.Forms.Padding(8, 3, 8, 8);
-            this.gLoad.Name = "gLoad";
-            this.gLoad.Size = new System.Drawing.Size(141, 40);
-            this.gLoad.TabIndex = 8;
-            this.gLoad.Text = "Load preset";
-            this.gLoad.UseVisualStyleBackColor = true;
-            this.gLoad.Click += new System.EventHandler(this.gLoad_Click);
-            // 
-            // gB
-            // 
-            this.gB.Location = new System.Drawing.Point(91, 275);
-            this.gB.Margin = new System.Windows.Forms.Padding(3, 0, 8, 3);
-            this.gB.Name = "gB";
-            this.gB.Size = new System.Drawing.Size(69, 39);
-            this.gB.TabIndex = 5;
-            this.gB.Text = "B";
-            this.gB.UseVisualStyleBackColor = true;
-            this.gB.Click += new System.EventHandler(this.gPreset_Click);
-            // 
-            // gA
-            // 
-            this.gA.Location = new System.Drawing.Point(19, 275);
-            this.gA.Margin = new System.Windows.Forms.Padding(8, 0, 0, 3);
-            this.gA.Name = "gA";
-            this.gA.Size = new System.Drawing.Size(69, 39);
-            this.gA.TabIndex = 4;
-            this.gA.Text = "A";
-            this.gA.UseVisualStyleBackColor = true;
-            this.gA.Click += new System.EventHandler(this.gPreset_Click);
             // 
             // pMessage
             // 
@@ -425,6 +370,70 @@
             this.gTag.TabIndex = 0;
             this.gTag.KeyDown += new System.Windows.Forms.KeyEventHandler(this.gTag_KeyDown);
             // 
+            // gLoad
+            // 
+            this.gLoad.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.gLoad.Location = new System.Drawing.Point(19, 360);
+            this.gLoad.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.gLoad.Mode = Loopstream.UC_Troggle.Modes.Load;
+            this.gLoad.Name = "gLoad";
+            this.gLoad.Size = new System.Drawing.Size(139, 34);
+            this.gLoad.TabIndex = 21;
+            this.gLoad.Click += new System.EventHandler(this.gLoad_Click);
+            // 
+            // gD
+            // 
+            this.gD.AlignLeft = true;
+            this.gD.AlignTop = true;
+            this.gD.Location = new System.Drawing.Point(90, 316);
+            this.gD.Margin = new System.Windows.Forms.Padding(0);
+            this.gD.Name = "gD";
+            this.gD.preset = null;
+            this.gD.Size = new System.Drawing.Size(68, 39);
+            this.gD.TabIndex = 20;
+            this.gD.Text = "D";
+            this.gD.Click += new System.EventHandler(this.gPreset_Click);
+            // 
+            // gC
+            // 
+            this.gC.AlignLeft = false;
+            this.gC.AlignTop = true;
+            this.gC.Location = new System.Drawing.Point(21, 316);
+            this.gC.Margin = new System.Windows.Forms.Padding(8, 0, 0, 0);
+            this.gC.Name = "gC";
+            this.gC.preset = null;
+            this.gC.Size = new System.Drawing.Size(68, 39);
+            this.gC.TabIndex = 19;
+            this.gC.Text = "C";
+            this.gC.Click += new System.EventHandler(this.gPreset_Click);
+            // 
+            // gB
+            // 
+            this.gB.AlignLeft = true;
+            this.gB.AlignTop = false;
+            this.gB.Location = new System.Drawing.Point(90, 277);
+            this.gB.Margin = new System.Windows.Forms.Padding(0);
+            this.gB.Name = "gB";
+            this.gB.preset = null;
+            this.gB.Size = new System.Drawing.Size(68, 39);
+            this.gB.TabIndex = 18;
+            this.gB.Text = "B";
+            this.gB.Click += new System.EventHandler(this.gPreset_Click);
+            // 
+            // gA
+            // 
+            this.gA.AlignLeft = false;
+            this.gA.AlignTop = false;
+            this.gA.Location = new System.Drawing.Point(21, 277);
+            this.gA.Margin = new System.Windows.Forms.Padding(8, 0, 0, 0);
+            this.gA.Name = "gA";
+            this.gA.preset = null;
+            this.gA.Size = new System.Drawing.Size(68, 39);
+            this.gA.TabIndex = 17;
+            this.gA.Text = "A";
+            this.gA.Click += new System.EventHandler(this.gPreset_Click);
+            this.gA.MouseClick += new System.Windows.Forms.MouseEventHandler(this.gPreset_MouseClick);
+            // 
             // gMusic
             // 
             this.gMusic.A_GRAD_1 = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(220)))), ((int)(((byte)(255)))));
@@ -434,7 +443,7 @@
             this.gMusic.CanBoost = true;
             this.gMusic.canToggle = true;
             this.gMusic.enabled = true;
-            this.gMusic.level = 0;
+            this.gMusic.level = 255;
             this.gMusic.Location = new System.Drawing.Point(17, 17);
             this.gMusic.Margin = new System.Windows.Forms.Padding(8);
             this.gMusic.Name = "gMusic";
@@ -452,7 +461,7 @@
             this.gOut.CanBoost = false;
             this.gOut.canToggle = true;
             this.gOut.enabled = true;
-            this.gOut.level = 0;
+            this.gOut.level = 255;
             this.gOut.Location = new System.Drawing.Point(359, 17);
             this.gOut.Margin = new System.Windows.Forms.Padding(8);
             this.gOut.Name = "gOut";
@@ -470,7 +479,7 @@
             this.gMic.CanBoost = true;
             this.gMic.canToggle = true;
             this.gMic.enabled = true;
-            this.gMic.level = 0;
+            this.gMic.level = 255;
             this.gMic.Location = new System.Drawing.Point(131, 17);
             this.gMic.Margin = new System.Windows.Forms.Padding(8);
             this.gMic.Name = "gMic";
@@ -488,7 +497,7 @@
             this.gSpeed.CanBoost = false;
             this.gSpeed.canToggle = false;
             this.gSpeed.enabled = true;
-            this.gSpeed.level = 0;
+            this.gSpeed.level = 255;
             this.gSpeed.Location = new System.Drawing.Point(245, 17);
             this.gSpeed.Margin = new System.Windows.Forms.Padding(8);
             this.gSpeed.Name = "gSpeed";
@@ -564,11 +573,6 @@
         private System.Windows.Forms.Button gExit;
         private System.Windows.Forms.Button gSettings;
         private System.Windows.Forms.Button gConnect;
-        private System.Windows.Forms.Button gD;
-        private System.Windows.Forms.Button gC;
-        private System.Windows.Forms.Button gB;
-        private System.Windows.Forms.Button gA;
-        private System.Windows.Forms.Button gLoad;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Panel box_top;
         private System.Windows.Forms.Label box_top_dark;
@@ -592,6 +596,11 @@
         private System.Windows.Forms.TextBox gTag;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
+        private Pritch gD;
+        private Pritch gC;
+        private Pritch gB;
+        private Pritch gA;
+        private UC_Troggle gLoad;
 
     }
 }

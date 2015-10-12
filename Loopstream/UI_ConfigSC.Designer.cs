@@ -42,7 +42,6 @@
             this.label4 = new System.Windows.Forms.Label();
             this.gHost = new System.Windows.Forms.TextBox();
             this.gSave = new System.Windows.Forms.Button();
-            this.gCancel = new System.Windows.Forms.Button();
             this.label8 = new System.Windows.Forms.Label();
             this.label9 = new System.Windows.Forms.Label();
             this.label10 = new System.Windows.Forms.Label();
@@ -121,19 +120,20 @@
             this.gSource = new System.Windows.Forms.TextBox();
             this.gName = new System.Windows.Forms.TextBox();
             this.pFooter = new System.Windows.Forms.Panel();
+            this.gVU = new System.Windows.Forms.CheckBox();
             this.pButtons = new System.Windows.Forms.Panel();
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.gSplash = new System.Windows.Forms.CheckBox();
             this.pTabs = new System.Windows.Forms.Panel();
             this.label5 = new System.Windows.Forms.Label();
-            this.label12 = new System.Windows.Forms.Label();
-            this.tt = new System.Windows.Forms.ToolTip(this.components);
             this.hTags = new Loopstream.TLabel();
             this.hEncoders = new Loopstream.TLabel();
             this.hServer = new Loopstream.TLabel();
             this.hSoundcard = new Loopstream.TLabel();
-            this.gVU = new System.Windows.Forms.CheckBox();
+            this.label12 = new System.Windows.Forms.Label();
+            this.tt = new System.Windows.Forms.ToolTip(this.components);
+            this.gCancel = new System.Windows.Forms.Button();
             this.pWrapper.SuspendLayout();
             this.tc.SuspendLayout();
             this.tpSoundcard.SuspendLayout();
@@ -305,17 +305,6 @@
             this.tt.SetToolTip(this.gSave, "Save and apply this configuration");
             this.gSave.UseVisualStyleBackColor = true;
             this.gSave.Click += new System.EventHandler(this.button1_Click);
-            // 
-            // gCancel
-            // 
-            this.gCancel.Location = new System.Drawing.Point(170, 6);
-            this.gCancel.Name = "gCancel";
-            this.gCancel.Size = new System.Drawing.Size(121, 50);
-            this.gCancel.TabIndex = 53;
-            this.gCancel.Text = "A p p l y   o n l y";
-            this.tt.SetToolTip(this.gCancel, "Apply this configuration only for this session");
-            this.gCancel.UseVisualStyleBackColor = true;
-            this.gCancel.Click += new System.EventHandler(this.button2_Click);
             // 
             // label8
             // 
@@ -1271,6 +1260,22 @@
             this.pFooter.Size = new System.Drawing.Size(542, 67);
             this.pFooter.TabIndex = 39;
             // 
+            // gVU
+            // 
+            this.gVU.AutoSize = true;
+            this.gVU.CheckAlign = System.Drawing.ContentAlignment.TopLeft;
+            this.gVU.Checked = true;
+            this.gVU.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.gVU.Location = new System.Drawing.Point(12, 37);
+            this.gVU.Margin = new System.Windows.Forms.Padding(12, 3, 3, 3);
+            this.gVU.Name = "gVU";
+            this.gVU.Size = new System.Drawing.Size(75, 17);
+            this.gVU.TabIndex = 52;
+            this.gVU.Text = "VU meters";
+            this.tt.SetToolTip(this.gVU, "420 lensflare bling");
+            this.gVU.UseVisualStyleBackColor = true;
+            this.gVU.CheckedChanged += new System.EventHandler(this.gVU_CheckedChanged);
+            // 
             // pButtons
             // 
             this.pButtons.Controls.Add(this.gCancel);
@@ -1338,21 +1343,6 @@
             this.label5.Size = new System.Drawing.Size(542, 1);
             this.label5.TabIndex = 5;
             // 
-            // label12
-            // 
-            this.label12.BackColor = System.Drawing.SystemColors.Control;
-            this.label12.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.label12.Location = new System.Drawing.Point(0, 34);
-            this.label12.Name = "label12";
-            this.label12.Size = new System.Drawing.Size(542, 10);
-            this.label12.TabIndex = 1;
-            // 
-            // tt
-            // 
-            this.tt.ShowAlways = true;
-            this.tt.UseAnimation = false;
-            this.tt.UseFading = false;
-            // 
             // hTags
             // 
             this.hTags.AutoSize = true;
@@ -1405,21 +1395,31 @@
             this.hSoundcard.TabIndex = 0;
             this.hSoundcard.Text = "Soundcard";
             // 
-            // gVU
+            // label12
             // 
-            this.gVU.AutoSize = true;
-            this.gVU.CheckAlign = System.Drawing.ContentAlignment.TopLeft;
-            this.gVU.Checked = true;
-            this.gVU.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.gVU.Location = new System.Drawing.Point(12, 37);
-            this.gVU.Margin = new System.Windows.Forms.Padding(12, 3, 3, 3);
-            this.gVU.Name = "gVU";
-            this.gVU.Size = new System.Drawing.Size(75, 17);
-            this.gVU.TabIndex = 52;
-            this.gVU.Text = "VU meters";
-            this.tt.SetToolTip(this.gVU, "420 lensflare bling");
-            this.gVU.UseVisualStyleBackColor = true;
-            this.gVU.CheckedChanged += new System.EventHandler(this.gVU_CheckedChanged);
+            this.label12.BackColor = System.Drawing.SystemColors.Control;
+            this.label12.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.label12.Location = new System.Drawing.Point(0, 34);
+            this.label12.Name = "label12";
+            this.label12.Size = new System.Drawing.Size(542, 10);
+            this.label12.TabIndex = 1;
+            // 
+            // tt
+            // 
+            this.tt.ShowAlways = true;
+            this.tt.UseAnimation = false;
+            this.tt.UseFading = false;
+            // 
+            // gCancel
+            // 
+            this.gCancel.Location = new System.Drawing.Point(170, 6);
+            this.gCancel.Name = "gCancel";
+            this.gCancel.Size = new System.Drawing.Size(121, 50);
+            this.gCancel.TabIndex = 53;
+            this.gCancel.Text = "A p p l y   o n l y";
+            this.tt.SetToolTip(this.gCancel, "Apply this configuration only for this session");
+            this.gCancel.UseVisualStyleBackColor = true;
+            this.gCancel.Click += new System.EventHandler(this.button2_Click);
             // 
             // ConfigSC
             // 
@@ -1480,7 +1480,6 @@
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.TextBox gHost;
         private System.Windows.Forms.Button gSave;
-        private System.Windows.Forms.Button gCancel;
         private System.Windows.Forms.Label label8;
         private System.Windows.Forms.Label label9;
         private System.Windows.Forms.Label label10;
@@ -1572,5 +1571,6 @@
         private System.Windows.Forms.Panel panel2;
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.CheckBox gVU;
+        private System.Windows.Forms.Button gCancel;
     }
 }

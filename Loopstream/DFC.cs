@@ -108,6 +108,12 @@ namespace Loopstream
                     {
                         //bgmReady = true;
                     }
+                    string fil = Program.tools + files[a];
+                    string dir = fil.Substring(0, fil.Replace('/', '\\').LastIndexOf('\\'));
+                    if (!Directory.Exists(dir))
+                    {
+                        Directory.CreateDirectory(dir);
+                    }
                     extract(stream, cLen[a], Program.tools + files[a], icp);
                 }
                 extracting = false;

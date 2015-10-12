@@ -1,0 +1,32 @@
+	<h2>Soundcard Tuning</h2>
+</div>
+TPL_REQUIRE_2
+<div id="wrap">
+	<p>Here are the devices you need to fix:</p>
+	
+	<a name="anchor"></a>
+	<div id="devs">
+TPL_BADSMP
+	</div>
+	
+	<p><a href="/page/resample?reload" onclick="return plswait();">Perform a rescan</a> to update the list — this will remove devices you have fixed.
+	
+	<hr />
+	
+	<p>First, open the <a href="/page/resample?scp">Windows Control Panel for Sound</a>.
+	<br />Right-click the devices from the list above, and select properties.</p>
+	<img class="cs" src="/png/scp1.png" />
+	
+	<hr />
+	
+	<p>Open the «Advanced» tab, and select «XX bit, 44100 Hz» from the list.</p>
+	<p>Note that «bit» or «channel» don't matter, only Hz is important.</p>
+	<img class="cs" src="/png/scp2.png" />
+	
+	<hr />
+	
+	<p><a href="/page/resample?reload" onclick="return plswait();">Perform a rescan</a> to check that you've fixed everything before you continue.</p>
+	
+	<a class="next" href="/page/done?serv">Continue</a>
+	
+</div>

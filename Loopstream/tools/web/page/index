@@ -1,0 +1,7 @@
+	<h2>Welcome!</h2>
+</div>
+<div id="wrap">
+	<p>Loopstream hooks up to your speakers, streaming everything you hear to the radio.</p>
+	<p>Before we start, Loopstream needs to know which headphones or speakers you use when streaming.</p>
+	<a class="next" href="/page/mic">Continue</a>
+</div>

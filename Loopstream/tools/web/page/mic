@@ -1,0 +1,15 @@
+	<h2>Select Microphone</h2>
+</div>
+<div id="wrap">
+	<p>These are the available (plugged in and working) microphones.</p>
+	<p><a href="/page/mic?reload" onclick="return plswait();">Perform a rescan</a> if you have connected or disconnected any microphones recently.
+	<hr />
+	<p>Select a microphone if you want it
+	<br />to be available in Loopstream, then
+	<br />confirm by pressing Continue.</p>
+	<a name="anchor"></a>
+	<div id="devs">
+TPL_DEV_0
+	</div>
+	<a class="next" href="/page/out">Continue</a>
+</div>

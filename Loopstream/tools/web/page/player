@@ -1,0 +1,49 @@
+	<h2>Configuring your media player</h2>
+</div>
+TPL_REQUIRE_1
+TPL_REQUIRE_2
+<div id="wrap">
+	<p>First, you selected this as your OUTPUT (feedback) device:<br />
+	<strong>TPL_OUT_DEV</strong></p>
+	
+	<p>Next, you selected this as your INPUT (music) device:<br />
+	<strong>TPL_REC_DEV</strong></p>
+	
+	<hr />
+	
+	<p>Loopstream will broadcast everything that is played on
+	<br />the Input device, but since the Output device is your default
+	<br />sound device in Windows, Loopstream will only be getting silence.</p>
+	
+	<p>Now we need to tell your media player to feed Loopstream with music.</p>
+	
+	<p>Open the media player you want to stream with, then open its Settings.
+	<br />Look for its soundcard config, something like playback, output, devices...
+	<br />and select &nbsp; <strong>TPL_REC_DEV</strong></p>
+	
+	<hr />
+	
+	<p>Before we continue, try playing a song in your media player.</p>
+	
+	<p>For reference, your output device is<br />TPL_OUT_DEV</p>
+	
+	<p><strong>If your OUTPUT device is an HDMI screen:</strong>
+	<br />Open up the Windows Sound Mixer (the speaker icon in your tray)
+	<br />and turn the volume of the HDMI screen up to full blast. Find your
+	<br />screen's hardware volume control (either buttons on the screen or
+	<br />somewhere in its OSD menu) and turn it all the way down.</p>
+	
+	<p><strong>If your OUTPUT device is headphones, speakers or other audio jack:</strong>
+	<br />If you're hearing the music, open up the Windows Sound Mixer
+	<br />(the speaker icon in your tray) and turn it all the way down to mute it.</p>
+	
+	<hr />
+	
+	<p>Now, when you start streaming, you should see the audio signal in Loopstream, but hear nothing. This is because Loopstream is in Preview mode; the stream is muted so you can preview songs in other media players.</p>
+	
+	<p>Press the red <strong>OUT</strong> button to unmute the stream. This will relay<br />
+	the input device to the Output device, so you hear exactly what the<br />
+	radio hears. This way you can hear your own microphone, and so on.</p>
+	
+	<a class="next" href="/page/done?resampling&serv">Continue</a>
+</div>

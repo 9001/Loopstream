@@ -11,8 +11,8 @@ namespace Loopstream
     {
         string auth;
         Encoding latin1;
-        public string tag;
-        public string manual;
+        public LSTD tag;
+        public LSTD manual;
         LSSettings settings;
         bool haveFailed;
         bool quitting;
@@ -21,7 +21,7 @@ namespace Loopstream
         {
             Logger.tag.a("init");
 
-            tag = "";
+            tag = new LSTD(false, "");
             settings = set;
             quitting = false;
             haveFailed = false;
@@ -42,55 +42,53 @@ namespace Loopstream
         public void set(string str)
         {
             Logger.tag.a("set " + str);
-            manual = str;
+            manual = new LSTD(true, str);
         }
 
-        public static string get(LSSettings.LSMeta m, bool getRaw)
+        public static LSTD get(LSSettings.LSMeta m, bool getRaw)
         {
             if (m.reader == LSSettings.LSMeta.Reader.WindowCaption)
             {
                 Process[] proc = Process.GetProcessesByName(m.src);
                 if (proc.Length < 1)
                 {
-                    return "(no such process)";
+                    return new LSTD(false, "(no such process)");
                 }
                 string raw = proc[0].MainWindowTitle;
-                return getRaw ? raw : get(m, raw);
+                return getRaw ? new LSTD(true, raw) : get(m, raw);
             }
             if (m.reader == LSSettings.LSMeta.Reader.File)
             {
-                string ret = null;
                 try
                 {
-                    ret = System.IO.File.ReadAllText(m.src, m.enc);
+                    string ret = System.IO.File.ReadAllText(m.src, m.enc);
+                    return getRaw ? new LSTD(true, ret) : get(m, ret);
                 }
                 catch
                 {
-                    ret = "(file read failure)";
+                    return new LSTD(false, "(file read failure)");
                 }
-                return getRaw ? ret : get(m, ret);
             }
             if (m.reader == LSSettings.LSMeta.Reader.Website)
             {
-                string ret;
                 byte[] b;
                 try
                 {
                     b = new System.Net.WebClient().DownloadData(m.src);
                     try
                     {
-                        ret = m.enc.GetString(b);
+                        string ret = m.enc.GetString(b);
+                        return getRaw ? new LSTD(true, ret) : get(m, ret);
                     }
                     catch
                     {
-                        ret = "(web decode failure)";
+                        return new LSTD(false, "(web decode failure)");
                     }
                 }
                 catch
                 {
-                    ret = "(web request failure)";
+                    return new LSTD(false, "(web request failure)");
                 }
-                return getRaw ? ret : get(m, ret);
             }
             if (m.reader == LSSettings.LSMeta.Reader.ProcessMemory)
             {
@@ -98,7 +96,7 @@ namespace Loopstream
                 Process[] proc = Process.GetProcessesByName(m.src);
                 if (proc.Length < 1)
                 {
-                    return "(no such process)";
+                    return new LSTD(false, "(no such process)");
                 }
                 LSMem mem;
                 try
@@ -107,7 +105,7 @@ namespace Loopstream
                 }
                 catch
                 {
-                    return "(poke failure)";
+                    return new LSTD(false, "(poke failure)");
                 }
                 try
                 {
@@ -173,22 +171,22 @@ namespace Loopstream
                             }
                         }
                     }
-                    return ret;
+                    return new LSTD(true, ret);
                 }
                 catch
                 {
-                    return "(peek failure)";
+                    return new LSTD(false, "(peek failure)");
                 }
             }
-            return "(unexpected failure)";
+            return new LSTD(false, "(unexpected failure)");
         }
 
-        public static string get(LSSettings.LSMeta m, string raw)
+        public static LSTD get(LSSettings.LSMeta m, string raw)
         {
             Logger.tag.a("get " + raw);
             if (m.reader == LSSettings.LSMeta.Reader.ProcessMemory)
             {
-                throw new Exception("if you are seeing this, go whine to ed");
+                return new LSTD(false, "if you are seeing this, go whine to ed");
             }
             GroupCollection r;
             try
@@ -197,15 +195,15 @@ namespace Loopstream
             }
             catch
             {
-                return "(bad regex)";
+                return new LSTD(false, "(bad regex)");
             }
             try
             {
-                return r[m.grp].Value.Trim(' ', '\t', '\r', '\n'); // you can never be too sure
+                return new LSTD(true, r[m.grp].Value.Trim(' ', '\t', '\r', '\n')); // you can never be too sure
             }
             catch
             {
-                return "(no match)";
+                return new LSTD(false, "(no match)");
             }
         }
 
@@ -221,15 +219,15 @@ namespace Loopstream
                 LSSettings.LSMeta m = settings.meta;
                 tag = settings.tagAuto ? get(m, false) : manual;
                 manual = tag;
-                if (!string.IsNullOrEmpty(tag))
+                if (!string.IsNullOrEmpty(tag.tag) && tag.ok)
                 {
                     foreach (Est e in est)
                     {
                         if (e != null &&
-                            e.tag != tag &&
+                            e.tag != tag.tag &&
                             e.enc.FIXME_kbps > 0)
                         {
-                            e.tag = tag;
+                            e.tag = tag.tag;
                             sendTags(e);
                         }
                     }
@@ -281,7 +279,7 @@ namespace Loopstream
             catch
             {
                 Logger.tag.a(est.enc.ext + " send fail");
-                tag = "Meta-fail " + est.enc.ext;
+                tag = new LSTD(false, "Meta-fail " + est.enc.ext);
             }
         }
 
@@ -293,6 +291,17 @@ namespace Loopstream
             {
                 tag = s;
                 enc = e;
+            }
+        }
+
+        public class LSTD
+        {
+            public bool ok;
+            public string tag;
+            public LSTD(bool o, string t)
+            {
+                tag = t;
+                ok = o;
             }
         }
     }
