@@ -677,13 +677,13 @@ namespace Loopstream
                     LSMeta.Reader.WindowCaption,
                     "Foobar 2000  (window title)",
                     "foobar2000",
-                    500,
+                    200,
                     @" *(.*[^ ]) *( - foobar2000$|\[foobar2000 v([0-9\.]*)\]$)",
                     "{1}",
                     "utf-8",
                     false,
                     1,
-                    0,
+                    5,
                     "H4sIAAAAAAAEAHWRMU8DMQyF9/sVbzmJSlBVjGyoLVKHAoIyVR3Mna+JmksqJ9fj/j1OQAgGtsj2e++zszM24iwcOWG0zkGYWkxhEDyE8E5yu1gstOPbMCLZ5PgaGI1tDIY4kHMTogljRDOIsE+4l2RjAvkWuzw+r6pNlw1Bwqqx/gjS6ZhCj2S4z4ZBYL+GGkP+yN8Ev2PRBekpJdWrwCb0NMEHpQ5y0pCd0R1KhpriZb182m7Xj6v16o9LzDZ4TYpH0r5tcIXOivLOUJCXwQ29j6URuQlams2rZ8ek5j2dGHHQiEwq3IcLgy8sUzJ5LetLdlfuBhV39qj27Fol1o7X2nkqOWeKSbUf1CQ33VXVvqZytxo3OOzrwlof/qnnd/fzOZ+am6aNwgEAAA=="
                 ),
                 new LSMeta(
@@ -870,6 +870,23 @@ namespace Loopstream
                     0,
                     "H4sIAAAAAAAEADWOsW7DMAxEd3/FbV0Cd++WFGinFBkCdJZlxiasiAZJw3W+vpKbHjjd3SN5UlmN1N4aVJ3lwSkFfLDSTX7wii8eRk/bX/wpMiTC+6hyp6b5ps7Y6R9+pufFODZVT2Mimg3LDB8JrqFnZ8mQGzriPKDnOBm6DfPiXo0re8G68oESjupsDs47vnLuZYXXRtscYxTtC5K2A/b8EtxJc63HMehA9UwpKcV9tY9sKBNwJ7O2bYFLomCEXvKLI4lMxRN9/ALIywW3GgEAAA=="
                 ),
+                new LSMeta(
+                    LSMeta.Reader.WindowCaption,
+                    "MediaMonkey",
+                    "MediaMonkey",
+                    500,
+                    "^([0-9]*\\. )?(.*) - MediaMonkey$",
+                    "{2}"
+                ),
+                new LSMeta(
+                    LSMeta.Reader.WindowCaption,
+                    "MusicBee",
+                    "MusicBee",
+                    500,
+                    "^(.*) - MusicBee$",
+                    "{1}"
+                ),
+
             });
             metaDec();
         }

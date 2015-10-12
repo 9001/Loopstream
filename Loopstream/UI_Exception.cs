@@ -38,6 +38,8 @@ namespace Loopstream
             gExit.Enabled = false;
             gSend.Enabled = false;
             gDesc.Enabled = false;
+
+            //if (ex.StackTrace.Contains("System.Windows.Forms.ContextMenu.Show")) this.Dispose(); //lol
         }
 
         void t_Tick(object sender, EventArgs e)

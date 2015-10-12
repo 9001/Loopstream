@@ -52,7 +52,29 @@ namespace Loopstream
         protected void makeShouter()
         {
             logger.a("make shouter");
-            proc.PriorityClass = System.Diagnostics.ProcessPriorityClass.High;
+            proc.PriorityClass = System.Diagnostics.ProcessPriorityClass.AboveNormal;
+
+
+            if (string.IsNullOrEmpty(settings.host))
+            {
+                s = null;
+                rekick = 0;
+                stampee = 0;
+                stdin = pstdin;
+                stdout = pstdout;
+                stamps = new long[32];
+                chunks = new long[32];
+                long v = DateTime.UtcNow.Ticks / 10000;
+                for (int a = 0; a < stamps.Length; a++) stamps[a] = v;
+
+                System.Threading.Thread tr = new System.Threading.Thread(new System.Threading.ThreadStart(reader));
+                tr.Name = "LSEnc_Reader";
+                tr.Start();
+                System.Threading.Thread tc = new System.Threading.Thread(new System.Threading.ThreadStart(counter));
+                tc.Name = "LSEnc_Counter";
+                tc.Start();
+                return;
+            }
 
             System.Net.Sockets.NetworkStream prepS;
             string ver = Application.ProductVersion;

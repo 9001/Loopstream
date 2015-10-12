@@ -281,6 +281,125 @@ namespace Loopstream
                     new System.Threading.Thread(new System.Threading.ThreadStart(wizard)).Start();
                 }
             }
+
+            Timer asdf = new Timer();
+            asdf.Interval = 100;
+            asdf.Start();
+            asdf.Tick += new EventHandler(readServerSharekey_tick);
+
+            gHost.ContextMenu = new ContextMenu();
+            gUser.ContextMenu = new ContextMenu();
+            gPass.ContextMenu = new ContextMenu();
+            gMount.ContextMenu = new ContextMenu();
+            gHost.ContextMenuStrip = new ContextMenuStrip();
+            gUser.ContextMenuStrip = new ContextMenuStrip();
+            gPass.ContextMenuStrip = new ContextMenuStrip();
+            gMount.ContextMenuStrip = new ContextMenuStrip();
+            gHost.ShortcutsEnabled = true;
+            gUser.ShortcutsEnabled = true;
+            gPass.ShortcutsEnabled = true;
+            gMount.ShortcutsEnabled = true;
+        }
+
+        bool readServerSharekey = false;
+        void readServerSharekey_tick(object sender, EventArgs e)
+        {
+            if (readServerSharekey)
+            {
+                readServerSharekey = false;
+                bool first = true;
+                while (true)
+                {
+                    try
+                    {
+                        if (Clipboard.ContainsText())
+                        {
+                            string key = Clipboard.GetText();
+                            if (!string.IsNullOrEmpty(key) &&
+                                key.Contains("cs#"))
+                            {
+                                try
+                                {
+                                    int i = key.IndexOf("cs#");
+                                    int j = key.IndexOf("#", i + 4);
+                                    if (i < 0 || j < 0) throw new Exception();
+                                    i += 3;
+                                    key = key.Substring(i, j - i);
+                                }
+                                catch
+                                {
+                                    MessageBox.Show(
+                                        "Padding error\n\n" +
+                                        "Sorry, but the share-key is invalid.");
+                                    throw new Exception();
+                                }
+                                try
+                                {
+                                    key = Z.gzd(key);
+                                }
+                                catch
+                                {
+                                    MessageBox.Show(
+                                        "Decoder error\n\n" +
+                                        "Sorry, but the share-key is invalid.");
+                                    throw new Exception();
+                                }
+                                string[] lines = key.Split('\n');
+                                /*
+                                    +(gHost.ReadOnly ? "1" : "0")
+                                    + (gUser.ReadOnly ? "1" : "0")
+                                    + (gPass.ReadOnly ? "1" : "0")
+                                    + (gMount.ReadOnly ? "1" : "0")
+                                    + " " + gServerSel.Text
+                                    + "\n" + settings.host
+                                    + "\n" + settings.port
+                                    + "\n" + settings.user
+                                    + "\n" + settings.pass
+                                    + "\n" + settings.mount;
+                                */
+                                settings.host = lines[1];
+                                settings.port = Convert.ToInt32(lines[2]);
+                                settings.user = lines[3];
+                                settings.pass = lines[4];
+                                settings.mount = lines[5];
+                                visualizeServerSettings();
+
+                                gUnhide.Checked = true;
+                                gServerSel.Text = lines[0].Substring(5);
+                                if (lines[0][0] != '1') toggleReadOnly(gHost, null); else gHost.Text = "";
+                                if (lines[0][1] != '1') toggleReadOnly(gUser, null); else gUser.Text = "";
+                                if (lines[0][2] != '1') toggleReadOnly(gPass, null); else gPass.Text = "";
+                                if (lines[0][3] != '1') toggleReadOnly(gMount, null); else gMount.Text = "";
+                                MessageBox.Show("Loaded server settings «" + gServerSel.Text + "»");
+                                if (gPass.Left > 0) gPass.Focus();
+                                return;
+
+                                // ##cs#H4sIAAAAAAAEADMwMDRQyC0tScwrUUgpUfDxDHPlgnCLElMy8/Xyi9K5LAwMDLiK80uLklO5kjMS89JTFUoyMou5cjLLUgGemTG0QAAAAA==##
+                            }
+                        }
+                    }
+                    catch { }
+                    if (first)
+                    {
+                        if (DialogResult.Yes != MessageBox.Show(
+                            "Do you have a share-key to automatically fill in server details?",
+                            "Server Settings Share-Key", MessageBoxButtons.YesNo, MessageBoxIcon.Question))
+                        {
+                            return;
+                        }
+                    }
+                    else
+                    {
+                        if (DialogResult.Retry != MessageBox.Show(
+                            "Could not find the radio server settings in your clipboard.",
+                            "Server Settings Share-Key", MessageBoxButtons.RetryCancel, MessageBoxIcon.Exclamation))
+                        {
+                            return;
+                        }
+                    }
+                    first = false;
+                }
+            }
         }
 
         long lastTAB = 0;
@@ -532,10 +651,16 @@ namespace Loopstream
         {
             try
             {
-                string host = gHost.Text.Replace(" ","").Split(':')[0];
-                int port = Convert.ToInt32(gHost.Text.Split(':')[1]);
-                settings.host = host;
-                settings.port = port;
+                if (gHost.Text.Length < 2)
+                {
+                    settings.host = "";
+                    settings.port = 3;
+                }
+                else
+                {
+                    settings.host = gHost.Text.Replace(" ", "").Split(':')[0];
+                    settings.port = Convert.ToInt32(gHost.Text.Split(':')[1]);
+                }
                 gHost.BackColor = SystemColors.Window;
                 gHost.ForeColor = SystemColors.WindowText;
             }
@@ -1076,6 +1201,7 @@ namespace Loopstream
             gEncoding.Text = settings.meta.enc.WebName;
             gURLDecode.Checked = settings.meta.urldecode;
             gLatinize.Checked = settings.latin;
+            gTagSock.Checked = settings.tagsock;
             gTest.Checked = doRegexTests;
             //gGroup.Text = settings.meta.grp.ToString();
             gYield.Text = settings.meta.yield;
@@ -1411,6 +1537,7 @@ namespace Loopstream
                             "HTTPd glitch", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
                 }
+                if (quit) readServerSharekey = true;
             }
             catch (Exception e)
             {
@@ -1461,6 +1588,10 @@ namespace Loopstream
 
         private void gServerLoad_Click(object sender, EventArgs e)
         {
+            while (kills.Count > 0)
+            {
+                c_Click(kills[0], null);
+            }
             ((LSSettings.LSServerPreset)gServerSel.SelectedItem).LoadFromProfile(settings);
             visualizeServerSettings();
         }
@@ -1904,6 +2035,78 @@ namespace Loopstream
         {
             int n = getValue(gBounce);
             if (n >= 0) settings.meta.bnc = n;
+        }
+
+        private void gServerShare_Click(object sender, EventArgs e)
+        {
+            string key = ""
+                + (gHost.Left > 0 ? "1" : "0")
+                + (gUser.Left > 0 ? "1" : "0")
+                + (gPass.Left > 0 ? "1" : "0")
+                + (gMount.Left > 0 ? "1" : "0")
+                + " " + gServerSel.Text
+                + "\n" + settings.host
+                + "\n" + settings.port
+                + "\n" + (gUser.Left > 0 ? "" : settings.user)
+                + "\n" + (gPass.Left > 0 ? "" : settings.pass)
+                + "\n" + (gMount.Left > 0 ? "" : settings.mount);
+
+            key = Z.gze(key);
+            key = "##cs#" + key + "##";
+            Clipboard.Clear();
+            Clipboard.SetText(key);
+            MessageBox.Show(
+                "The share-key has been copied to your clipboard.\n" +
+                "Press CTRL-V somewhere to paste it.\n\n" + key);
+        }
+
+        List<Label> kills = new List<Label>();
+        private void toggleReadOnly(object sender, MouseEventArgs e)
+        {
+            if (e != null && e.Button != System.Windows.Forms.MouseButtons.Right) return;
+            TextBox t = (TextBox)sender;
+            //t.ContextMenu = dummyctx;
+            //t.ReadOnly = !t.ReadOnly;
+            
+            var c = new Label();
+            c.Tag = t;
+            c.Text = t.Text;
+            c.BorderStyle = BorderStyle.Fixed3D;
+            //c.ReadOnly = false;
+            //t.ContextMenu = dummyctx;
+            t.Parent.Controls.Add(c);
+            c.Bounds = t.Bounds;
+            c.Height -= 2;
+            c.Padding = new System.Windows.Forms.Padding(c.Padding.Left, c.Padding.Top + 2, c.Padding.Right, c.Padding.Bottom); // fuck
+            //t.Visible = false;
+            t.ShortcutsEnabled = false;
+            t.TabStop = false;
+            t.Left = -573;
+            kills.Add(c);
+            c.Click += new EventHandler(c_Click);
+            gServerSel.Focus();
+        }
+
+        void c_Click(object sender, EventArgs e)
+        {
+            var asdf = (Label)sender;
+            var fdsa = (TextBox)asdf.Tag;
+            // fdsa.Visible = true;
+            fdsa.ShortcutsEnabled = true;
+            fdsa.Left = asdf.Left;
+            fdsa.TabStop = true;
+            kills.Remove(asdf);
+            asdf.Dispose();
+        }
+
+        private void toggleReadOnlyPost(object sender, MouseEventArgs e)
+        {
+            //((TextBox)sender).ContextMenu = gTitle.ContextMenu;
+        }
+
+        private void gTagSock_CheckedChanged(object sender, EventArgs e)
+        {
+            settings.tagsock = gTagSock.Checked;
         }
     }
 }

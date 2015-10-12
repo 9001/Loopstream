@@ -3,6 +3,14 @@
 + new feature
 ~ other change
 
+2014-09-13, 23:05:42 - Loopstream 1.3.11.0
+  = Fix glitchy audio when volume boost lock is challenged by LOUD NOISES
+  + Mixer test mode (if server address is blank in settings)
+  + Tag reader: Support MusicBee and MediaMonkey
+  + Automatically read sharekey from clipboard
+  ~ Hide soundboard by rightclicking it
+  ~ Fix website URL
+
 2014-05-30, 21:40:31 - Loopstream 1.3.9.2
   + Soundboard
   = Hotkeys would trigger when typing tags

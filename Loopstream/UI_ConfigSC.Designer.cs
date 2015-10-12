@@ -161,13 +161,14 @@
             this.gSplash = new System.Windows.Forms.CheckBox();
             this.pTabs = new System.Windows.Forms.Panel();
             this.label5 = new System.Windows.Forms.Label();
+            this.label12 = new System.Windows.Forms.Label();
+            this.tt = new System.Windows.Forms.ToolTip(this.components);
+            this.gTagSock = new System.Windows.Forms.CheckBox();
             this.hTriggers = new Loopstream.TLabel();
             this.hTags = new Loopstream.TLabel();
             this.hEncoders = new Loopstream.TLabel();
             this.hServer = new Loopstream.TLabel();
             this.hSoundcard = new Loopstream.TLabel();
-            this.label12 = new System.Windows.Forms.Label();
-            this.tt = new System.Windows.Forms.ToolTip(this.components);
             this.pWrapper.SuspendLayout();
             this.tc.SuspendLayout();
             this.tpSoundcard.SuspendLayout();
@@ -306,6 +307,7 @@
             this.tt.SetToolTip(this.gPass, "This is the source password.\r\nDefault (and hopefully never) \"hackme\".\r\n\r\nr/a/dio:" +
         "  Your admin panel password");
             this.gPass.TextChanged += new System.EventHandler(this.gPass_TextChanged);
+            this.gPass.MouseDown += new System.Windows.Forms.MouseEventHandler(this.toggleReadOnly);
             this.gPass.MouseEnter += new System.EventHandler(this.gHost_MouseEnter);
             this.gPass.MouseLeave += new System.EventHandler(this.gHost_MouseLeave);
             // 
@@ -319,6 +321,7 @@
             this.tt.SetToolTip(this.gMount, "The mountpoint to stream to:\r\n    NOT including the preceding /\r\n    NOT includin" +
         "g .extension");
             this.gMount.TextChanged += new System.EventHandler(this.gMount_TextChanged);
+            this.gMount.MouseDown += new System.Windows.Forms.MouseEventHandler(this.toggleReadOnly);
             this.gMount.MouseEnter += new System.EventHandler(this.gHost_MouseEnter);
             this.gMount.MouseLeave += new System.EventHandler(this.gHost_MouseLeave);
             // 
@@ -330,6 +333,7 @@
             this.label4.Size = new System.Drawing.Size(45, 13);
             this.label4.TabIndex = 29;
             this.label4.Text = "Address";
+            this.label4.Click += new System.EventHandler(this.gServerShare_Click);
             // 
             // gHost
             // 
@@ -341,8 +345,10 @@
             this.tt.SetToolTip(this.gHost, "The server you will stream to.\r\nUse one of either:\r\n    DOMAIN:PORT\r\n    IPADDRES" +
         "S:PORT\r\n    HOSTNAME:PORT\r\n");
             this.gHost.TextChanged += new System.EventHandler(this.gHost_TextChanged);
+            this.gHost.MouseDown += new System.Windows.Forms.MouseEventHandler(this.toggleReadOnly);
             this.gHost.MouseEnter += new System.EventHandler(this.gHost_MouseEnter);
             this.gHost.MouseLeave += new System.EventHandler(this.gHost_MouseLeave);
+            this.gHost.MouseUp += new System.Windows.Forms.MouseEventHandler(this.toggleReadOnlyPost);
             // 
             // gSave
             // 
@@ -628,7 +634,7 @@
             this.gServerLoad.Name = "gServerLoad";
             this.gServerLoad.Size = new System.Drawing.Size(147, 23);
             this.gServerLoad.TabIndex = 26;
-            this.gServerLoad.Text = "Load Server Profile";
+            this.gServerLoad.Text = "Load server profile";
             this.tt.SetToolTip(this.gServerLoad, "Load the selected preset (snapshot),\r\nupdating everything on this page.");
             this.gServerLoad.UseVisualStyleBackColor = true;
             this.gServerLoad.Click += new System.EventHandler(this.gServerLoad_Click);
@@ -670,6 +676,7 @@
             this.tt.SetToolTip(this.gUser, "This is the source username.\r\nDefault (and almost always) \"source\".\r\n\r\nr/a/dio:  " +
         "Your admin panel username.");
             this.gUser.TextChanged += new System.EventHandler(this.gUser_TextChanged);
+            this.gUser.MouseDown += new System.Windows.Forms.MouseEventHandler(this.toggleReadOnly);
             this.gUser.MouseEnter += new System.EventHandler(this.gHost_MouseEnter);
             this.gUser.MouseLeave += new System.EventHandler(this.gHost_MouseLeave);
             // 
@@ -1249,6 +1256,7 @@
             // pTagAdvanced1
             // 
             this.pTagAdvanced1.BackColor = System.Drawing.SystemColors.Control;
+            this.pTagAdvanced1.Controls.Add(this.gTagSock);
             this.pTagAdvanced1.Controls.Add(this.gEncoding);
             this.pTagAdvanced1.Controls.Add(this.gBounce);
             this.pTagAdvanced1.Controls.Add(this.label28);
@@ -1864,6 +1872,33 @@
             this.label5.Size = new System.Drawing.Size(542, 1);
             this.label5.TabIndex = 5;
             // 
+            // label12
+            // 
+            this.label12.BackColor = System.Drawing.SystemColors.Control;
+            this.label12.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.label12.Location = new System.Drawing.Point(0, 34);
+            this.label12.Name = "label12";
+            this.label12.Size = new System.Drawing.Size(542, 10);
+            this.label12.TabIndex = 1;
+            // 
+            // tt
+            // 
+            this.tt.ShowAlways = true;
+            this.tt.UseAnimation = false;
+            this.tt.UseFading = false;
+            // 
+            // gTagSock
+            // 
+            this.gTagSock.AutoSize = true;
+            this.gTagSock.Location = new System.Drawing.Point(380, 147);
+            this.gTagSock.Name = "gTagSock";
+            this.gTagSock.Size = new System.Drawing.Size(128, 17);
+            this.gTagSock.TabIndex = 67;
+            this.gTagSock.Text = "Force socket fallback";
+            this.tt.SetToolTip(this.gTagSock, "Check this if tags don\'t send properly");
+            this.gTagSock.UseVisualStyleBackColor = true;
+            this.gTagSock.CheckedChanged += new System.EventHandler(this.gTagSock_CheckedChanged);
+            // 
             // hTriggers
             // 
             this.hTriggers.AutoSize = true;
@@ -1928,21 +1963,6 @@
             this.hSoundcard.Size = new System.Drawing.Size(115, 35);
             this.hSoundcard.TabIndex = 0;
             this.hSoundcard.Text = "Soundcard";
-            // 
-            // label12
-            // 
-            this.label12.BackColor = System.Drawing.SystemColors.Control;
-            this.label12.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.label12.Location = new System.Drawing.Point(0, 34);
-            this.label12.Name = "label12";
-            this.label12.Size = new System.Drawing.Size(542, 10);
-            this.label12.TabIndex = 1;
-            // 
-            // tt
-            // 
-            this.tt.ShowAlways = true;
-            this.tt.UseAnimation = false;
-            this.tt.UseFading = false;
             // 
             // ConfigSC
             // 
@@ -2132,5 +2152,6 @@
         private System.Windows.Forms.Label label28;
         private System.Windows.Forms.Label label30;
         private System.Windows.Forms.TextBox gEvAudioP;
+        private System.Windows.Forms.CheckBox gTagSock;
     }
 }

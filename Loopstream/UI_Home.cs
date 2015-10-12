@@ -171,6 +171,7 @@ namespace Loopstream
                     psfx.Controls.Add(b);
                     pto.Y += b.Height + b.Margin.Bottom;
                     b.Click += new EventHandler(b_Click);
+                    b.MouseDown += new MouseEventHandler(b_MouseDown);
                 }
             }
             catch { }
@@ -228,6 +229,19 @@ namespace Loopstream
             z("showhide"); showhide();
             z("skinner"); hookskinner(this.Controls);
             //Program.popception();
+        }
+
+        void b_MouseDown(object sender, MouseEventArgs e)
+        {
+            if (e.Button == System.Windows.Forms.MouseButtons.Right)
+            {
+                this.Width -= psfx.Width;
+                psfx.Visible = false;
+                while (psfx.Controls.Count > 0)
+                {
+                    psfx.Controls.RemoveAt(0);
+                }
+            }
         }
 
         class SFXNode
@@ -383,7 +397,7 @@ namespace Loopstream
         {
             if (keyData == (Keys.F1))
             {
-                System.Diagnostics.Process.Start("http://r-a-d.io/ed/loopstream");
+                System.Diagnostics.Process.Start("http://ocv.me/loopstream");
                 return true;
             }
             if (!gTag.Focused)
