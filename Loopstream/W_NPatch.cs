@@ -318,6 +318,7 @@ namespace NPatch
         public bool muted;
 
         public float boost;
+        public float boostLock;
         public bool attenuated;
 
         //public event EventHandler vuc;
@@ -414,9 +415,9 @@ namespace NPatch
                             }
                         }
                     }
-                    if (nboost < boost)
+                    if (nboost < boost && boost > boostLock)
                     {
-                        boost = nboost;
+                        boost = Math.Max(nboost, boostLock);
                         attenuated = true;
                     }
                 }

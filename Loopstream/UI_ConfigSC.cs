@@ -419,6 +419,7 @@ namespace Loopstream
 
             gServerSel.Items.Clear();
             LSSettings.LSServerPreset activePreset = null;
+            settings.serverPresets.Sort((x, y) => x.presetName.CompareTo(y.presetName));
             foreach (LSSettings.LSServerPreset preset in settings.serverPresets)
             {
                 gServerSel.Items.Add(preset);

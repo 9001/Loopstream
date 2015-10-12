@@ -17,7 +17,6 @@ namespace Loopstream
             InitializeComponent();
             _enabled = true;
             _boost = 1;
-            _boostLock = -1;
             defaultFG = gLabel.ForeColor;
             defaultBG = gLabel.BackColor;
             w8fuckOn = new Padding(0, 4, 0, 0);
@@ -44,7 +43,7 @@ namespace Loopstream
         Color defaultBG;
         Padding w8fuckOn;
         Padding w8fuckOff;
-        public enum EventType { set, slide, mute, boost, boostLock };
+        public enum EventType { set, slide, mute, boost };
         public EventType eventType;
         bool _enabled;
         public bool enabled
@@ -98,20 +97,6 @@ namespace Loopstream
             set
             {
                 _boost = Math.Max(1, value);
-                _boost = Math.Max(_boost, _boostLock);
-                level = level;
-            }
-        }
-        double _boostLock;
-        public double boostLock
-        {
-            get
-            {
-                return _boostLock;
-            }
-            set
-            {
-                _boostLock = value > 0 && CanBoost ? Math.Max(1, value) : -1;
                 level = level;
             }
         }
@@ -127,23 +112,23 @@ namespace Loopstream
                 //System.Windows.Forms.MessageBox.Show(value.ToString());
                 bool inval = _level <= 40 || _level >= 255 + 40;
                 _level = Math.Min(Math.Max(value, -40), 295) + 40;
+                if (value > 295)
+                {
+                    double pow = (value - 295) / 200.0;
+                    pow = pow < 0 ? pow - 1 : pow + 1;
+                    boost = oldBoost * (pow < 0 ? 1 / -pow : pow);
+                }
                 int top = gOSlider.Height - _level;
                 giSlider.Bounds = new Rectangle(0, top - 2, gOSlider.Width, _level + 2);
                 string txt = timeScale ?
-                    (Math.Round(level / 200.0, 2) + " s") :
-                    (Math.Round(level /  2.55, 0) + " %");
+                    (Math.Round(level / 200.0,2) + " s") :
+                    (Math.Round(level/2.55,0) + " %");
 
                 if (_boost > 1 && CanBoost)
                 {
                     txt = _boost.ToString("0.0") + " x\n" + txt;
                 }
                 giSlider.Text = txt;
-                giSlider.ForeColor =
-                    CanBoost &&
-                    boostLock > 1.1 &&
-                    boostLock + 0.05 > boost ?
-                    Color.FromArgb(160, 0, 0) :
-                    giSlider.ForeColor = Color.White;
                 //gLabel.Text = level.ToString();
 
                 inval = inval || _level <= 40 || _level >= 255 + 40;
@@ -186,20 +171,8 @@ namespace Loopstream
                 clickOffset = ((Control)sender).Top + 40;
                 clickPosition = Cursor.Position;
                 slideDelta = level - (gOSlider.Height - e.Y - clickOffset);
-                oldBoost = -1;
+                oldBoost = boost;
                 //gLabel.Text = slideDelta.ToString();
-            }
-            else if (e.Button == System.Windows.Forms.MouseButtons.Right)
-            {
-                eventType = EventType.boostLock;
-                boostLock = boost - boostLock < 0.05 ? -1 : boost;
-                boost = boost;
-                emit();
-                Application.DoEvents();
-                if (sender == giSlider)
-                {
-                    clickOffset = giSlider.Top + 40;
-                }
             }
         }
 
@@ -227,28 +200,11 @@ namespace Loopstream
                 fsckoff = false;
                 return;
             }
-            if (dx > 100 && oldBoost < 0 && CanBoost)
-            {
-                oldBoost = boost;
-                clickPosition = mouse;
-            }
-            else if (oldBoost >= 1)
-            {
-                //double delta = (mouse.X - clickPosition.X) * 0.005;
-                //boost = Math.Max(1, oldBoost + delta);
-                double pow = (mouse.X - clickPosition.X) / 200.0;
-                pow = pow < 0 ? pow - 1 : pow + 1;
-                boost *= pow < 0 ? 1 / -pow : pow;
-                eventType = EventType.boost;
-                clickPosition = mouse;
-                level = level;
-            }
             else
             {
                 level = slideDelta + gOSlider.Height - e.Y - clickOffset;
                 eventType = EventType.set;
             }
-
             clickTime -= 1000;
             emit();
             Application.DoEvents();

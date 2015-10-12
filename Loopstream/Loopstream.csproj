@@ -280,10 +280,9 @@
     <EmbeddedResource Include="res\volbar.png" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="loopstream.ico" />
     <EmbeddedResource Include="lib\NAudio.dll" />
     <EmbeddedResource Include="lib\NAudio.WindowsMediaFormat.dll" />
-    <Content Include="lib\NAudio.xml" />
+    <Content Include="loopstream.ico" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.0,Profile=Client">
@@ -307,6 +306,7 @@
       <Install>true</Install>
     </BootstrapperPackage>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

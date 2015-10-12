@@ -362,6 +362,8 @@ namespace Loopstream
             settings.mixer.bRec = gMusic.enabled;
             settings.mixer.bMic = gMic.enabled;
             settings.mixer.bOut = gOut.enabled;
+            settings.mixer.yRec = gMusic.boostLock;
+            settings.mixer.yMic = gMic.boostLock;
             settings.mixer.xRec = gMusic.boost;
             settings.mixer.xMic = gMic.boost;
 
@@ -392,6 +394,10 @@ namespace Loopstream
                 {
                     mixer.BoostChannel(sl, (float)((Verter)sender).boost);
                 }
+                else if (et == Verter.EventType.boostLock)
+                {
+                    mixer.BoostLockChannel(sl, (float)((Verter)sender).boostLock);
+                }
                 else
                 {
                     mixer.FadeVolume(sl, (float)(((Verter)sender).level / 255.0), dur);
@@ -409,6 +415,8 @@ namespace Loopstream
             gMusic.enabled = settings.mixer.bRec;
             gMic.enabled = settings.mixer.bMic;
             gOut.enabled = settings.mixer.bOut;
+            gMusic.boostLock = settings.mixer.yRec;
+            gMic.boostLock = settings.mixer.yMic;
             gMusic.boost = settings.mixer.xRec;
             gMic.boost = settings.mixer.xMic;
 
@@ -424,6 +432,12 @@ namespace Loopstream
 
                 gMusic.eventType = Verter.EventType.boost;
                 gMic.eventType = Verter.EventType.boost;
+                gSlider_valueChanged(gMusic, null);
+                gSlider_valueChanged(gMic, null);
+
+                // in case this is necessary
+                gMusic.eventType = Verter.EventType.boostLock;
+                gMic.eventType = Verter.EventType.boostLock;
                 gSlider_valueChanged(gMusic, null);
                 gSlider_valueChanged(gMic, null);
             }

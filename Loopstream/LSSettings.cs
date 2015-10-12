@@ -86,11 +86,12 @@ namespace Loopstream
             public double vRec, vMic, vSpd, vOut;
             public bool bRec, bMic, bOut;
             public double xRec, xMic;
+            public double yRec, yMic;
 
             public LSPreset()
             {
             }
-            public LSPreset(double vrec, double vmic, double vspd, double vout, bool brec, bool bmic, bool bout, double xrec, double xmic)
+            public LSPreset(double vrec, double vmic, double vspd, double vout, bool brec, bool bmic, bool bout, double xrec, double xmic, double yrec, double ymic)
             {
                 vRec = vrec;
                 vMic = vmic;
@@ -101,6 +102,8 @@ namespace Loopstream
                 bOut = bout;
                 xRec = xrec;
                 xMic = xmic;
+                yRec = yrec;
+                yMic = ymic;
             }
             public void apply(LSPreset preset)
             {
@@ -113,6 +116,8 @@ namespace Loopstream
                 bOut = preset.bOut;
                 xRec = preset.xRec;
                 xMic = preset.xMic;
+                yRec = preset.yRec;
+                yMic = preset.yMic;
             }
         }
 
@@ -718,10 +723,10 @@ namespace Loopstream
         public void resetPresets()
         {
             presets = new LSPreset[] {
-                new LSPreset(1.00, 0, 0.6, 1, true, true, false, 1, 1),
-                new LSPreset(0.15, 1, 0.6, 1, true, true, false, 1, 4),
-                new LSPreset(1.00, 0, 0.6, 1, true, true, true, 1, 1),
-                new LSPreset(0.15, 1, 0.6, 1, true, true, true, 1, 4),
+                new LSPreset(1.00, 0, 0.6, 1, true, true, false, 1, 1, -1, -1),
+                new LSPreset(0.15, 1, 0.6, 1, true, true, false, 1, 4, -1, -1),
+                new LSPreset(1.00, 0, 0.6, 1, true, true, true, 1, 1, -1, -1),
+                new LSPreset(0.15, 1, 0.6, 1, true, true, true, 1, 4, -1, -1),
             };
         }
         public void runTests(Splesh splesh, bool forceTest)
@@ -833,16 +838,23 @@ namespace Loopstream
                     //using (var s = System.IO.File.OpenRead("Loopstream.ini"))
                     {
                         ret = (LSSettings)x.Deserialize(s);
-
                         //
-                        //  Upgrade from v1.2.8.0
+                        //  Upgrade from v1.2.8.0:
+                        //     xRec xMic lim_poor lim_drop
+                        //
+                        //  Upgrade from v1.3.7.7:
+                        //     yRec yMic
                         //
                         if (ret.mixer.xRec < 1) ret.mixer.xRec = 1;
                         if (ret.mixer.xMic < 1) ret.mixer.xMic = 1;
+                        if (ret.mixer.yRec < 1) ret.mixer.yRec = -1;
+                        if (ret.mixer.yMic < 1) ret.mixer.yMic = -1;
                         foreach (LSSettings.LSPreset pre in ret.presets)
                         {
                             if (pre.xRec < 1) pre.xRec = 1;
                             if (pre.xMic < 1) pre.xMic = 1;
+                            if (pre.yRec < 1) pre.yRec = -1;
+                            if (pre.yMic < 1) pre.yMic = -1;
                         }
                         if (ret.lim_drop <= 0 || ret.lim_poor <= 0)
                         {

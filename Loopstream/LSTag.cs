@@ -325,7 +325,7 @@ namespace Loopstream
         void sendTags(Est est)
         {
             string meta = est.tag;
-            meta = new string(meta.Reverse().ToArray());
+            //meta = new string(meta.Reverse().ToArray());
             if (settings.latin)
             {
                 meta = Uri.EscapeUriString(latin1.GetString(Encoding.UTF8.GetBytes(meta))).Replace("+", "%2B");

@@ -14,6 +14,7 @@ namespace Loopstream
         public UI_Exception(Exception ex, int type)
         {
             InitializeComponent();
+            defaultmsg = "You can add a description here, if you'd like\r\n\r\n(or maybe something like an email address even)";
             this.type = type;
             this.ex = ex;
         }
@@ -21,6 +22,7 @@ namespace Loopstream
         int type;
         Exception ex;
         GeneralInfo gi;
+        string defaultmsg;
 
         // 1 = AppDomain.CurrentDomain.UnhandledException
         // 2 = Application.ThreadException
@@ -103,7 +105,7 @@ namespace Loopstream
                 string serialized = gi.ToString();
 
                 gDesc.Enabled = true;
-                gDesc.Text = "You can add a description here, if you'd like";
+                gDesc.Text = defaultmsg;
                 gExit.Enabled = true;
                 gSend.Enabled = true;
                 gSend.Focus();
@@ -155,6 +157,16 @@ namespace Loopstream
 
         private void gSend_Click(object sender, EventArgs e)
         {
+            if (gDesc.Text.Contains(defaultmsg) && gDesc.Text.Length - defaultmsg.Length < 3)
+            {
+                if (DialogResult.Yes == MessageBox.Show(
+                    "You didn't provide a way for me to contact you!\n\n" +
+                    "Wanna go back and add an email address or something?",
+                    "No contact info ", MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation))
+                {
+                    return;
+                }
+            }
             gExit.Enabled = gSend.Enabled = gDesc.Enabled = false;
             Application.DoEvents();
             try

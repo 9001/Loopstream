@@ -135,6 +135,8 @@ namespace Loopstream
             recVol.SetVolume((float)settings.mixer.vRec);
             micVol.SetVolume((float)settings.mixer.vMic);
             outVol.SetVolume((float)settings.mixer.vOut);
+            recVol.boostLock = (float)settings.mixer.yRec;
+            micVol.boostLock = (float)settings.mixer.yMic;
             recVol.boost = (float)settings.mixer.xRec;
             micVol.boost = (float)settings.mixer.xMic;
             recVol.muted = !settings.mixer.bRec;
@@ -209,6 +211,13 @@ namespace Loopstream
             Logger.mix.a("boost " + slider + " to " + boost);
             if (slider == Slider.Music) recVol.boost = boost;
             if (slider == Slider.Mic) micVol.boost = boost;
+        }
+
+        public void BoostLockChannel(Slider slider, float boostLock)
+        {
+            Logger.mix.a("boostLock " + slider + " to " + boostLock);
+            if (slider == Slider.Music) recVol.boostLock = boostLock;
+            if (slider == Slider.Mic) micVol.boostLock = boostLock;
         }
 
         void recDev_DataAvailable_03(object sender, WaveInEventArgs e)
