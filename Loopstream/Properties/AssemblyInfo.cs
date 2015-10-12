@@ -6,12 +6,12 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("Loopstream")]
-[assembly: AssemblyDescription("Internet radio streaming software")]
+[assembly: AssemblyDescription("Internet radio streaming rig")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("ed@rizon")]
 [assembly: AssemblyProduct("Loopstream")]
 [assembly: AssemblyCopyright("Copyright © ed 2013")]
-[assembly: AssemblyTrademark("")]
+[assembly: AssemblyTrademark("what trademark")]
 [assembly: AssemblyCulture("")]
 
 // Setting ComVisible to false makes the types in this assembly not visible 
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("b94827d3-b94c-45cf-84bf-9cf157c2c937")]
+[assembly: Guid("374f9ede-5194-4912-8a12-b18d91d5200e")]
 
 // Version information for an assembly consists of the following four values:
 //
@@ -32,5 +32,5 @@ using System.Runtime.InteropServices;
 // You can specify all the values or you can default the Build and Revision Numbers 
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("1.3.4.9")]
-[assembly: AssemblyFileVersion("1.3.4.9")]
+[assembly: AssemblyVersion("1.3.6.1")]
+[assembly: AssemblyFileVersion("1.3.6.1")]

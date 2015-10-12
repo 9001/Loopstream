@@ -464,7 +464,37 @@
         </member>
         <member name="T:NAudio.CoreAudioApi.AudioClockClient">
             <summary>
-            
+            Audio Clock Client
+            </summary>
+        </member>
+        <member name="M:NAudio.CoreAudioApi.AudioClockClient.GetPosition(System.UInt64@,System.UInt64@)">
+            <summary>
+            Get Position
+            </summary>
+        </member>
+        <member name="M:NAudio.CoreAudioApi.AudioClockClient.Dispose">
+            <summary>
+            Dispose
+            </summary>
+        </member>
+        <member name="P:NAudio.CoreAudioApi.AudioClockClient.Characteristics">
+            <summary>
+            Characteristics
+            </summary>
+        </member>
+        <member name="P:NAudio.CoreAudioApi.AudioClockClient.Frequency">
+            <summary>
+            Frequency
+            </summary>
+        </member>
+        <member name="P:NAudio.CoreAudioApi.AudioClockClient.AdjustedPosition">
+            <summary>
+            Adjusted Position
+            </summary>
+        </member>
+        <member name="P:NAudio.CoreAudioApi.AudioClockClient.CanAdjustPosition">
+            <summary>
+            Can Adjust Position
             </summary>
         </member>
         <member name="T:NAudio.CoreAudioApi.AudioEndpointVolumeChannel">
@@ -734,6 +764,93 @@
         <member name="F:NAudio.CoreAudioApi.PropertyKeys.PKEY_Device_FriendlyName">
             <summary>
             PKEY _Devie_FriendlyName
+            </summary>
+        </member>
+        <member name="T:NAudio.Dsp.EnvelopeGenerator">
+            <summary>
+            Envelope generator (ADSR)
+            </summary>
+        </member>
+        <member name="M:NAudio.Dsp.EnvelopeGenerator.#ctor">
+            <summary>
+            Creates and Initializes an Envelope Generator
+            </summary>
+        </member>
+        <member name="M:NAudio.Dsp.EnvelopeGenerator.Process">
+            <summary>
+            Read the next volume multiplier from the envelope generator
+            </summary>
+            <returns>A volume multiplier</returns>
+        </member>
+        <member name="M:NAudio.Dsp.EnvelopeGenerator.Gate(System.Boolean)">
+            <summary>
+            Trigger the gate
+            </summary>
+            <param name="gate">If true, enter attack phase, if false enter release phase (unless already idle)</param>
+        </member>
+        <member name="M:NAudio.Dsp.EnvelopeGenerator.Reset">
+            <summary>
+            Reset to idle state
+            </summary>
+        </member>
+        <member name="M:NAudio.Dsp.EnvelopeGenerator.GetOutput">
+            <summary>
+            Get the current output level
+            </summary>
+        </member>
+        <member name="P:NAudio.Dsp.EnvelopeGenerator.AttackRate">
+            <summary>
+            Attack Rate (seconds * SamplesPerSecond)
+            </summary>
+        </member>
+        <member name="P:NAudio.Dsp.EnvelopeGenerator.DecayRate">
+            <summary>
+            Decay Rate (seconds * SamplesPerSecond)
+            </summary>
+        </member>
+        <member name="P:NAudio.Dsp.EnvelopeGenerator.ReleaseRate">
+            <summary>
+            Release Rate (seconds * SamplesPerSecond)
+            </summary>
+        </member>
+        <member name="P:NAudio.Dsp.EnvelopeGenerator.SustainLevel">
+            <summary>
+            Sustain Level (1 = 100%)
+            </summary>
+        </member>
+        <member name="P:NAudio.Dsp.EnvelopeGenerator.State">
+            <summary>
+            Current envelope state
+            </summary>
+        </member>
+        <member name="T:NAudio.Dsp.EnvelopeGenerator.EnvelopeState">
+            <summary>
+            Envelope State
+            </summary>
+        </member>
+        <member name="F:NAudio.Dsp.EnvelopeGenerator.EnvelopeState.Idle">
+            <summary>
+            Idle
+            </summary>
+        </member>
+        <member name="F:NAudio.Dsp.EnvelopeGenerator.EnvelopeState.Attack">
+            <summary>
+            Attack
+            </summary>
+        </member>
+        <member name="F:NAudio.Dsp.EnvelopeGenerator.EnvelopeState.Decay">
+            <summary>
+            Decay
+            </summary>
+        </member>
+        <member name="F:NAudio.Dsp.EnvelopeGenerator.EnvelopeState.Sustain">
+            <summary>
+            Sustain
+            </summary>
+        </member>
+        <member name="F:NAudio.Dsp.EnvelopeGenerator.EnvelopeState.Release">
+            <summary>
+            Release
             </summary>
         </member>
         <member name="M:NAudio.FileFormats.Wav.WaveFileChunkReader.ReadDs64Chunk(System.IO.BinaryReader)">
@@ -6702,6 +6819,16 @@
             Describes the Guid  by looking for a FieldDescription attribute on the specified class
             </summary>
         </member>
+        <member name="T:NAudio.Utils.WavePositionExtensions">
+            <summary>
+            WavePosition extension methods
+            </summary>
+        </member>
+        <member name="M:NAudio.Utils.WavePositionExtensions.GetPositionTimeSpan(NAudio.Wave.IWavePosition)">
+            <summary>
+            Get Position as timespan
+            </summary>
+        </member>
         <member name="T:NAudio.Utils.IEEE">
             <summary>
             Methods for converting between IEEE 80-bit extended double precision
@@ -7483,6 +7610,11 @@
             Indicates that all recorded data has now been received.
             </summary>
         </member>
+        <member name="P:NAudio.CoreAudioApi.WasapiCapture.ShareMode">
+            <summary>
+            Share Mode - set before calling StartRecording
+            </summary>
+        </member>
         <member name="P:NAudio.CoreAudioApi.WasapiCapture.WaveFormat">
             <summary>
             Recording wave format
@@ -7975,6 +8107,18 @@
             <summary>
             Media Object
             </summary>
+        </member>
+        <member name="T:NAudio.Dsp.BiQuadFilter">
+            <summary>
+            BiQuad filter
+            </summary>
+        </member>
+        <member name="M:NAudio.Dsp.BiQuadFilter.Transform(System.Single)">
+            <summary>
+            Passes a single sample through the filter
+            </summary>
+            <param name="inSample">Input sample</param>
+            <returns>Output sample</returns>
         </member>
         <member name="M:NAudio.Dsp.BiQuadFilter.LowPassFilter(System.Single,System.Single,System.Single)">
             <summary>
@@ -10543,6 +10687,12 @@
             Closes the MIDI out device
             </summary>
             <param name="disposing">True if called from Dispose</param>
+        </member>
+        <member name="M:NAudio.Midi.MidiOut.SendBuffer(System.Byte[])">
+            <summary>
+            Send a long message, for example sysex.
+            </summary>
+            <param name="byteBuffer">The bytes to send.</param>
         </member>
         <member name="M:NAudio.Midi.MidiOut.Finalize">
             <summary>
@@ -17026,7 +17176,7 @@
             <summary>
             Creates a new encoder that encodes to the specified output media type
             </summary>
-            <param name="outputMediaType"></param>
+            <param name="outputMediaType">Desired output media type</param>
         </member>
         <member name="M:NAudio.Wave.MediaFoundationEncoder.Encode(System.String,NAudio.Wave.IWaveProvider)">
             <summary>

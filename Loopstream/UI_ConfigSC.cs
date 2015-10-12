@@ -707,10 +707,17 @@ namespace Loopstream
 
         void tPop_Tick(object sender, EventArgs e)
         {
-            tPop.Stop();
-            if (popTop == gHost) popTop = gMount;
-            // fucking hell microsoft how did you fuck THIS up
-            tt.Show(tt.GetToolTip(popTop), gTwoS);
+            try
+            {
+                string msg = tt.GetToolTip(popTop);
+                this.Text = popTop.Name + " = " + msg;
+                tPop.Stop();
+                //if (popTop == gHost) popTop = gMount;
+                // fucking hell microsoft how did you fuck THIS up
+                tt.SetToolTip(button1, msg);
+                tt.Show(msg, button1);
+            }
+            catch { }
         }
 
         private void gTitle_TextChanged(object sender, EventArgs e)
@@ -835,6 +842,7 @@ namespace Loopstream
         private void gReader_SelectedIndexChanged(object sender, EventArgs e)
         {
             settings.meta.reader = (LSSettings.LSMeta.Reader)gReader.SelectedItem;
+            gTarget.Visible = settings.meta.reader == LSSettings.LSMeta.Reader.WindowCaption;
             gEncoding.Visible = gEncodingL.Visible = (settings.meta.reader != LSSettings.LSMeta.Reader.WindowCaption);
             if (!disregardEvents)
             {
@@ -944,6 +952,7 @@ namespace Loopstream
             gFreq.Text = settings.meta.freq.ToString();
             gName.Text = settings.meta.tit;
             gEncoding.Text = settings.meta.enc.WebName;
+            gURLDecode.Checked = settings.meta.urldecode;
             gLatinize.Checked = settings.latin;
             gTest.Checked = doRegexTests;
             gGroup.Text = settings.meta.grp.ToString();
@@ -1302,6 +1311,19 @@ namespace Loopstream
         {
             int n = getValue(gLDrop);
             if (n >= 0) settings.lim_drop = n / 100.0;
+        }
+
+        private void gTarget_Click(object sender, EventArgs e)
+        {
+            UI_Winpeck wp = new UI_Winpeck();
+            wp.ShowDialog();
+            gSource.Text = wp.starget + "*" + wp.itarget.ToString("x");
+            gSource_TextChanged(sender, e);
+        }
+
+        private void gURLDecode_CheckedChanged(object sender, EventArgs e)
+        {
+            settings.meta.urldecode = gURLDecode.Checked;
         }
     }
 }

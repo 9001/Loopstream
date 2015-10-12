@@ -97,6 +97,8 @@
             this.gDelete = new System.Windows.Forms.Button();
             this.gLatinize = new System.Windows.Forms.CheckBox();
             this.pTagAdvanced1 = new System.Windows.Forms.Panel();
+            this.gURLDecode = new System.Windows.Forms.CheckBox();
+            this.gTarget = new System.Windows.Forms.Button();
             this.label26 = new System.Windows.Forms.Label();
             this.gGroup = new System.Windows.Forms.TextBox();
             this.label17 = new System.Windows.Forms.Label();
@@ -119,6 +121,13 @@
             this.gStore = new System.Windows.Forms.Button();
             this.gSource = new System.Windows.Forms.TextBox();
             this.gName = new System.Windows.Forms.TextBox();
+            this.tpOSD = new System.Windows.Forms.TabPage();
+            this.label27 = new System.Windows.Forms.Label();
+            this.gLDrop = new System.Windows.Forms.TextBox();
+            this.gCDrop = new System.Windows.Forms.CheckBox();
+            this.label16 = new System.Windows.Forms.Label();
+            this.gLPoor = new System.Windows.Forms.TextBox();
+            this.gCPoor = new System.Windows.Forms.CheckBox();
             this.pFooter = new System.Windows.Forms.Panel();
             this.gVU = new System.Windows.Forms.CheckBox();
             this.pButtons = new System.Windows.Forms.Panel();
@@ -130,18 +139,12 @@
             this.label5 = new System.Windows.Forms.Label();
             this.label12 = new System.Windows.Forms.Label();
             this.tt = new System.Windows.Forms.ToolTip(this.components);
-            this.tpOSD = new System.Windows.Forms.TabPage();
-            this.gCPoor = new System.Windows.Forms.CheckBox();
-            this.gLPoor = new System.Windows.Forms.TextBox();
-            this.label16 = new System.Windows.Forms.Label();
-            this.label27 = new System.Windows.Forms.Label();
-            this.gLDrop = new System.Windows.Forms.TextBox();
-            this.gCDrop = new System.Windows.Forms.CheckBox();
+            this.button1 = new System.Windows.Forms.Button();
+            this.hOSD = new Loopstream.TLabel();
             this.hTags = new Loopstream.TLabel();
             this.hEncoders = new Loopstream.TLabel();
             this.hServer = new Loopstream.TLabel();
             this.hSoundcard = new Loopstream.TLabel();
-            this.hOSD = new Loopstream.TLabel();
             this.pWrapper.SuspendLayout();
             this.tc.SuspendLayout();
             this.tpSoundcard.SuspendLayout();
@@ -154,10 +157,10 @@
             this.tpTags.SuspendLayout();
             this.pTagsAdvanced2.SuspendLayout();
             this.pTagAdvanced1.SuspendLayout();
+            this.tpOSD.SuspendLayout();
             this.pFooter.SuspendLayout();
             this.pButtons.SuspendLayout();
             this.pTabs.SuspendLayout();
-            this.tpOSD.SuspendLayout();
             this.SuspendLayout();
             // 
             // gOutS
@@ -171,6 +174,8 @@
             this.tt.SetToolTip(this.gOutS, "A set of speakers to play the final mix on\r\n    (can be the same as input Music)\r" +
         "\n    (can be muted on the mixer board)");
             this.gOutS.SelectedIndexChanged += new System.EventHandler(this.gOutS_SelectedIndexChanged);
+            this.gOutS.MouseEnter += new System.EventHandler(this.gHost_MouseEnter);
+            this.gOutS.MouseLeave += new System.EventHandler(this.gHost_MouseLeave);
             // 
             // gTwoS
             // 
@@ -182,6 +187,8 @@
             this.gTwoS.TabIndex = 1;
             this.tt.SetToolTip(this.gTwoS, "The microphone you will use to voiceover on the stream");
             this.gTwoS.SelectedIndexChanged += new System.EventHandler(this.gTwoS_SelectedIndexChanged);
+            this.gTwoS.MouseEnter += new System.EventHandler(this.gHost_MouseEnter);
+            this.gTwoS.MouseLeave += new System.EventHandler(this.gHost_MouseLeave);
             // 
             // gOneS
             // 
@@ -194,6 +201,8 @@
             this.tt.SetToolTip(this.gOneS, "The set of speakers you will be playing music on\r\n    (either your regular speake" +
         "rs or a separate soundcard)");
             this.gOneS.SelectedIndexChanged += new System.EventHandler(this.gOneS_SelectedIndexChanged);
+            this.gOneS.MouseEnter += new System.EventHandler(this.gHost_MouseEnter);
+            this.gOneS.MouseLeave += new System.EventHandler(this.gHost_MouseLeave);
             // 
             // gSiren
             // 
@@ -208,6 +217,8 @@
             this.tt.SetToolTip(this.gSiren, "This is a siren server (in-house protocol)");
             this.gSiren.UseVisualStyleBackColor = true;
             this.gSiren.CheckedChanged += new System.EventHandler(this.gSiren_CheckedChanged);
+            this.gSiren.MouseEnter += new System.EventHandler(this.gHost_MouseEnter);
+            this.gSiren.MouseLeave += new System.EventHandler(this.gHost_MouseLeave);
             // 
             // gIce
             // 
@@ -223,6 +234,8 @@
             this.tt.SetToolTip(this.gIce, "This is an icecast server");
             this.gIce.UseVisualStyleBackColor = true;
             this.gIce.CheckedChanged += new System.EventHandler(this.gIce_CheckedChanged);
+            this.gIce.MouseEnter += new System.EventHandler(this.gHost_MouseEnter);
+            this.gIce.MouseLeave += new System.EventHandler(this.gHost_MouseLeave);
             // 
             // gShout
             // 
@@ -237,6 +250,8 @@
             this.tt.SetToolTip(this.gShout, "This is a ShoutCAST server");
             this.gShout.UseVisualStyleBackColor = true;
             this.gShout.CheckedChanged += new System.EventHandler(this.gShout_CheckedChanged);
+            this.gShout.MouseEnter += new System.EventHandler(this.gHost_MouseEnter);
+            this.gShout.MouseLeave += new System.EventHandler(this.gHost_MouseLeave);
             // 
             // label6
             // 
@@ -314,6 +329,8 @@
             this.tt.SetToolTip(this.gSave, "Save and apply this configuration");
             this.gSave.UseVisualStyleBackColor = true;
             this.gSave.Click += new System.EventHandler(this.button1_Click);
+            this.gSave.MouseEnter += new System.EventHandler(this.gHost_MouseEnter);
+            this.gSave.MouseLeave += new System.EventHandler(this.gHost_MouseLeave);
             // 
             // label8
             // 
@@ -354,6 +371,8 @@
             this.tt.SetToolTip(this.gLeft, "Use the left audio channel of the microphone?");
             this.gLeft.UseVisualStyleBackColor = true;
             this.gLeft.CheckedChanged += new System.EventHandler(this.gLeft_CheckedChanged);
+            this.gLeft.MouseEnter += new System.EventHandler(this.gHost_MouseEnter);
+            this.gLeft.MouseLeave += new System.EventHandler(this.gHost_MouseLeave);
             // 
             // gRight
             // 
@@ -368,6 +387,8 @@
             this.tt.SetToolTip(this.gRight, "Use the right audio channel of the microphone?");
             this.gRight.UseVisualStyleBackColor = true;
             this.gRight.CheckedChanged += new System.EventHandler(this.gRight_CheckedChanged);
+            this.gRight.MouseEnter += new System.EventHandler(this.gHost_MouseEnter);
+            this.gRight.MouseLeave += new System.EventHandler(this.gHost_MouseLeave);
             // 
             // pWrapper
             // 
@@ -444,6 +465,8 @@
             this.tt.SetToolTip(this.gRecPCM, "Record a copy of your streams as raw PCM audio");
             this.gRecPCM.UseVisualStyleBackColor = true;
             this.gRecPCM.CheckedChanged += new System.EventHandler(this.gRecPCM_CheckedChanged);
+            this.gRecPCM.MouseEnter += new System.EventHandler(this.gHost_MouseEnter);
+            this.gRecPCM.MouseLeave += new System.EventHandler(this.gHost_MouseLeave);
             // 
             // gAutohide
             // 
@@ -458,6 +481,8 @@
             this.tt.SetToolTip(this.gAutohide, "Hide after startup sequence");
             this.gAutohide.UseVisualStyleBackColor = true;
             this.gAutohide.CheckedChanged += new System.EventHandler(this.gAutohide_CheckedChanged);
+            this.gAutohide.MouseEnter += new System.EventHandler(this.gHost_MouseEnter);
+            this.gAutohide.MouseLeave += new System.EventHandler(this.gHost_MouseLeave);
             // 
             // gRate
             // 
@@ -485,6 +510,8 @@
             this.tt.SetToolTip(this.gAutoconn, "Connect to radio server on startup");
             this.gAutoconn.UseVisualStyleBackColor = true;
             this.gAutoconn.CheckedChanged += new System.EventHandler(this.gAutoconn_CheckedChanged);
+            this.gAutoconn.MouseEnter += new System.EventHandler(this.gHost_MouseEnter);
+            this.gAutoconn.MouseLeave += new System.EventHandler(this.gHost_MouseLeave);
             // 
             // gUnavail
             // 
@@ -499,6 +526,8 @@
             this.tt.SetToolTip(this.gUnavail, "When listing devices in dropdowns,\r\nalso include those that are disabled.");
             this.gUnavail.UseVisualStyleBackColor = true;
             this.gUnavail.CheckedChanged += new System.EventHandler(this.gUnavail_CheckedChanged);
+            this.gUnavail.MouseEnter += new System.EventHandler(this.gHost_MouseEnter);
+            this.gUnavail.MouseLeave += new System.EventHandler(this.gHost_MouseLeave);
             // 
             // gTestDevs
             // 
@@ -516,6 +545,8 @@
         "e unhandled exceptions.");
             this.gTestDevs.UseVisualStyleBackColor = true;
             this.gTestDevs.CheckedChanged += new System.EventHandler(this.gTestDevs_CheckedChanged);
+            this.gTestDevs.MouseEnter += new System.EventHandler(this.gHost_MouseEnter);
+            this.gTestDevs.MouseLeave += new System.EventHandler(this.gHost_MouseLeave);
             // 
             // tpServer
             // 
@@ -568,6 +599,8 @@
             this.tt.SetToolTip(this.gPublic, "Hide after startup sequence");
             this.gPublic.UseVisualStyleBackColor = true;
             this.gPublic.CheckedChanged += new System.EventHandler(this.gPublic_CheckedChanged);
+            this.gPublic.MouseEnter += new System.EventHandler(this.gHost_MouseEnter);
+            this.gPublic.MouseLeave += new System.EventHandler(this.gHost_MouseLeave);
             // 
             // label15
             // 
@@ -613,6 +646,8 @@
             this.gURL.TabIndex = 21;
             this.gURL.Text = "https://github.com/9001/loopstream";
             this.gURL.TextChanged += new System.EventHandler(this.gURL_TextChanged);
+            this.gURL.MouseEnter += new System.EventHandler(this.gHost_MouseEnter);
+            this.gURL.MouseLeave += new System.EventHandler(this.gHost_MouseLeave);
             // 
             // gTitle
             // 
@@ -622,6 +657,8 @@
             this.gTitle.TabIndex = 18;
             this.gTitle.Text = "Loopstream";
             this.gTitle.TextChanged += new System.EventHandler(this.gTitle_TextChanged);
+            this.gTitle.MouseEnter += new System.EventHandler(this.gHost_MouseEnter);
+            this.gTitle.MouseLeave += new System.EventHandler(this.gHost_MouseLeave);
             // 
             // gGenre
             // 
@@ -631,6 +668,8 @@
             this.gGenre.TabIndex = 20;
             this.gGenre.Text = "Post-Avant Jazzcore";
             this.gGenre.TextChanged += new System.EventHandler(this.gGenre_TextChanged);
+            this.gGenre.MouseEnter += new System.EventHandler(this.gHost_MouseEnter);
+            this.gGenre.MouseLeave += new System.EventHandler(this.gHost_MouseLeave);
             // 
             // gDescription
             // 
@@ -640,6 +679,8 @@
             this.gDescription.TabIndex = 19;
             this.gDescription.Text = "Cave Explorer Committee";
             this.gDescription.TextChanged += new System.EventHandler(this.gDescription_TextChanged);
+            this.gDescription.MouseEnter += new System.EventHandler(this.gHost_MouseEnter);
+            this.gDescription.MouseLeave += new System.EventHandler(this.gHost_MouseLeave);
             // 
             // tpEncoders
             // 
@@ -679,6 +720,8 @@
         "");
             this.gMp3Mono.UseVisualStyleBackColor = true;
             this.gMp3Mono.CheckedChanged += new System.EventHandler(this.gMp3Mono_CheckedChanged);
+            this.gMp3Mono.MouseEnter += new System.EventHandler(this.gHost_MouseEnter);
+            this.gMp3Mono.MouseLeave += new System.EventHandler(this.gHost_MouseLeave);
             // 
             // gMp3Stereo
             // 
@@ -693,6 +736,8 @@
             this.tt.SetToolTip(this.gMp3Stereo, "Stream using 2 audio channels (stereo)");
             this.gMp3Stereo.UseVisualStyleBackColor = true;
             this.gMp3Stereo.CheckedChanged += new System.EventHandler(this.gMp3Stereo_CheckedChanged);
+            this.gMp3Stereo.MouseEnter += new System.EventHandler(this.gHost_MouseEnter);
+            this.gMp3Stereo.MouseLeave += new System.EventHandler(this.gHost_MouseLeave);
             // 
             // panel1
             // 
@@ -715,6 +760,8 @@
         "");
             this.gOggMono.UseVisualStyleBackColor = true;
             this.gOggMono.CheckedChanged += new System.EventHandler(this.gOggMono_CheckedChanged);
+            this.gOggMono.MouseEnter += new System.EventHandler(this.gHost_MouseEnter);
+            this.gOggMono.MouseLeave += new System.EventHandler(this.gHost_MouseLeave);
             // 
             // gOggStereo
             // 
@@ -729,6 +776,8 @@
             this.tt.SetToolTip(this.gOggStereo, "Stream using 2 audio channels (stereo)");
             this.gOggStereo.UseVisualStyleBackColor = true;
             this.gOggStereo.CheckedChanged += new System.EventHandler(this.gOggStereo_CheckedChanged);
+            this.gOggStereo.MouseEnter += new System.EventHandler(this.gHost_MouseEnter);
+            this.gOggStereo.MouseLeave += new System.EventHandler(this.gHost_MouseLeave);
             // 
             // gMp3Enable
             // 
@@ -741,6 +790,8 @@
             this.tt.SetToolTip(this.gMp3Enable, "Transmit an MP3-encoded stream");
             this.gMp3Enable.UseVisualStyleBackColor = true;
             this.gMp3Enable.CheckedChanged += new System.EventHandler(this.gMp3Enable_CheckedChanged);
+            this.gMp3Enable.MouseEnter += new System.EventHandler(this.gHost_MouseEnter);
+            this.gMp3Enable.MouseLeave += new System.EventHandler(this.gHost_MouseLeave);
             // 
             // gRecOGG
             // 
@@ -755,6 +806,8 @@
             this.tt.SetToolTip(this.gRecOGG, "Record a copy of your streams as OGG/Vorbis");
             this.gRecOGG.UseVisualStyleBackColor = true;
             this.gRecOGG.CheckedChanged += new System.EventHandler(this.gRecOGG_CheckedChanged);
+            this.gRecOGG.MouseEnter += new System.EventHandler(this.gHost_MouseEnter);
+            this.gRecOGG.MouseLeave += new System.EventHandler(this.gHost_MouseLeave);
             // 
             // gOggEnable
             // 
@@ -767,6 +820,8 @@
             this.tt.SetToolTip(this.gOggEnable, "Transmit an OGG/Vorbis-encoded stream");
             this.gOggEnable.UseVisualStyleBackColor = true;
             this.gOggEnable.CheckedChanged += new System.EventHandler(this.gOggEnable_CheckedChanged);
+            this.gOggEnable.MouseEnter += new System.EventHandler(this.gHost_MouseEnter);
+            this.gOggEnable.MouseLeave += new System.EventHandler(this.gHost_MouseLeave);
             // 
             // gRecMP3
             // 
@@ -783,6 +838,8 @@
             this.tt.SetToolTip(this.gRecMP3, "Record a copy of your streams as MP3");
             this.gRecMP3.UseVisualStyleBackColor = true;
             this.gRecMP3.CheckedChanged += new System.EventHandler(this.gRecMP3_CheckedChanged);
+            this.gRecMP3.MouseEnter += new System.EventHandler(this.gHost_MouseEnter);
+            this.gRecMP3.MouseLeave += new System.EventHandler(this.gHost_MouseLeave);
             // 
             // groupBox1
             // 
@@ -822,6 +879,8 @@
         "problems with speedup/down)");
             this.gMp3Quality.UseVisualStyleBackColor = true;
             this.gMp3Quality.CheckedChanged += new System.EventHandler(this.gMp3Quality_CheckedChanged);
+            this.gMp3Quality.MouseEnter += new System.EventHandler(this.gHost_MouseEnter);
+            this.gMp3Quality.MouseLeave += new System.EventHandler(this.gHost_MouseLeave);
             // 
             // gMp3QualityV
             // 
@@ -849,6 +908,8 @@
         " player)");
             this.gMp3Bitrate.UseVisualStyleBackColor = true;
             this.gMp3Bitrate.CheckedChanged += new System.EventHandler(this.gMp3Bitrate_CheckedChanged);
+            this.gMp3Bitrate.MouseEnter += new System.EventHandler(this.gHost_MouseEnter);
+            this.gMp3Bitrate.MouseLeave += new System.EventHandler(this.gHost_MouseLeave);
             // 
             // groupBox2
             // 
@@ -888,6 +949,8 @@
         "y at small sizes)");
             this.gOggQuality.UseVisualStyleBackColor = true;
             this.gOggQuality.CheckedChanged += new System.EventHandler(this.gOggQuality_CheckedChanged);
+            this.gOggQuality.MouseEnter += new System.EventHandler(this.gHost_MouseEnter);
+            this.gOggQuality.MouseLeave += new System.EventHandler(this.gHost_MouseLeave);
             // 
             // gOggQualityV
             // 
@@ -915,6 +978,8 @@
         "lity, just terrible)");
             this.gOggBitrate.UseVisualStyleBackColor = true;
             this.gOggBitrate.CheckedChanged += new System.EventHandler(this.gOggBitrate_CheckedChanged);
+            this.gOggBitrate.MouseEnter += new System.EventHandler(this.gHost_MouseEnter);
+            this.gOggBitrate.MouseLeave += new System.EventHandler(this.gHost_MouseLeave);
             // 
             // tpTags
             // 
@@ -940,6 +1005,8 @@
             this.gTagAuto.Text = "Read tags automatically from this media player:";
             this.gTagAuto.UseVisualStyleBackColor = true;
             this.gTagAuto.CheckedChanged += new System.EventHandler(this.gTagMan_CheckedChanged);
+            this.gTagAuto.MouseEnter += new System.EventHandler(this.gHost_MouseEnter);
+            this.gTagAuto.MouseLeave += new System.EventHandler(this.gHost_MouseLeave);
             // 
             // gMeta
             // 
@@ -952,6 +1019,8 @@
             this.tt.SetToolTip(this.gMeta, "These are all the media players that Loopstream has built-in support for.\r\nIf you" +
         " can\'t find yours, ask an adult to fill in the [Advanced] config!");
             this.gMeta.SelectedIndexChanged += new System.EventHandler(this.gMeta_SelectedIndexChanged);
+            this.gMeta.MouseEnter += new System.EventHandler(this.gHost_MouseEnter);
+            this.gMeta.MouseLeave += new System.EventHandler(this.gHost_MouseLeave);
             // 
             // gTagsAdvanced
             // 
@@ -963,6 +1032,8 @@
             this.tt.SetToolTip(this.gTagsAdvanced, "Only for burly men with hair on their chest.");
             this.gTagsAdvanced.UseVisualStyleBackColor = true;
             this.gTagsAdvanced.Click += new System.EventHandler(this.gTagsAdvanced_Click);
+            this.gTagsAdvanced.MouseEnter += new System.EventHandler(this.gHost_MouseEnter);
+            this.gTagsAdvanced.MouseLeave += new System.EventHandler(this.gHost_MouseLeave);
             // 
             // pTagsAdvanced2
             // 
@@ -996,10 +1067,14 @@
         ", you usually /want/ to do this.\r\nStupid nullsoft and their antics.");
             this.gLatinize.UseVisualStyleBackColor = true;
             this.gLatinize.CheckedChanged += new System.EventHandler(this.gLatinize_CheckedChanged);
+            this.gLatinize.MouseEnter += new System.EventHandler(this.gHost_MouseEnter);
+            this.gLatinize.MouseLeave += new System.EventHandler(this.gHost_MouseLeave);
             // 
             // pTagAdvanced1
             // 
             this.pTagAdvanced1.BackColor = System.Drawing.SystemColors.Control;
+            this.pTagAdvanced1.Controls.Add(this.gURLDecode);
+            this.pTagAdvanced1.Controls.Add(this.gTarget);
             this.pTagAdvanced1.Controls.Add(this.label26);
             this.pTagAdvanced1.Controls.Add(this.gGroup);
             this.pTagAdvanced1.Controls.Add(this.label17);
@@ -1029,10 +1104,36 @@
             this.pTagAdvanced1.TabIndex = 63;
             this.pTagAdvanced1.Visible = false;
             // 
+            // gURLDecode
+            // 
+            this.gURLDecode.AutoSize = true;
+            this.gURLDecode.Location = new System.Drawing.Point(333, 41);
+            this.gURLDecode.Name = "gURLDecode";
+            this.gURLDecode.Size = new System.Drawing.Size(119, 17);
+            this.gURLDecode.TabIndex = 67;
+            this.gURLDecode.Text = "enable url decoding";
+            this.gURLDecode.UseVisualStyleBackColor = true;
+            this.gURLDecode.CheckedChanged += new System.EventHandler(this.gURLDecode_CheckedChanged);
+            this.gURLDecode.MouseEnter += new System.EventHandler(this.gHost_MouseEnter);
+            this.gURLDecode.MouseLeave += new System.EventHandler(this.gHost_MouseLeave);
+            // 
+            // gTarget
+            // 
+            this.gTarget.Location = new System.Drawing.Point(100, 168);
+            this.gTarget.Name = "gTarget";
+            this.gTarget.Size = new System.Drawing.Size(351, 22);
+            this.gTarget.TabIndex = 66;
+            this.gTarget.Text = "Select which window to read tags from    ( source process + hwnd )";
+            this.tt.SetToolTip(this.gTarget, "Reload buffered metadata for testing");
+            this.gTarget.UseVisualStyleBackColor = true;
+            this.gTarget.Click += new System.EventHandler(this.gTarget_Click);
+            this.gTarget.MouseEnter += new System.EventHandler(this.gHost_MouseEnter);
+            this.gTarget.MouseLeave += new System.EventHandler(this.gHost_MouseLeave);
+            // 
             // label26
             // 
             this.label26.AutoSize = true;
-            this.label26.Location = new System.Drawing.Point(413, 27);
+            this.label26.Location = new System.Drawing.Point(232, 18);
             this.label26.Name = "label26";
             this.label26.Size = new System.Drawing.Size(49, 13);
             this.label26.TabIndex = 65;
@@ -1121,6 +1222,8 @@
             this.gReader.TabIndex = 41;
             this.tt.SetToolTip(this.gReader, "The method that Loopstream will use to aquire the Now Playing data");
             this.gReader.SelectedIndexChanged += new System.EventHandler(this.gReader_SelectedIndexChanged);
+            this.gReader.MouseEnter += new System.EventHandler(this.gHost_MouseEnter);
+            this.gReader.MouseLeave += new System.EventHandler(this.gHost_MouseLeave);
             // 
             // label19
             // 
@@ -1142,6 +1245,8 @@
             this.tt.SetToolTip(this.gTest, "Immediately display what your Pattern does");
             this.gTest.UseVisualStyleBackColor = true;
             this.gTest.CheckedChanged += new System.EventHandler(this.gTest_CheckedChanged);
+            this.gTest.MouseEnter += new System.EventHandler(this.gHost_MouseEnter);
+            this.gTest.MouseLeave += new System.EventHandler(this.gHost_MouseLeave);
             // 
             // gFreq
             // 
@@ -1165,7 +1270,7 @@
             // 
             // gReload
             // 
-            this.gReload.Location = new System.Drawing.Point(333, 65);
+            this.gReload.Location = new System.Drawing.Point(333, 64);
             this.gReload.Name = "gReload";
             this.gReload.Size = new System.Drawing.Size(118, 22);
             this.gReload.TabIndex = 43;
@@ -1173,6 +1278,8 @@
             this.tt.SetToolTip(this.gReload, "Reload buffered metadata for testing");
             this.gReload.UseVisualStyleBackColor = true;
             this.gReload.Click += new System.EventHandler(this.gReload_Click);
+            this.gReload.MouseEnter += new System.EventHandler(this.gHost_MouseEnter);
+            this.gReload.MouseLeave += new System.EventHandler(this.gHost_MouseLeave);
             // 
             // label22
             // 
@@ -1233,6 +1340,8 @@
             this.tt.SetToolTip(this.gStore, "Save this config as a new preset");
             this.gStore.UseVisualStyleBackColor = true;
             this.gStore.Click += new System.EventHandler(this.gStore_Click);
+            this.gStore.MouseEnter += new System.EventHandler(this.gHost_MouseEnter);
+            this.gStore.MouseLeave += new System.EventHandler(this.gHost_MouseLeave);
             // 
             // gSource
             // 
@@ -1256,9 +1365,97 @@
             this.gName.MouseEnter += new System.EventHandler(this.gHost_MouseEnter);
             this.gName.MouseLeave += new System.EventHandler(this.gHost_MouseLeave);
             // 
+            // tpOSD
+            // 
+            this.tpOSD.Controls.Add(this.label27);
+            this.tpOSD.Controls.Add(this.gLDrop);
+            this.tpOSD.Controls.Add(this.gCDrop);
+            this.tpOSD.Controls.Add(this.label16);
+            this.tpOSD.Controls.Add(this.gLPoor);
+            this.tpOSD.Controls.Add(this.gCPoor);
+            this.tpOSD.Location = new System.Drawing.Point(4, 25);
+            this.tpOSD.Name = "tpOSD";
+            this.tpOSD.Size = new System.Drawing.Size(534, 275);
+            this.tpOSD.TabIndex = 4;
+            this.tpOSD.Text = "OSD";
+            this.tpOSD.UseVisualStyleBackColor = true;
+            // 
+            // label27
+            // 
+            this.label27.AutoSize = true;
+            this.label27.Location = new System.Drawing.Point(288, 58);
+            this.label27.Name = "label27";
+            this.label27.Size = new System.Drawing.Size(114, 13);
+            this.label27.TabIndex = 5;
+            this.label27.Text = "%       (connection lost)";
+            // 
+            // gLDrop
+            // 
+            this.gLDrop.Location = new System.Drawing.Point(243, 55);
+            this.gLDrop.Name = "gLDrop";
+            this.gLDrop.Size = new System.Drawing.Size(44, 20);
+            this.gLDrop.TabIndex = 4;
+            this.gLDrop.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.tt.SetToolTip(this.gLDrop, "The required music flow threshold to show the notification.");
+            this.gLDrop.TextChanged += new System.EventHandler(this.gLDrop_TextChanged);
+            this.gLDrop.MouseEnter += new System.EventHandler(this.gHost_MouseEnter);
+            this.gLDrop.MouseLeave += new System.EventHandler(this.gHost_MouseLeave);
+            // 
+            // gCDrop
+            // 
+            this.gCDrop.AutoSize = true;
+            this.gCDrop.Location = new System.Drawing.Point(23, 57);
+            this.gCDrop.Name = "gCDrop";
+            this.gCDrop.Size = new System.Drawing.Size(214, 17);
+            this.gCDrop.TabIndex = 3;
+            this.gCDrop.Text = "Warn me when connection drops below";
+            this.tt.SetToolTip(this.gCDrop, "This will show a notification when Loopstream\r\nthinks that you are at the verge o" +
+        "f dropping.\r\n    (BETA FEATURE)\r\n");
+            this.gCDrop.UseVisualStyleBackColor = true;
+            this.gCDrop.CheckedChanged += new System.EventHandler(this.gCDrop_CheckedChanged);
+            this.gCDrop.MouseEnter += new System.EventHandler(this.gHost_MouseEnter);
+            this.gCDrop.MouseLeave += new System.EventHandler(this.gHost_MouseLeave);
+            // 
+            // label16
+            // 
+            this.label16.AutoSize = true;
+            this.label16.Location = new System.Drawing.Point(288, 21);
+            this.label16.Name = "label16";
+            this.label16.Size = new System.Drawing.Size(120, 13);
+            this.label16.TabIndex = 2;
+            this.label16.Text = "%       (stream is lagging)";
+            // 
+            // gLPoor
+            // 
+            this.gLPoor.Location = new System.Drawing.Point(243, 18);
+            this.gLPoor.Name = "gLPoor";
+            this.gLPoor.Size = new System.Drawing.Size(44, 20);
+            this.gLPoor.TabIndex = 1;
+            this.gLPoor.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.tt.SetToolTip(this.gLPoor, "The required music flow threshold to show the notification.");
+            this.gLPoor.TextChanged += new System.EventHandler(this.gLPoor_TextChanged);
+            this.gLPoor.MouseEnter += new System.EventHandler(this.gHost_MouseEnter);
+            this.gLPoor.MouseLeave += new System.EventHandler(this.gHost_MouseLeave);
+            // 
+            // gCPoor
+            // 
+            this.gCPoor.AutoSize = true;
+            this.gCPoor.Location = new System.Drawing.Point(23, 20);
+            this.gCPoor.Name = "gCPoor";
+            this.gCPoor.Size = new System.Drawing.Size(214, 17);
+            this.gCPoor.TabIndex = 0;
+            this.gCPoor.Text = "Warn me when connection drops below";
+            this.tt.SetToolTip(this.gCPoor, "This will show a notification when Loopstream\r\nthinks that your internet is about" +
+        " to fail.\r\n    (BETA FEATURE)");
+            this.gCPoor.UseVisualStyleBackColor = true;
+            this.gCPoor.CheckedChanged += new System.EventHandler(this.gCPoor_CheckedChanged);
+            this.gCPoor.MouseEnter += new System.EventHandler(this.gHost_MouseEnter);
+            this.gCPoor.MouseLeave += new System.EventHandler(this.gHost_MouseLeave);
+            // 
             // pFooter
             // 
             this.pFooter.BackColor = System.Drawing.SystemColors.ControlLight;
+            this.pFooter.Controls.Add(this.button1);
             this.pFooter.Controls.Add(this.gVU);
             this.pFooter.Controls.Add(this.pButtons);
             this.pFooter.Controls.Add(this.label1);
@@ -1285,6 +1482,8 @@
             this.tt.SetToolTip(this.gVU, "420 lensflare bling");
             this.gVU.UseVisualStyleBackColor = true;
             this.gVU.CheckedChanged += new System.EventHandler(this.gVU_CheckedChanged);
+            this.gVU.MouseEnter += new System.EventHandler(this.gHost_MouseEnter);
+            this.gVU.MouseLeave += new System.EventHandler(this.gHost_MouseLeave);
             // 
             // pButtons
             // 
@@ -1306,6 +1505,8 @@
             this.tt.SetToolTip(this.gCancel, "Apply this configuration only for this session");
             this.gCancel.UseVisualStyleBackColor = true;
             this.gCancel.Click += new System.EventHandler(this.button2_Click);
+            this.gCancel.MouseEnter += new System.EventHandler(this.gHost_MouseEnter);
+            this.gCancel.MouseLeave += new System.EventHandler(this.gHost_MouseLeave);
             // 
             // label1
             // 
@@ -1340,6 +1541,8 @@
             this.tt.SetToolTip(this.gSplash, "420 lensflare bling");
             this.gSplash.UseVisualStyleBackColor = true;
             this.gSplash.CheckedChanged += new System.EventHandler(this.gSplash_CheckedChanged);
+            this.gSplash.MouseEnter += new System.EventHandler(this.gHost_MouseEnter);
+            this.gSplash.MouseLeave += new System.EventHandler(this.gHost_MouseLeave);
             // 
             // pTabs
             // 
@@ -1380,78 +1583,27 @@
             this.tt.UseAnimation = false;
             this.tt.UseFading = false;
             // 
-            // tpOSD
+            // button1
             // 
-            this.tpOSD.Controls.Add(this.label27);
-            this.tpOSD.Controls.Add(this.gLDrop);
-            this.tpOSD.Controls.Add(this.gCDrop);
-            this.tpOSD.Controls.Add(this.label16);
-            this.tpOSD.Controls.Add(this.gLPoor);
-            this.tpOSD.Controls.Add(this.gCPoor);
-            this.tpOSD.Location = new System.Drawing.Point(4, 25);
-            this.tpOSD.Name = "tpOSD";
-            this.tpOSD.Size = new System.Drawing.Size(534, 275);
-            this.tpOSD.TabIndex = 4;
-            this.tpOSD.Text = "OSD";
-            this.tpOSD.UseVisualStyleBackColor = true;
+            this.button1.Location = new System.Drawing.Point(105, 37);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(1, 1);
+            this.button1.TabIndex = 38;
+            this.button1.Text = "button1";
+            this.button1.UseVisualStyleBackColor = true;
             // 
-            // gCPoor
+            // hOSD
             // 
-            this.gCPoor.AutoSize = true;
-            this.gCPoor.Location = new System.Drawing.Point(23, 20);
-            this.gCPoor.Name = "gCPoor";
-            this.gCPoor.Size = new System.Drawing.Size(214, 17);
-            this.gCPoor.TabIndex = 0;
-            this.gCPoor.Text = "Warn me when connection drops below";
-            this.gCPoor.UseVisualStyleBackColor = true;
-            this.gCPoor.CheckedChanged += new System.EventHandler(this.gCPoor_CheckedChanged);
-            // 
-            // gLPoor
-            // 
-            this.gLPoor.Location = new System.Drawing.Point(243, 18);
-            this.gLPoor.Name = "gLPoor";
-            this.gLPoor.Size = new System.Drawing.Size(44, 20);
-            this.gLPoor.TabIndex = 1;
-            this.gLPoor.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            this.gLPoor.TextChanged += new System.EventHandler(this.gLPoor_TextChanged);
-            // 
-            // label16
-            // 
-            this.label16.AutoSize = true;
-            this.label16.Location = new System.Drawing.Point(288, 21);
-            this.label16.Name = "label16";
-            this.label16.Size = new System.Drawing.Size(120, 13);
-            this.label16.TabIndex = 2;
-            this.label16.Text = "%       (stream is lagging)";
-            // 
-            // label27
-            // 
-            this.label27.AutoSize = true;
-            this.label27.Location = new System.Drawing.Point(288, 58);
-            this.label27.Name = "label27";
-            this.label27.Size = new System.Drawing.Size(114, 13);
-            this.label27.TabIndex = 5;
-            this.label27.Text = "%       (connection lost)";
-            // 
-            // gLDrop
-            // 
-            this.gLDrop.Location = new System.Drawing.Point(243, 55);
-            this.gLDrop.Name = "gLDrop";
-            this.gLDrop.Size = new System.Drawing.Size(44, 20);
-            this.gLDrop.TabIndex = 4;
-            this.gLDrop.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            this.gLDrop.TextChanged += new System.EventHandler(this.gLDrop_TextChanged);
-            // 
-            // gCDrop
-            // 
-            this.gCDrop.AutoSize = true;
-            this.gCDrop.Location = new System.Drawing.Point(23, 57);
-            this.gCDrop.Name = "gCDrop";
-            this.gCDrop.Size = new System.Drawing.Size(214, 17);
-            this.gCDrop.TabIndex = 3;
-            this.gCDrop.Text = "Warn me when connection drops below";
-            this.gCDrop.UseVisualStyleBackColor = true;
-            this.gCDrop.CheckedChanged += new System.EventHandler(this.gCDrop_CheckedChanged);
+            this.hOSD.AutoSize = true;
+            this.hOSD.BackColor = System.Drawing.SystemColors.ControlLight;
+            this.hOSD.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.hOSD.Location = new System.Drawing.Point(336, 0);
+            this.hOSD.Margin = new System.Windows.Forms.Padding(0);
+            this.hOSD.Name = "hOSD";
+            this.hOSD.Padding = new System.Windows.Forms.Padding(14, 15, 14, 0);
+            this.hOSD.Size = new System.Drawing.Size(72, 35);
+            this.hOSD.TabIndex = 6;
+            this.hOSD.Text = "OSD";
             // 
             // hTags
             // 
@@ -1505,19 +1657,6 @@
             this.hSoundcard.TabIndex = 0;
             this.hSoundcard.Text = "Soundcard";
             // 
-            // hOSD
-            // 
-            this.hOSD.AutoSize = true;
-            this.hOSD.BackColor = System.Drawing.SystemColors.ControlLight;
-            this.hOSD.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.hOSD.Location = new System.Drawing.Point(336, 0);
-            this.hOSD.Margin = new System.Windows.Forms.Padding(0);
-            this.hOSD.Name = "hOSD";
-            this.hOSD.Padding = new System.Windows.Forms.Padding(14, 15, 14, 0);
-            this.hOSD.Size = new System.Drawing.Size(72, 35);
-            this.hOSD.TabIndex = 6;
-            this.hOSD.Text = "OSD";
-            // 
             // ConfigSC
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1553,13 +1692,13 @@
             this.pTagsAdvanced2.PerformLayout();
             this.pTagAdvanced1.ResumeLayout(false);
             this.pTagAdvanced1.PerformLayout();
+            this.tpOSD.ResumeLayout(false);
+            this.tpOSD.PerformLayout();
             this.pFooter.ResumeLayout(false);
             this.pFooter.PerformLayout();
             this.pButtons.ResumeLayout(false);
             this.pTabs.ResumeLayout(false);
             this.pTabs.PerformLayout();
-            this.tpOSD.ResumeLayout(false);
-            this.tpOSD.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -1679,5 +1818,8 @@
         private System.Windows.Forms.TextBox gLPoor;
         private System.Windows.Forms.CheckBox gCPoor;
         private TLabel hOSD;
+        private System.Windows.Forms.Button gTarget;
+        private System.Windows.Forms.CheckBox gURLDecode;
+        private System.Windows.Forms.Button button1;
     }
 }

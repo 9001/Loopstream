@@ -53,6 +53,7 @@ namespace Loopstream
             public string encoding { get { return enc.WebName; } set { enc = Encoding.GetEncoding(value); } }
             public Reader reader;
             public int freq, grp;
+            public bool urldecode;
 
             public LSMeta()
             {
@@ -62,15 +63,24 @@ namespace Loopstream
                 freq = 500;
                 grp = 1;
             }
-            public LSMeta(Reader r, string ti, string sr, int fr, string pt, int grp = 1, string enc = "utf-8")
+            public LSMeta(
+                Reader r,
+                string profileTitle,
+                string dataSource,
+                int pollingFrequency,
+                string parserPattern,
+                int keepGroup = 1,
+                string textEncoding = "utf-8",
+                bool urlDecode = false)
             {
                 reader = r;
-                tit = ti;
-                src = sr;
-                ptn = pt;
-                freq = fr;
-                encoding = enc;
-                this.grp = grp;
+                tit = profileTitle;
+                src = dataSource;
+                ptn = parserPattern;
+                freq = pollingFrequency;
+                encoding = textEncoding;
+                grp = keepGroup;
+                urldecode = urlDecode;
             }
             public override string ToString()
             {
@@ -95,6 +105,7 @@ namespace Loopstream
                 target.reader = src.reader;
                 target.freq = src.freq;
                 target.grp = src.grp;
+                target.urldecode = src.urldecode;
             }
             public bool eq(LSMeta meta)
             {
@@ -105,7 +116,8 @@ namespace Loopstream
                     encoding == meta.encoding &&
                     reader == meta.reader &&
                     freq == meta.freq &&
-                    grp == meta.grp;
+                    grp == meta.grp &&
+                    urldecode == meta.urldecode;
             }
         }
         public List<LSMeta> metas;
@@ -188,7 +200,7 @@ namespace Loopstream
             ogg.ext = "ogg";
             samplerate = 44100;
             
-            host = "stream0.r-a-d.io";
+            host = "r-a-d.io";
             port = 1337;
             pass = "user|assword";
             mount = "main";
@@ -285,6 +297,8 @@ namespace Loopstream
                         @"^▶  *(.*[^ ]) *- YouTube - Mozilla Firefox"),
                     new LSMeta(LSMeta.Reader.Website, "other icecast mount", "http://stream0.r-a-d.io:8000/", 2000,
                         "<tr>\\n<td><h3>Mount Point /main.mp3</h3></td>.*?<td>Current Song:</td>\\n<td class=\"streamdata\">(.*?)</td>"),
+                    new LSMeta(LSMeta.Reader.Website, "NI Traktor  (requires Loopstream Plugin)", "http://localhost:42069/status2.xsl", 1000,
+                        "\\n<pre>(.*)</pre>\\n", 1, "utf-8", true)
                 });
             }
         }

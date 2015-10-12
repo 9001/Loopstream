@@ -43,7 +43,7 @@
             this.label1.Size = new System.Drawing.Size(600, 70);
             this.label1.TabIndex = 0;
             this.label1.Text = "---   e x t r a c t i n g   s o m e   s t u f f s   ---   p l e a s e   w a t c h" +
-    "   w a r m l y   ---";
+                "   w a r m l y   ---";
             this.label1.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
             this.label1.Visible = false;
             // 

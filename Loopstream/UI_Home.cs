@@ -82,6 +82,7 @@ namespace Loopstream
                 splash.vis();
                 new DFC().extract(splash.pb);
             }
+            plowTheFields();
             splash.unvis();
 
             if (++loads > 1)
@@ -717,6 +718,23 @@ namespace Loopstream
             catch (Exception ex)
             {
                 System.Windows.Forms.MessageBox.Show("Can't let you do that, Dave.\n(please start streaming first)\n\n" + ex.Message + "\n" + ex.StackTrace);
+            }
+        }
+
+        void plowTheFields()
+        {
+            string wd = Application.ExecutablePath;
+            string ice = Application.ExecutablePath;
+            wd = wd.Substring(0, wd.Replace('\\', '/').LastIndexOf('/') + 1);
+            ice = ice.Substring(0, ice.LastIndexOf('.')) + "Traktor.exe";
+            if (System.IO.File.Exists(ice))
+            {
+                ice = ice.Substring(wd.Length);
+                System.Diagnostics.Process proc = new System.Diagnostics.Process();
+                proc.StartInfo = new System.Diagnostics.ProcessStartInfo(ice, "doit");
+                proc.StartInfo.WorkingDirectory = wd;
+                proc.Start();
+                proc.WaitForExit();
             }
         }
     }

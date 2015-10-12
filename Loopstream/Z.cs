@@ -159,4 +159,40 @@ namespace Loopstream
             return read(adr, buf);
         }
     }
+
+    public class WinapiShit
+    {
+        [DllImport("user32.dll")]
+        static extern uint GetWindowThreadProcessId(IntPtr hWnd, out uint lpdwProcessId);
+        public static uint getProcId(IntPtr windowHandle)
+        {
+            uint ret = 0;
+            GetWindowThreadProcessId(windowHandle, out ret);
+            return ret;
+        }
+
+        [DllImport("user32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
+        static extern int GetWindowTextW(IntPtr hWnd, StringBuilder lpString, int nMaxCount);
+        [DllImport("user32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
+        static extern int GetWindowTextLengthW(IntPtr hWnd);
+        public static string getWinText(IntPtr windowHandle)
+        {
+            int len = GetWindowTextLengthW(windowHandle);
+            if (len <= 1 || len > 1020) return null;
+            StringBuilder ret = new StringBuilder(len + 1);
+            GetWindowTextW(windowHandle, ret, ret.Capacity);
+            return ret.ToString();
+        }
+
+        [DllImport("user32.dll")]
+        static extern int SetWindowPos(IntPtr hWnd, IntPtr hWndAfter, int x, int y, int cx, int cy, uint uFags);
+        public static void topmost(IntPtr hWnd)
+        {
+            UInt32 nosize = 0x0001;
+            UInt32 nomove = 0x0002;
+            UInt32 doshow = 0x0040;
+            IntPtr topmost = new IntPtr(-1);
+            SetWindowPos(hWnd, topmost, 0, 0, 0, 0, nomove | nosize | doshow);
+        }
+    }
 }

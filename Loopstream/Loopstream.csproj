@@ -1,20 +1,36 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{B9218FDB-D5A1-422F-BA2E-5B5326DDCEEC}</ProjectGuid>
+    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{12630300-2F85-47E4-B6D5-EC527A2C0C87}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Loopstream</RootNamespace>
     <AssemblyName>Loopstream</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile>Client</TargetFrameworkProfile>
+    <FileAlignment>512</FileAlignment>
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+    <PlatformTarget>x86</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -23,8 +39,8 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+    <PlatformTarget>x86</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
@@ -54,7 +70,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DFC.cs" />
+    <Compile Include="LSDevice.cs" />
+    <Compile Include="LSEncoder.cs" />
+    <Compile Include="LSLame.cs" />
+    <Compile Include="LSMixer.cs" />
+    <Compile Include="LSPcmFeed.cs" />
+    <Compile Include="LSSettings.cs" />
     <Compile Include="LSTag.cs" />
+    <Compile Include="LSVorbis.cs" />
     <Compile Include="turnkey\7zip\Common\CommandLineParser.cs" />
     <Compile Include="turnkey\7zip\Common\CRC.cs" />
     <Compile Include="turnkey\7zip\Common\InBuffer.cs" />
@@ -70,12 +94,11 @@
     <Compile Include="turnkey\7zip\Compress\RangeCoder\RangeCoderBit.cs" />
     <Compile Include="turnkey\7zip\Compress\RangeCoder\RangeCoderBitTree.cs" />
     <Compile Include="turnkey\7zip\ICoder.cs" />
-    <Compile Include="LSDevice.cs" />
-    <Compile Include="LSEncoder.cs" />
-    <Compile Include="LSPcmFeed.cs" />
-    <Compile Include="LSVorbis.cs" />
     <Compile Include="turnkey\Chencode.cs" />
     <Compile Include="UC_Graden.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="UC_LLabel.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="UC_Pritch.cs">
@@ -93,13 +116,18 @@
     <Compile Include="UC_Troggle.Designer.cs">
       <DependentUpon>UC_Troggle.cs</DependentUpon>
     </Compile>
+    <Compile Include="UC_Verter.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UC_Verter.Designer.cs">
+      <DependentUpon>UC_Verter.cs</DependentUpon>
+    </Compile>
     <Compile Include="UI_ConfigSC.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="UI_ConfigSC.Designer.cs">
       <DependentUpon>UI_ConfigSC.cs</DependentUpon>
     </Compile>
-    <Compile Include="DFC.cs" />
     <Compile Include="UI_Graph.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -112,33 +140,13 @@
     <Compile Include="UI_Home.Designer.cs">
       <DependentUpon>UI_Home.cs</DependentUpon>
     </Compile>
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="UI_Msg.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="UI_Msg.Designer.cs">
       <DependentUpon>UI_Msg.cs</DependentUpon>
-    </Compile>
-    <Compile Include="UI_Status.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="UI_Status.Designer.cs">
-      <DependentUpon>UI_Status.cs</DependentUpon>
-    </Compile>
-    <Compile Include="W_IconRipper.cs" />
-    <Compile Include="W_Lame.cs" />
-    <Compile Include="UC_LLabel.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="LSLame.cs" />
-    <Compile Include="LSMixer.cs" />
-    <Compile Include="LSSettings.cs" />
-    <Compile Include="W_NPatch.cs" />
-    <Compile Include="Program.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Properties\Resources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="UI_Splesh.cs">
       <SubType>Form</SubType>
@@ -146,18 +154,46 @@
     <Compile Include="UI_Splesh.Designer.cs">
       <DependentUpon>UI_Splesh.cs</DependentUpon>
     </Compile>
-    <Compile Include="UC_Verter.cs">
-      <SubType>UserControl</SubType>
+    <Compile Include="UI_Status.cs">
+      <SubType>Form</SubType>
     </Compile>
-    <Compile Include="UC_Verter.Designer.cs">
-      <DependentUpon>UC_Verter.cs</DependentUpon>
+    <Compile Include="UI_Status.Designer.cs">
+      <DependentUpon>UI_Status.cs</DependentUpon>
     </Compile>
+    <Compile Include="UI_Winlist.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI_Winlist.Designer.cs">
+      <DependentUpon>UI_Winlist.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI_Winpeck.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI_Winpeck.Designer.cs">
+      <DependentUpon>UI_Winpeck.cs</DependentUpon>
+    </Compile>
+    <Compile Include="W_IconRipper.cs" />
+    <Compile Include="W_Lame.cs" />
+    <Compile Include="W_NPatch.cs" />
     <Compile Include="Z.cs" />
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+    </Compile>
     <EmbeddedResource Include="UC_Pritch.resx">
       <DependentUpon>UC_Pritch.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UC_Troggle.resx">
       <DependentUpon>UC_Troggle.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UC_Verter.resx">
+      <DependentUpon>UC_Verter.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UI_ConfigSC.resx">
       <DependentUpon>UI_ConfigSC.cs</DependentUpon>
@@ -168,22 +204,20 @@
     <EmbeddedResource Include="UI_Home.resx">
       <DependentUpon>UI_Home.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Properties\Resources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <SubType>Designer</SubType>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
     <EmbeddedResource Include="UI_Msg.resx">
       <DependentUpon>UI_Msg.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UI_Splesh.resx">
       <DependentUpon>UI_Splesh.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="UC_Verter.resx">
-      <DependentUpon>UC_Verter.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="UI_Status.resx">
       <DependentUpon>UI_Status.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI_Winlist.resx">
+      <DependentUpon>UI_Winlist.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI_Winpeck.resx">
+      <DependentUpon>UI_Winpeck.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -197,24 +231,43 @@
     <EmbeddedResource Include="res\tools.dfc" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
-  </ItemGroup>
-  <ItemGroup>
+    <None Include="res\fx.mp3" />
+    <None Include="res\fx2.mp3" />
+    <None Include="res\logo.png" />
     <EmbeddedResource Include="res\logo.wav" />
     <EmbeddedResource Include="res\msg_drop.png" />
     <EmbeddedResource Include="res\msg_poor.png" />
-    <None Include="res\logo.png" />
     <EmbeddedResource Include="res\sc.wav" />
-    <None Include="res\fx2.mp3" />
-    <None Include="res\fx2.wav" />
-    <None Include="res\fx.mp3" />
-    <None Include="res\fx.wav" />
-    <EmbeddedResource Include="lib\NAudio.WindowsMediaFormat.dll" />
-    <EmbeddedResource Include="lib\NAudio.dll" />
-    <Content Include="loopstream.ico" />
+    <None Include="res\splesh.png" />
+    <EmbeddedResource Include="res\volbar.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="res\splesh.png" />
+    <Content Include="loopstream.ico" />
+    <EmbeddedResource Include="lib\NAudio.dll" />
+    <EmbeddedResource Include="lib\NAudio.WindowsMediaFormat.dll" />
+    <Content Include="lib\NAudio.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include=".NETFramework,Version=v4.0,Profile=Client">
+      <Visible>False</Visible>
+      <ProductName>Microsoft .NET Framework 4 Client Profile %28x86 and x64%29</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Windows.Installer.3.1">
+      <Visible>False</Visible>
+      <ProductName>Windows Installer 3.1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

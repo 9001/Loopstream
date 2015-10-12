@@ -407,7 +407,7 @@ namespace NPatch
                                 float v = buffer[offset + sample] * currentVolume * nboost;
                                 if (v > 1)
                                 {
-                                    nboost /= v;
+                                    nboost = Math.Max(1f, nboost / v);
                                     v = 1;
                                 }
                                 buffer[offset + sample++] = v;

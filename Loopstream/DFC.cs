@@ -46,7 +46,40 @@ namespace Loopstream
                     MessageBox.Show("dfc not found\n\n(ed fucked up)");
                     Program.kill();
                 }
-                Directory.CreateDirectory(Program.tools);
+                if (!System.IO.Path.GetFullPath("asdf").StartsWith(Application.StartupPath))
+                {
+                    if (Program.args.Length <= 0 || Program.args[0] != "wdfix")
+                    {
+                        Program.fixWorkingDirectory();
+                    }
+                    DialogResult dr = MessageBox.Show(
+                        "Warning: The environment you gave me is fucked up\n\n" +
+                        "===[ what I expected ]=================\n" +
+                        Application.StartupPath + "\n\n" +
+                        "===[ what I got ]=====================\n" +
+                        System.IO.Path.GetFullPath("what") + "\n\n" +
+                        "================================\n" +
+                        "[Abort] to stop trying and quit (PRESS ME BRO)\n" +
+                        "[Retry] and I'll try to fix it (...again)\n" +
+                        "[Ignore] to watch the world burn",
+                        "How the fuck did that happen",
+                        MessageBoxButtons.AbortRetryIgnore,
+                        MessageBoxIcon.Error);
+                    if (dr == DialogResult.Abort) Program.kill();
+                    if (dr == DialogResult.Retry)
+                    {
+                        Program.fixWorkingDirectory();
+                    }
+                }
+                try
+                {
+                    Directory.CreateDirectory(Program.tools);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message + "\n\n" + ex.StackTrace);
+                    Program.kill();
+                }
                 byte[] tmp = new byte[8];
                 stream.Read(tmp, 0, 4);
                 byte[] bheader = new byte[BitConverter.ToInt32(tmp, 0) - 4];

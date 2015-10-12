@@ -3,6 +3,15 @@
 + new feature
 ~ other change
 
+2014-01-05, 16:49:32 - Loopstream 1.3.6.1
+  + Support for Loopstream-Traktor
+  + Tag reader: URLDecode switch for reader profiles
+  + Tag reader: Get tags from same/other icecast server
+  + Tag reader: Get tags from exact window (separate Firefox or whatever)
+  = Tools extract failed when running from start menu or shortcut
+  ~ Better tooltip code for settings window
+  ~ Exponential volume boosting past 100%
+
 2014-01-04, 18:15:30 - Loopstream-Traktor 1.0.0.0
   ! Separate "plugin" application that grabs tags from Traktor
     and provides a way to get them into Loopstream reliably

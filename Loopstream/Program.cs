@@ -13,6 +13,7 @@ namespace Loopstream
         public static bool debug = false;
         public static NotifyIcon ni;
         public static string tools;
+        public static string[] args;
         public static bool SIGNMODE;
         //public static System.IO.StreamWriter log;
 
@@ -28,6 +29,7 @@ namespace Loopstream
 
             DBGLOG = "";
             SIGNMODE = false;
+            Program.args = args;
             if (args.Length > 0)
             {
                 if (args[0] == "sign")
@@ -101,6 +103,30 @@ namespace Loopstream
         {
             if (ni != null) ni.Dispose();
             System.Diagnostics.Process.GetCurrentProcess().Kill();
+        }
+
+        public static void fixWorkingDirectory()
+        {
+            System.Diagnostics.Process proc = new System.Diagnostics.Process();
+            string path = Application.ExecutablePath;
+            int i = path.LastIndexOf('\\');
+            proc.StartInfo.FileName = path.Substring(i + 1);
+            proc.StartInfo.WorkingDirectory = path.Substring(0, i);
+            proc.StartInfo.Arguments = "wdfix";
+            proc.Start();
+            while (true)
+            {
+                try
+                {
+                    proc.Refresh();
+                    if (proc.Modules.Count > 1) break;
+                    System.Threading.Thread.Sleep(10);
+                }
+                catch { }
+            }
+            Application.DoEvents();
+            System.Threading.Thread.Sleep(1000);
+            kill();
         }
     }
 }

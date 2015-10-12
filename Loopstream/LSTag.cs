@@ -50,12 +50,24 @@ namespace Loopstream
         {
             if (m.reader == LSSettings.LSMeta.Reader.WindowCaption)
             {
-                Process[] proc = Process.GetProcessesByName(m.src);
-                if (proc.Length < 1)
+                string raw = null;
+                if (m.src.Contains('*'))
                 {
-                    return new LSTD(false, "(no such process)");
+                    raw = WinapiShit.getWinText(new IntPtr(Convert.ToInt32(m.src.Split('*')[1], 16)));
                 }
-                string raw = proc[0].MainWindowTitle;
+                if (string.IsNullOrEmpty(raw))
+                {
+                    Process[] proc = Process.GetProcessesByName(m.src.Split('*')[0]);
+                    if (proc.Length < 1)
+                    {
+                        return new LSTD(false, "(no such process)");
+                    }
+                    raw = proc[0].MainWindowTitle;
+                }
+                if (string.IsNullOrEmpty(raw))
+                {
+                    return new LSTD(false, "(no such target)");
+                }
                 return getRaw ? new LSTD(true, raw) : get(m, raw);
             }
             if (m.reader == LSSettings.LSMeta.Reader.File)
@@ -200,7 +212,23 @@ namespace Loopstream
             }
             try
             {
-                return new LSTD(true, r[m.grp].Value.Trim(' ', '\t', '\r', '\n')); // you can never be too sure
+                string ret = r[m.grp].Value.Trim(' ', '\t', '\r', '\n'); // you can never be too sure
+                if (m.urldecode)
+                {
+                    string[] sanitize = {
+                        "&quot;", "\"",
+                        "&apos;", "'",
+                        "&#039;", "'",
+                        "&lt;",   "<",
+                        "&gt;",   ">",
+                        "&amp;",  "&"
+                    };
+                    for (int a = 0; a < sanitize.Length; a += 2)
+                    {
+                        ret = ret.Replace(sanitize[a], sanitize[a + 1]);
+                    }
+                }
+                return new LSTD(true, ret); 
             }
             catch
             {
