@@ -25,7 +25,7 @@ namespace Loopstream
         List<LSSettings.LSMeta> metas;
         private void UI_input_Load(object sender, EventArgs e)
         {
-
+            this.Icon = Program.icon;
         }
 
         private void textBox1_KeyDown(object sender, KeyEventArgs e)

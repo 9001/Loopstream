@@ -116,7 +116,14 @@ namespace Loopstream
                         0, y, sha.Width, y);
                 }
             }
+
+            Skinner.add(this);
         }
+        ~LLabel()
+        {
+            Skinner.rem(this);
+        }
+
         double olevel;
         Color agrad1, agrad2;
         NPatch.VolumeSlider vs;

@@ -74,7 +74,7 @@ namespace Loopstream
 
             // Finally, reposition PCM pointer to minimize latency
             // (and chance of lost packets because icecast a bitch)
-            //outlet.setReadPtr(0.2);
+            outlet.setReadPtr(0.2);
             
             // PCM reader loop, passing on to encoders/shouters
             //List<string> toclip = new List<string>();
@@ -194,6 +194,14 @@ namespace Loopstream
                             Logger.pcm.a("resurrect failure: " + enc.enc.ext);
                             Program.ni.ShowBalloonTip(1000, "Connection error", "Failed to restart " + enc.enc.ext, System.Windows.Forms.ToolTipIcon.Error);
                         }
+                    }
+                    else if (enc.aborted)
+                    {
+                        string msg = "Removing " + enc.enc.ext + " encoder";
+                        
+                        Logger.pcm.a(msg);
+                        encoders.RemoveAt(a--);
+                        Program.ni.ShowBalloonTip(1000, "Connection error", msg, System.Windows.Forms.ToolTipIcon.Error);
                     }
                 }
                 System.Threading.Thread.Sleep(10);

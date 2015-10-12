@@ -90,6 +90,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DFC.cs" />
+    <Compile Include="Exceptional.cs" />
     <Compile Include="LSDevice.cs" />
     <Compile Include="LSEncoder.cs" />
     <Compile Include="LSLame.cs" />
@@ -146,6 +147,12 @@
     </Compile>
     <Compile Include="UI_ConfigSC.Designer.cs">
       <DependentUpon>UI_ConfigSC.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI_Exception.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI_Exception.Designer.cs">
+      <DependentUpon>UI_Exception.cs</DependentUpon>
     </Compile>
     <Compile Include="UI_Graph.cs">
       <SubType>Form</SubType>
@@ -222,6 +229,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="UI_ConfigSC.resx">
       <DependentUpon>UI_ConfigSC.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI_Exception.resx">
+      <DependentUpon>UI_Exception.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UI_Graph.resx">
       <DependentUpon>UI_Graph.cs</DependentUpon>

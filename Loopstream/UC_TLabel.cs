@@ -41,6 +41,12 @@ namespace Loopstream
                 grb = cb;
             }
             ShadeBack = false;
+
+            Skinner.add(this);
+        }
+        ~TLabel()
+        {
+            Skinner.rem(this);
         }
         public bool ShadeBack;
         protected override void OnPaintBackground(PaintEventArgs pevent)

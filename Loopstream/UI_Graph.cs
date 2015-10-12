@@ -60,6 +60,7 @@ namespace Loopstream
             t.Tick += t_Tick;
             t.Interval = 200;
             t.Start();
+            this.Icon = Program.icon;
         }
 
         void paintshit(List<double> datta, int numPoints, double mulX, double mulY, int bw, int bh, Graphics g, LinearGradientBrush grad, Color cbase)

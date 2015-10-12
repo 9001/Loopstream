@@ -21,6 +21,13 @@ namespace Loopstream
             renderedOpacity = 1;
             ca = _ca = colorA;
             cb = _cb = colorB;
+
+            Skinner.add(this);
+        }
+
+        ~Graden()
+        {
+            Skinner.rem(this);
         }
 
         Color ca, cb;

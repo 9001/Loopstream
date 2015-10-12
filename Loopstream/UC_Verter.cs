@@ -29,6 +29,12 @@ namespace Loopstream
             graden2.MouseDown += slider_MouseDown;
             graden2.MouseMove += slider_MouseMove;
             graden2.MouseUp += slider_MouseUp;
+        
+            Skinner.add(this);
+        }
+        ~Verter()
+        {
+            Skinner.rem(this);
         }
 
         public event EventHandler valueChanged;

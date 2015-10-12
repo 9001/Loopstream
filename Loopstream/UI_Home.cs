@@ -68,7 +68,7 @@ namespace Loopstream
             ((Timer)sender).Stop();
             wincap = this.Text + " v" + Application.ProductVersion;
             this.Text = wincap;
-            
+
             DFC.coreTest();
             if (Directory.Exists(@"..\..\tools\"))
             {
@@ -215,6 +215,9 @@ namespace Loopstream
             tTitle.Interval = 200;
             tTitle.Start();
             showhide();
+            
+            hookskinner(this.Controls);
+            //Program.popception();
         }
 
         double shake = 1;
@@ -283,6 +286,21 @@ namespace Loopstream
             this.Location = new Point((int)dX, (int)dY);
             
             inKonami = false;
+        }
+
+        void hookskinner(System.Windows.Forms.Control.ControlCollection cc)
+        {
+            foreach (Control c in cc)
+            {
+                Type t = c.GetType();
+                if (t == typeof(Panel) ||
+                    t == typeof(Button) ||
+                    t == typeof(Label))
+                {
+                    Skinner.add(c);
+                }
+                hookskinner(c.Controls);
+            }
         }
 
         bool invalOnNext;
@@ -771,6 +789,18 @@ namespace Loopstream
                 long time = DateTime.UtcNow.Ticks / 10000;
                 if (time < lastclick + 1000)
                 {
+                    try
+                    {
+                        Program.popception();
+                    }
+                    catch (Exception ex)
+                    {
+                        throw ex; // UNCOMMENT for production
+                        SerializableException se = new SerializableException(ex);
+                        GeneralInfo gi = new GeneralInfo(se, ex);
+                        string serialized = gi.ToString();
+                    }
+
                     Clipboard.Clear();
                     Application.DoEvents();
                     Clipboard.SetText(Program.DBGLOG);

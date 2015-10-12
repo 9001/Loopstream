@@ -17,12 +17,14 @@ namespace Loopstream
         protected LSPcmFeed pimp;
         protected LSSettings settings;
         public LSSettings.LSParams enc;
+        public int rekick;
 
         public Stream stdin { get; set; }
         public Stream stdout { get; set; }
         protected Stream pstdin { get; set; }
         protected Stream pstdout { get; set; }
         public bool crashed { get; private set; }
+        public bool aborted { get; private set; }
 
         System.Net.Sockets.TcpClient tc;
         System.Net.Sockets.NetworkStream s;
@@ -39,6 +41,7 @@ namespace Loopstream
             settings = null;
             crashed = false;
             locker = new object();
+            rekick = 0;
         }
 
         string esc(string raw)
@@ -149,10 +152,51 @@ namespace Loopstream
                 MessageBox.Show("Radio server error: Wrong password",
                     "Stream abort", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+            else if (str.StartsWith("HTTP/1.0 403 Mountpoint in use"))
+            {
+                if (--rekick > 0)
+                {
+                    crashed = true;
+                }
+                else if (DialogResult.Yes == MessageBox.Show(
+                    "Someone are already connected to the server.\n\nTry to kick them?",
+                    "Mountpoint in use", MessageBoxButtons.YesNo))
+                {
+                    byte[] kickrequest = System.Text.Encoding.UTF8.GetBytes(string.Format(
+                        "GET /admin/killsource?mount=/{1}.{2} HTTP/1.0{0}" +
+                        "Authorization: Basic {3}{0}" +
+                        "User-Agent: loopstream/{4}{0}" +
+                        "Content-Type: audio/mpeg{0}{0}",
+
+                        "\r\n",
+                        settings.mount,
+                        enc.ext,
+                        auth,
+                        ver
+                    ));
+                    logger.a("kicker socket");
+                    var kc = new System.Net.Sockets.TcpClient();
+                    kc.Connect(settings.host, settings.port);
+                    logger.a("kicker connected");
+                    var ks = kc.GetStream();
+                    ks.Write(kickrequest, 0, kickrequest.Length);
+                    logger.a("kicker sent");
+                    int i = ks.Read(kickrequest, 0, kickrequest.Length);
+                    string kickresult = System.Text.Encoding.UTF8.GetString(kickrequest, 0, i);
+                    logger.a("kicker done");
+                    rekick = 5;
+                    crashed = true;
+                }
+                else
+                {
+                    aborted = true;
+                }
+            }
             else if (str.StartsWith("HTTP/1.0 200 OK"))
             {
                 logger.a("bootstrap");
                 s = prepS;
+                rekick = 0;
                 stampee = 0;
                 stdin = pstdin;
                 stdout = pstdout;
@@ -178,6 +222,8 @@ namespace Loopstream
 
         public void eat(byte[] buffer, int c)
         {
+            if (crashed || aborted) return;
+
             try
             {
                 stdin.Write(buffer, 0, c);

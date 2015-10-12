@@ -22,6 +22,7 @@ namespace Loopstream
         /// The main entry point for the application.
         /// </summary>
         [STAThread]
+        [System.Runtime.ExceptionServices.HandleProcessCorruptedStateExceptions]
         static void Main(string[] args)
         {
             //new UI_Msg("poor", "").ShowDialog();
@@ -38,6 +39,14 @@ namespace Loopstream
                     SIGNMODE = true;
                 }
             }
+
+            AppDomain.CurrentDomain.UnhandledException += (ueSender, ueArgs) =>
+                new UI_Exception(ueArgs.ExceptionObject as Exception, 1).ShowDialog();
+            
+            Application.ThreadException += (ueSender, ueArgs) =>
+                new UI_Exception(ueArgs.Exception, 2).ShowDialog();
+
+            Application.SetUnhandledExceptionMode(UnhandledExceptionMode.CatchException);
 
             //AppDomain.CurrentDomain.AssemblyResolve += CurrentDomain_AssemblyResolve;
             if (!debug)
@@ -76,9 +85,11 @@ namespace Loopstream
             System.Diagnostics.Process.GetCurrentProcess().PriorityClass = System.Diagnostics.ProcessPriorityClass.High;
             
             Logger.init();
+            Skinner.init();
             rnd = new Random();
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
+            //throw new Exception("asdf");
             //Application.Run(new UI_Winlist());
             Application.Run(new Home());
         }
@@ -132,6 +143,23 @@ namespace Loopstream
             Application.DoEvents();
             System.Threading.Thread.Sleep(1000);
             kill();
+        }
+
+        public static void popception(int lv = 1)
+        {
+            bool cu = false;
+            try
+            {
+                if (lv == 6)
+                {
+                    throw new Exception("hit lv");
+                }
+                popception(lv + 1);
+            }
+            finally
+            {
+                cu = true;
+            }
         }
     }
 }

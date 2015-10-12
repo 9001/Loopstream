@@ -9,6 +9,9 @@ namespace Loopstream
 {
     public class LSSettings
     {
+        [XmlIgnore]
+        public static LSSettings singleton;
+
         public class LSServerPreset
         {
             public int port;
@@ -322,6 +325,7 @@ namespace Loopstream
             public long quality;
             public LSChannels channels;
             public string ext;
+            [XmlIgnore]
             public double FIXME_kbps;
         }
 
@@ -681,7 +685,10 @@ namespace Loopstream
                 StringBuilder sw = new StringBuilder();
                 for (int a = 0; a < devs.Length; a++)
                 {
-                    splesh.prog(a + 1, devs.Length);
+                    if (splesh != null)
+                    {
+                        splesh.prog(a + 1, devs.Length);
+                    }
                     //devs[a].test();
                     try
                     {
@@ -819,6 +826,7 @@ namespace Loopstream
                         ret.metaDec();
                     }
                     catch { }
+                    LSSettings.singleton = ret;
                     return ret;
                 }
                 catch (Exception e)
@@ -830,6 +838,7 @@ namespace Loopstream
             }
             ret = new LSSettings();
             ret.initWhenDeserializationFails(); // it is 06:20 am, what are you looking at
+            LSSettings.singleton = ret; // for exception handler
             return ret;
         }
     }

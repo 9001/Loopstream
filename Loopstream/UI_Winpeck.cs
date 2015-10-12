@@ -43,7 +43,9 @@ namespace Loopstream
             Application.DoEvents();
             label1.Text = "";
             label1_Click(sender, e);
-            
+
+            this.Icon = Program.icon;
+
             /*Timer t = new Timer();
             t.Interval = 10;
             t.Start();

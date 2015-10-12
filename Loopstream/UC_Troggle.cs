@@ -28,6 +28,12 @@ namespace Loopstream
             init();
             Resize += UC_Troggle_Resize;
             pb.MouseDown += new MouseEventHandler(pb_MouseDown);
+            
+            Skinner.add(this);
+        }
+        ~UC_Troggle()
+        {
+            Skinner.rem(this);
         }
 
         public bool rightclick = false;

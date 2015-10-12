@@ -44,6 +44,11 @@ namespace Loopstream
     {
         public static string lze(string plain)
         {
+            return Convert.ToBase64String(lze(plain, true));
+        }
+
+        public static byte[] lze(string plain, bool fjdsuioafuweabnfowa)
+        {
             byte[] bytes = Encoding.UTF8.GetBytes(plain);
             MemoryStream msi = new MemoryStream(bytes);
             MemoryStream mso = new MemoryStream();
@@ -51,13 +56,16 @@ namespace Loopstream
             enc.WriteCoderProperties(mso);
             mso.Write(BitConverter.GetBytes(msi.Length), 0, 8);
             enc.Code(msi, mso, msi.Length, -1, null);
-            bytes = mso.ToArray();
-            return Convert.ToBase64String(bytes);
+            return mso.ToArray();
         }
 
         public static string lzd(string b64)
         {
-            byte[] bytes = Convert.FromBase64String(b64);
+            return lzd(Convert.FromBase64String(b64));
+        }
+
+        public static string lzd(byte[] bytes)
+        {
             MemoryStream msi = new MemoryStream(bytes);
             MemoryStream mso = new MemoryStream();
             SevenZip.Compression.LZMA.Decoder dec = new SevenZip.Compression.LZMA.Decoder();
@@ -72,6 +80,11 @@ namespace Loopstream
 
         public static string gze(string plain)
         {
+            return Convert.ToBase64String(gze(plain, true));
+        }
+
+        public static byte[] gze(string plain, bool jfiodsajfiwoabnwfe)
+        {
             using (var msi = new MemoryStream(Encoding.UTF8.GetBytes(plain)))
             {
                 using (var mso = new MemoryStream())
@@ -80,8 +93,7 @@ namespace Loopstream
                     {
                         msi.CopyTo(gz);
                         gz.Close();
-                        byte[] bytes = mso.ToArray();
-                        return Convert.ToBase64String(bytes);
+                        return mso.ToArray();
                     }
                 }
             }
@@ -89,7 +101,12 @@ namespace Loopstream
 
         public static string gzd(string b64)
         {
-            using (var msi = new MemoryStream(Convert.FromBase64String(b64)))
+            return gzd(Convert.FromBase64String(b64));
+        }
+        
+        public static string gzd(byte[] input)
+        {
+            using (var msi = new MemoryStream(input))
             {
                 using (var gz = new System.IO.Compression.GZipStream(msi, System.IO.Compression.CompressionMode.Decompress))
                 {
@@ -101,6 +118,29 @@ namespace Loopstream
                         return Encoding.UTF8.GetString(bytes);
                     }
                 }
+            }
+        }
+    }
+
+    public class Skinner
+    {
+        public static List<Control> controls = new List<Control>();
+        public static void init()
+        {
+            //controls = new List<Control>();
+        }
+        public static void add(Control c)
+        {
+            lock (controls)
+            {
+                controls.Add(c);
+            }
+        }
+        public static void rem(Control c)
+        {
+            lock (controls)
+            {
+                controls.Remove(c);
             }
         }
     }

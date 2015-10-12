@@ -26,6 +26,7 @@ namespace Loopstream
             t.Interval = 10;
             t.Tick += t_Tick;
             t.Start();
+            this.Icon = Program.icon;
         }
         private void UI_Status_FormClosing(object sender, FormClosingEventArgs e)
         {

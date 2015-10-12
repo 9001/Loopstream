@@ -25,6 +25,12 @@ namespace Loopstream
             bH.Visible = bV.Visible = false;
 
             magic();
+
+            Skinner.add(this);
+        }
+        ~Pritch()
+        {
+            Skinner.rem(this);
         }
 
         void UC_Pritch_Resize(object sender, EventArgs e)
@@ -84,6 +90,25 @@ namespace Loopstream
                 new SolidBrush(Color.FromArgb(48, 96, 48, 0)),
                 new SolidBrush(Color.FromArgb(24, 0, 0, 0))
             };
+            if (SystemColors.ControlLight.GetBrightness() <
+                SystemColors.ControlText.GetBrightness())
+            {
+                for (int a = 0; a < b.Length; a++)
+                {
+                    b = new Brush[] {
+                        new SolidBrush(Color.FromArgb(96, 128, 204, 255)),
+                        new SolidBrush(Color.FromArgb(96, 192, 224, 128)),
+                        new SolidBrush(Color.FromArgb(96, 255, 204, 128)),
+                        new SolidBrush(Color.FromArgb(96, 224, 128, 192))
+                    };
+                    d = new Brush[] {
+                        new SolidBrush(Color.FromArgb(40, 255, 255, 255)),
+                        new SolidBrush(Color.FromArgb(40, 255, 255, 255)),
+                        new SolidBrush(Color.FromArgb(80, 255, 224, 192)),
+                        new SolidBrush(Color.FromArgb(40, 255, 255, 255))
+                    };
+                }
+            }
 
             using (Graphics g = Graphics.FromImage(bm))
             {

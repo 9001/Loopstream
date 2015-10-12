@@ -50,6 +50,9 @@ namespace Loopstream
 
         private void UI_Msg_Load(object sender, EventArgs e)
         {
+            this.Icon = Program.icon;
+            this.TopMost = true;
+            this.TopLevel = true;
         }
 
         private void OHSHIT(Bitmap bitmap, byte opacity)

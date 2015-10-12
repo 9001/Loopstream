@@ -37,6 +37,7 @@
             this.ClientSize = new System.Drawing.Size(284, 261);
             this.Name = "UI_Msg";
             this.Text = "UI_Msg";
+            this.TopMost = true;
             this.Load += new System.EventHandler(this.UI_Msg_Load);
             this.MouseDown += new System.Windows.Forms.MouseEventHandler(this.UI_Msg_MouseDown);
             this.ResumeLayout(false);
