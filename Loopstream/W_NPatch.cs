@@ -323,6 +323,7 @@ namespace NPatch
         //public event EventHandler vuc;
         public bool enVU;
         public double VU { get; private set; }
+        public long vuAge { get; private set; }
         public float curVol { get { return currentVolume; } set { } }
 
         public VolumeSlider() { enVU = false; VU = 1; }
@@ -374,7 +375,14 @@ namespace NPatch
                         amp = Math.Max(amp, buffer[offset + a]);
                     }
                     amp *= boost;
-                    VU = amp > 1 ? 1 : amp;
+                    if (amp > 0)
+                    {
+                        // local playback on higher sample rate
+                        // than inputs cause empty buffers here
+                        VU = amp > 1 ? 1 : amp;
+                        vuAge = 0;
+                    }
+                    else vuAge++;
                 }
                 lock (lockObject)
                 {

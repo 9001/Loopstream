@@ -22,6 +22,7 @@ namespace Loopstream
             Logger.tag.a("init");
 
             tag = new LSTD(false, "");
+            manual = new LSTD(false, "");
             settings = set;
             quitting = false;
             haveFailed = false;

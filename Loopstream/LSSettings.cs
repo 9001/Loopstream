@@ -203,9 +203,9 @@ namespace Loopstream
 
             presets = new LSPreset[] {
                 new LSPreset(1.00, 0, 0.6, 1, true, true, false, 1, 1),
-                new LSPreset(0.25, 1, 0.6, 1, true, true, false, 1, 1),
+                new LSPreset(0.25, 1, 0.6, 1, true, true, false, 1, 32),
                 new LSPreset(1.00, 0, 0.6, 1, true, true, true, 1, 1),
-                new LSPreset(0.25, 1, 0.6, 1, true, true, true, 1, 1),
+                new LSPreset(0.25, 1, 0.6, 1, true, true, true, 1, 32),
             };
             //presets[0] = new LSPreset(1, 1, 0.32, 1, true, true, true); //DEBUG
             //presets[0] = new LSPreset(0.5, 0.875, 0.32, 0.75, true, true, true); //DEBUG

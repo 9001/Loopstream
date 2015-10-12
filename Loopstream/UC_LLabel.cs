@@ -143,7 +143,7 @@ namespace Loopstream
 
         void tinval_Tick(object sender, EventArgs e)
         {
-            double alevel = vs == null ? 0 : vs.VU;
+            double alevel = (vs != null && vs.vuAge < 16) ? vs.VU : 0;
             olevel =
                 alevel > olevel ?
                 alevel * 0.30 + olevel * 0.70 :
