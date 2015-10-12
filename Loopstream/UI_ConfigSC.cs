@@ -210,6 +210,12 @@ namespace Loopstream
             gLeft.Checked = settings.micLeft;
             gRight.Checked = settings.micRight;
 
+            if (settings.devMic == null ||
+                settings.devMic.mm == null)
+            {
+                gTwoS.SelectedIndex = 0;
+            }
+
             gMp3Enable.Checked = settings.mp3.enabled;
             gMp3Bitrate.Checked = settings.mp3.compression == LSSettings.LSCompression.cbr;
             gMp3Quality.Checked = settings.mp3.compression == LSSettings.LSCompression.q;

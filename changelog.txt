@@ -3,6 +3,10 @@
 + new feature
 ~ other change
 
+2013-07-30, 23:18:43 - Loopstream 1.1.1.0
+  = Streaming without mic
+  ~ Mixer preset tweaks
+
 2013-07-30, 12:08:47 - Loopstream 1.1.0.0
   + TAGS (foobar,winamp,vlc,itunes,custom)
   + 32bit cloning for eavesdropping on 32bit apps

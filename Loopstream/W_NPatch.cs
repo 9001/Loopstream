@@ -228,6 +228,8 @@ namespace NPatch
 
         public float curVol { get { return currentVolume; } set { } }
 
+        public VolumeSlider() { }
+        
         public VolumeSlider(ISampleProvider source, bool initiallySilent = false)
         {
             this.source = source;

@@ -173,9 +173,9 @@ namespace Loopstream
             metas = new List<LSMeta>();
 
             presets = new LSPreset[] {
-                new LSPreset(1.00, 1, 0.6, 1, true, false, false),
+                new LSPreset(1.00, 0, 0.6, 1, true, true, false),
                 new LSPreset(0.25, 1, 0.6, 1, true, true, false),
-                new LSPreset(1.00, 1, 0.6, 1, true, false, true),
+                new LSPreset(1.00, 0, 0.6, 1, true, true, true),
                 new LSPreset(0.25, 1, 0.6, 1, true, true, true),
             };
             //presets[0] = new LSPreset(1, 1, 0.32, 1, true, true, true); //DEBUG

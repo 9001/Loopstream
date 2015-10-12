@@ -97,6 +97,10 @@ namespace Loopstream
                 micVol = new NPatch.VolumeSlider(micProv);
                 mixer.AddMixerInput(micVol);
             }
+            else
+            {
+                micVol = new NPatch.VolumeSlider();
+            }
 
             fork = new NPatch.Fork(mixer, 2);
             lameOutlet = fork.providers[1];

@@ -21,6 +21,13 @@ namespace Loopstream
             w8fuckOn = new Padding(0, 4, 0, 0);
             w8fuckOff = new Padding(1, 5, 1, 0);
             giSlider.Font = new Font(giSlider.Font.FontFamily, giSlider.Font.Size * 2);
+
+            graden1.MouseDown += slider_MouseDown;
+            graden1.MouseMove += slider_MouseMove;
+            graden1.MouseUp += slider_MouseUp;
+            graden2.MouseDown += slider_MouseDown;
+            graden2.MouseMove += slider_MouseMove;
+            graden2.MouseUp += slider_MouseUp;
         }
 
         public event EventHandler valueChanged;
@@ -82,6 +89,7 @@ namespace Loopstream
             }
             set
             {
+                //System.Windows.Forms.MessageBox.Show(value.ToString());
                 bool inval = _level <= 40 || _level >= 255 + 40;
                 _level = Math.Min(Math.Max(value, -40), 295) + 40;
                 int top = gOSlider.Height - _level;
@@ -118,7 +126,7 @@ namespace Loopstream
         long clickTime = -1;
         int clickOffset = -1;
         Point clickPosition = Point.Empty;
-        private void giSlider_MouseDown(object sender, MouseEventArgs e)
+        private void slider_MouseDown(object sender, MouseEventArgs e)
         {
             if (e.Button == System.Windows.Forms.MouseButtons.Left)
             {
@@ -132,7 +140,7 @@ namespace Loopstream
 
         bool fuckoff = false;
         object fucker = new object();
-        private void giSlider_MouseMove(object sender, MouseEventArgs e)
+        private void slider_MouseMove(object sender, MouseEventArgs e)
         {
             lock (fucker)
             {
@@ -166,7 +174,7 @@ namespace Loopstream
             fuckoff = false;
         }
 
-        private void gOSlider_MouseUp(object sender, MouseEventArgs e)
+        private void slider_MouseUp(object sender, MouseEventArgs e)
         {
             long now = DateTime.UtcNow.Ticks / 10000;
             if (now - clickTime < 150)
