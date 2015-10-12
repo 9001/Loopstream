@@ -17,12 +17,14 @@ namespace Loopstream
         {
             this.settings = settings;
             InitializeComponent();
+            pTabs.BringToFront();
         }
 
         Timer tPop;
         Control popTop;
         bool disregardEvents;
         public LSSettings settings; //, apply;
+        bool doRegexTests;
 
         private void button2_Click(object sender, EventArgs e)
         {
@@ -190,6 +192,8 @@ namespace Loopstream
             t.Interval = 100;
             t.Start();
         }
+        Panel[] tabPage;
+        TLabel[] tabHeader;
         void t_Tick(object sender, EventArgs e)
         {
             ((Timer)sender).Stop();
@@ -197,6 +201,8 @@ namespace Loopstream
             populate(false, gTwoS);
             LSDevice nil = new LSDevice();
             nil.name = "(disabled)";
+            doRegexTests = false;
+
             gTwoS.Items.Insert(0, nil);
             gOneS.SelectedItem = settings.devRec;
             gTwoS.SelectedItem = settings.devMic;
@@ -226,6 +232,12 @@ namespace Loopstream
             gShout.Checked = settings.relay == LSSettings.LSRelay.shout;
             gIce.Checked = settings.relay == LSSettings.LSRelay.ice;
             gSiren.Checked = settings.relay == LSSettings.LSRelay.siren;
+            gTitle.Text = settings.title;
+            gDescription.Text = settings.description;
+            gGenre.Text = settings.genre;
+            gURL.Text = settings.url;
+            gPublic.Checked = settings.pubstream;
+
             gTestDevs.Checked = settings.testDevs;
             gUnavail.Checked = settings.showUnavail;
             gSplash.Checked = settings.splash;
@@ -235,12 +247,64 @@ namespace Loopstream
             gAutoconn.Checked = settings.autoconn;
             gAutohide.Checked = settings.autohide;
 
+            gReader.Items.Add(LSSettings.LSMeta.Reader.WindowCaption);
+            gReader.Items.Add(LSSettings.LSMeta.Reader.File);
+            gReader.Items.Add(LSSettings.LSMeta.Reader.Website);
+            gReader.Items.Add(LSSettings.LSMeta.Reader.ProcessMemory);
+            loadMetaReader(true);
+
             disregardEvents = false;
-            gMp3_Click(sender, e);
+
+            tabHeader = new TLabel[] { hSoundcard, hServer, hEncoders, hTags };
+            /*tabPage = new Panel[tabHeader.Length];
+            for (int a = 0; a < tabHeader.Length; a++)
+            {
+                tabPage[a] = new Panel();
+                while (tc.TabPages[a].Controls.Count > 0)
+                {
+                    Control c = tc.TabPages[a].Controls[0];
+                    Rectangle rect = c.Bounds;
+                    tc.TabPages[a].Controls.RemoveAt(0);
+                    tabPage[a].Controls.Add(c);
+                    c.Bounds = rect;
+                }
+                tabHeader[a].MouseDown += tabHeader_MouseDown;
+                tabPage[a].Dock = DockStyle.Fill;
+                pWrapper.Controls.Add(tabPage[a]);
+            }
+            tc.Dispose();*/
+            pTabs.BringToFront();
+            for (int a = 0; a < tabHeader.Length; a++)
+            {
+                tabHeader[a].MouseDown += tabHeader_MouseDown;
+            }
+            tabHeader_MouseDown(tabHeader[0], new MouseEventArgs(System.Windows.Forms.MouseButtons.Left, 1, 20, 10, 0));
 
             tPop = new Timer();
             tPop.Interval = tt.InitialDelay;
             tPop.Tick += tPop_Tick;
+        }
+
+        void tabHeader_MouseDown(object sender, MouseEventArgs e)
+        {
+            int i = Array.IndexOf(tabHeader, sender);
+            TLabel ass = tabHeader[i];
+            if (i > 0 && e.X < 8) i--;
+            if (i < tabHeader.Length - 1 && e.X > ass.Width - 8) i++;
+            ass = tabHeader[i];
+
+            foreach (TLabel l in tabHeader)
+            {
+                l.ForeColor = SystemColors.ControlDark;
+                l.ShadeBack = false;
+                //l.SendToBack();
+            }
+            label5.BringToFront();
+            ass.BringToFront();
+            ass.ShadeBack = true;
+            ass.ForeColor = SystemColors.ControlText;
+            //tabPage[i].BringToFront();
+            tc.SelectedIndex = i;
         }
 
         void populate(bool playback, params ComboBox[] lb)
@@ -275,8 +339,8 @@ namespace Loopstream
             }
             else
             {
-                tb.BackColor = Color.Red;
-                tb.ForeColor = Color.Yellow;
+                tb.BackColor = Color.Firebrick;
+                tb.ForeColor = Color.Gold;
                 return -1;
             }
         }
@@ -294,8 +358,8 @@ namespace Loopstream
             }
             catch
             {
-                gHost.BackColor = Color.Red;
-                gHost.ForeColor = Color.Yellow;
+                gHost.BackColor = Color.Firebrick;
+                gHost.ForeColor = Color.Gold;
             }
         }
 
@@ -309,8 +373,8 @@ namespace Loopstream
             }
             else
             {
-                gPass.BackColor = Color.Red;
-                gPass.ForeColor = Color.Yellow;
+                gPass.BackColor = Color.Firebrick;
+                gPass.ForeColor = Color.Gold;
             }
         }
 
@@ -324,8 +388,8 @@ namespace Loopstream
             }
             else
             {
-                gMount.BackColor = Color.Red;
-                gMount.ForeColor = Color.Yellow;
+                gMount.BackColor = Color.Firebrick;
+                gMount.ForeColor = Color.Gold;
             }
         }
 
@@ -501,21 +565,7 @@ namespace Loopstream
             int n = getValue(gOggQualityV);
             if (n >= 0) settings.ogg.quality = n;
         }
-
-        private void gMp3_Click(object sender, EventArgs e)
-        {
-            gOgg.ForeColor = SystemColors.ButtonShadow;
-            gMp3.ForeColor = SystemColors.WindowText;
-            pMp3.BringToFront();
-        }
-
-        private void gOgg_Click(object sender, EventArgs e)
-        {
-            gMp3.ForeColor = SystemColors.ButtonShadow;
-            gOgg.ForeColor = SystemColors.WindowText;
-            pOgg.BringToFront();
-        }
-
+        
         private void gUnavail_CheckedChanged(object sender, EventArgs e)
         {
             settings.showUnavail = gUnavail.Checked;
@@ -549,6 +599,250 @@ namespace Loopstream
             tPop.Stop();
             // fucking hell microsoft how did you fuck THIS up
             tt.Show(tt.GetToolTip(popTop), gTwoS);
+        }
+
+        private void gTitle_TextChanged(object sender, EventArgs e)
+        {
+            settings.title = gTitle.Text;
+        }
+
+        private void gDescription_TextChanged(object sender, EventArgs e)
+        {
+            settings.description = gDescription.Text;
+        }
+
+        private void gGenre_TextChanged(object sender, EventArgs e)
+        {
+            settings.genre = gGenre.Text;
+        }
+
+        private void gURL_TextChanged(object sender, EventArgs e)
+        {
+            settings.url = gURL.Text;
+        }
+
+        private void gPublic_CheckedChanged(object sender, EventArgs e)
+        {
+            settings.pubstream = gPublic.Checked;
+        }
+
+        private void gMeta_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            settings.meta.apply((LSSettings.LSMeta)gMeta.SelectedItem);
+            loadMetaReader(false);
+            if (settings.meta.reader == LSSettings.LSMeta.Reader.ProcessMemory)
+            {
+                // TODO: Clean this up
+                //       (was thrown in in a hurry when I realized
+                //        mempoke didn't work on 32bit apps from world of 64)
+
+                if (IntPtr.Size == 4)
+                {
+                    MessageBox.Show("I see you're running the 32bit version of Loopstream!\r\n\r\n" +
+                        "If iTunes still doesn't produce correct tags with this edition of Loopstream, then the problem is probably that your version of iTunes is different from the one that Loopstream supports.\r\n\r\n" +
+                        "Yes, iTunes is /that/ picky. Sorry :(");
+                    return;
+                }
+
+                if (DialogResult.Yes == MessageBox.Show(
+                    "This media player's a tricky one.\r\n\r\n" +
+                    "If the tags you send appear to be bullshit,\r\n" +
+                    "I can make a copy of myself that might\r\n" +
+                    "work better for this.\r\n\r\n" +
+                    "Should I clone myself to Loopstream32.exe?",
+                    "Hot Cloning Action",
+                    MessageBoxButtons.YesNo,
+                    MessageBoxIcon.Question))
+                {
+                    string fo = Application.ExecutablePath;
+                    using (System.IO.FileStream i = new System.IO.FileStream(fo, System.IO.FileMode.Open, System.IO.FileAccess.Read))
+                    {
+                        fo = fo.Substring(0, fo.LastIndexOf('.')) + "32.exe";
+                        using (System.IO.FileStream o = new System.IO.FileStream(fo, System.IO.FileMode.Create))
+                        {
+                            bool first = true;
+                            byte[] buf = new byte[8192];
+                            while (true)
+                            {
+                                int n = i.Read(buf, 0, buf.Length);
+                                if (first)
+                                {
+                                    first = false;
+                                    buf[0x218] = 3; //1=any
+                                }
+                                if (n <= 0) break;
+                                o.Write(buf, 0, n);
+                            }
+                        }
+                    }
+                    System.Diagnostics.Process rs = new System.Diagnostics.Process();
+                    rs.StartInfo.FileName = "Loopstream32.exe";
+                    rs.StartInfo.Arguments = "sign";
+                    rs.Start();
+                    Application.DoEvents();
+                    rs.Refresh();
+                    while (!rs.HasExited)
+                    {
+                        Application.DoEvents();
+                        System.Threading.Thread.Sleep(10);
+                    }
+                    for (int a = 0; a < 10; a++)
+                    {
+                        try
+                        {
+                            System.IO.File.Delete("Loopstream32.exe");
+                            System.IO.File.Move("Loopstream32.exe.exe", "Loopstream32.exe");
+                            break;
+                        }
+                        catch { }
+                        System.Threading.Thread.Sleep(100);
+                    }
+                    
+                        System.Diagnostics.Process proc = new System.Diagnostics.Process();
+                        proc.StartInfo.FileName = "Loopstream32.exe";
+                        proc.Start();
+                        proc.Refresh();
+                        Program.kill();
+                    
+                }
+            }
+        }
+
+        private void ConfigSC_Resize(object sender, EventArgs e)
+        {
+            pTabs.Width = pFooter.Width;
+        }
+
+        private void gTagsAdvanced_Click(object sender, EventArgs e)
+        {
+            pTagAdvanced1.Visible = pTagsAdvanced2.Visible = true;
+            gTagsAdvanced.Visible = false;
+        }
+
+        private void gReader_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            settings.meta.reader = (LSSettings.LSMeta.Reader)gReader.SelectedItem;
+            gEncoding.Visible = gEncodingL.Visible = (settings.meta.reader != LSSettings.LSMeta.Reader.WindowCaption);
+            if (settings.meta.reader == LSSettings.LSMeta.Reader.Website ||
+                settings.meta.reader == LSSettings.LSMeta.Reader.File)
+            {
+                gEncoding.Text = "utf-8";
+            }
+            if (settings.meta.reader == LSSettings.LSMeta.Reader.ProcessMemory)
+            {
+                gEncoding.Text = "utf-16";
+            }
+            gEncoding_TextChanged(sender, e);
+        }
+
+        private void gSource_TextChanged(object sender, EventArgs e)
+        {
+            settings.meta.src = gSource.Text;
+        }
+
+        string metaRaw = null;
+        private void gPattern_TextChanged(object sender, EventArgs e)
+        {
+            settings.meta.ptn = gPattern.Text;
+            bool mem = settings.meta.reader == LSSettings.LSMeta.Reader.ProcessMemory;
+            if (gTest.Checked || mem)
+            {
+                if (metaRaw == null) gReload_Click(sender, e);
+                if (metaRaw == null)
+                {
+                    gResult.Text = "(metafetch failure)";
+                    return;
+                }
+                gResult.Text = mem ? metaRaw :
+                    LSTag.get(settings.meta, metaRaw).Replace("\r", "").Replace("\n", "");
+            }
+        }
+
+        private void gReload_Click(object sender, EventArgs e)
+        {
+            metaRaw = LSTag.get(settings.meta, true);
+            gPattern_TextChanged(sender, e);
+        }
+
+        private void gFreq_TextChanged(object sender, EventArgs e)
+        {
+            int n = getValue(gFreq);
+            if (n >= 0) settings.meta.freq = n;
+        }
+
+        private void gName_TextChanged(object sender, EventArgs e)
+        {
+            settings.meta.tit = gName.Text;
+        }
+
+        private void gEncoding_TextChanged(object sender, EventArgs e)
+        {
+            try
+            {
+                settings.meta.encoding = gEncoding.Text;
+                gEncoding.BackColor = SystemColors.Window;
+                gEncoding.ForeColor = SystemColors.WindowText;
+            }
+            catch
+            {
+                gEncoding.BackColor = Color.Firebrick;
+                gEncoding.ForeColor = Color.Gold;
+            }
+        }
+
+        private void gTest_CheckedChanged(object sender, EventArgs e)
+        {
+            doRegexTests = gTest.Checked;
+        }
+
+        private void gStore_Click(object sender, EventArgs e)
+        {
+            settings.metas.Add(settings.meta);
+            loadMetaReader(true);
+            gMeta.SelectedItem = settings.meta;
+        }
+
+        private void gLatinize_CheckedChanged(object sender, EventArgs e)
+        {
+            settings.latin = gLatinize.Checked;
+        }
+
+        void loadMetaReader(bool redoPresets)
+        {
+            if (redoPresets)
+            {
+                gMeta.Items.Clear();
+                foreach (LSSettings.LSMeta meta in settings.metas)
+                {
+                    gMeta.Items.Add(meta);
+                }
+            }
+            gReader.SelectedItem = settings.meta.reader;
+            gSource.Text = settings.meta.src;
+            gPattern.Text = settings.meta.ptn;
+            gFreq.Text = settings.meta.freq.ToString();
+            gName.Text = settings.meta.tit;
+            gEncoding.Text = settings.meta.enc.WebName;
+            gLatinize.Checked = settings.latin;
+            gTest.Checked = doRegexTests;
+            gGroup.Text = settings.meta.grp.ToString();
+            if (redoPresets)
+            {
+                foreach (LSSettings.LSMeta m in settings.metas)
+                {
+                    if (m.tit == settings.meta.tit)
+                    {
+                        gMeta.SelectedItem = m;
+                        return;
+                    }
+                }
+            }
+        }
+
+        private void gGroup_TextChanged(object sender, EventArgs e)
+        {
+            int n = getValue(gGroup);
+            if (n >= 0) settings.meta.grp = n;
         }
     }
 }

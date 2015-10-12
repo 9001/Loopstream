@@ -48,6 +48,13 @@ namespace Loopstream
             Application.DoEvents();
         }
 
+        public void prog(int cur, int max)
+        {
+            label3.Visible = true;
+            label3.Width = (int)(this.Width * cur * 1.0 / max);
+            Application.DoEvents();
+        }
+
         private void Splesh_MouseClick(object sender, MouseEventArgs e)
         {
             gtfo();

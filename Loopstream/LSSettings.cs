@@ -39,6 +39,53 @@ namespace Loopstream
             }
         }
 
+        public class LSMeta
+        {
+            public enum Reader { WindowCaption, File, Website, ProcessMemory };
+            public string src, ptn, tit;
+            [XmlIgnore]
+            public Encoding enc;
+            public string encoding { get { return enc.WebName; } set { enc = Encoding.GetEncoding(value); } }
+            public Reader reader;
+            public int freq, grp;
+
+            public LSMeta()
+            {
+                src = ptn = tit = "";
+                encoding = "UTF-8";
+                reader = Reader.WindowCaption;
+                freq = 500;
+                grp = 1;
+            }
+            public LSMeta(Reader r, string ti, string sr, int fr, string pt, int grp)
+            {
+                reader = r;
+                tit = ti;
+                src = sr;
+                ptn = pt;
+                freq = fr;
+                encoding = "UTF-8";
+                this.grp = grp;
+            }
+            public override string ToString()
+            {
+                return tit;
+            }
+            public void apply(LSMeta meta)
+            {
+                src = meta.src;
+                ptn = meta.ptn;
+                tit = meta.tit;
+                encoding = meta.encoding;
+                reader = meta.reader;
+                freq = meta.freq;
+                grp = meta.grp;
+            }
+        }
+        public List<LSMeta> metas;
+        public LSMeta meta;
+        public bool latin;
+
         public enum LSCompression { cbr, q };
         public enum LSChannels { mono, stereo }
         public class LSParams
@@ -49,6 +96,7 @@ namespace Loopstream
             public long quality;
             public LSChannels channels;
             public string ext;
+            public double FIXME_kbps;
         }
 
         LSDevice _devRec, _devMic, _devOut;
@@ -75,6 +123,9 @@ namespace Loopstream
         public string mount;
         public enum LSRelay { ice, shout, siren }
         public LSRelay relay;
+
+        public string title, description, genre, url;
+        public bool pubstream;
 
         public bool testDevs;
         public bool splash;
@@ -105,11 +156,22 @@ namespace Loopstream
             ogg.channels = LSChannels.stereo;
             ogg.ext = "ogg";
             samplerate = 44100;
+            
             host = "stream0.r-a-d.io";
             port = 1337;
             pass = "user|assword";
             mount = "main";
             relay = LSRelay.ice;
+            title = "Loopstream";
+            description = "Cave Explorer Committee";
+            genre = "Post-Avant Jazzcore";
+            url = "https://github.com/9001/loopstream";
+            pubstream = false;
+
+            latin = false;
+            meta = new LSMeta();
+            metas = new List<LSMeta>();
+
             presets = new LSPreset[] {
                 new LSPreset(1.00, 1, 0.6, 1, true, false, false),
                 new LSPreset(0.25, 1, 0.6, 1, true, true, false),
@@ -153,12 +215,33 @@ namespace Loopstream
             if (!string.IsNullOrEmpty(s_devRec)) devRec = getDevByID(s_devRec);
             if (!string.IsNullOrEmpty(s_devMic)) devMic = getDevByID(s_devMic);
             if (!string.IsNullOrEmpty(s_devOut)) devOut = getDevByID(s_devOut);
-
+        }
+        public void initWhenDeserializationFails()
+        {
+            if (metas.Count == 0)
+            {
+                metas.AddRange(new LSMeta[] {
+                    new LSMeta(LSMeta.Reader.WindowCaption, "Foobar 2000", "foobar2000", 500,
+                        @" *(.*[^ ]) *( - foobar2000$|\[foobar2000 v([0-9\.]*)\]$)", 1),
+                    new LSMeta(LSMeta.Reader.WindowCaption, "Winamp", "winamp", 500,
+                        @"([0-9]*\. )? *(.*[^ ]) * - Winamp$", 2),
+                    new LSMeta(LSMeta.Reader.WindowCaption, "VLC", "vlc", 500,
+                        @" *(.*[^ ]) * - VLC media player", 1),
+                    new LSMeta(LSMeta.Reader.ProcessMemory, "iTunes 64bit 11.0.4.4", "itunes", 500,
+                        "iTunes.dll+15C4D52, iTunes.dll+15C4952", 1),
+                    new LSMeta(LSMeta.Reader.Website, "other icecast mount", "http://stream0.r-a-d.io:8000/", 2000,
+                        "<tr>\\n<td><h3>Mount Point /main.mp3</h3></td>.*?<td>Current Song:</td>\\n<td class=\"streamdata\">(.*?)</td>", 1),
+                });
+            }
+        }
+        public void runTests(Splesh splesh)
+        {
             if (testDevs)
             {
-                foreach (LSDevice dev in devs)
+                for (int a = 0; a < devs.Length; a++)
                 {
-                    dev.test();
+                    splesh.prog(a + 1, devs.Length);
+                    devs[a].test();
                 }
                 /*using (System.IO.StreamWriter sw = new System.IO.StreamWriter("Loopstream.devs", false, Encoding.UTF8))
                 {
@@ -215,7 +298,7 @@ namespace Loopstream
         public void save()
         {
             XmlSerializer x = new XmlSerializer(this.GetType());
-            using (var s = System.IO.File.OpenWrite("Loopstream.ini"))
+            using (var s = new System.IO.FileStream("Loopstream.ini", System.IO.FileMode.Create))
             {
                 byte[] ver = System.Text.Encoding.UTF8.GetBytes(version().ToString("x") + "\n");
                 s.Write(ver, 0, ver.Length);
@@ -233,15 +316,7 @@ namespace Loopstream
                     string str = System.IO.File.ReadAllText("Loopstream.ini", Encoding.UTF8);
                     string ver = str.Substring(0, str.IndexOf('\n'));
                     str = str.Substring(ver.Length + 1);
-                    if (str.EndsWith(">>"))
-                    {
-                        str = str.Substring(0, str.Length - 1);
-                    }
                     System.IO.MemoryStream s = new System.IO.MemoryStream(System.Text.Encoding.UTF8.GetBytes(str));
-
-                    // FIXED LOL
-
-
 
                     int myVer = version();
                     int iniVer = Convert.ToInt32(ver, 16);
@@ -271,6 +346,9 @@ namespace Loopstream
                 try
                 {
                     ret.init();
+                    ret.mp3.FIXME_kbps =
+                    ret.ogg.FIXME_kbps = -1;
+                    return ret;
                 }
                 catch (Exception e)
                 {
@@ -279,10 +357,8 @@ namespace Loopstream
                         e.Message + "\r\n\r\n" + e.Source + "\r\n\r\n" + e.InnerException + "\r\n\r\n" + e.StackTrace);
                 }
             }
-            else
-            {
-                ret = new LSSettings();
-            }
+            ret = new LSSettings();
+            ret.initWhenDeserializationFails(); // it is 06:20 am, what are you looking at
             return ret;
         }
     }

@@ -10,6 +10,7 @@ namespace Loopstream
 {
     public class LSEncoder
     {
+        object locker;
         protected bool dump;
         protected Process proc;
         protected LSPcmFeed pimp;
@@ -36,6 +37,7 @@ namespace Loopstream
             dump = false;
             settings = null;
             crashed = false;
+            locker = new object();
         }
 
         protected void makeShouter()
@@ -119,11 +121,16 @@ namespace Loopstream
             else if (str.StartsWith("HTTP/1.0 200 OK"))
             {
                 s = prepS;
+                stampee = 0;
                 stdin = pstdin;
                 stdout = pstdout;
-                stamps = new List<long>();
+                stamps = new long[32];
+                chunks = new long[32];
+                long v = DateTime.UtcNow.Ticks / 10000;
+                for (int a = 0; a < stamps.Length; a++) stamps[a] = v;
                 Program.ni.ShowBalloonTip(1000, "Loopstream Connected", "Streaming to " + settings.mount + "." + enc.ext, ToolTipIcon.Info);
                 new System.Threading.Thread(new System.Threading.ThreadStart(reader)).Start();
+                new System.Threading.Thread(new System.Threading.ThreadStart(counter)).Start();
             }
             else
             {
@@ -132,7 +139,9 @@ namespace Loopstream
             }
         }
 
-        public List<long> stamps;
+        int stampee;
+        public long[] chunks;
+        public long[] stamps;
         protected void reader()
         {
             System.IO.FileStream m = null;
@@ -159,8 +168,17 @@ namespace Loopstream
                 }
                 catch
                 {
+                    enc.FIXME_kbps = -1;
                     crashed = true;
                     break;
+                }
+                
+                // speed measuring
+                lock (locker)
+                {
+                    chunks[stampee] = i;
+                    stamps[stampee] = DateTime.UtcNow.Ticks / 10000;
+                    stampee = ++stampee < stamps.Length ? stampee : 0;
                 }
             }
             string fn = proc.StartInfo.FileName;
@@ -169,8 +187,26 @@ namespace Loopstream
             if (m != null) m.Close();
         }
 
+        void counter()
+        {
+            while (!crashed)
+            {
+                lock (locker)
+                {
+                    long time = DateTime.UtcNow.Ticks / 10000;
+                    int i = stampee + 1;
+                    i = i >= stamps.Length ? 0 : i;
+                    time -= stamps[i];
+                    enc.FIXME_kbps = Math.Max(1, ((8000.0 * (chunks.Sum() - 4096)) / time) / 1024);
+                }
+                System.Threading.Thread.Sleep(10);
+            }
+            enc.FIXME_kbps = -1;
+        }
+
         public void Dispose()
         {
+            enc.FIXME_kbps = -1;
             stdin = stdout = null;
             crashed = true;
             proc.Kill();

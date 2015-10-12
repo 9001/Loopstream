@@ -37,8 +37,8 @@ namespace Loopstream
         Rectangle myBounds;
         LSMixer mixer;
         LSPcmFeed pcm;
-        //LSLame lame;
-        Control[] invals;
+        LSTag tag;
+        Control[] invals; //sorry
 
         private void Form1_Load(object sender, EventArgs e)
         {
@@ -70,18 +70,8 @@ namespace Loopstream
             }
 
             settings = LSSettings.load();
-            //settings.mixer.valueChanged += mixer_valueChanged;
-            //mixer_valueChanged(sender, e);
+            settings.runTests(splash);
             isPresetLoad = true;
-
-            //LSDevice dev = devs.First(x => x.id == "{0.0.0.00000000}.{d59c0b32-c0fd-4390-b85f-600fc68eacee}");
-            //NAudio.Wave.WasapiLoopbackCapture wlc = new NAudio.Wave.WasapiLoopbackCapture(dev.mm);
-            //wlc.DataAvailable += wlc_DataAvailable;
-            //wlc.StartRecording();
-
-            //System.Threading.Thread.Sleep(500);
-            //splash.Close();
-            //splash.Dispose();
 
             gMusic.valueChanged += gSlider_valueChanged;
             gMic.valueChanged += gSlider_valueChanged;
@@ -170,7 +160,13 @@ namespace Loopstream
                 gOut.graden2,
             };
             invalOnNext = false;
+
+            Timer tTitle = new Timer();
+            tTitle.Tick += tTitle_Tick;
+            tTitle.Interval = 200;
+            tTitle.Start();
         }
+
         bool invalOnNext;
         void inval()
         {
@@ -278,6 +274,7 @@ namespace Loopstream
             if (gConnect.Text == "Connect")
             {
                 gConnect.Text = "D I S C O N N E C T";
+                tag = new LSTag(settings);
                 mixer = new LSMixer(settings);
                 pcm = new LSPcmFeed(settings, mixer.lameOutlet);
             }
@@ -430,6 +427,15 @@ namespace Loopstream
         private void gGit_Click(object sender, EventArgs e)
         {
             System.Diagnostics.Process.Start("http://github.com/9001/loopstream");
+        }
+
+        void tTitle_Tick(object sender, EventArgs e)
+        {
+            if (tag == null) return;
+            this.Text = string.Format("{0:0.00} // {1:0.00} // {2}",
+                Math.Round(settings.mp3.FIXME_kbps, 2),
+                Math.Round(settings.ogg.FIXME_kbps, 2),
+                tag.tag);
         }
     }
 }

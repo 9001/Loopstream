@@ -28,14 +28,24 @@ namespace Loopstream
             light = new Pen(new SolidBrush(SystemColors.ControlLightLight));
             Color ca = SystemColors.ControlLight;
             Color cb = SystemColors.ControlLightLight;
-            Color one = Color.FromArgb(
-                ca.R + (cb.R - ca.R) / 3,
-                ca.G + (cb.G - ca.G) / 3,
-                ca.B + (cb.B - ca.B) / 3);
-            Color two = Color.FromArgb(
-                one.R + (cb.R - ca.R) / 3,
-                one.G + (cb.G - ca.G) / 3,
-                one.B + (cb.B - ca.B) / 3);
+            Color one, two;
+            try
+            {
+                one = Color.FromArgb(
+                    ca.R + (cb.R - ca.R) / 3,
+                    ca.G + (cb.G - ca.G) / 3,
+                    ca.B + (cb.B - ca.B) / 3);
+                two = Color.FromArgb(
+                    one.R + (cb.R - ca.R) / 3,
+                    one.G + (cb.G - ca.G) / 3,
+                    one.B + (cb.B - ca.B) / 3);
+            }
+            catch
+            {
+                // TODO: Check order
+                one = ca;
+                two = cb;
+            }
             gra = Color.FromArgb(255, cb.R, cb.G, cb.B);
             grb = Color.FromArgb(96, ca.R, ca.G, ca.B);
             grc = Color.FromArgb(16, 0, 0, 0);

@@ -54,26 +54,31 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="7zip\Common\CommandLineParser.cs" />
-    <Compile Include="7zip\Common\CRC.cs" />
-    <Compile Include="7zip\Common\InBuffer.cs" />
-    <Compile Include="7zip\Common\OutBuffer.cs" />
-    <Compile Include="7zip\Compress\LZMA\LzmaBase.cs" />
-    <Compile Include="7zip\Compress\LZMA\LzmaDecoder.cs" />
-    <Compile Include="7zip\Compress\LZMA\LzmaEncoder.cs" />
-    <Compile Include="7zip\Compress\LZ\IMatchFinder.cs" />
-    <Compile Include="7zip\Compress\LZ\LzBinTree.cs" />
-    <Compile Include="7zip\Compress\LZ\LzInWindow.cs" />
-    <Compile Include="7zip\Compress\LZ\LzOutWindow.cs" />
-    <Compile Include="7zip\Compress\RangeCoder\RangeCoder.cs" />
-    <Compile Include="7zip\Compress\RangeCoder\RangeCoderBit.cs" />
-    <Compile Include="7zip\Compress\RangeCoder\RangeCoderBitTree.cs" />
-    <Compile Include="7zip\ICoder.cs" />
+    <Compile Include="LSTag.cs" />
+    <Compile Include="turnkey\7zip\Common\CommandLineParser.cs" />
+    <Compile Include="turnkey\7zip\Common\CRC.cs" />
+    <Compile Include="turnkey\7zip\Common\InBuffer.cs" />
+    <Compile Include="turnkey\7zip\Common\OutBuffer.cs" />
+    <Compile Include="turnkey\7zip\Compress\LZMA\LzmaBase.cs" />
+    <Compile Include="turnkey\7zip\Compress\LZMA\LzmaDecoder.cs" />
+    <Compile Include="turnkey\7zip\Compress\LZMA\LzmaEncoder.cs" />
+    <Compile Include="turnkey\7zip\Compress\LZ\IMatchFinder.cs" />
+    <Compile Include="turnkey\7zip\Compress\LZ\LzBinTree.cs" />
+    <Compile Include="turnkey\7zip\Compress\LZ\LzInWindow.cs" />
+    <Compile Include="turnkey\7zip\Compress\LZ\LzOutWindow.cs" />
+    <Compile Include="turnkey\7zip\Compress\RangeCoder\RangeCoder.cs" />
+    <Compile Include="turnkey\7zip\Compress\RangeCoder\RangeCoderBit.cs" />
+    <Compile Include="turnkey\7zip\Compress\RangeCoder\RangeCoderBitTree.cs" />
+    <Compile Include="turnkey\7zip\ICoder.cs" />
     <Compile Include="LSDevice.cs" />
     <Compile Include="LSEncoder.cs" />
     <Compile Include="LSPcmFeed.cs" />
     <Compile Include="LSVorbis.cs" />
+    <Compile Include="turnkey\Chencode.cs" />
     <Compile Include="UC_Graden.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="UC_TLabel.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="UI_ConfigSC.cs">

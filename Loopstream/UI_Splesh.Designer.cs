@@ -65,7 +65,7 @@
             this.label3.BackColor = System.Drawing.Color.White;
             this.label3.Location = new System.Drawing.Point(0, 382);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(1, 2);
+            this.label3.Size = new System.Drawing.Size(1, 1);
             this.label3.TabIndex = 2;
             this.label3.Visible = false;
             // 

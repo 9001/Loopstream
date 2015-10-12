@@ -29,21 +29,15 @@
         private void InitializeComponent()
         {
             this.box_sliders = new System.Windows.Forms.Panel();
-            this.gMusic = new Loopstream.Verter();
-            this.gOut = new Loopstream.Verter();
-            this.gMic = new Loopstream.Verter();
-            this.gSpeed = new Loopstream.Verter();
             this.box_top = new System.Windows.Forms.Panel();
             this.box_top_dark = new System.Windows.Forms.Label();
             this.box_top_light = new System.Windows.Forms.Label();
-            this.box_top_graden = new Loopstream.Graden();
             this.box_bottom = new System.Windows.Forms.Panel();
             this.box_unused1 = new System.Windows.Forms.Panel();
             this.box_unused1_light = new System.Windows.Forms.Label();
             this.box_unused1_dark = new System.Windows.Forms.Label();
             this.box_bottom_dark = new System.Windows.Forms.Label();
             this.box_bottom_light = new System.Windows.Forms.Label();
-            this.box_bottom_graden = new Loopstream.Graden();
             this.box_menu_outer = new System.Windows.Forms.Panel();
             this.box_menu = new System.Windows.Forms.Panel();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
@@ -59,6 +53,12 @@
             this.gLoad = new System.Windows.Forms.Button();
             this.gB = new System.Windows.Forms.Button();
             this.gA = new System.Windows.Forms.Button();
+            this.gMusic = new Loopstream.Verter();
+            this.gOut = new Loopstream.Verter();
+            this.gMic = new Loopstream.Verter();
+            this.gSpeed = new Loopstream.Verter();
+            this.box_top_graden = new Loopstream.Graden();
+            this.box_bottom_graden = new Loopstream.Graden();
             this.box_sliders.SuspendLayout();
             this.box_top.SuspendLayout();
             this.box_bottom.SuspendLayout();
@@ -82,62 +82,6 @@
             this.box_sliders.Name = "box_sliders";
             this.box_sliders.Size = new System.Drawing.Size(476, 416);
             this.box_sliders.TabIndex = 4;
-            // 
-            // gMusic
-            // 
-            this.gMusic.BackColor = System.Drawing.SystemColors.ControlLight;
-            this.gMusic.canToggle = true;
-            this.gMusic.enabled = true;
-            this.gMusic.level = 0;
-            this.gMusic.Location = new System.Drawing.Point(17, 17);
-            this.gMusic.Margin = new System.Windows.Forms.Padding(8);
-            this.gMusic.Name = "gMusic";
-            this.gMusic.Size = new System.Drawing.Size(98, 382);
-            this.gMusic.TabIndex = 0;
-            this.gMusic.timeScale = false;
-            this.gMusic.title = "Music";
-            // 
-            // gOut
-            // 
-            this.gOut.BackColor = System.Drawing.SystemColors.ControlLight;
-            this.gOut.canToggle = true;
-            this.gOut.enabled = true;
-            this.gOut.level = 0;
-            this.gOut.Location = new System.Drawing.Point(359, 17);
-            this.gOut.Margin = new System.Windows.Forms.Padding(8);
-            this.gOut.Name = "gOut";
-            this.gOut.Size = new System.Drawing.Size(98, 382);
-            this.gOut.TabIndex = 3;
-            this.gOut.timeScale = false;
-            this.gOut.title = "OUT";
-            // 
-            // gMic
-            // 
-            this.gMic.BackColor = System.Drawing.SystemColors.ControlLight;
-            this.gMic.canToggle = true;
-            this.gMic.enabled = true;
-            this.gMic.level = 0;
-            this.gMic.Location = new System.Drawing.Point(131, 17);
-            this.gMic.Margin = new System.Windows.Forms.Padding(8);
-            this.gMic.Name = "gMic";
-            this.gMic.Size = new System.Drawing.Size(98, 382);
-            this.gMic.TabIndex = 1;
-            this.gMic.timeScale = false;
-            this.gMic.title = "mic";
-            // 
-            // gSpeed
-            // 
-            this.gSpeed.BackColor = System.Drawing.SystemColors.ControlLight;
-            this.gSpeed.canToggle = false;
-            this.gSpeed.enabled = true;
-            this.gSpeed.level = 0;
-            this.gSpeed.Location = new System.Drawing.Point(245, 17);
-            this.gSpeed.Margin = new System.Windows.Forms.Padding(8);
-            this.gSpeed.Name = "gSpeed";
-            this.gSpeed.Size = new System.Drawing.Size(98, 382);
-            this.gSpeed.TabIndex = 2;
-            this.gSpeed.timeScale = true;
-            this.gSpeed.title = "Speed";
             // 
             // box_top
             // 
@@ -168,18 +112,6 @@
             this.box_top_light.Name = "box_top_light";
             this.box_top_light.Size = new System.Drawing.Size(476, 1);
             this.box_top_light.TabIndex = 10;
-            // 
-            // box_top_graden
-            // 
-            this.box_top_graden.co = 1D;
-            this.box_top_graden.colorA = System.Drawing.SystemColors.Control;
-            this.box_top_graden.colorB = System.Drawing.SystemColors.ControlLight;
-            this.box_top_graden.Direction = false;
-            this.box_top_graden.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.box_top_graden.Location = new System.Drawing.Point(0, 0);
-            this.box_top_graden.Name = "box_top_graden";
-            this.box_top_graden.Size = new System.Drawing.Size(476, 59);
-            this.box_top_graden.TabIndex = 13;
             // 
             // box_bottom
             // 
@@ -241,18 +173,6 @@
             this.box_bottom_light.Name = "box_bottom_light";
             this.box_bottom_light.Size = new System.Drawing.Size(476, 1);
             this.box_bottom_light.TabIndex = 10;
-            // 
-            // box_bottom_graden
-            // 
-            this.box_bottom_graden.co = 1D;
-            this.box_bottom_graden.colorA = System.Drawing.SystemColors.Control;
-            this.box_bottom_graden.colorB = System.Drawing.SystemColors.ControlLight;
-            this.box_bottom_graden.Direction = true;
-            this.box_bottom_graden.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.box_bottom_graden.Location = new System.Drawing.Point(0, 0);
-            this.box_bottom_graden.Name = "box_bottom_graden";
-            this.box_bottom_graden.Size = new System.Drawing.Size(476, 105);
-            this.box_bottom_graden.TabIndex = 12;
             // 
             // box_menu_outer
             // 
@@ -334,7 +254,7 @@
             this.gConnect.Margin = new System.Windows.Forms.Padding(8, 8, 8, 3);
             this.gConnect.Name = "gConnect";
             this.gConnect.Size = new System.Drawing.Size(141, 43);
-            this.gConnect.TabIndex = 0;
+            this.gConnect.TabIndex = 1;
             this.gConnect.Text = "Connect";
             this.gConnect.UseVisualStyleBackColor = true;
             this.gConnect.Click += new System.EventHandler(this.gConnect_Click);
@@ -356,7 +276,7 @@
             this.gSettings.Margin = new System.Windows.Forms.Padding(8, 3, 8, 3);
             this.gSettings.Name = "gSettings";
             this.gSettings.Size = new System.Drawing.Size(141, 43);
-            this.gSettings.TabIndex = 1;
+            this.gSettings.TabIndex = 2;
             this.gSettings.Text = "Settings";
             this.gSettings.UseVisualStyleBackColor = true;
             this.gSettings.Click += new System.EventHandler(this.gSettings_Click);
@@ -367,7 +287,7 @@
             this.gD.Margin = new System.Windows.Forms.Padding(3, 0, 8, 0);
             this.gD.Name = "gD";
             this.gD.Size = new System.Drawing.Size(69, 39);
-            this.gD.TabIndex = 8;
+            this.gD.TabIndex = 7;
             this.gD.Text = "D";
             this.gD.UseVisualStyleBackColor = true;
             this.gD.Click += new System.EventHandler(this.gPreset_Click);
@@ -378,7 +298,7 @@
             this.gExit.Margin = new System.Windows.Forms.Padding(8, 3, 8, 3);
             this.gExit.Name = "gExit";
             this.gExit.Size = new System.Drawing.Size(141, 43);
-            this.gExit.TabIndex = 2;
+            this.gExit.TabIndex = 3;
             this.gExit.Text = "Exit";
             this.gExit.UseVisualStyleBackColor = true;
             this.gExit.Click += new System.EventHandler(this.gExit_Click);
@@ -389,7 +309,7 @@
             this.gC.Margin = new System.Windows.Forms.Padding(8, 0, 0, 0);
             this.gC.Name = "gC";
             this.gC.Size = new System.Drawing.Size(69, 39);
-            this.gC.TabIndex = 7;
+            this.gC.TabIndex = 6;
             this.gC.Text = "C";
             this.gC.UseVisualStyleBackColor = true;
             this.gC.Click += new System.EventHandler(this.gPreset_Click);
@@ -400,7 +320,7 @@
             this.gLoad.Margin = new System.Windows.Forms.Padding(8, 3, 8, 8);
             this.gLoad.Name = "gLoad";
             this.gLoad.Size = new System.Drawing.Size(141, 40);
-            this.gLoad.TabIndex = 3;
+            this.gLoad.TabIndex = 8;
             this.gLoad.Text = "Load preset";
             this.gLoad.UseVisualStyleBackColor = true;
             this.gLoad.Click += new System.EventHandler(this.gLoad_Click);
@@ -411,7 +331,7 @@
             this.gB.Margin = new System.Windows.Forms.Padding(3, 0, 8, 3);
             this.gB.Name = "gB";
             this.gB.Size = new System.Drawing.Size(69, 39);
-            this.gB.TabIndex = 6;
+            this.gB.TabIndex = 5;
             this.gB.Text = "B";
             this.gB.UseVisualStyleBackColor = true;
             this.gB.Click += new System.EventHandler(this.gPreset_Click);
@@ -422,10 +342,90 @@
             this.gA.Margin = new System.Windows.Forms.Padding(8, 0, 0, 3);
             this.gA.Name = "gA";
             this.gA.Size = new System.Drawing.Size(69, 39);
-            this.gA.TabIndex = 5;
+            this.gA.TabIndex = 4;
             this.gA.Text = "A";
             this.gA.UseVisualStyleBackColor = true;
             this.gA.Click += new System.EventHandler(this.gPreset_Click);
+            // 
+            // gMusic
+            // 
+            this.gMusic.BackColor = System.Drawing.SystemColors.ControlLight;
+            this.gMusic.canToggle = true;
+            this.gMusic.enabled = true;
+            this.gMusic.level = 0;
+            this.gMusic.Location = new System.Drawing.Point(17, 17);
+            this.gMusic.Margin = new System.Windows.Forms.Padding(8);
+            this.gMusic.Name = "gMusic";
+            this.gMusic.Size = new System.Drawing.Size(98, 382);
+            this.gMusic.TabIndex = 9;
+            this.gMusic.timeScale = false;
+            this.gMusic.title = "Music";
+            // 
+            // gOut
+            // 
+            this.gOut.BackColor = System.Drawing.SystemColors.ControlLight;
+            this.gOut.canToggle = true;
+            this.gOut.enabled = true;
+            this.gOut.level = 0;
+            this.gOut.Location = new System.Drawing.Point(359, 17);
+            this.gOut.Margin = new System.Windows.Forms.Padding(8);
+            this.gOut.Name = "gOut";
+            this.gOut.Size = new System.Drawing.Size(98, 382);
+            this.gOut.TabIndex = 12;
+            this.gOut.timeScale = false;
+            this.gOut.title = "OUT";
+            // 
+            // gMic
+            // 
+            this.gMic.BackColor = System.Drawing.SystemColors.ControlLight;
+            this.gMic.canToggle = true;
+            this.gMic.enabled = true;
+            this.gMic.level = 0;
+            this.gMic.Location = new System.Drawing.Point(131, 17);
+            this.gMic.Margin = new System.Windows.Forms.Padding(8);
+            this.gMic.Name = "gMic";
+            this.gMic.Size = new System.Drawing.Size(98, 382);
+            this.gMic.TabIndex = 10;
+            this.gMic.timeScale = false;
+            this.gMic.title = "mic";
+            // 
+            // gSpeed
+            // 
+            this.gSpeed.BackColor = System.Drawing.SystemColors.ControlLight;
+            this.gSpeed.canToggle = false;
+            this.gSpeed.enabled = true;
+            this.gSpeed.level = 0;
+            this.gSpeed.Location = new System.Drawing.Point(245, 17);
+            this.gSpeed.Margin = new System.Windows.Forms.Padding(8);
+            this.gSpeed.Name = "gSpeed";
+            this.gSpeed.Size = new System.Drawing.Size(98, 382);
+            this.gSpeed.TabIndex = 11;
+            this.gSpeed.timeScale = true;
+            this.gSpeed.title = "Speed";
+            // 
+            // box_top_graden
+            // 
+            this.box_top_graden.co = 1D;
+            this.box_top_graden.colorA = System.Drawing.SystemColors.Control;
+            this.box_top_graden.colorB = System.Drawing.SystemColors.ControlLight;
+            this.box_top_graden.Direction = false;
+            this.box_top_graden.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.box_top_graden.Location = new System.Drawing.Point(0, 0);
+            this.box_top_graden.Name = "box_top_graden";
+            this.box_top_graden.Size = new System.Drawing.Size(476, 59);
+            this.box_top_graden.TabIndex = 13;
+            // 
+            // box_bottom_graden
+            // 
+            this.box_bottom_graden.co = 1D;
+            this.box_bottom_graden.colorA = System.Drawing.SystemColors.Control;
+            this.box_bottom_graden.colorB = System.Drawing.SystemColors.ControlLight;
+            this.box_bottom_graden.Direction = true;
+            this.box_bottom_graden.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.box_bottom_graden.Location = new System.Drawing.Point(0, 0);
+            this.box_bottom_graden.Name = "box_bottom_graden";
+            this.box_bottom_graden.Size = new System.Drawing.Size(476, 105);
+            this.box_bottom_graden.TabIndex = 12;
             // 
             // Home
             // 
