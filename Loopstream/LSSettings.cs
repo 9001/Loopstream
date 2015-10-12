@@ -7,7 +7,13 @@ using System.Xml.Serialization;
 
 namespace Loopstream
 {
-    public class LSSettings
+    public class LSSettingsI
+    {
+        public string sjdflakjdsa;
+        public LSSettingsI() { }
+    }
+
+    public class LSSettings : LSSettingsI
     {
         [XmlIgnore]
         public static LSSettings singleton;
@@ -368,9 +374,9 @@ namespace Loopstream
         public bool warn_poor, warn_drop;
         public double lim_poor, lim_drop;
 
-        public LSSettings()
+        public LSSettings() : base()
         {
-            s_devRec = s_devMic = s_devOut = null;
+            s_devRec = s_devMic = s_devOut = "";
             micLeft = true;
             micRight = false;
             mp3 = new LSParams();
@@ -425,32 +431,58 @@ namespace Loopstream
             warn_poor = warn_drop = true;
             lim_poor = 0.92;
             lim_drop = 0.78;
+
+            Logger.app.a("Base LSSettings ready, doing init");
             init();
         }
 
         public void init()
         {
             List<LSDevice> ldev = new List<LSDevice>();
-            NAudio.CoreAudioApi.MMDeviceEnumerator mde = new NAudio.CoreAudioApi.MMDeviceEnumerator();
-            foreach (
-                NAudio.CoreAudioApi.MMDevice device
-                 in mde.EnumerateAudioEndPoints(
-                    NAudio.CoreAudioApi.DataFlow.All,
-                    NAudio.CoreAudioApi.DeviceState.All))
+            try
             {
-                LSDevice add = new LSDevice();
-                add.mm = device;
-                add.isRec = device.DataFlow == NAudio.CoreAudioApi.DataFlow.Capture;
-                add.isPlay = device.DataFlow == NAudio.CoreAudioApi.DataFlow.Render;
-                if (device.DataFlow == NAudio.CoreAudioApi.DataFlow.All)
+                NAudio.CoreAudioApi.MMDeviceEnumerator mde = new NAudio.CoreAudioApi.MMDeviceEnumerator();
+                Logger.app.a("Created MM enumerator");
+                try
                 {
-                    add.isRec = add.isPlay = true;
+                    foreach (
+                        NAudio.CoreAudioApi.MMDevice device
+                         in mde.EnumerateAudioEndPoints(
+                            NAudio.CoreAudioApi.DataFlow.All,
+                            NAudio.CoreAudioApi.DeviceState.All))
+                    {
+                        try
+                        {
+                            LSDevice add = new LSDevice();
+                            Logger.app.a("Creating LSDevice");
+                            add.mm = device;
+                            add.isRec = device.DataFlow == NAudio.CoreAudioApi.DataFlow.Capture;
+                            add.isPlay = device.DataFlow == NAudio.CoreAudioApi.DataFlow.Render;
+                            if (device.DataFlow == NAudio.CoreAudioApi.DataFlow.All)
+                            {
+                                add.isRec = add.isPlay = true;
+                            }
+                            Logger.app.a("Dataflows OK");
+
+                            add.id = device.ID;
+                            Logger.app.a("ID: " + add.id);
+
+                            add.name = device.ToString();
+                            Logger.app.a("Name: " + add.name);
+
+                            ldev.Add(add);
+                        }
+                        catch { Logger.app.a("Failed"); }
+                    }
                 }
-                add.name = device.ToString();
-                add.id = device.ID;
-                ldev.Add(add);
+                catch { Logger.app.a("Failed"); }
             }
+            catch { Logger.app.a("Failed"); }
+
             devs = ldev.ToArray();
+            if (string.IsNullOrEmpty(s_devRec)) s_devRec = "";
+            if (string.IsNullOrEmpty(s_devMic)) s_devMic = "";
+            if (string.IsNullOrEmpty(s_devOut)) s_devOut = "";
             if (!string.IsNullOrEmpty(s_devRec)) devRec = getDevByID(s_devRec); // ?? devs.First(x => x.isPlay);
             if (!string.IsNullOrEmpty(s_devMic)) devMic = getDevByID(s_devMic);
             if (!string.IsNullOrEmpty(s_devOut)) devOut = getDevByID(s_devOut);
@@ -741,7 +773,7 @@ namespace Loopstream
         public void save()
         {
             metaEnc();
-            XmlSerializer x = new XmlSerializer(this.GetType());
+            var x = new XmlSerializer(this.GetType());
             using (var s = new System.IO.FileStream("Loopstream.ini", System.IO.FileMode.Create))
             {
                 byte[] ver = System.Text.Encoding.UTF8.GetBytes(version().ToString("x") + "\n");
@@ -750,12 +782,26 @@ namespace Loopstream
             }
             metaDec();
         }
+        public string serialize()
+        {
+            var x = new XmlSerializer(this.GetType());
+            using (var stream = new System.IO.MemoryStream())
+            {
+                stream.SetLength(0);
+                x.Serialize(stream, this);
+                stream.Position = 0;
+                var doc = System.Xml.Linq.XDocument.Load(stream);
+                return doc.Root.ToString();
+            }
+        }
         public static LSSettings load()
         {
+            Logger.app.a("Loading LSSettings");
             LSSettings ret;
             XmlSerializer x = new XmlSerializer(typeof(LSSettings));
             if (System.IO.File.Exists("Loopstream.ini"))
             {
+                Logger.app.a("Found existing .ini");
                 try
                 {
                     string str = System.IO.File.ReadAllText("Loopstream.ini", Encoding.UTF8);
@@ -801,6 +847,7 @@ namespace Loopstream
                 }
                 catch (Exception e)
                 {
+                    Logger.app.a("Deserialize failed, fallback to new");
                     ret = new LSSettings();
                     System.Windows.Forms.MessageBox.Show(
                         "Failed to load settings:\n«Loopstream.ini» is probably from an old version of the program.\n\nDetailed information:\n" + e.Message + "\n" + e.StackTrace,
@@ -810,6 +857,7 @@ namespace Loopstream
                 }
                 try
                 {
+                    Logger.app.a("Calling init()");
                     ret.init();
                     ret.mp3.FIXME_kbps =
                     ret.ogg.FIXME_kbps = -1;
@@ -826,18 +874,25 @@ namespace Loopstream
                         ret.metaDec();
                     }
                     catch { }
-                    LSSettings.singleton = ret;
+                    Logger.app.a("LSSettings deserialize successful");
+                    LSSettings.singleton = ret; // for exception handler
                     return ret;
                 }
                 catch (Exception e)
                 {
+                    Logger.app.a("LSSettings deserialize postprocessing failed");
                     System.Windows.Forms.MessageBox.Show(
                         "Failed to initialize settings object:\nPossibly from an outdated version of «Loopstream.ini», though more likely a developer fuckup. Go tell ed this:\n\n" +
                         e.Message + "\n\n" + e.Source + "\n\n" + e.InnerException + "\n\n" + e.StackTrace);
                 }
             }
+            Logger.app.a("Creating new LSSettings");
             ret = new LSSettings();
+            
+            Logger.app.a("Postprocessing new");
             ret.initWhenDeserializationFails(); // it is 06:20 am, what are you looking at
+
+            Logger.app.a("LSSettings OK");
             LSSettings.singleton = ret; // for exception handler
             return ret;
         }

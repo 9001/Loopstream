@@ -281,23 +281,9 @@ namespace Loopstream
 
         internal GeneralInfo(SerializableException serializableException, Exception exception)
         {
-            this.config = LSSettings.singleton;
-            if (this.config == null)
-            {
-                this.config = new LSSettings();
-                this.config.host = "nullsettings";
-            }
-            if (this.exception == null) this.exception = new SerializableException();
-            this.config.serverPresets = new List<LSSettings.LSServerPreset>();
-            this.config.pass = "(redacted)";
-
-            this.devs = this.config.devs;
-            if (this.devs == null)
-            {
-                this.devs = new LSDevice[0];
-            }
-
             this.exception = serializableException;
+
+            if (this.exception == null) this.exception = new SerializableException();
 
             HostApplicationVersion = System.Windows.Forms.Application.ProductVersion;
 
@@ -374,10 +360,6 @@ namespace Loopstream
 
         public SerializableException exception { get; set; }
 
-        public LSSettings config { get; set; }
-
-        public LSDevice[] devs { get; set; }
-
         //public Variables vars { get; set; }
 
         public string moar { get; set; }
@@ -386,11 +368,16 @@ namespace Loopstream
 
         public override string ToString()
         {
-            var serializer = new XmlSerializer(this.GetType());
+            return GeneralInfo.ser(this);
+        }
+
+        public static string ser(object o)
+        {
+            var serializer = new XmlSerializer(o.GetType());
             using (var stream = new MemoryStream())
             {
                 stream.SetLength(0);
-                serializer.Serialize(stream, this);
+                serializer.Serialize(stream, o);
                 stream.Position = 0;
                 var doc = XDocument.Load(stream);
                 return doc.Root.ToString();

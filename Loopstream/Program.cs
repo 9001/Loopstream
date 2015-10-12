@@ -15,6 +15,7 @@ namespace Loopstream
         public static string tools;
         public static string[] args;
         public static bool SIGNMODE;
+        public static bool DUMBCEPTIONS;
         public static Random rnd;
         //public static System.IO.StreamWriter log;
 
@@ -31,22 +32,25 @@ namespace Loopstream
 
             DBGLOG = "";
             SIGNMODE = false;
+            DUMBCEPTIONS = false;
+
             Program.args = args;
-            if (args.Length > 0)
+            foreach (string str in args)
             {
-                if (args[0] == "sign")
-                {
-                    SIGNMODE = true;
-                }
+                if (str == "sign") SIGNMODE = true;
+                if (str == "exceptions") DUMBCEPTIONS = true;
             }
 
-            AppDomain.CurrentDomain.UnhandledException += (ueSender, ueArgs) =>
-                new UI_Exception(ueArgs.ExceptionObject as Exception, 1).ShowDialog();
-            
-            Application.ThreadException += (ueSender, ueArgs) =>
-                new UI_Exception(ueArgs.Exception, 2).ShowDialog();
+            if (!DUMBCEPTIONS)
+            {
+                AppDomain.CurrentDomain.UnhandledException += (ueSender, ueArgs) =>
+                    new UI_Exception(ueArgs.ExceptionObject as Exception, 1).ShowDialog();
 
-            Application.SetUnhandledExceptionMode(UnhandledExceptionMode.CatchException);
+                Application.ThreadException += (ueSender, ueArgs) =>
+                    new UI_Exception(ueArgs.Exception, 2).ShowDialog();
+
+                Application.SetUnhandledExceptionMode(UnhandledExceptionMode.CatchException);
+            }
 
             //AppDomain.CurrentDomain.AssemblyResolve += CurrentDomain_AssemblyResolve;
             if (!debug)

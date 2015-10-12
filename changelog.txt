@@ -3,6 +3,10 @@
 + new feature
 ~ other change
 
+2014-03-09, 16:36:03 - Loopstream 1.3.7.4
+  + All soundcards and config in crash reports (except password)
+  = Failed to report active soundcards when no mic connected
+
 2014-03-09, 12:46:40 - Loopstream 1.3.7.2
   + Crash reporter
   + Option to kick other DJs off the icecast mount if in use

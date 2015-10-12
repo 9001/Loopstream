@@ -145,14 +145,22 @@ namespace Loopstream
             mixOut = new WasapiOut(settings.devOut.mm,
                 AudioClientShareMode.Shared, false, 100);
 
-            Logger.mix.a("init mixOut"); mixOut.Init(outVol);
-            Logger.mix.a("rec.startRec"); recCap.StartRecording();
+
+
+            Logger.mix.a("init mixOut");
+            mixOut.Init(outVol);
+
+            Logger.mix.a("rec.startRec");
+            recCap.StartRecording();
+
             //System.Threading.Thread.Sleep(100);
             if (settings.devMic != null && settings.devMic.mm != null)
             {
-                Logger.mix.a("mic.startRec"); micCap.StartRecording();
+                Logger.mix.a("mic.startRec");
+                micCap.StartRecording();
             }
-            Logger.mix.a("mixOut.play (ready)"); mixOut.Play();
+            Logger.mix.a("mixOut.play (ready)");
+            mixOut.Play();
 
             if (settings.vu)
             {

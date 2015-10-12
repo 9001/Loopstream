@@ -46,20 +46,44 @@ namespace Loopstream
                 var se = new SerializableException(ex);
                 gi = new GeneralInfo(se, ex);
 
+                LSSettings s = LSSettings.singleton;
+                try
+                {
+                    if (s == null)
+                    {
+                        s = new LSSettings();
+                        s.host = "nullsettings";
+                    }
+                    s.serverPresets = new List<LSSettings.LSServerPreset>();
+                    s.pass = "(redacted)";
+                    GeneralInfo.ser(s);
+                }
+                catch { }
+                try
+                {
+                    if (s.devs == null) s.devs = new LSDevice[0];
+                    GeneralInfo.ser(s.devs);
+                }
+                catch
+                {
+                    try { s.devs = new LSDevice[0]; }
+                    catch { }
+                }
+
                 StringBuilder sb = new StringBuilder();
                 sb.AppendLine();
                 bool ok1, ok2, ok3, oks;
                 ok1 = ok2 = ok3 = oks = false;
                 try
                 {
-                    ok1 = gi.config.devRec.mm != null;
-                    ok2 = gi.config.devMic.mm != null;
-                    ok3 = gi.config.devOut.mm != null;
+                    ok1 = s.devRec != null && s.devRec.mm != null;
+                    ok2 = s.devMic != null && s.devMic.mm != null;
+                    ok3 = s.devOut != null && s.devOut.mm != null;
                     sb.AppendLine("dev state indicated: " + ok1 + ", " + ok2 + ", " + ok3);
-                    gi.config.runTests(null, true);
-                    ok1 = ok1 == (gi.config.devRec.mm != null);
-                    ok2 = ok2 == (gi.config.devMic.mm != null);
-                    ok3 = ok3 == (gi.config.devOut.mm != null);
+                    s.runTests(null, true);
+                    ok1 = ok1 == (s.devRec != null && s.devRec.mm != null);
+                    ok2 = ok2 == (s.devMic != null && s.devMic.mm != null);
+                    ok3 = ok3 == (s.devOut != null && s.devOut.mm != null);
                     sb.AppendLine("dev state correct: " + ok1 + ", " + ok2 + ", " + ok3);
                     oks = true;
                 }
@@ -111,10 +135,19 @@ namespace Loopstream
                     }
                 }
             }
-            catch
+            catch (Exception exx)
             {
                 gDesc.Enabled = true;
-                gDesc.Text = "Shit is properly fucked, can't send error information to devs";
+                try
+                {
+                    gDesc.Text = "Shit is properly fucked, can't send error information to devs\r\n" +
+                        "This is the best I can do:\r\n\r\n" +
+                        ex.Message + "\r\n\r\n" + ex.StackTrace;
+                }
+                catch
+                {
+                    gDesc.Text = "Shit is properly fucked, can't send error information to devs";
+                }
                 gExit.Enabled = true;
                 gExit.Focus();
             }
@@ -128,6 +161,21 @@ namespace Loopstream
             {
                 gi.UserDescription = gDesc.Text;
                 string serialized = gi.ToString();
+
+                try
+                {
+                    serialized += "\r\n" + GeneralInfo.ser(LSSettings.singleton);
+                }
+                catch { serialized += "\r\n" + "LSSettings Serialization Error"; }
+
+                try
+                {
+                    serialized += "\r\n" + GeneralInfo.ser(LSSettings.singleton.devs);
+                }
+                catch { serialized += "\r\n" + "LSDevices Serialization Error"; }
+
+
+
                 byte[] payload = Z.lze(serialized, true);
                 Int32 nix = (Int32)(DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1))).TotalSeconds;
                 System.IO.File.WriteAllText("crash-" + nix, serialized, Encoding.UTF8);

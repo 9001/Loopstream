@@ -176,11 +176,8 @@ namespace Loopstream
             }
         }
         
-        object locker;
         public Logger()
         {
-            locker = new object();
-            
             i = msg = 0;
             buf = new Entry[1024];
             for (int a = 0; a < buf.Length; a++)
@@ -191,7 +188,7 @@ namespace Loopstream
         public override string ToString()
         {
             Entry e;
-            lock (locker)
+            lock (buf)
             {
                 e = buf[i];
             }
@@ -203,7 +200,7 @@ namespace Loopstream
         }
         public void a(string text)
         {
-            lock (locker)
+            lock (buf)
             {
                 if (text == buf[i].msg)
                 {
@@ -220,7 +217,7 @@ namespace Loopstream
         public string compile()
         {
             StringBuilder ret = new StringBuilder();
-            lock (locker)
+            lock (buf)
             {
                 long o = i;
                 while (true)

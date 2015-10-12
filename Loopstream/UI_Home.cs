@@ -65,29 +65,32 @@ namespace Loopstream
         int loads = 0;
         void t_Tick(object sender, EventArgs e)
         {
-            ((Timer)sender).Stop();
+            ((Timer)sender).Stop();                                                                         /**/ Logger.app.a("timer triggered");
             wincap = this.Text + " v" + Application.ProductVersion;
-            this.Text = wincap;
+            this.Text = wincap;                                                                             /**/ Logger.app.a("set window title");
 
-            DFC.coreTest();
+            DFC.coreTest();                                                                                 /**/ Logger.app.a("dfc core ok");
             if (Directory.Exists(@"..\..\tools\"))
             {
-                splash.vis();
+                splash.vis();                                                                               /**/ Logger.app.a("dfc maker");
                 new DFC().make(splash.pb);
                 Program.kill();
             }
             if (Directory.Exists(Program.tools) &&
                 !File.Exists(Program.tools + @"web\png\win95.png"))
             {
+                Logger.app.a("outdated tools; deleting");
                 Directory.Delete(Program.tools, true);
             }
             if (!Directory.Exists(Program.tools))
             {
+                Logger.app.a("outdated tools; deleting");
                 splash.vis();
                 new DFC().extract(splash.pb);
             }
-            plowTheFields();
-            splash.unvis();
+            Logger.app.a("extract sequence done");
+            plowTheFields();                                                                                /**/ Logger.app.a("traktor test ok");
+            splash.unvis();                                                                                 /**/ Logger.app.a("splash hidden");
 
             if (++loads > 1)
             {
