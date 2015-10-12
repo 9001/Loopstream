@@ -1,0 +1,7 @@
+﻿! note
+= bugfix
++ new feature
+~ other change
+
+2013-07-28, 06:55:24 - Loopstream 0.9.0.0
+  ! glitchy GUI, technically works but no tags yet
