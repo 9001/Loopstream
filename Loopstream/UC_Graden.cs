@@ -9,19 +9,27 @@ using System.Windows.Forms;
 
 namespace LoopStream
 {
-    class Graden : Label
+    public class Graden : Label
     {
-        Color ca, cb;
-
         public Graden()
             : base()
         {
-            ca = SystemColors.Control;
-            cb = SystemColors.ControlLightLight;
-            direction = false;
+            co = 1;
+            Direction = false;
+            colorA = SystemColors.Control;
+            colorB = SystemColors.ControlLight;
+            renderedOpacity = 1;
+            ca = _ca = colorA;
+            cb = _cb = colorB;
         }
 
-        public bool direction;
+        Color ca, cb;
+        Color _ca, _cb;
+        double renderedOpacity;
+        public bool Direction { get; set; }
+        public Color colorA { get { return _ca; } set { renderedOpacity = 1; _ca = ca = value; } }
+        public Color colorB { get { return _cb; } set { renderedOpacity = 1; _cb = cb = value; } }
+        public double co { get; set; }
 
         protected override void OnPaintBackground(PaintEventArgs pevent)
         {
@@ -30,9 +38,15 @@ namespace LoopStream
                 base.OnPaintBackground(pevent);
                 return;
             }
+            if (renderedOpacity != co)
+            {
+                renderedOpacity = co;
+                ca = Color.FromArgb((int)(co * 255), _ca.R, _ca.G, _ca.B);
+                cb = Color.FromArgb((int)(co * 255), _cb.R, _cb.G, _cb.B);
+            }
             Graphics g = pevent.Graphics;
             Rectangle re = pevent.ClipRectangle;
-            LinearGradientBrush lg = new LinearGradientBrush(re, ca, cb, direction ? 90 : 270);
+            LinearGradientBrush lg = new LinearGradientBrush(re, ca, cb, Direction ? 90 : 270);
             g.FillRectangle(lg, re);
         }
     }

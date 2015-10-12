@@ -23,6 +23,7 @@ namespace LoopStream
     {
         public Home()
         {
+            invals = new Control[0];
             InitializeComponent();
             splash = new Splesh();
             splash.Show();
@@ -35,6 +36,7 @@ namespace LoopStream
         LSMixer mixer;
         LSPcmFeed pcm;
         //LSLame lame;
+        Control[] invals;
 
         private void Form1_Load(object sender, EventArgs e)
         {
@@ -147,6 +149,44 @@ namespace LoopStream
             {
                 gConnect_Click(sender, e);
             }
+
+            // please don't look
+            invals = new Control[] {
+                box_top_graden,
+                box_bottom_graden,
+                gMusic.giSlider,
+                gMusic.graden1,
+                gMusic.graden2,
+                gMic.giSlider,
+                gMic.graden1,
+                gMic.graden2,
+                gSpeed.giSlider,
+                gSpeed.graden1,
+                gSpeed.graden2,
+                gOut.giSlider,
+                gOut.graden1,
+                gOut.graden2,
+            };
+            invalOnNext = false;
+        }
+        bool invalOnNext;
+        void inval()
+        {
+            foreach (Control c in invals)
+            {
+                c.Invalidate();
+            }
+            /*foreach (Control c in controls)
+            {
+                if (c.GetType() == typeof(LLabel) ||
+                    c.GetType() == typeof(Graden))
+                {
+                    c.Invalidate();
+                }
+                //this.InvokePaintBackground(c, new PaintEventArgs(c.CreateGraphics(), c.Bounds));
+                //this.InvokePaint(c, new PaintEventArgs(c.CreateGraphics(), c.Bounds));
+                inval(c.Controls);
+            }*/
         }
 
         void ni_DoubleClick(object sender, EventArgs e)
@@ -364,6 +404,23 @@ namespace LoopStream
             {
                 val = -100;
                 wdt_waveIn.StopRecording();
+            }
+        }
+
+        private void Home_Move(object sender, EventArgs e)
+        {
+            if (!Screen.AllScreens.Any(s => s.WorkingArea.Contains(this.Bounds)))
+            {
+                invalOnNext = true;
+            }
+            else if (invalOnNext)
+            {
+                invalOnNext = false;
+                inval();
+            }
+            if (invalOnNext)
+            {
+                inval();
             }
         }
     }

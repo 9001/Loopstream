@@ -82,13 +82,21 @@ namespace LoopStream
             }
             set
             {
+                bool inval = _level <= 40 || _level >= 255 + 40;
                 _level = Math.Min(Math.Max(value, -40), 295) + 40;
                 int top = gOSlider.Height - _level;
                 giSlider.Bounds = new Rectangle(0, top - 2, gOSlider.Width, _level + 2);
-                //gBar.Bounds = new Rectangle(0, top, gOSlider.Width, 1);
-                //giSlider.Text = Math.Round(_level / 2.56, 1).ToString() + "%";
-                giSlider.Text = timeScale ? (Math.Round(level / 200.0,2) + " s\n") : (Math.Round(level/2.55,0) + " %\n");
+                giSlider.Text = timeScale ?
+                    (Math.Round(level / 200.0,2) + " s\n") :
+                    (Math.Round(level/2.55,0) + " %\n");
                 gLabel.Text = level.ToString();
+
+                inval = inval || _level <= 40 || _level >= 255 + 40;
+                if (inval)
+                {
+                    if (_level > 100) graden1.Invalidate();
+                    if (_level < 100) graden2.Invalidate();
+                }
             }
         }
 

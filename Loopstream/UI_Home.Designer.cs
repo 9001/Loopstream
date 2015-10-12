@@ -28,88 +28,209 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.panel1 = new System.Windows.Forms.Panel();
-            this.label2 = new System.Windows.Forms.Label();
-            this.label1 = new System.Windows.Forms.Label();
-            this.panel2 = new System.Windows.Forms.Panel();
+            this.box_sliders = new System.Windows.Forms.Panel();
+            this.box_top = new System.Windows.Forms.Panel();
+            this.box_top_dark = new System.Windows.Forms.Label();
+            this.box_top_light = new System.Windows.Forms.Label();
+            this.box_bottom = new System.Windows.Forms.Panel();
+            this.box_unused1 = new System.Windows.Forms.Panel();
+            this.box_unused1_light = new System.Windows.Forms.Label();
+            this.box_unused1_dark = new System.Windows.Forms.Label();
+            this.box_bottom_light = new System.Windows.Forms.Label();
+            this.box_bottom_dark = new System.Windows.Forms.Label();
+            this.box_menu_outer = new System.Windows.Forms.Panel();
+            this.box_menu = new System.Windows.Forms.Panel();
+            this.box_menu_light = new System.Windows.Forms.Label();
+            this.box_menu_dark = new System.Windows.Forms.Label();
+            this.gConnect = new System.Windows.Forms.Button();
             this.label3 = new System.Windows.Forms.Label();
+            this.gSettings = new System.Windows.Forms.Button();
             this.gD = new System.Windows.Forms.Button();
+            this.gExit = new System.Windows.Forms.Button();
             this.gC = new System.Windows.Forms.Button();
+            this.gLoad = new System.Windows.Forms.Button();
             this.gB = new System.Windows.Forms.Button();
             this.gA = new System.Windows.Forms.Button();
-            this.gLoad = new System.Windows.Forms.Button();
-            this.gExit = new System.Windows.Forms.Button();
-            this.gSettings = new System.Windows.Forms.Button();
-            this.gConnect = new System.Windows.Forms.Button();
-            this.panel3 = new System.Windows.Forms.Panel();
-            this.label6 = new System.Windows.Forms.Label();
-            this.label4 = new System.Windows.Forms.Label();
-            this.panel4 = new System.Windows.Forms.Panel();
-            this.label8 = new System.Windows.Forms.Label();
-            this.label9 = new System.Windows.Forms.Label();
-            this.panel5 = new System.Windows.Forms.Panel();
-            this.label5 = new System.Windows.Forms.Label();
-            this.label7 = new System.Windows.Forms.Label();
-            this.panel6 = new System.Windows.Forms.Panel();
-            this.label10 = new System.Windows.Forms.Label();
-            this.label11 = new System.Windows.Forms.Label();
             this.gMusic = new LoopStream.Verter();
             this.gOut = new LoopStream.Verter();
             this.gMic = new LoopStream.Verter();
             this.gSpeed = new LoopStream.Verter();
-            this.panel1.SuspendLayout();
-            this.panel2.SuspendLayout();
-            this.panel3.SuspendLayout();
-            this.panel4.SuspendLayout();
-            this.panel5.SuspendLayout();
-            this.panel6.SuspendLayout();
+            this.box_top_graden = new LoopStream.Graden();
+            this.box_bottom_graden = new LoopStream.Graden();
+            this.box_sliders.SuspendLayout();
+            this.box_top.SuspendLayout();
+            this.box_bottom.SuspendLayout();
+            this.box_unused1.SuspendLayout();
+            this.box_menu_outer.SuspendLayout();
+            this.box_menu.SuspendLayout();
             this.SuspendLayout();
             // 
-            // panel1
+            // box_sliders
             // 
-            this.panel1.Controls.Add(this.gMusic);
-            this.panel1.Controls.Add(this.label2);
-            this.panel1.Controls.Add(this.label1);
-            this.panel1.Controls.Add(this.gOut);
-            this.panel1.Controls.Add(this.gMic);
-            this.panel1.Controls.Add(this.gSpeed);
-            this.panel1.Controls.Add(this.panel3);
-            this.panel1.Controls.Add(this.panel4);
-            this.panel1.Dock = System.Windows.Forms.DockStyle.Left;
-            this.panel1.Location = new System.Drawing.Point(0, 0);
-            this.panel1.Margin = new System.Windows.Forms.Padding(3, 3, 9, 3);
-            this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(497, 416);
-            this.panel1.TabIndex = 4;
+            this.box_sliders.Controls.Add(this.gMusic);
+            this.box_sliders.Controls.Add(this.gOut);
+            this.box_sliders.Controls.Add(this.gMic);
+            this.box_sliders.Controls.Add(this.gSpeed);
+            this.box_sliders.Controls.Add(this.box_top);
+            this.box_sliders.Controls.Add(this.box_bottom);
+            this.box_sliders.Dock = System.Windows.Forms.DockStyle.Left;
+            this.box_sliders.Location = new System.Drawing.Point(0, 0);
+            this.box_sliders.Margin = new System.Windows.Forms.Padding(3, 3, 9, 3);
+            this.box_sliders.Name = "box_sliders";
+            this.box_sliders.Size = new System.Drawing.Size(474, 416);
+            this.box_sliders.TabIndex = 4;
             // 
-            // label2
+            // box_top
             // 
-            this.label2.BackColor = System.Drawing.SystemColors.ButtonHighlight;
-            this.label2.Dock = System.Windows.Forms.DockStyle.Right;
-            this.label2.Location = new System.Drawing.Point(495, 59);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(1, 253);
-            this.label2.TabIndex = 5;
+            this.box_top.BackColor = System.Drawing.SystemColors.ControlLight;
+            this.box_top.Controls.Add(this.box_top_dark);
+            this.box_top.Controls.Add(this.box_top_light);
+            this.box_top.Controls.Add(this.box_top_graden);
+            this.box_top.Dock = System.Windows.Forms.DockStyle.Top;
+            this.box_top.Location = new System.Drawing.Point(0, 0);
+            this.box_top.Name = "box_top";
+            this.box_top.Size = new System.Drawing.Size(474, 59);
+            this.box_top.TabIndex = 10;
             // 
-            // label1
+            // box_top_dark
             // 
-            this.label1.BackColor = System.Drawing.SystemColors.ButtonShadow;
-            this.label1.Dock = System.Windows.Forms.DockStyle.Right;
-            this.label1.Location = new System.Drawing.Point(496, 59);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(1, 253);
-            this.label1.TabIndex = 4;
+            this.box_top_dark.BackColor = System.Drawing.SystemColors.ControlDark;
+            this.box_top_dark.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.box_top_dark.Location = new System.Drawing.Point(0, 57);
+            this.box_top_dark.Name = "box_top_dark";
+            this.box_top_dark.Size = new System.Drawing.Size(474, 1);
+            this.box_top_dark.TabIndex = 9;
             // 
-            // panel2
+            // box_top_light
             // 
-            this.panel2.BackColor = System.Drawing.SystemColors.ControlLight;
-            this.panel2.Controls.Add(this.panel6);
-            this.panel2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel2.Location = new System.Drawing.Point(497, 0);
-            this.panel2.Margin = new System.Windows.Forms.Padding(9, 3, 3, 3);
-            this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(217, 416);
-            this.panel2.TabIndex = 5;
+            this.box_top_light.BackColor = System.Drawing.SystemColors.ControlLightLight;
+            this.box_top_light.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.box_top_light.Location = new System.Drawing.Point(0, 58);
+            this.box_top_light.Name = "box_top_light";
+            this.box_top_light.Size = new System.Drawing.Size(474, 1);
+            this.box_top_light.TabIndex = 10;
+            // 
+            // box_bottom
+            // 
+            this.box_bottom.BackColor = System.Drawing.SystemColors.ControlLight;
+            this.box_bottom.Controls.Add(this.box_unused1);
+            this.box_bottom.Controls.Add(this.box_bottom_dark);
+            this.box_bottom.Controls.Add(this.box_bottom_light);
+            this.box_bottom.Controls.Add(this.box_bottom_graden);
+            this.box_bottom.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.box_bottom.Location = new System.Drawing.Point(0, 311);
+            this.box_bottom.Name = "box_bottom";
+            this.box_bottom.Size = new System.Drawing.Size(474, 105);
+            this.box_bottom.TabIndex = 11;
+            // 
+            // box_unused1
+            // 
+            this.box_unused1.BackColor = System.Drawing.SystemColors.Control;
+            this.box_unused1.Controls.Add(this.box_unused1_light);
+            this.box_unused1.Controls.Add(this.box_unused1_dark);
+            this.box_unused1.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.box_unused1.Location = new System.Drawing.Point(0, 43);
+            this.box_unused1.Name = "box_unused1";
+            this.box_unused1.Size = new System.Drawing.Size(474, 62);
+            this.box_unused1.TabIndex = 11;
+            this.box_unused1.Visible = false;
+            // 
+            // box_unused1_light
+            // 
+            this.box_unused1_light.BackColor = System.Drawing.SystemColors.ControlLightLight;
+            this.box_unused1_light.Dock = System.Windows.Forms.DockStyle.Top;
+            this.box_unused1_light.Location = new System.Drawing.Point(0, 1);
+            this.box_unused1_light.Name = "box_unused1_light";
+            this.box_unused1_light.Size = new System.Drawing.Size(474, 1);
+            this.box_unused1_light.TabIndex = 12;
+            // 
+            // box_unused1_dark
+            // 
+            this.box_unused1_dark.BackColor = System.Drawing.SystemColors.ControlDark;
+            this.box_unused1_dark.Dock = System.Windows.Forms.DockStyle.Top;
+            this.box_unused1_dark.Location = new System.Drawing.Point(0, 0);
+            this.box_unused1_dark.Name = "box_unused1_dark";
+            this.box_unused1_dark.Size = new System.Drawing.Size(474, 1);
+            this.box_unused1_dark.TabIndex = 11;
+            // 
+            // box_bottom_light
+            // 
+            this.box_bottom_light.BackColor = System.Drawing.SystemColors.ControlLightLight;
+            this.box_bottom_light.Dock = System.Windows.Forms.DockStyle.Top;
+            this.box_bottom_light.Location = new System.Drawing.Point(0, 0);
+            this.box_bottom_light.Name = "box_bottom_light";
+            this.box_bottom_light.Size = new System.Drawing.Size(474, 1);
+            this.box_bottom_light.TabIndex = 10;
+            // 
+            // box_bottom_dark
+            // 
+            this.box_bottom_dark.BackColor = System.Drawing.SystemColors.ControlDark;
+            this.box_bottom_dark.Dock = System.Windows.Forms.DockStyle.Top;
+            this.box_bottom_dark.Location = new System.Drawing.Point(0, 1);
+            this.box_bottom_dark.Name = "box_bottom_dark";
+            this.box_bottom_dark.Size = new System.Drawing.Size(474, 1);
+            this.box_bottom_dark.TabIndex = 9;
+            // 
+            // box_menu_outer
+            // 
+            this.box_menu_outer.BackColor = System.Drawing.SystemColors.ControlLight;
+            this.box_menu_outer.Controls.Add(this.box_menu);
+            this.box_menu_outer.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.box_menu_outer.Location = new System.Drawing.Point(474, 0);
+            this.box_menu_outer.Margin = new System.Windows.Forms.Padding(9, 3, 3, 3);
+            this.box_menu_outer.Name = "box_menu_outer";
+            this.box_menu_outer.Size = new System.Drawing.Size(177, 416);
+            this.box_menu_outer.TabIndex = 5;
+            // 
+            // box_menu
+            // 
+            this.box_menu.BackColor = System.Drawing.SystemColors.ControlLight;
+            this.box_menu.Controls.Add(this.box_menu_light);
+            this.box_menu.Controls.Add(this.box_menu_dark);
+            this.box_menu.Controls.Add(this.gConnect);
+            this.box_menu.Controls.Add(this.label3);
+            this.box_menu.Controls.Add(this.gSettings);
+            this.box_menu.Controls.Add(this.gD);
+            this.box_menu.Controls.Add(this.gExit);
+            this.box_menu.Controls.Add(this.gC);
+            this.box_menu.Controls.Add(this.gLoad);
+            this.box_menu.Controls.Add(this.gB);
+            this.box_menu.Controls.Add(this.gA);
+            this.box_menu.Dock = System.Windows.Forms.DockStyle.Right;
+            this.box_menu.Location = new System.Drawing.Point(0, 0);
+            this.box_menu.Name = "box_menu";
+            this.box_menu.Size = new System.Drawing.Size(177, 416);
+            this.box_menu.TabIndex = 10;
+            // 
+            // box_menu_light
+            // 
+            this.box_menu_light.BackColor = System.Drawing.SystemColors.ControlLightLight;
+            this.box_menu_light.Dock = System.Windows.Forms.DockStyle.Left;
+            this.box_menu_light.Location = new System.Drawing.Point(1, 0);
+            this.box_menu_light.Margin = new System.Windows.Forms.Padding(3, 0, 9, 0);
+            this.box_menu_light.Name = "box_menu_light";
+            this.box_menu_light.Size = new System.Drawing.Size(1, 416);
+            this.box_menu_light.TabIndex = 14;
+            // 
+            // box_menu_dark
+            // 
+            this.box_menu_dark.BackColor = System.Drawing.SystemColors.ControlDark;
+            this.box_menu_dark.Dock = System.Windows.Forms.DockStyle.Left;
+            this.box_menu_dark.Location = new System.Drawing.Point(0, 0);
+            this.box_menu_dark.Name = "box_menu_dark";
+            this.box_menu_dark.Size = new System.Drawing.Size(1, 416);
+            this.box_menu_dark.TabIndex = 13;
+            // 
+            // gConnect
+            // 
+            this.gConnect.Location = new System.Drawing.Point(19, 17);
+            this.gConnect.Margin = new System.Windows.Forms.Padding(8, 8, 8, 3);
+            this.gConnect.Name = "gConnect";
+            this.gConnect.Size = new System.Drawing.Size(141, 43);
+            this.gConnect.TabIndex = 0;
+            this.gConnect.Text = "Connect";
+            this.gConnect.UseVisualStyleBackColor = true;
+            this.gConnect.Click += new System.EventHandler(this.gConnect_Click);
             // 
             // label3
             // 
@@ -122,6 +243,17 @@
             this.label3.Text = "wasapiDumpTest";
             this.label3.Click += new System.EventHandler(this.label3_Click);
             // 
+            // gSettings
+            // 
+            this.gSettings.Location = new System.Drawing.Point(19, 66);
+            this.gSettings.Margin = new System.Windows.Forms.Padding(8, 3, 8, 3);
+            this.gSettings.Name = "gSettings";
+            this.gSettings.Size = new System.Drawing.Size(141, 43);
+            this.gSettings.TabIndex = 1;
+            this.gSettings.Text = "Settings";
+            this.gSettings.UseVisualStyleBackColor = true;
+            this.gSettings.Click += new System.EventHandler(this.gSettings_Click);
+            // 
             // gD
             // 
             this.gD.Location = new System.Drawing.Point(91, 317);
@@ -133,6 +265,17 @@
             this.gD.UseVisualStyleBackColor = true;
             this.gD.Click += new System.EventHandler(this.gPreset_Click);
             // 
+            // gExit
+            // 
+            this.gExit.Location = new System.Drawing.Point(19, 115);
+            this.gExit.Margin = new System.Windows.Forms.Padding(8, 3, 8, 3);
+            this.gExit.Name = "gExit";
+            this.gExit.Size = new System.Drawing.Size(141, 43);
+            this.gExit.TabIndex = 2;
+            this.gExit.Text = "Exit";
+            this.gExit.UseVisualStyleBackColor = true;
+            this.gExit.Click += new System.EventHandler(this.gExit_Click);
+            // 
             // gC
             // 
             this.gC.Location = new System.Drawing.Point(19, 317);
@@ -143,6 +286,17 @@
             this.gC.Text = "C";
             this.gC.UseVisualStyleBackColor = true;
             this.gC.Click += new System.EventHandler(this.gPreset_Click);
+            // 
+            // gLoad
+            // 
+            this.gLoad.Location = new System.Drawing.Point(19, 359);
+            this.gLoad.Margin = new System.Windows.Forms.Padding(8, 3, 8, 8);
+            this.gLoad.Name = "gLoad";
+            this.gLoad.Size = new System.Drawing.Size(141, 40);
+            this.gLoad.TabIndex = 3;
+            this.gLoad.Text = "Load preset";
+            this.gLoad.UseVisualStyleBackColor = true;
+            this.gLoad.Click += new System.EventHandler(this.gLoad_Click);
             // 
             // gB
             // 
@@ -165,178 +319,6 @@
             this.gA.Text = "A";
             this.gA.UseVisualStyleBackColor = true;
             this.gA.Click += new System.EventHandler(this.gPreset_Click);
-            // 
-            // gLoad
-            // 
-            this.gLoad.Location = new System.Drawing.Point(19, 359);
-            this.gLoad.Margin = new System.Windows.Forms.Padding(8, 3, 8, 8);
-            this.gLoad.Name = "gLoad";
-            this.gLoad.Size = new System.Drawing.Size(141, 40);
-            this.gLoad.TabIndex = 3;
-            this.gLoad.Text = "Load preset";
-            this.gLoad.UseVisualStyleBackColor = true;
-            this.gLoad.Click += new System.EventHandler(this.gLoad_Click);
-            // 
-            // gExit
-            // 
-            this.gExit.Location = new System.Drawing.Point(19, 115);
-            this.gExit.Margin = new System.Windows.Forms.Padding(8, 3, 8, 3);
-            this.gExit.Name = "gExit";
-            this.gExit.Size = new System.Drawing.Size(141, 43);
-            this.gExit.TabIndex = 2;
-            this.gExit.Text = "Exit";
-            this.gExit.UseVisualStyleBackColor = true;
-            this.gExit.Click += new System.EventHandler(this.gExit_Click);
-            // 
-            // gSettings
-            // 
-            this.gSettings.Location = new System.Drawing.Point(19, 66);
-            this.gSettings.Margin = new System.Windows.Forms.Padding(8, 3, 8, 3);
-            this.gSettings.Name = "gSettings";
-            this.gSettings.Size = new System.Drawing.Size(141, 43);
-            this.gSettings.TabIndex = 1;
-            this.gSettings.Text = "Settings";
-            this.gSettings.UseVisualStyleBackColor = true;
-            this.gSettings.Click += new System.EventHandler(this.gSettings_Click);
-            // 
-            // gConnect
-            // 
-            this.gConnect.Location = new System.Drawing.Point(19, 17);
-            this.gConnect.Margin = new System.Windows.Forms.Padding(8, 8, 8, 3);
-            this.gConnect.Name = "gConnect";
-            this.gConnect.Size = new System.Drawing.Size(141, 43);
-            this.gConnect.TabIndex = 0;
-            this.gConnect.Text = "Connect";
-            this.gConnect.UseVisualStyleBackColor = true;
-            this.gConnect.Click += new System.EventHandler(this.gConnect_Click);
-            // 
-            // panel3
-            // 
-            this.panel3.BackColor = System.Drawing.SystemColors.ControlLight;
-            this.panel3.Controls.Add(this.label4);
-            this.panel3.Controls.Add(this.label6);
-            this.panel3.Dock = System.Windows.Forms.DockStyle.Top;
-            this.panel3.Location = new System.Drawing.Point(0, 0);
-            this.panel3.Name = "panel3";
-            this.panel3.Size = new System.Drawing.Size(497, 59);
-            this.panel3.TabIndex = 10;
-            // 
-            // label6
-            // 
-            this.label6.BackColor = System.Drawing.SystemColors.ControlLightLight;
-            this.label6.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.label6.Location = new System.Drawing.Point(0, 58);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(497, 1);
-            this.label6.TabIndex = 10;
-            // 
-            // label4
-            // 
-            this.label4.BackColor = System.Drawing.SystemColors.ControlDark;
-            this.label4.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.label4.Location = new System.Drawing.Point(0, 57);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(497, 1);
-            this.label4.TabIndex = 9;
-            // 
-            // panel4
-            // 
-            this.panel4.BackColor = System.Drawing.SystemColors.ControlLight;
-            this.panel4.Controls.Add(this.panel5);
-            this.panel4.Controls.Add(this.label9);
-            this.panel4.Controls.Add(this.label8);
-            this.panel4.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.panel4.Location = new System.Drawing.Point(0, 312);
-            this.panel4.Name = "panel4";
-            this.panel4.Size = new System.Drawing.Size(497, 104);
-            this.panel4.TabIndex = 11;
-            // 
-            // label8
-            // 
-            this.label8.BackColor = System.Drawing.SystemColors.ControlDark;
-            this.label8.Dock = System.Windows.Forms.DockStyle.Top;
-            this.label8.Location = new System.Drawing.Point(0, 0);
-            this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(497, 1);
-            this.label8.TabIndex = 9;
-            // 
-            // label9
-            // 
-            this.label9.BackColor = System.Drawing.SystemColors.ControlLightLight;
-            this.label9.Dock = System.Windows.Forms.DockStyle.Top;
-            this.label9.Location = new System.Drawing.Point(0, 1);
-            this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(497, 1);
-            this.label9.TabIndex = 10;
-            // 
-            // panel5
-            // 
-            this.panel5.BackColor = System.Drawing.SystemColors.Control;
-            this.panel5.Controls.Add(this.label5);
-            this.panel5.Controls.Add(this.label7);
-            this.panel5.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.panel5.Location = new System.Drawing.Point(0, 42);
-            this.panel5.Name = "panel5";
-            this.panel5.Size = new System.Drawing.Size(497, 62);
-            this.panel5.TabIndex = 11;
-            this.panel5.Visible = false;
-            // 
-            // label5
-            // 
-            this.label5.BackColor = System.Drawing.SystemColors.ControlLightLight;
-            this.label5.Dock = System.Windows.Forms.DockStyle.Top;
-            this.label5.Location = new System.Drawing.Point(0, 1);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(497, 1);
-            this.label5.TabIndex = 12;
-            // 
-            // label7
-            // 
-            this.label7.BackColor = System.Drawing.SystemColors.ControlDark;
-            this.label7.Dock = System.Windows.Forms.DockStyle.Top;
-            this.label7.Location = new System.Drawing.Point(0, 0);
-            this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(497, 1);
-            this.label7.TabIndex = 11;
-            // 
-            // panel6
-            // 
-            this.panel6.BackColor = System.Drawing.SystemColors.Control;
-            this.panel6.Controls.Add(this.label10);
-            this.panel6.Controls.Add(this.label11);
-            this.panel6.Controls.Add(this.gConnect);
-            this.panel6.Controls.Add(this.label3);
-            this.panel6.Controls.Add(this.gSettings);
-            this.panel6.Controls.Add(this.gD);
-            this.panel6.Controls.Add(this.gExit);
-            this.panel6.Controls.Add(this.gC);
-            this.panel6.Controls.Add(this.gLoad);
-            this.panel6.Controls.Add(this.gB);
-            this.panel6.Controls.Add(this.gA);
-            this.panel6.Dock = System.Windows.Forms.DockStyle.Right;
-            this.panel6.Location = new System.Drawing.Point(40, 0);
-            this.panel6.Name = "panel6";
-            this.panel6.Size = new System.Drawing.Size(177, 416);
-            this.panel6.TabIndex = 10;
-            // 
-            // label10
-            // 
-            this.label10.BackColor = System.Drawing.SystemColors.ControlLightLight;
-            this.label10.Dock = System.Windows.Forms.DockStyle.Left;
-            this.label10.Location = new System.Drawing.Point(1, 0);
-            this.label10.Margin = new System.Windows.Forms.Padding(3, 0, 9, 0);
-            this.label10.Name = "label10";
-            this.label10.Size = new System.Drawing.Size(1, 416);
-            this.label10.TabIndex = 14;
-            // 
-            // label11
-            // 
-            this.label11.BackColor = System.Drawing.SystemColors.ControlDark;
-            this.label11.Dock = System.Windows.Forms.DockStyle.Left;
-            this.label11.Location = new System.Drawing.Point(0, 0);
-            this.label11.Name = "label11";
-            this.label11.Size = new System.Drawing.Size(1, 416);
-            this.label11.TabIndex = 13;
             // 
             // gMusic
             // 
@@ -394,25 +376,52 @@
             this.gSpeed.timeScale = true;
             this.gSpeed.title = "Speed";
             // 
+            // box_top_graden
+            // 
+            this.box_top_graden.co = 1D;
+            this.box_top_graden.colorA = System.Drawing.SystemColors.Control;
+            this.box_top_graden.colorB = System.Drawing.SystemColors.ControlLight;
+            this.box_top_graden.Direction = false;
+            this.box_top_graden.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.box_top_graden.Location = new System.Drawing.Point(0, 0);
+            this.box_top_graden.Name = "box_top_graden";
+            this.box_top_graden.Size = new System.Drawing.Size(474, 59);
+            this.box_top_graden.TabIndex = 13;
+            // 
+            // box_bottom_graden
+            // 
+            this.box_bottom_graden.co = 1D;
+            this.box_bottom_graden.colorA = System.Drawing.SystemColors.Control;
+            this.box_bottom_graden.colorB = System.Drawing.SystemColors.ControlLight;
+            this.box_bottom_graden.Direction = true;
+            this.box_bottom_graden.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.box_bottom_graden.Location = new System.Drawing.Point(0, 0);
+            this.box_bottom_graden.Name = "box_bottom_graden";
+            this.box_bottom_graden.Size = new System.Drawing.Size(474, 105);
+            this.box_bottom_graden.TabIndex = 12;
+            // 
             // Home
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(714, 416);
-            this.Controls.Add(this.panel2);
-            this.Controls.Add(this.panel1);
+            this.ClientSize = new System.Drawing.Size(651, 416);
+            this.Controls.Add(this.box_menu_outer);
+            this.Controls.Add(this.box_sliders);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+            this.MaximizeBox = false;
             this.Name = "Home";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "LoopStream";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
             this.Load += new System.EventHandler(this.Form1_Load);
-            this.panel1.ResumeLayout(false);
-            this.panel2.ResumeLayout(false);
-            this.panel3.ResumeLayout(false);
-            this.panel4.ResumeLayout(false);
-            this.panel5.ResumeLayout(false);
-            this.panel6.ResumeLayout(false);
-            this.panel6.PerformLayout();
+            this.Move += new System.EventHandler(this.Home_Move);
+            this.box_sliders.ResumeLayout(false);
+            this.box_top.ResumeLayout(false);
+            this.box_bottom.ResumeLayout(false);
+            this.box_unused1.ResumeLayout(false);
+            this.box_menu_outer.ResumeLayout(false);
+            this.box_menu.ResumeLayout(false);
+            this.box_menu.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -423,10 +432,8 @@
         private Verter gMic;
         private Verter gSpeed;
         private Verter gOut;
-        private System.Windows.Forms.Panel panel1;
-        private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.Panel panel2;
+        private System.Windows.Forms.Panel box_sliders;
+        private System.Windows.Forms.Panel box_menu_outer;
         private System.Windows.Forms.Button gExit;
         private System.Windows.Forms.Button gSettings;
         private System.Windows.Forms.Button gConnect;
@@ -436,18 +443,20 @@
         private System.Windows.Forms.Button gA;
         private System.Windows.Forms.Button gLoad;
         private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.Panel panel3;
-        private System.Windows.Forms.Label label4;
-        private System.Windows.Forms.Label label6;
-        private System.Windows.Forms.Panel panel4;
-        private System.Windows.Forms.Label label9;
-        private System.Windows.Forms.Label label8;
-        private System.Windows.Forms.Panel panel5;
-        private System.Windows.Forms.Label label5;
-        private System.Windows.Forms.Label label7;
-        private System.Windows.Forms.Panel panel6;
-        private System.Windows.Forms.Label label10;
-        private System.Windows.Forms.Label label11;
+        private System.Windows.Forms.Panel box_top;
+        private System.Windows.Forms.Label box_top_dark;
+        private System.Windows.Forms.Label box_top_light;
+        private System.Windows.Forms.Panel box_bottom;
+        private System.Windows.Forms.Label box_bottom_light;
+        private System.Windows.Forms.Label box_bottom_dark;
+        private System.Windows.Forms.Panel box_unused1;
+        private System.Windows.Forms.Label box_unused1_light;
+        private System.Windows.Forms.Label box_unused1_dark;
+        private System.Windows.Forms.Panel box_menu;
+        private System.Windows.Forms.Label box_menu_light;
+        private System.Windows.Forms.Label box_menu_dark;
+        private Graden box_top_graden;
+        private Graden box_bottom_graden;
 
     }
 }
