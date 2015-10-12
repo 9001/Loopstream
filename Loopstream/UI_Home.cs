@@ -475,6 +475,7 @@ namespace Loopstream
                 Application.DoEvents();
 
                 System.Threading.Thread t = new System.Threading.Thread(new System.Threading.ThreadStart(discthread));
+                //t.Priority = System.Threading.ThreadPriority.Highest;
                 t.Name = "LS_DISC";
                 t.Start();
             }

@@ -917,7 +917,10 @@ namespace Loopstream
         string metaRaw = null;
         private void gPattern_TextChanged(object sender, EventArgs e)
         {
-            settings.meta.ptn = gPattern.Text;
+            if (sender == gPattern)
+            {
+                settings.meta.ptn = gPattern.Text;
+            }
             bool mem = settings.meta.reader == LSSettings.LSMeta.Reader.ProcessMemory;
             if (gTest.Checked || mem)
             {
@@ -1041,7 +1044,8 @@ namespace Loopstream
             gURLDecode.Checked = settings.meta.urldecode;
             gLatinize.Checked = settings.latin;
             gTest.Checked = doRegexTests;
-            gGroup.Text = settings.meta.grp.ToString();
+            //gGroup.Text = settings.meta.grp.ToString();
+            gYield.Text = settings.meta.yield;
 
             if (redoPresets)
             {
@@ -1057,11 +1061,11 @@ namespace Loopstream
             }
         }
 
-        private void gGroup_TextChanged(object sender, EventArgs e)
+        /*private void gGroup_TextChanged(object sender, EventArgs e)
         {
             int n = getValue(gGroup);
             if (n >= 0) settings.meta.grp = n;
-        }
+        }*/
 
         private void gTagMan_CheckedChanged(object sender, EventArgs e)
         {
@@ -1604,6 +1608,147 @@ namespace Loopstream
             setDescText(ret);
             Clipboard.Clear();
             Clipboard.SetText(ret);
+        }
+
+        private string serialize(LSSettings.LSMeta lsm)
+        {
+            var cfg = new System.Xml.XmlWriterSettings();
+            cfg.NamespaceHandling = System.Xml.NamespaceHandling.OmitDuplicates;
+            cfg.NewLineHandling = System.Xml.NewLineHandling.None;
+            cfg.NewLineOnAttributes = false;
+            cfg.OmitXmlDeclaration = true;
+            cfg.Indent = false;
+
+            var sb = new StringBuilder();
+            var x = new System.Xml.Serialization.XmlSerializer(lsm.GetType());
+            var w = System.Xml.XmlWriter.Create(sb, cfg);
+            x.Serialize(w, lsm);
+            w.Flush();
+            w.Close();
+            return sb.ToString();
+        }
+
+        private void gTagexport_Click(object sender, EventArgs e)
+        {
+            LSSettings.LSMeta lsm = LSSettings.LSMeta.copy(settings.meta);
+            bool shredText = DialogResult.No == MessageBox.Show(
+                "Do you want to KEEP the description text when sharing this profile?\n\n" +
+                "Selecting NO will make the share-key shorter,\n" +
+                "but the description may be useful for the recipient.",
+                "Share entire profile?", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+            if (shredText) lsm.desc = "";
+
+            string key = serialize(lsm);
+            key = key.Substring(key.IndexOf('>') + 1);
+            key = key.Substring(0, key.LastIndexOf('<'));
+            //string gz = Z.gze(key);
+            //string xz = Z.lze(key);
+            key = Z.gze(key);
+            key = "##gz#" + key + "##";
+            Clipboard.Clear();
+            Clipboard.SetText(key);
+            if (DialogResult.Yes == MessageBox.Show(
+                "The share-key has been made, and put on your clipboard.\n\n" +
+                "Length: " + key.Length + " characters.\n\n" +
+                //"Length: " + gz.Length + " characters.\n\n" +
+                //"Length: " + xz.Length + " characters.\n\n" +
+                "You should share this with Pastebin or bpaste.\n" +
+                "Open bpaste now?",
+                "OK !", MessageBoxButtons.YesNo, MessageBoxIcon.Question))
+            {
+                System.Diagnostics.Process.Start("http://bpaste.net/");
+            }
+        }
+
+        private void gTagimport_Click(object sender, EventArgs e)
+        {
+            string key = Clipboard.GetText();
+            if (!key.Contains("#gz#"))
+            {
+                if (key.ToLower().Contains("bpaste.net"))
+                {
+                    // http://bpaste.net/show/PNaO8zoBtZdPRv8NLoNs/
+                    // http://bpaste.net/raw/PNaO8zoBtZdPRv8NLoNs/
+                    var r = Regex.Match(key, "(.*[^a-zA-Z0-9]|^)bpaste.net/[^/]*/([^/]*)(/|$)", RegexOptions.IgnoreCase).Groups;
+                    if (r.Count > 2)
+                    {
+                        key = new System.Net.WebClient().DownloadString("http://bpaste.net/raw/" + r[2].Value + "/");
+                    }
+                }
+                else if (key.ToLower().Contains("pastebin.com"))
+                {
+                    // http://pastebin.com/gbwsufzV
+                    // http://pastebin.com/raw.php?i=gbwsufzV
+                    var r = Regex.Match(key, ".*(.*[^a-zA-Z0-9]|^)pastebin.com.*[/=]([^/=]*)$", RegexOptions.IgnoreCase).Groups;
+                    if (r.Count > 2)
+                    {
+                        key = new System.Net.WebClient().DownloadString("http://pastebin.com/raw.php?i=" + r[2].Value + "/");
+                    }
+                }
+            }
+            try
+            {
+                int i = key.IndexOf("gz#");
+                int j = key.IndexOf("#", i + 4);
+                if (i < 0 || j < 0) throw new Exception();
+                i += 3;
+                key = key.Substring(i, j - i);
+            }
+            catch
+            {
+                MessageBox.Show(
+                    "Padding error\n\n" +
+                    "Sorry, but the share-key is invalid.");
+                return;
+            }
+            try
+            {
+                key = Z.gzd(key);
+            }
+            catch
+            {
+                MessageBox.Show(
+                    "Decoder error\n\n" +
+                    "Sorry, but the share-key is invalid.");
+                return;
+            }
+            LSSettings.LSMeta fds = new LSSettings.LSMeta();
+            try
+            {
+                string chrome = serialize(fds);
+                string chrome1 = chrome.Substring(0, chrome.IndexOf('>') + 1);
+                string chrome2 = chrome.Substring(chrome.LastIndexOf('<'));
+                key = chrome1 + key + chrome2;
+
+                var sr = new System.IO.StringReader(key);
+                var ds = new System.Xml.Serialization.XmlSerializer(typeof(LSSettings.LSMeta));
+                fds = (LSSettings.LSMeta)ds.Deserialize(sr);
+            }
+            catch
+            {
+                MessageBox.Show(
+                    "Serializer error\n\n" +
+                    "Sorry, but the share-key is invalid:\n\n" +
+                    key);
+                return;
+            }
+            UI_input inp = new UI_input(fds, settings.metas);
+            inp.ShowDialog();
+            if (inp.wasAdded)
+            {
+                loadMetaReader(true);
+                gMeta.SelectedItem = settings.metas[settings.metas.Count - 1];
+            }
+        }
+
+        private void gYield_TextChanged(object sender, EventArgs e)
+        {
+            if (sender == gYield)
+            {
+                settings.meta.yield = gYield.Text;
+            }
+            //this.Text = settings.meta.yi.assert();
+            gPattern_TextChanged(sender, e);
         }
     }
 }

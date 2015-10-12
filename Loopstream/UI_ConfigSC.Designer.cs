@@ -97,7 +97,9 @@
             this.gOggQualityV = new System.Windows.Forms.TextBox();
             this.gOggBitrate = new System.Windows.Forms.RadioButton();
             this.tpTags = new System.Windows.Forms.TabPage();
+            this.gTagimport = new System.Windows.Forms.Button();
             this.gRunTest = new System.Windows.Forms.Button();
+            this.gTagexport = new System.Windows.Forms.Button();
             this.gMake32 = new System.Windows.Forms.Button();
             this.gTagAuto = new System.Windows.Forms.CheckBox();
             this.gTarget = new System.Windows.Forms.Button();
@@ -109,7 +111,6 @@
             this.gResetTags = new System.Windows.Forms.LinkLabel();
             this.gURLDecode = new System.Windows.Forms.CheckBox();
             this.gDelete = new System.Windows.Forms.Button();
-            this.gGroup = new System.Windows.Forms.TextBox();
             this.label17 = new System.Windows.Forms.Label();
             this.gEncodingL = new System.Windows.Forms.Label();
             this.label24 = new System.Windows.Forms.Label();
@@ -146,13 +147,14 @@
             this.gSplash = new System.Windows.Forms.CheckBox();
             this.pTabs = new System.Windows.Forms.Panel();
             this.label5 = new System.Windows.Forms.Label();
+            this.label12 = new System.Windows.Forms.Label();
+            this.tt = new System.Windows.Forms.ToolTip(this.components);
+            this.gYield = new System.Windows.Forms.TextBox();
             this.hOSD = new Loopstream.TLabel();
             this.hTags = new Loopstream.TLabel();
             this.hEncoders = new Loopstream.TLabel();
             this.hServer = new Loopstream.TLabel();
             this.hSoundcard = new Loopstream.TLabel();
-            this.label12 = new System.Windows.Forms.Label();
-            this.tt = new System.Windows.Forms.ToolTip(this.components);
             this.pWrapper.SuspendLayout();
             this.tc.SuspendLayout();
             this.tpSoundcard.SuspendLayout();
@@ -335,7 +337,7 @@
             this.gSave.Margin = new System.Windows.Forms.Padding(3, 3, 6, 3);
             this.gSave.Name = "gSave";
             this.gSave.Size = new System.Drawing.Size(121, 50);
-            this.gSave.TabIndex = 52;
+            this.gSave.TabIndex = 103;
             this.gSave.Text = "S A V E   4 E V A";
             this.tt.SetToolTip(this.gSave, "Save and apply this configuration");
             this.gSave.UseVisualStyleBackColor = true;
@@ -1083,7 +1085,9 @@
             // tpTags
             // 
             this.tpTags.BackColor = System.Drawing.SystemColors.Control;
+            this.tpTags.Controls.Add(this.gTagimport);
             this.tpTags.Controls.Add(this.gRunTest);
+            this.tpTags.Controls.Add(this.gTagexport);
             this.tpTags.Controls.Add(this.gMake32);
             this.tpTags.Controls.Add(this.gTagAuto);
             this.tpTags.Controls.Add(this.gTarget);
@@ -1098,18 +1102,44 @@
             this.tpTags.TabIndex = 3;
             this.tpTags.Text = "Tags";
             // 
+            // gTagimport
+            // 
+            this.gTagimport.Location = new System.Drawing.Point(474, 11);
+            this.gTagimport.Name = "gTagimport";
+            this.gTagimport.Size = new System.Drawing.Size(52, 23);
+            this.gTagimport.TabIndex = 42;
+            this.gTagimport.Text = "Load";
+            this.tt.SetToolTip(this.gTagimport, "import a metadata profile that someone shared with you");
+            this.gTagimport.UseVisualStyleBackColor = true;
+            this.gTagimport.Click += new System.EventHandler(this.gTagimport_Click);
+            this.gTagimport.MouseEnter += new System.EventHandler(this.gHost_MouseEnter);
+            this.gTagimport.MouseLeave += new System.EventHandler(this.gHost_MouseLeave);
+            // 
             // gRunTest
             // 
             this.gRunTest.Location = new System.Drawing.Point(378, 241);
             this.gRunTest.Name = "gRunTest";
             this.gRunTest.Size = new System.Drawing.Size(148, 23);
-            this.gRunTest.TabIndex = 69;
+            this.gRunTest.TabIndex = 56;
             this.gRunTest.Text = "Test this configuration";
             this.tt.SetToolTip(this.gRunTest, "Loopstream tries to read tags with this config");
             this.gRunTest.UseVisualStyleBackColor = true;
             this.gRunTest.Click += new System.EventHandler(this.gRunTest_Click);
             this.gRunTest.MouseEnter += new System.EventHandler(this.gHost_MouseEnter);
             this.gRunTest.MouseLeave += new System.EventHandler(this.gHost_MouseLeave);
+            // 
+            // gTagexport
+            // 
+            this.gTagexport.Location = new System.Drawing.Point(474, 36);
+            this.gTagexport.Name = "gTagexport";
+            this.gTagexport.Size = new System.Drawing.Size(52, 23);
+            this.gTagexport.TabIndex = 43;
+            this.gTagexport.Text = "Share";
+            this.tt.SetToolTip(this.gTagexport, "Share this metadata profile with someone else");
+            this.gTagexport.UseVisualStyleBackColor = true;
+            this.gTagexport.Click += new System.EventHandler(this.gTagexport_Click);
+            this.gTagexport.MouseEnter += new System.EventHandler(this.gHost_MouseEnter);
+            this.gTagexport.MouseLeave += new System.EventHandler(this.gHost_MouseLeave);
             // 
             // gMake32
             // 
@@ -1130,7 +1160,7 @@
             this.gTagAuto.Location = new System.Drawing.Point(24, 19);
             this.gTagAuto.Name = "gTagAuto";
             this.gTagAuto.Size = new System.Drawing.Size(246, 17);
-            this.gTagAuto.TabIndex = 65;
+            this.gTagAuto.TabIndex = 39;
             this.gTagAuto.Text = "Read tags automatically from this media player:";
             this.tt.SetToolTip(this.gTagAuto, "Enable the automatic tag reading/sending functionality");
             this.gTagAuto.UseVisualStyleBackColor = true;
@@ -1158,7 +1188,7 @@
             this.gMeta.Location = new System.Drawing.Point(24, 37);
             this.gMeta.Name = "gMeta";
             this.gMeta.Size = new System.Drawing.Size(305, 21);
-            this.gMeta.TabIndex = 39;
+            this.gMeta.TabIndex = 40;
             this.tt.SetToolTip(this.gMeta, "These are all the media players that Loopstream has built-in support for.\r\nIf you" +
         " can\'t find yours, ask an adult to fill in the [Advanced] config!");
             this.gMeta.SelectedIndexChanged += new System.EventHandler(this.gMeta_SelectedIndexChanged);
@@ -1170,7 +1200,7 @@
             this.gTagsAdvanced.Location = new System.Drawing.Point(333, 36);
             this.gTagsAdvanced.Name = "gTagsAdvanced";
             this.gTagsAdvanced.Size = new System.Drawing.Size(118, 23);
-            this.gTagsAdvanced.TabIndex = 40;
+            this.gTagsAdvanced.TabIndex = 41;
             this.gTagsAdvanced.Text = "Advanced";
             this.tt.SetToolTip(this.gTagsAdvanced, "Only for burly men with hair on their chest.");
             this.gTagsAdvanced.UseVisualStyleBackColor = true;
@@ -1194,7 +1224,7 @@
             this.gLatinize.Location = new System.Drawing.Point(3, 19);
             this.gLatinize.Name = "gLatinize";
             this.gLatinize.Size = new System.Drawing.Size(118, 17);
-            this.gLatinize.TabIndex = 62;
+            this.gLatinize.TabIndex = 44;
             this.gLatinize.Text = "Wrap tags in Latin1";
             this.tt.SetToolTip(this.gLatinize, "Mogrify the tags into Latin1 (fake-utf8) before sending to icecast.\r\nSurprisingly" +
         ", you usually /want/ to do this.\r\nStupid nullsoft and their antics.");
@@ -1206,10 +1236,10 @@
             // pTagAdvanced1
             // 
             this.pTagAdvanced1.BackColor = System.Drawing.SystemColors.Control;
+            this.pTagAdvanced1.Controls.Add(this.gYield);
             this.pTagAdvanced1.Controls.Add(this.gResetTags);
             this.pTagAdvanced1.Controls.Add(this.gURLDecode);
             this.pTagAdvanced1.Controls.Add(this.gDelete);
-            this.pTagAdvanced1.Controls.Add(this.gGroup);
             this.pTagAdvanced1.Controls.Add(this.label17);
             this.pTagAdvanced1.Controls.Add(this.gEncodingL);
             this.pTagAdvanced1.Controls.Add(this.label24);
@@ -1254,7 +1284,7 @@
             this.gURLDecode.Location = new System.Drawing.Point(213, 95);
             this.gURLDecode.Name = "gURLDecode";
             this.gURLDecode.Size = new System.Drawing.Size(318, 17);
-            this.gURLDecode.TabIndex = 67;
+            this.gURLDecode.TabIndex = 54;
             this.gURLDecode.Text = "Enable URL decoding   ( if you get things like \"&&amp;\" in tags)";
             this.tt.SetToolTip(this.gURLDecode, "Tries to repair tags that orginate from a website or XML file.");
             this.gURLDecode.UseVisualStyleBackColor = true;
@@ -1267,7 +1297,7 @@
             this.gDelete.Location = new System.Drawing.Point(303, 13);
             this.gDelete.Name = "gDelete";
             this.gDelete.Size = new System.Drawing.Size(148, 22);
-            this.gDelete.TabIndex = 46;
+            this.gDelete.TabIndex = 51;
             this.gDelete.Text = "Delete selected profile";
             this.gDelete.TextAlign = System.Drawing.ContentAlignment.TopCenter;
             this.tt.SetToolTip(this.gDelete, "Delete the profile which is currently\r\nselected in the top-left dropdown box.");
@@ -1275,19 +1305,6 @@
             this.gDelete.Click += new System.EventHandler(this.gDelete_Click);
             this.gDelete.MouseEnter += new System.EventHandler(this.gHost_MouseEnter);
             this.gDelete.MouseLeave += new System.EventHandler(this.gHost_MouseLeave);
-            // 
-            // gGroup
-            // 
-            this.gGroup.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.gGroup.Location = new System.Drawing.Point(100, 67);
-            this.gGroup.Name = "gGroup";
-            this.gGroup.Size = new System.Drawing.Size(22, 20);
-            this.gGroup.TabIndex = 45;
-            this.gGroup.Text = "1";
-            this.tt.SetToolTip(this.gGroup, "Which Regex matching group to keep as \"Artist - Title\"");
-            this.gGroup.TextChanged += new System.EventHandler(this.gGroup_TextChanged);
-            this.gGroup.MouseEnter += new System.EventHandler(this.gHost_MouseEnter);
-            this.gGroup.MouseLeave += new System.EventHandler(this.gHost_MouseLeave);
             // 
             // label17
             // 
@@ -1346,7 +1363,7 @@
             this.gReader.Margin = new System.Windows.Forms.Padding(3, 8, 3, 3);
             this.gReader.Name = "gReader";
             this.gReader.Size = new System.Drawing.Size(187, 21);
-            this.gReader.TabIndex = 41;
+            this.gReader.TabIndex = 45;
             this.tt.SetToolTip(this.gReader, "The method that Loopstream will use to aquire the Now Playing data");
             this.gReader.SelectedIndexChanged += new System.EventHandler(this.gReader_SelectedIndexChanged);
             this.gReader.MouseEnter += new System.EventHandler(this.gHost_MouseEnter);
@@ -1367,7 +1384,7 @@
             this.gTest.Location = new System.Drawing.Point(303, 44);
             this.gTest.Name = "gTest";
             this.gTest.Size = new System.Drawing.Size(226, 17);
-            this.gTest.TabIndex = 44;
+            this.gTest.TabIndex = 52;
             this.gTest.Text = "Test settings whenever \"pattern\" changes";
             this.tt.SetToolTip(this.gTest, "Immediately display what your Pattern does");
             this.gTest.UseVisualStyleBackColor = true;
@@ -1380,7 +1397,7 @@
             this.gFreq.Location = new System.Drawing.Point(100, 93);
             this.gFreq.Name = "gFreq";
             this.gFreq.Size = new System.Drawing.Size(100, 20);
-            this.gFreq.TabIndex = 47;
+            this.gFreq.TabIndex = 48;
             this.tt.SetToolTip(this.gFreq, "How often Loopstream will look for new metadata (in miliseconds)");
             this.gFreq.TextChanged += new System.EventHandler(this.gFreq_TextChanged);
             this.gFreq.MouseEnter += new System.EventHandler(this.gHost_MouseEnter);
@@ -1398,10 +1415,10 @@
             // gPattern
             // 
             this.gPattern.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.gPattern.Location = new System.Drawing.Point(128, 67);
+            this.gPattern.Location = new System.Drawing.Point(100, 67);
             this.gPattern.Name = "gPattern";
-            this.gPattern.Size = new System.Drawing.Size(398, 20);
-            this.gPattern.TabIndex = 46;
+            this.gPattern.Size = new System.Drawing.Size(320, 20);
+            this.gPattern.TabIndex = 47;
             this.tt.SetToolTip(this.gPattern, "The Regex pattern that will be used to extract the Artist and Title\r\nAlternativel" +
         "y, memory addresses when using the ProcMem Reader");
             this.gPattern.TextChanged += new System.EventHandler(this.gPattern_TextChanged);
@@ -1431,7 +1448,7 @@
             this.gStore.Location = new System.Drawing.Point(378, 117);
             this.gStore.Name = "gStore";
             this.gStore.Size = new System.Drawing.Size(148, 22);
-            this.gStore.TabIndex = 49;
+            this.gStore.TabIndex = 55;
             this.gStore.Text = "Save to this preset";
             this.tt.SetToolTip(this.gStore, "Save this config as a new profile, or\r\noverwrite a profile with the same name.");
             this.gStore.UseVisualStyleBackColor = true;
@@ -1444,7 +1461,7 @@
             this.gSource.Location = new System.Drawing.Point(100, 41);
             this.gSource.Name = "gSource";
             this.gSource.Size = new System.Drawing.Size(187, 20);
-            this.gSource.TabIndex = 42;
+            this.gSource.TabIndex = 46;
             this.tt.SetToolTip(this.gSource, "Where Loopstream will get the Now Playing data from");
             this.gSource.TextChanged += new System.EventHandler(this.gSource_TextChanged);
             this.gSource.MouseEnter += new System.EventHandler(this.gHost_MouseEnter);
@@ -1455,7 +1472,7 @@
             this.gName.Location = new System.Drawing.Point(100, 119);
             this.gName.Name = "gName";
             this.gName.Size = new System.Drawing.Size(272, 20);
-            this.gName.TabIndex = 48;
+            this.gName.TabIndex = 49;
             this.tt.SetToolTip(this.gName, "A title you\'d like to use for this config");
             this.gName.TextChanged += new System.EventHandler(this.gName_TextChanged);
             this.gName.MouseEnter += new System.EventHandler(this.gHost_MouseEnter);
@@ -1615,7 +1632,7 @@
             this.gVU.Margin = new System.Windows.Forms.Padding(12, 3, 3, 3);
             this.gVU.Name = "gVU";
             this.gVU.Size = new System.Drawing.Size(75, 17);
-            this.gVU.TabIndex = 52;
+            this.gVU.TabIndex = 102;
             this.gVU.Text = "VU meters";
             this.tt.SetToolTip(this.gVU, "420 lensflare bling");
             this.gVU.UseVisualStyleBackColor = true;
@@ -1638,7 +1655,7 @@
             this.gCancel.Location = new System.Drawing.Point(170, 6);
             this.gCancel.Name = "gCancel";
             this.gCancel.Size = new System.Drawing.Size(121, 50);
-            this.gCancel.TabIndex = 53;
+            this.gCancel.TabIndex = 104;
             this.gCancel.Text = "A p p l y   o n l y";
             this.tt.SetToolTip(this.gCancel, "Apply this configuration only for this session");
             this.gCancel.UseVisualStyleBackColor = true;
@@ -1674,7 +1691,7 @@
             this.gSplash.Margin = new System.Windows.Forms.Padding(12, 3, 3, 3);
             this.gSplash.Name = "gSplash";
             this.gSplash.Size = new System.Drawing.Size(167, 17);
-            this.gSplash.TabIndex = 51;
+            this.gSplash.TabIndex = 101;
             this.gSplash.Text = "Splash screen fadeout effects";
             this.tt.SetToolTip(this.gSplash, "420 lensflare bling");
             this.gSplash.UseVisualStyleBackColor = true;
@@ -1705,6 +1722,30 @@
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(542, 1);
             this.label5.TabIndex = 5;
+            // 
+            // label12
+            // 
+            this.label12.BackColor = System.Drawing.SystemColors.Control;
+            this.label12.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.label12.Location = new System.Drawing.Point(0, 34);
+            this.label12.Name = "label12";
+            this.label12.Size = new System.Drawing.Size(542, 10);
+            this.label12.TabIndex = 1;
+            // 
+            // tt
+            // 
+            this.tt.ShowAlways = true;
+            this.tt.UseAnimation = false;
+            this.tt.UseFading = false;
+            // 
+            // gYield
+            // 
+            this.gYield.Location = new System.Drawing.Point(426, 67);
+            this.gYield.Name = "gYield";
+            this.gYield.Size = new System.Drawing.Size(100, 20);
+            this.gYield.TabIndex = 53;
+            this.tt.SetToolTip(this.gYield, "How often Loopstream will look for new metadata (in miliseconds)");
+            this.gYield.TextChanged += new System.EventHandler(this.gYield_TextChanged);
             // 
             // hOSD
             // 
@@ -1770,21 +1811,6 @@
             this.hSoundcard.Size = new System.Drawing.Size(115, 35);
             this.hSoundcard.TabIndex = 0;
             this.hSoundcard.Text = "Soundcard";
-            // 
-            // label12
-            // 
-            this.label12.BackColor = System.Drawing.SystemColors.Control;
-            this.label12.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.label12.Location = new System.Drawing.Point(0, 34);
-            this.label12.Name = "label12";
-            this.label12.Size = new System.Drawing.Size(542, 10);
-            this.label12.TabIndex = 1;
-            // 
-            // tt
-            // 
-            this.tt.ShowAlways = true;
-            this.tt.UseAnimation = false;
-            this.tt.UseFading = false;
             // 
             // ConfigSC
             // 
@@ -1930,7 +1956,6 @@
         private System.Windows.Forms.Panel pTagsAdvanced2;
         private System.Windows.Forms.Button gTagsAdvanced;
         private System.Windows.Forms.Label label25;
-        private System.Windows.Forms.TextBox gGroup;
         private System.Windows.Forms.CheckBox gTagAuto;
         private System.Windows.Forms.Panel panel2;
         private System.Windows.Forms.Panel panel1;
@@ -1959,5 +1984,8 @@
         private System.Windows.Forms.TextBox gDescText;
         private System.Windows.Forms.Label label29;
         private System.Windows.Forms.Button gRunTest;
+        private System.Windows.Forms.Button gTagimport;
+        private System.Windows.Forms.Button gTagexport;
+        private System.Windows.Forms.TextBox gYield;
     }
 }

@@ -49,6 +49,8 @@ namespace Loopstream
         protected void makeShouter()
         {
             logger.a("make shouter");
+            proc.PriorityClass = System.Diagnostics.ProcessPriorityClass.High;
+
             System.Net.Sockets.NetworkStream prepS;
             string ver = Application.ProductVersion;
             string auth = string.Format("{0}:{1}", settings.user, settings.pass);

@@ -154,6 +154,7 @@ namespace Loopstream
                 {
                     string ret = "";
                     string lpm = "";
+                    bool hadError = false;
                     ProcessModule pm = null;
                     byte[] raw = new byte[1024];
                     string[] ad = m.ptn.Split(' ');
@@ -200,11 +201,12 @@ namespace Loopstream
                         ofs += Convert.ToInt32(arg, 16);
                         ret += a == 0 ? "" : " - ";
                         int len = mem.read(ofs, raw, steps);
-                        if (len <= 0)
+                        if (len < 0)
                         {
                             ret += "(read error)";
+                            hadError = true;
                         }
-                        else
+                        else if (len > 0)
                         {
                             ret += m.enc.GetString(raw);
                             int i = ret.IndexOf('\0');
@@ -214,7 +216,7 @@ namespace Loopstream
                             }
                         }
                     }
-                    return new LSTD(true, ret, "SUCCESS");
+                    return new LSTD(!hadError, ret, hadError ? "Could not peek into the target application.\n\nThe media player is likely a 32bit process, while\nLoopstream is running in 64bit mode\n(or the other way around)." : "SUCCESS");
                 }
                 catch
                 {
@@ -247,11 +249,12 @@ namespace Loopstream
             {
                 return new LSTD(false, "(bad regex)", "The Pattern in this profile has a typo,\nor is otherwise broken. Call techsupport.\n\nPattern: " + m.ptn);
             }
-            if (r.Count > m.grp)
+            if (r.Count > m.yi.max)
             {
                 try
                 {
-                    string ret = r[m.grp].Value.Trim(' ', '\t', '\r', '\n'); // you can never be too sure
+                    //string ret = r[m.grp].Value.Trim(' ', '\t', '\r', '\n'); // you can never be too sure
+                    string ret = m.yi.format(r);
                     if (m.urldecode)
                     {
                         string[] sanitize = {

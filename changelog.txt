@@ -3,6 +3,14 @@
 + new feature
 ~ other change
 
+2014-02-15, 05:51:45 - Loopstream 1.3.7.0
+  + Tag reader: Support Spotify and NSFPlay
+  + Tag reader: Chrome support for YouTube/SoundCloud/Spotify
+  + Tag reader: Retrieve any regex group from tag pattern
+  + Sharekeys: copy tag/server config between users over IRC
+  = Reduced stuttering/static/silence (CPU starvation)
+  = Old tag reader profiles couldn't be saved in 1.3.6.7 orz
+
 2014-01-24, 02:51:54 - Loopstream 1.3.6.7
   + Descriptions for tag reader profiles
 

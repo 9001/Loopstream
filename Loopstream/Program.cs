@@ -72,6 +72,8 @@ namespace Loopstream
             tools = tools.Substring(tools.Replace('\\', '/').LastIndexOf('/') + 1);
             tools = tools.Split('.')[0];
             tools += "Tools\\";
+
+            System.Diagnostics.Process.GetCurrentProcess().PriorityClass = System.Diagnostics.ProcessPriorityClass.High;
             
             Logger.init();
             rnd = new Random();
