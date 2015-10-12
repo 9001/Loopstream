@@ -3,6 +3,10 @@
 + new feature
 ~ other change
 
+2014-03-20, 00:47:41 - Loopstream 1.3.7.6
+  = Memory sniffing zerolength strings caused badly formatted tags
+  ~ More debug logging
+
 2014-03-09, 16:36:03 - Loopstream 1.3.7.4
   + All soundcards and config in crash reports (except password)
   = Failed to report active soundcards when no mic connected

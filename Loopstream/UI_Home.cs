@@ -63,50 +63,56 @@ namespace Loopstream
         }
 
         int loads = 0;
+        string z(string str) { Logger.app.a(str); return str; }
         void t_Tick(object sender, EventArgs e)
         {
-            ((Timer)sender).Stop();                                                                         /**/ Logger.app.a("timer triggered");
+            ((Timer)sender).Stop();
             wincap = this.Text + " v" + Application.ProductVersion;
-            this.Text = wincap;                                                                             /**/ Logger.app.a("set window title");
+            this.Text = wincap;
+            z("set window title");
 
-            DFC.coreTest();                                                                                 /**/ Logger.app.a("dfc core ok");
+            DFC.coreTest();
+            z("dfc core ok");
             if (Directory.Exists(@"..\..\tools\"))
             {
-                splash.vis();                                                                               /**/ Logger.app.a("dfc maker");
+                splash.vis();
+                z("dfc maker");
                 new DFC().make(splash.pb);
                 Program.kill();
             }
             if (Directory.Exists(Program.tools) &&
                 !File.Exists(Program.tools + @"web\png\win95.png"))
             {
-                Logger.app.a("outdated tools; deleting");
+                z("outdated tools; deleting");
                 Directory.Delete(Program.tools, true);
             }
             if (!Directory.Exists(Program.tools))
             {
-                Logger.app.a("outdated tools; deleting");
                 splash.vis();
+                z("outdated tools; deleting");
                 new DFC().extract(splash.pb);
             }
             Logger.app.a("extract sequence done");
-            plowTheFields();                                                                                /**/ Logger.app.a("traktor test ok");
-            splash.unvis();                                                                                 /**/ Logger.app.a("splash hidden");
+            plowTheFields(); z("traktor test ok");
+            splash.unvis(); z("splash hidden");
 
             if (++loads > 1)
             {
                 MessageBox.Show("Critical semantical error, load sequencye fucskdjflks");
                 return;
             }
-            settings = LSSettings.load();
-            settings.runTests(splash, false);
-            isPresetLoad = true;
+            z("Settings #1 - LOAD"); settings = LSSettings.load();
+            z("Settings #2 - TEST"); settings.runTests(splash, false);
+            z("Settings #3 - DONE"); isPresetLoad = true;
 
+            z("Binding sliders");
             gMusic.valueChanged += gSlider_valueChanged;
             gMic.valueChanged += gSlider_valueChanged;
             gSpeed.valueChanged += gSlider_valueChanged;
             gOut.valueChanged += gSlider_valueChanged;
             mixerPresetChanged(sender, e);
 
+            z("Creating ni");
             Program.ni = new NotifyIcon();
             NotifyIcon ni = Program.ni;
             ni.Icon = this.Icon;
@@ -125,36 +131,7 @@ namespace Loopstream
             };
             ni.ContextMenu = new ContextMenu(items);
 
-            /*
-             *  Not using ContextMenuStrip because
-             *  it's an unresponsive little shit
-             * 
-            *ContextMenuStrip cm = new ContextMenuStrip();
-            ni.ContextMenuStrip = cm;
-            ToolStripItem iShow = new ToolStripLabel("Hide");
-            ToolStripItem iConn = new ToolStripLabel("Connect");
-            ToolStripItem iA = new ToolStripLabel("A (1st preset)");
-            ToolStripItem iB = new ToolStripLabel("B (2nd preset)");
-            ToolStripItem iC = new ToolStripLabel("C (3nd impact)");
-            ToolStripItem iD = new ToolStripLabel("D (4th preset)");
-            ToolStripItem iExit = new ToolStripLabel("Exit");
-            iShow.Click += ni_DoubleClick;
-            iConn.Click += gConnect_Click;
-            iExit.Click += gExit_Click;
-            iA.Click += gPreset_Click;
-            iB.Click += gPreset_Click;
-            iC.Click += gPreset_Click;
-            iD.Click += gPreset_Click;
-            cm.Items.Add(iShow);
-            cm.Items.Add(iConn);
-            cm.Items.Add(new ToolStripSeparator());
-            cm.Items.Add(iA);
-            cm.Items.Add(iB);
-            cm.Items.Add(iC);
-            cm.Items.Add(iD);
-            cm.Items.Add(new ToolStripSeparator());
-            cm.Items.Add(iExit);*/
-
+            z("Binding ni");
             gA.preset = settings.presets[0];
             gB.preset = settings.presets[1];
             gC.preset = settings.presets[2];
@@ -163,12 +140,14 @@ namespace Loopstream
             popPoor = popDrop = null;
             popEn = popFilt = false;
 
+            z("Layout gManualTags");
             gManualTags.Font = new System.Drawing.Font(gManualTags.Font.FontFamily, gManualTags.Font.SizeInPoints * 0.8f);
             gManualTags.Text = gManualTags.Text.ToUpper().Replace(" ", "  ");
             gManualTags.Location = new Point(
                 (int)(pictureBox1.Left + (pictureBox1.Width - gManualTags.Width) / 1.85),
                 (int)(pictureBox1.Top + (pictureBox1.Height - gManualTags.Height) / 1.9));
 
+            z("Position form");
             this.Bounds = myBounds;
             splash.Focus();
             //splash.BringToFront();
@@ -177,10 +156,12 @@ namespace Loopstream
 
             if (settings.autohide)
             {
+                z("Autohide was true");
                 this.Visible = false;
             }
             if (settings.autoconn)
             {
+                z("Autoconn was true");
                 gConnect_Click(sender, e);
             }
 
@@ -211,15 +192,13 @@ namespace Loopstream
             tKonami.Interval = 10;
             //tKonami.Start();
 
-            //gSpeed.giSlider.A_LEVEL = 1;
-
             Timer tTitle = new Timer();
             tTitle.Tick += tTitle_Tick;
             tTitle.Interval = 200;
             tTitle.Start();
-            showhide();
             
-            hookskinner(this.Controls);
+            z("showhide"); showhide();
+            z("skinner"); hookskinner(this.Controls);
             //Program.popception();
         }
 
@@ -328,6 +307,7 @@ namespace Loopstream
 
         void ni_DoubleClick(object sender, EventArgs e)
         {
+            z("ni toggle");
             this.Visible = !this.Visible;
             //Program.ni.ContextMenuStrip.Items[0].Text = this.Visible ? "Hide" : "Show";
             Program.ni.ContextMenu.MenuItems[0].Text = this.Visible ? "Hide" : "Show";
@@ -347,7 +327,15 @@ namespace Loopstream
                 {
                     if (keyData != cKonami[iKonami++])
                     {
-                        iKonami = 0;
+                        if (iKonami > 1 &&
+                            keyData == cKonami[iKonami - 2])
+                        {
+                            --iKonami;
+                        }
+                        else
+                        {
+                            iKonami = 0;
+                        }
                     }
                     if (iKonami >= cKonami.Length)
                     {
@@ -366,6 +354,7 @@ namespace Loopstream
 
         void gSlider_valueChanged(object sender, EventArgs e)
         {
+            z("Mixer slider changed");
             settings.mixer.vRec = gMusic.level / 255.0;
             settings.mixer.vMic = gMic.level / 255.0;
             settings.mixer.vSpd = gSpeed.level / 200.0;
@@ -412,6 +401,7 @@ namespace Loopstream
 
         void mixerPresetChanged(object sender, EventArgs e)
         {
+            z("Mixer preset changed");
             gMusic.level = (int)(255 * settings.mixer.vRec);
             gMic.level = (int)(255 * settings.mixer.vMic);
             gSpeed.level = (int)(200 * settings.mixer.vSpd);
@@ -515,6 +505,7 @@ namespace Loopstream
 
         private void gSettings_Click(object sender, EventArgs e)
         {
+            z("Show settings form");
             this.Hide();
             new ConfigSC(settings).ShowDialog();
             showhide();
@@ -528,11 +519,11 @@ namespace Loopstream
 
         private void gLoad_Click(object sender, EventArgs e)
         {
-            //this.Text = gLoad.rightclick ? "right" : "left";
             if (gLoad.rightclick)
             {
-                if (DialogResult.Yes == MessageBox.Show("Reset presets?", "hello", MessageBoxButtons.YesNo, MessageBoxIcon.Question))
+                if (DialogResult.Yes == MessageBox.Show("Reset mixer preset?", "hello", MessageBoxButtons.YesNo, MessageBoxIcon.Question))
                 {
+                    z("mixer-preset reset");
                     settings.resetPresets();
                     Pritch[] pritches = { gA, gB, gC, gD };
                     for (int a = 0; a < pritches.Length; a++)
@@ -545,20 +536,19 @@ namespace Loopstream
             isPresetLoad = !isPresetLoad;
             if (isPresetLoad)
             {
-                //MessageBox.Show("set gload load");
+                z("mixer-preset mode: load");
                 gLoad.Mode = UC_Troggle.Modes.Load;
             }
             else
             {
-                //MessageBox.Show("set gload save");
+                z("mixer-preset mode: save");
                 gLoad.Mode = UC_Troggle.Modes.Save;
             }
         }
 
         private void gPreset_Click(object sender, EventArgs e)
         {
-            //MessageBox.Show(sender.ToString());
-
+            z("mixer-preset interaction");
             int preset = sender.GetType() == typeof(Pritch) ?
                 ((Pritch)sender).Text[0] - 'A' :
                 ((MenuItem)sender).Text[0] - 'A';
@@ -588,6 +578,7 @@ namespace Loopstream
 
         private void label3_Click(object sender, EventArgs e)
         {
+            z("Displaying status form");
             new UI_Status(settings).Show();
         }
         void helloworld(object sender, EventArgs e)
@@ -792,6 +783,7 @@ namespace Loopstream
                 long time = DateTime.UtcNow.Ticks / 10000;
                 if (time < lastclick + 1000)
                 {
+                    z("Faking crash");
                     try
                     {
                         Program.popception();
@@ -826,6 +818,7 @@ namespace Loopstream
         {
             if (e.KeyCode == Keys.Enter)
             {
+                z("Sending tags by ENTER");
                 e.Handled = true;
                 Application.DoEvents();
                 gTag.Text = gTag.Text.Replace("\r", "").Replace("\n", "");
@@ -840,6 +833,7 @@ namespace Loopstream
         {
             if (!settings.tagAuto && !tagvis)
             {
+                z("displaying pTag");
                 this.SuspendLayout();
                 tagvis = pTag.Visible = true;
                 this.Height += pTag.Height;
@@ -847,6 +841,7 @@ namespace Loopstream
             }
             else if (settings.tagAuto && tagvis)
             {
+                z("concealing pTag");
                 this.SuspendLayout();
                 this.Height -= pTag.Height;
                 tagvis = pTag.Visible = false;
@@ -860,10 +855,12 @@ namespace Loopstream
             try
             {
                 //gTag.Text = tag.tag.tag;
+                z("gTagRead");
                 gTag.Text = LSTag.get(settings.meta, false).tag;
             }
             catch (Exception ex)
             {
+                z("failed, no stream");
                 System.Windows.Forms.MessageBox.Show("Can't let you do that, Dave.\n(please start streaming first)\n\n" + ex.Message + "\n" + ex.StackTrace);
             }
         }
@@ -872,10 +869,12 @@ namespace Loopstream
         {
             try
             {
+                z("gTagSend");
                 tag.set(gTag.Text);
             }
             catch (Exception ex)
             {
+                z("failed, no stream");
                 System.Windows.Forms.MessageBox.Show("Can't let you do that, Dave.\n(please start streaming first)\n\n" + ex.Message + "\n" + ex.StackTrace);
             }
         }
@@ -888,6 +887,7 @@ namespace Loopstream
             ice = ice.Substring(0, ice.LastIndexOf('.')) + "Traktor.exe";
             if (System.IO.File.Exists(ice))
             {
+                z("Found ice, launching");
                 ice = ice.Substring(wd.Length);
                 System.Diagnostics.Process proc = new System.Diagnostics.Process();
                 proc.StartInfo = new System.Diagnostics.ProcessStartInfo(ice, "doit");
@@ -899,6 +899,7 @@ namespace Loopstream
 
         private void gManualTags_CheckedChanged(object sender, EventArgs e)
         {
+            z("Toggle manualTags checkbox");
             settings.tagAuto = !gManualTags.Checked;
             showhide();
         }

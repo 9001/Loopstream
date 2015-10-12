@@ -7,13 +7,7 @@ using System.Xml.Serialization;
 
 namespace Loopstream
 {
-    public class LSSettingsI
-    {
-        public string sjdflakjdsa;
-        public LSSettingsI() { }
-    }
-
-    public class LSSettings : LSSettingsI
+    public class LSSettings
     {
         [XmlIgnore]
         public static LSSettings singleton;
@@ -374,7 +368,7 @@ namespace Loopstream
         public bool warn_poor, warn_drop;
         public double lim_poor, lim_drop;
 
-        public LSSettings() : base()
+        public LSSettings()
         {
             s_devRec = s_devMic = s_devOut = "";
             micLeft = true;
@@ -454,7 +448,6 @@ namespace Loopstream
                         try
                         {
                             LSDevice add = new LSDevice();
-                            Logger.app.a("Creating LSDevice");
                             add.mm = device;
                             add.isRec = device.DataFlow == NAudio.CoreAudioApi.DataFlow.Capture;
                             add.isPlay = device.DataFlow == NAudio.CoreAudioApi.DataFlow.Render;
@@ -462,22 +455,22 @@ namespace Loopstream
                             {
                                 add.isRec = add.isPlay = true;
                             }
-                            Logger.app.a("Dataflows OK");
+                            Logger.app.a("Df " + add.isPlay + " " + add.isRec);
 
                             add.id = device.ID;
-                            Logger.app.a("ID: " + add.id);
+                            Logger.app.a("ID " + add.id);
 
                             add.name = device.ToString();
-                            Logger.app.a("Name: " + add.name);
+                            Logger.app.a("Na " + add.name);
 
                             ldev.Add(add);
                         }
-                        catch { Logger.app.a("Failed"); }
+                        catch { Logger.app.a("Failed !"); }
                     }
                 }
-                catch { Logger.app.a("Failed"); }
+                catch { Logger.app.a("Failed !!"); }
             }
-            catch { Logger.app.a("Failed"); }
+            catch { Logger.app.a("Failed !!!"); }
 
             devs = ldev.ToArray();
             if (string.IsNullOrEmpty(s_devRec)) s_devRec = "";
@@ -500,7 +493,7 @@ namespace Loopstream
             metas.AddRange(new LSMeta[] {
                 new LSMeta(
                     LSMeta.Reader.WindowCaption,
-                    "Foobar 2000",
+                    "Foobar 2000  (window title)",
                     "foobar2000",
                     500,
                     @" *(.*[^ ]) *( - foobar2000$|\[foobar2000 v([0-9\.]*)\]$)",
@@ -509,6 +502,18 @@ namespace Loopstream
                     false,
                     1,
                     "H4sIAAAAAAAEAHWRMU8DMQyF9/sVbzmJSlBVjGyoLVKHAoIyVR3Mna+JmksqJ9fj/j1OQAgGtsj2e++zszM24iwcOWG0zkGYWkxhEDyE8E5yu1gstOPbMCLZ5PgaGI1tDIY4kHMTogljRDOIsE+4l2RjAvkWuzw+r6pNlw1Bwqqx/gjS6ZhCj2S4z4ZBYL+GGkP+yN8Ev2PRBekpJdWrwCb0NMEHpQ5y0pCd0R1KhpriZb182m7Xj6v16o9LzDZ4TYpH0r5tcIXOivLOUJCXwQ29j6URuQlams2rZ8ek5j2dGHHQiEwq3IcLgy8sUzJ5LetLdlfuBhV39qj27Fol1o7X2nkqOWeKSbUf1CQ33VXVvqZytxo3OOzrwlof/qnnd/fzOZ+am6aNwgEAAA=="
+                ),
+                new LSMeta(
+                    LSMeta.Reader.ProcessMemory,
+                    "Foobar 2000  (foo_audioscrobbler)",
+                    "foobar2000",
+                    1000,
+                    @"foo_audioscrobbler.dll+2b508*0, foo_audioscrobbler.dll+2b51c*0",
+                    "{1}",
+                    "utf-8",
+                    false,
+                    1,
+                    "H4sIAAAAAAAEAHWST2sbMRDF7/oU71owwnUCBUMLPtRQSOLQ7q2Uol3N2qLaGUeazcb99NXKDtiH3vTn6c383qg5hIxjokyKKcSIRM5D3T6jTzJADwT0Ir/d6IPkLknbRkrWF2knw1GYWBE4B0/YirQurZbLpTU/AndULNnLBA0aCaUSi2LM5BcozmU/SfqTQa/ECD1OMmIIHIbw99oMKtDkTtZsMqLwHi5XbXHCg8tqt49XzUxBD1evF1XaOa7yWrUT7sMeWOODMe8GrutknFkynnZNyeFlDKl22o5aPZjIz70UWnWFf87mGMd9YDj2IHbtTKlrsw1lgc9fgOdEPSUqWeTzQSMSL8vNTaTns59vv/D1bHR7bYz59vi8+95snpo1sON4uqRXef83I7xSykEYH+29/bSYG7XWmst4+prSjHy3aoMiS6+TS7S44U0j40HkmLV8jqHgX9SDeLKmEOZcsyg5aanUUpxHLuiKXOnq6d3K0hvVsIo+vU/Eqf0HYDNJeIcCAAA="
                 ),
                 new LSMeta(
                     LSMeta.Reader.ProcessMemory,
@@ -676,28 +681,38 @@ namespace Loopstream
         {
             foreach (LSMeta meta in metas)
             {
-                try
-                {
-                    meta.desc = Z.gze(meta.desc.Replace("\r", ""));
-                }
-                catch
-                {
-                    meta.desc = "(encoding failed)";
-                }
+                metaEnc(meta);
+            }
+            metaEnc(this.meta);
+        }
+        void metaEnc(LSMeta meta)
+        {
+            try
+            {
+                meta.desc = Z.gze(meta.desc.Replace("\r", ""));
+            }
+            catch
+            {
+                meta.desc = "(encoding failed)";
             }
         }
         void metaDec()
         {
             foreach (LSMeta meta in metas)
             {
-                try
-                {
-                    meta.desc = Z.gzd(meta.desc).Replace("\r", "").Replace("\n", "\r\n");
-                }
-                catch
-                {
-                    meta.desc = "(encoding failed)";
-                }
+                metaDec(meta);
+            }
+            metaDec(this.meta);
+        }
+        void metaDec(LSMeta meta)
+        {
+            try
+            {
+                meta.desc = Z.gzd(meta.desc).Replace("\r", "").Replace("\n", "\r\n");
+            }
+            catch
+            {
+                //meta.desc = "(encoding failed)";
             }
         }
         public void resetPresets()
@@ -772,6 +787,10 @@ namespace Loopstream
         }
         public void save()
         {
+            // could and should probably use GeneralInfo.ser, but:
+            //  * Keeping this for now ince It Just Works
+            //  * metaEnc/Dec() might complicate things
+
             metaEnc();
             var x = new XmlSerializer(this.GetType());
             using (var s = new System.IO.FileStream("Loopstream.ini", System.IO.FileMode.Create))
@@ -781,18 +800,6 @@ namespace Loopstream
                 x.Serialize(s, this);
             }
             metaDec();
-        }
-        public string serialize()
-        {
-            var x = new XmlSerializer(this.GetType());
-            using (var stream = new System.IO.MemoryStream())
-            {
-                stream.SetLength(0);
-                x.Serialize(stream, this);
-                stream.Position = 0;
-                var doc = System.Xml.Linq.XDocument.Load(stream);
-                return doc.Root.ToString();
-            }
         }
         public static LSSettings load()
         {

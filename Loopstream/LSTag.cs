@@ -14,6 +14,7 @@ namespace Loopstream
         public LSTD tag;
         public LSTD manual;
         LSSettings settings;
+        bool socket_fallback;
         bool haveFailed;
         bool quitting;
 
@@ -24,6 +25,7 @@ namespace Loopstream
             settings = set;
             quitting = false;
             haveFailed = false;
+            socket_fallback = false;
             latin1 = Encoding.GetEncoding("ISO_8859-1");
             manual = new LSTD(false, "", "STILL_UNUSED");
             tag = new LSTD(false, "", "STILL_UNUSED");
@@ -199,7 +201,7 @@ namespace Loopstream
                             arg = args[0];
                         }
                         ofs += Convert.ToInt32(arg, 16);
-                        ret += a == 0 ? "" : " - ";
+                        ret += a == 0 || ret.Length == 0 ? "" : " - ";
                         int len = mem.read(ofs, raw, steps);
                         if (len < 0)
                         {
@@ -210,7 +212,7 @@ namespace Loopstream
                         {
                             ret += m.enc.GetString(raw);
                             int i = ret.IndexOf('\0');
-                            if (i > 0)
+                            if (i >= 0)
                             {
                                 ret = ret.Substring(0, i);
                             }
@@ -336,18 +338,22 @@ namespace Loopstream
             try
             {
                 Logger.tag.a("send " + est.enc.ext + " " + est.tag);
+                string url = string.Format(
+                    "http://{0}:{1}/admin/metadata?mode=updinfo&mount=/{2}.{3}&charset=UTF-8&song={4}",
+                    settings.host,
+                    settings.port,
+                    settings.mount,
+                    est.enc.ext,
+                    meta);
+
+                Logger.tag.a("url " + url);
                 using (System.Net.WebClient wc = new System.Net.WebClient())
                 {
+                    Logger.tag.a("made webclient");
                     wc.Headers.Add("Authorization: Basic " + auth);
-                    string msg = wc.DownloadString(string.Format(
-                        "http://{0}:{1}/admin/metadata?mode=updinfo&mount=/{2}.{3}&charset=UTF-8&song={4}",
-                        settings.host,
-                        settings.port,
-                        settings.mount,
-                        est.enc.ext,
-                        meta));
+                    string msg = wc.DownloadString(url);
 
-                    Logger.tag.a(est.enc.ext + " socket ok");
+                    Logger.tag.a(est.enc.ext + " socket ok: " + msg);
                     if (!haveFailed && !msg.Contains("<return>1</return>"))
                     {
                         haveFailed = true;
