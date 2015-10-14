@@ -69,6 +69,7 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisIgnoreBuiltInRules>false</CodeAnalysisIgnoreBuiltInRules>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="NAudio">
@@ -76,6 +77,10 @@
     </Reference>
     <Reference Include="NAudio.WindowsMediaFormat">
       <HintPath>lib\NAudio.WindowsMediaFormat.dll</HintPath>
+    </Reference>
+    <Reference Include="NVorbis, Version=0.8.4.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>lib\NVorbis.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -115,6 +120,7 @@
     <Compile Include="turnkey\7zip\Compress\RangeCoder\RangeCoderBitTree.cs" />
     <Compile Include="turnkey\7zip\ICoder.cs" />
     <Compile Include="turnkey\Chencode.cs" />
+    <Compile Include="turnkey\VorbisWaveReader.cs" />
     <Compile Include="UC_Graden.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -229,6 +235,7 @@
     </EmbeddedResource>
     <EmbeddedResource Include="UI_ConfigSC.resx">
       <DependentUpon>UI_ConfigSC.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="UI_Exception.resx">
       <DependentUpon>UI_Exception.cs</DependentUpon>
@@ -269,8 +276,6 @@
     <EmbeddedResource Include="res\tools.dfc" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="res\fx.mp3" />
-    <None Include="res\fx2.mp3" />
     <None Include="res\logo.png" />
     <EmbeddedResource Include="res\logo.wav" />
     <EmbeddedResource Include="res\msg_drop.png" />
@@ -284,6 +289,7 @@
     <EmbeddedResource Include="res\msg_quit.png" />
     <EmbeddedResource Include="lib\NAudio.dll" />
     <EmbeddedResource Include="lib\NAudio.WindowsMediaFormat.dll" />
+    <EmbeddedResource Include="lib\NVorbis.dll" />
     <Content Include="loopstream.ico" />
   </ItemGroup>
   <ItemGroup>

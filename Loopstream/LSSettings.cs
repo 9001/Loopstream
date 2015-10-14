@@ -7,6 +7,20 @@ using System.Xml.Serialization;
 
 namespace Loopstream
 {
+    public class LSInfo
+    {
+        public DateTime begin;
+        public string filename;
+        public string timestamp()
+        {
+            TimeSpan ts = DateTime.UtcNow.Subtract(begin);
+            int h = (int)ts.TotalHours;
+            int m = ((int)ts.TotalMinutes) - 60 * h;
+            int s = ((int)ts.TotalSeconds) - 60 * ((60 * h) + m);
+            return string.Format("{0:D2}:{1:D2}:{2:D2}", h, m, s);
+        }
+    }
+
     public class LSSettings
     {
         [XmlIgnore]
@@ -496,8 +510,17 @@ namespace Loopstream
             public long quality;
             public LSChannels channels;
             public string ext;
+
             [XmlIgnore]
             public double FIXME_kbps;
+
+            [XmlIgnore]
+            public LSInfo i;
+
+            public LSParams()
+            {
+                i = new LSInfo();
+            }
         }
 
         LSDevice _devRec, _devMic, _devOut;
@@ -517,6 +540,7 @@ namespace Loopstream
         public LSPreset[] presets;
         public LSParams mp3, ogg;
         public int samplerate;
+        public int reverbP, reverbS;
 
         public List<LSServerPreset> serverPresets;
         public enum LSRelay { ice, shout, siren }
@@ -527,9 +551,10 @@ namespace Loopstream
         public bool pubstream;
         public bool tagsock;
 
-        public bool testDevs;
         public bool splash;
         public bool vu;
+        public bool testDevs;
+        public bool killmic;
         public bool recPCM;
         public bool recMp3;
         public bool recOgg;
@@ -565,6 +590,8 @@ namespace Loopstream
             ogg.channels = LSChannels.stereo;
             ogg.ext = "ogg";
             samplerate = 44100;
+            reverbP = 0;
+            reverbS = 90;
 
             serverPresets = new List<LSServerPreset>();
             host = "become.stream.r-a-d.io";
@@ -590,9 +617,10 @@ namespace Loopstream
             //presets[0] = new LSPreset(0.5, 0.875, 0.32, 0.75, true, true, true); //DEBUG
             mixer = new LSPreset();
             mixer.apply(presets[0]);
-            testDevs = true;
             splash = true;
             vu = true;
+            testDevs = true;
+            killmic = false;
             recMp3 = true;
             recOgg = true;
             recPCM = false;
@@ -659,7 +687,7 @@ namespace Loopstream
             if (!string.IsNullOrEmpty(s_devMic)) devMic = getDevByID(s_devMic);
             if (!string.IsNullOrEmpty(s_devOut)) devOut = getDevByID(s_devOut);
         }
-        public void initWhenDeserializationFails()
+        public void initFinally()
         {
             if (metas.Count == 0)
             {
@@ -669,6 +697,7 @@ namespace Loopstream
             {
                 resetTriggers();
             }
+            LSSettings.singleton = this;
         }
         public void resetMetas()
         {
@@ -949,7 +978,7 @@ namespace Loopstream
                 new LSPreset(0.15, 1, 0.6, 1, true, true, true, 1, 4, -1, -1),
             };
         }
-        public void runTests(Splesh splesh, bool forceTest)
+        public void runTests(Progress splesh, bool forceTest)
         {
             Program.DBGLOG = "";
             if (testDevs || forceTest)
@@ -1082,6 +1111,8 @@ namespace Loopstream
                             ret.lim_poor_DEPRECATED = 0.9;
                             ret.lim_drop_DEPRECATED = 0.6;
                         }
+                        if (ret.reverbS <= 0) ret.reverbS = 90;
+                        if (ret.reverbP <= 0) ret.reverbP = 0;
                     }
                 }
                 catch (Exception e)
@@ -1114,11 +1145,7 @@ namespace Loopstream
                     }
                     catch { }
                     Logger.app.a("LSSettings deserialize successful");
-                    LSSettings.singleton = ret; // for exception handler
-
-                    Logger.app.a("Postprocessing existing");
-                    ret.initWhenDeserializationFails(); // this goes here too
-
+                    ret.initFinally();
                     return ret;
                 }
                 catch (Exception e)
@@ -1132,11 +1159,8 @@ namespace Loopstream
             Logger.app.a("Creating new LSSettings");
             ret = new LSSettings();
             
-            Logger.app.a("Postprocessing new");
-            ret.initWhenDeserializationFails(); // it is 06:20 am, what are you looking at
-
             Logger.app.a("LSSettings OK");
-            LSSettings.singleton = ret; // for exception handler
+            ret.initFinally(); // it is 06:20 am, what are you looking at
             return ret;
         }
     }

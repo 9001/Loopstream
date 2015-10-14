@@ -50,6 +50,7 @@
             this.Name = "UI_Graph";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "UI_Graph";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.UI_Graph_FormClosing);
             this.Load += new System.EventHandler(this.UI_Graph_Load);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.ResumeLayout(false);

@@ -26,6 +26,7 @@ namespace Loopstream
         WaveFileWriter waver;
         public NPatch.Fork.Outlet lameOutlet;
         public string isLQ;
+        System.Windows.Forms.Timer killmic;
 
         public void Dispose(ref string tex)
         {
@@ -59,8 +60,10 @@ namespace Loopstream
         {
             Logger.mix.a("doMagic");
             string lq = "";
+            recCap = null;
+            micCap = null;
             recRe = micRe = null;
-            ISampleProvider recProv, micProv;
+            ISampleProvider recProv;
             format = WaveFormat.CreateIeeeFloatWaveFormat(settings.samplerate, 2);
             //mixer = new MixingSampleProvider(format);
             mixa = new NPatch.Mixa(format);
@@ -82,53 +85,22 @@ namespace Loopstream
                     LSDevice.stringer(recCap.WaveFormat) + "\n\n";
             }
             recProv = new WaveToSampleProvider((IWaveProvider)recRe ?? (IWaveProvider)recIn);
-            recVol = new NPatch.VolumeSlider(recProv);
+            recVol = new NPatch.VolumeSlider();
+            recVol.SetSource(recProv);
             mixa.AddMixerInput(recVol);
             Logger.mix.a("rec done");
-            
-            if (settings.devMic != null && settings.devMic.mm != null)
-            {
-                Logger.mix.a("create mic");
-                micCap = new WasapiCapture(settings.devMic.mm);
-                micCap.DataAvailable += micDev_DataAvailable_03;
-                micIn = new BufferedWaveProvider(micCap.WaveFormat);
-                if (micCap.WaveFormat.SampleRate != settings.samplerate)
-                {
-                    Logger.mix.a("create mic resampler");
-                    micRe = new MediaFoundationResampler(micIn, settings.samplerate);
-                    micRe.ResamplerQuality = 60;
-                    lq += "Incorrect samplerate on microphone device, resampling\n" +
-                        settings.devMic.mm.DeviceFriendlyName + "\n" +
-                        settings.devMic.mm.FriendlyName + "\n" +
-                        settings.devMic.id + "\n" +
-                        LSDevice.stringer(settings.devMic.wf) + "\n" +
-                        LSDevice.stringer(micCap.WaveFormat) + "\n\n";
-                }
-                micProv = new WaveToSampleProvider((IWaveProvider)micRe ?? (IWaveProvider)micIn);
-                if (micCap.WaveFormat.Channels == 1)
-                {
-                    Logger.mix.a("mic mono2stereo");
-                    micProv = new MonoToStereoSampleProvider(micProv);
-                }
-                else if (settings.micLeft != settings.micRight)
-                {
-                    Logger.mix.a("mic chanselector");
-                    micProv = new NPatch.ChannelSelector(micProv, settings.micLeft ? 0 : 1);
-                }
-                micVol = new NPatch.VolumeSlider(micProv);
-                mixa.AddMixerInput(micVol);
-                Logger.mix.a("mic done");
-            }
-            else
-            {
-                Logger.mix.a("mic skipped");
-                micVol = new NPatch.VolumeSlider();
-            }
+
+            killmic = new System.Windows.Forms.Timer();
+            killmic.Interval = 1000;
+            killmic.Tick += killmic_Tick;
+            micVol = new NPatch.VolumeSlider();
+            lq += micAdd();
 
             //mixer.ReadFully = true;
             fork = new NPatch.Fork(mixa, 2);
             lameOutlet = fork.providers[1];
-            outVol = new NPatch.VolumeSlider(fork.providers[0]);
+            outVol = new NPatch.VolumeSlider();
+            outVol.SetSource(fork.providers[0]);
             muxer = new SampleToWaveProvider(outVol);
 
             Logger.mix.a("init mixer vol");
@@ -156,7 +128,7 @@ namespace Loopstream
             recCap.StartRecording();
 
             //System.Threading.Thread.Sleep(100);
-            if (settings.devMic != null && settings.devMic.mm != null)
+            if (micCap != null)
             {
                 Logger.mix.a("mic.startRec");
                 micCap.StartRecording();
@@ -186,9 +158,117 @@ namespace Loopstream
             }*/
         }
 
+        string micAdd()
+        {
+            string ret = "";
+            ISampleProvider micProv;
+            if (micVol != null && micVol.OK())
+                return "";
+
+            if (settings.devMic != null && settings.devMic.mm != null)
+            {
+                Logger.mix.a("create mic");
+                micCap = new WasapiCapture(settings.devMic.mm);
+                micCap.DataAvailable += micDev_DataAvailable_03;
+                micIn = new BufferedWaveProvider(micCap.WaveFormat);
+                if (micCap.WaveFormat.SampleRate != settings.samplerate)
+                {
+                    Logger.mix.a("create mic resampler");
+                    micRe = new MediaFoundationResampler(micIn, settings.samplerate);
+                    micRe.ResamplerQuality = 60;
+                    ret += "Incorrect samplerate on microphone device, resampling\n" +
+                        settings.devMic.mm.DeviceFriendlyName + "\n" +
+                        settings.devMic.mm.FriendlyName + "\n" +
+                        settings.devMic.id + "\n" +
+                        LSDevice.stringer(settings.devMic.wf) + "\n" +
+                        LSDevice.stringer(micCap.WaveFormat) + "\n\n";
+                }
+                micProv = new WaveToSampleProvider((IWaveProvider)micRe ?? (IWaveProvider)micIn);
+                if (micCap.WaveFormat.Channels == 1)
+                {
+                    Logger.mix.a("mic mono2stereo");
+                    micProv = new MonoToStereoSampleProvider(micProv);
+                }
+                else if (settings.micLeft != settings.micRight)
+                {
+                    Logger.mix.a("mic chanselector");
+                    micProv = new NPatch.ChannelSelector(micProv, settings.micLeft ? 0 : 1);
+                }
+                if (settings.reverbP > 0)
+                    micProv = new NPatch.Reverb(micProv);
+
+                micVol.SetSource(micProv);
+                mixa.AddMixerInput(micVol);
+                Logger.mix.a("mic done");
+            }
+            else
+            {
+                Logger.mix.a("mic skipped");
+            }
+            return ret;
+        }
+
+        void killmic_Tick(object sender, EventArgs e)
+        {
+            killmic.Stop();
+            if (!settings.killmic)
+                return;
+
+            mixa.RemoveMixerInput(micVol);
+            micVol.SetSource(null);
+            if (micCap != null)
+            {
+                micCap.StopRecording();
+                micCap.Dispose();
+            }
+            if (micRe != null)
+                micRe.Dispose();
+
+            Logger.mix.a("mic stopped");
+        }
+
         public void FadeVolume(Slider slider, float vol, double seconds)
         {
             Logger.mix.a("fadeVol " + slider + " to " + vol + " over " + seconds);
+            bool micOn = slider == Slider.Mic && micVol.GetVolume() < 0.1 && vol > 0.1;
+            bool micOff = slider == Slider.Mic && micVol.GetVolume() > 0.1 && vol < 0.1;
+            if (micOn || micOff)
+            {
+                if (micOn)
+                {
+                    killmic.Stop();
+                    if (!micVol.OK())
+                    {
+                        micAdd();
+                        if (micVol.OK())
+                        {
+                            Logger.mix.a("mic.startRec");
+                            micCap.StartRecording();
+                        }
+                    }
+                }
+                else if (settings.killmic)
+                {
+                    killmic.Stop();
+                    killmic.Interval = (int)(seconds * 1000) + 250;
+                    killmic.Start();
+                }
+                try
+                {
+                    LSSettings.LSParams[] encs = { settings.mp3, settings.ogg };
+                    foreach (LSSettings.LSParams enc in encs)
+                    {
+                        if (enc.enabled && !string.IsNullOrWhiteSpace(enc.i.filename))
+                        {
+                            System.IO.File.AppendAllText(
+                                enc.i.filename + ".txt",
+                                enc.i.timestamp() + " " + (micOn ? "@" : "-") + "\r\n",
+                                Encoding.UTF8);
+                        }
+                    }
+                }
+                catch { }
+            }
             if (slider == Slider.Music) recVol.SetVolume(vol, seconds);
             if (slider == Slider.Mic) micVol.SetVolume(vol, seconds);
             if (slider == Slider.Out) outVol.SetVolume(vol, seconds);

@@ -227,6 +227,7 @@ namespace Loopstream
                 "Thanks, now you're ready to fly!");
 
             reDevice();
+            initDevs();
             string bads = "";
             foreach (LSDevice dev in settings.devs)
             {
@@ -440,10 +441,11 @@ namespace Loopstream
             }
         }
 
-        void initForm()
+        void initDevs()
         {
+            var ov = disregardEvents;
             disregardEvents = true;
-            
+
             gOneS.Items.Clear();
             gTwoS.Items.Clear();
             gOutS.Items.Clear();
@@ -451,21 +453,29 @@ namespace Loopstream
             populate(false, gTwoS);
             LSDevice nil = new LSDevice();
             nil.name = "(disabled)";
-            doRegexTests = false;
 
             gTwoS.Items.Insert(0, nil);
             gOneS.SelectedItem = settings.devRec;
             gTwoS.SelectedItem = settings.devMic;
             gOutS.SelectedItem = settings.devOut;
-            gLeft.Checked = settings.micLeft;
-            gRight.Checked = settings.micRight;
-            gRate.Text = settings.samplerate.ToString();
 
             if (settings.devMic == null ||
                 settings.devMic.mm == null)
-            {
                 gTwoS.SelectedIndex = 0;
-            }
+
+            disregardEvents = ov;
+        }
+
+        void initForm()
+        {
+            disregardEvents = true;
+            initDevs();
+
+            gLeft.Checked = settings.micLeft;
+            gRight.Checked = settings.micRight;
+            gRate.Text = settings.samplerate.ToString();
+            gReverbP.Text = settings.reverbP.ToString();
+            gReverbS.Text = settings.reverbS.ToString();
 
             gMp3Enable.Checked = settings.mp3.enabled;
             gMp3Bitrate.Checked = settings.mp3.compression == LSSettings.LSCompression.cbr;
@@ -485,10 +495,12 @@ namespace Loopstream
 
             visualizeServerSettings();
 
+            doRegexTests = false;
             gTestDevs.Checked = settings.testDevs;
             gUnavail.Checked = settings.showUnavail;
             gSplash.Checked = settings.splash;
             gVU.Checked = settings.vu;
+            gKillMic.Checked = settings.killmic;
             gRecPCM.Checked = settings.recPCM;
             gRecMP3.Checked = settings.recMp3;
             gRecOGG.Checked = settings.recOgg;
@@ -565,11 +577,18 @@ namespace Loopstream
 
         void reDevice()
         {
-            Splesh spl = new Splesh();
-            spl.Show();
-            Application.DoEvents();
-            settings.runTests(spl, true);
-            spl.gtfo();
+            //Splesh spl = new Splesh();
+            //spl.Show();
+            //Application.DoEvents();
+            var p = new Progress(panel3, label31);
+            gOneS.Enabled = gTwoS.Enabled = gOutS.Enabled = false;
+            
+            settings.init();
+            settings.runTests(p, true);
+            label31.Visible = false;
+
+            gOneS.Enabled = gTwoS.Enabled = gOutS.Enabled = true;
+            //spl.gtfo();
         }
 
         void tabHeader_MouseDown(object sender, MouseEventArgs e)
@@ -741,12 +760,18 @@ namespace Loopstream
 
         private void gOutS_SelectedIndexChanged(object sender, EventArgs e)
         {
+            if (disregardEvents)
+                return;
+
             settings.devOut = (LSDevice)gOutS.SelectedItem;
             playFX(settings.devOut);
         }
 
         private void gOneS_SelectedIndexChanged(object sender, EventArgs e)
         {
+            if (disregardEvents)
+                return;
+
             settings.devRec = (LSDevice)gOneS.SelectedItem;
             //if (Program.debug) MessageBox.Show(LSDevice.stringer(settings.devRec.wf));
             playFX(settings.devRec);
@@ -754,6 +779,9 @@ namespace Loopstream
 
         private void gTwoS_SelectedIndexChanged(object sender, EventArgs e)
         {
+            if (disregardEvents)
+                return;
+
             settings.devMic = (LSDevice)gTwoS.SelectedItem;
             //if (Program.debug) MessageBox.Show(LSDevice.stringer(settings.devMic.wf));
         }
@@ -1237,6 +1265,18 @@ namespace Loopstream
             if (n >= 0) settings.samplerate = n;
         }
 
+        private void gReverb_TextChanged(object sender, EventArgs e)
+        {
+            int n = getValue(gReverbP);
+            if (n >= 0) settings.reverbP = n;
+        }
+
+        private void gReverbS_TextChanged(object sender, EventArgs e)
+        {
+            int n = getValue(gReverbS);
+            if (n >= 0) settings.reverbS = n;
+        }
+
         private void gVU_CheckedChanged(object sender, EventArgs e)
         {
             settings.vu = gVU.Checked;
@@ -1321,7 +1361,7 @@ namespace Loopstream
                                         this.Invoke((MethodInvoker)delegate
                                         {
                                             reDevice();
-                                            initForm();
+                                            initDevs();
                                         });
                                     }
                                     if (mod == "clone")
@@ -1329,7 +1369,7 @@ namespace Loopstream
                                         this.Invoke((MethodInvoker)delegate
                                         {
                                             settings.devRec = settings.devOut;
-                                            initForm();
+                                            initDevs();
                                         });
                                     }
                                     if (mod == "serv")
@@ -2108,5 +2148,17 @@ namespace Loopstream
         {
             settings.tagsock = gTagSock.Checked;
         }
+
+        private void gKillMic_CheckedChanged(object sender, EventArgs e)
+        {
+            settings.killmic = gKillMic.Checked;
+        }
+
+        private void gRescan_Click(object sender, EventArgs e)
+        {
+            reDevice();
+            initDevs();
+        }
+
     }
 }

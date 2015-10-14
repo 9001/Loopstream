@@ -337,6 +337,14 @@ namespace Loopstream
 
         void sendTags(Est est)
         {
+            try
+            {
+                System.IO.File.AppendAllText(
+                    est.enc.i.filename + ".txt",
+                    est.enc.i.timestamp() + " " + est.tag + "\r\n",
+                    Encoding.UTF8);
+            }
+            catch { }
             string meta = est.tag;
             //meta = new string(meta.Reverse().ToArray());
             if (settings.latin)

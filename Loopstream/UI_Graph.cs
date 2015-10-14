@@ -25,6 +25,7 @@ namespace Loopstream
         Color cmgrad, cograd;
         LinearGradientBrush mgrad, ograd;
         Pen red, orn, grn, bg;
+        bool intimer, stopping;
 
         private void UI_Graph_Load(object sender, EventArgs e)
         {
@@ -56,6 +57,8 @@ namespace Loopstream
             brush = SystemBrushes.Control;
             pen = SystemPens.ControlText;
             bg = SystemPens.Control;
+            intimer = false;
+            stopping = false;
             Timer t = new Timer();
             t.Tick += t_Tick;
             t.Interval = 200;
@@ -161,6 +164,26 @@ namespace Loopstream
             if (pictureBox1.BackgroundImage != null)
                 pictureBox1.BackgroundImage.Dispose();
             pictureBox1.BackgroundImage = b;
+
+            if (stopping)
+            {
+                ((Timer)sender).Stop();
+                ((Timer)sender).Dispose();
+                if (pictureBox1.BackgroundImage != null)
+                    pictureBox1.BackgroundImage.Dispose();
+
+                mgrad.Dispose();
+                ograd.Dispose();
+                this.Close();
+                this.Dispose();
+            }
+            else
+                intimer = false;
+        }
+
+        private void UI_Graph_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            this.stopping = true;
         }
     }
 }

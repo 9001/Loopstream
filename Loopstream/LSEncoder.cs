@@ -62,7 +62,6 @@ namespace Loopstream
             logger.a("make shouter");
             proc.PriorityClass = System.Diagnostics.ProcessPriorityClass.AboveNormal;
 
-
             if (string.IsNullOrEmpty(settings.host))
             {
                 s = null;
@@ -275,10 +274,15 @@ namespace Loopstream
         {
             logger.a("reader thread");
             System.IO.FileStream m = null;
+            enc.i.begin = DateTime.UtcNow;
+            enc.i.filename = "Loopstream-" +
+                enc.i.begin.ToString("yyyy-MM-dd_HH.mm.ss.") +
+                enc.ext;
+
             if (dump)
             {
-                m = new System.IO.FileStream(string.Format("Loopstream-{0}.{1}",
-                    DateTime.Now.ToString("yyyy-MM-dd_HH.mm.ss"), enc.ext),
+                m = new System.IO.FileStream(
+                    enc.i.filename,
                     System.IO.FileMode.Create);
             }
             long bufSize = settings.samplerate * 10;
@@ -299,7 +303,9 @@ namespace Loopstream
                     try
                     {
                         logger.a("writing socket");
-                        s.Write(buffer, 0, i);
+                        
+                        if (!string.IsNullOrEmpty(settings.host))
+                            s.Write(buffer, 0, i);
                     }
                     catch
                     {

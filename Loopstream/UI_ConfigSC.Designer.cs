@@ -51,6 +51,10 @@
             this.pWrapper = new System.Windows.Forms.Panel();
             this.tc = new System.Windows.Forms.TabControl();
             this.tpSoundcard = new System.Windows.Forms.TabPage();
+            this.panel3 = new System.Windows.Forms.Panel();
+            this.label31 = new System.Windows.Forms.Label();
+            this.gRescan = new System.Windows.Forms.Button();
+            this.gKillMic = new System.Windows.Forms.CheckBox();
             this.label3 = new System.Windows.Forms.Label();
             this.gRecPCM = new System.Windows.Forms.CheckBox();
             this.gAutohide = new System.Windows.Forms.CheckBox();
@@ -108,6 +112,7 @@
             this.pTagsAdvanced2 = new System.Windows.Forms.Panel();
             this.gLatinize = new System.Windows.Forms.CheckBox();
             this.pTagAdvanced1 = new System.Windows.Forms.Panel();
+            this.gTagSock = new System.Windows.Forms.CheckBox();
             this.gEncoding = new System.Windows.Forms.TextBox();
             this.gBounce = new System.Windows.Forms.TextBox();
             this.label28 = new System.Windows.Forms.Label();
@@ -163,7 +168,10 @@
             this.label5 = new System.Windows.Forms.Label();
             this.label12 = new System.Windows.Forms.Label();
             this.tt = new System.Windows.Forms.ToolTip(this.components);
-            this.gTagSock = new System.Windows.Forms.CheckBox();
+            this.label32 = new System.Windows.Forms.Label();
+            this.gReverbP = new System.Windows.Forms.TextBox();
+            this.gReverbS = new System.Windows.Forms.TextBox();
+            this.label33 = new System.Windows.Forms.Label();
             this.hTriggers = new Loopstream.TLabel();
             this.hTags = new Loopstream.TLabel();
             this.hEncoders = new Loopstream.TLabel();
@@ -172,6 +180,7 @@
             this.pWrapper.SuspendLayout();
             this.tc.SuspendLayout();
             this.tpSoundcard.SuspendLayout();
+            this.panel3.SuspendLayout();
             this.tpServer.SuspendLayout();
             this.tpEncoders.SuspendLayout();
             this.panel2.SuspendLayout();
@@ -453,6 +462,12 @@
             // tpSoundcard
             // 
             this.tpSoundcard.BackColor = System.Drawing.SystemColors.Control;
+            this.tpSoundcard.Controls.Add(this.gReverbS);
+            this.tpSoundcard.Controls.Add(this.label32);
+            this.tpSoundcard.Controls.Add(this.gReverbP);
+            this.tpSoundcard.Controls.Add(this.panel3);
+            this.tpSoundcard.Controls.Add(this.gRescan);
+            this.tpSoundcard.Controls.Add(this.gKillMic);
             this.tpSoundcard.Controls.Add(this.gTwoS);
             this.tpSoundcard.Controls.Add(this.label10);
             this.tpSoundcard.Controls.Add(this.gOutS);
@@ -468,12 +483,59 @@
             this.tpSoundcard.Controls.Add(this.gRight);
             this.tpSoundcard.Controls.Add(this.label8);
             this.tpSoundcard.Controls.Add(this.gTestDevs);
+            this.tpSoundcard.Controls.Add(this.label33);
             this.tpSoundcard.Location = new System.Drawing.Point(4, 25);
             this.tpSoundcard.Name = "tpSoundcard";
             this.tpSoundcard.Padding = new System.Windows.Forms.Padding(3);
             this.tpSoundcard.Size = new System.Drawing.Size(534, 275);
             this.tpSoundcard.TabIndex = 0;
             this.tpSoundcard.Text = "Soundcard";
+            // 
+            // panel3
+            // 
+            this.panel3.Controls.Add(this.label31);
+            this.panel3.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.panel3.Location = new System.Drawing.Point(3, 268);
+            this.panel3.Name = "panel3";
+            this.panel3.Size = new System.Drawing.Size(528, 4);
+            this.panel3.TabIndex = 37;
+            // 
+            // label31
+            // 
+            this.label31.BackColor = System.Drawing.SystemColors.ControlDarkDark;
+            this.label31.Dock = System.Windows.Forms.DockStyle.Left;
+            this.label31.Location = new System.Drawing.Point(0, 0);
+            this.label31.Name = "label31";
+            this.label31.Size = new System.Drawing.Size(1, 4);
+            this.label31.TabIndex = 0;
+            this.label31.Visible = false;
+            // 
+            // gRescan
+            // 
+            this.gRescan.Location = new System.Drawing.Point(384, 97);
+            this.gRescan.Name = "gRescan";
+            this.gRescan.Size = new System.Drawing.Size(135, 23);
+            this.gRescan.TabIndex = 36;
+            this.gRescan.Text = "Refresh device list";
+            this.gRescan.UseVisualStyleBackColor = true;
+            this.gRescan.Click += new System.EventHandler(this.gRescan_Click);
+            // 
+            // gKillMic
+            // 
+            this.gKillMic.AutoSize = true;
+            this.gKillMic.CheckAlign = System.Drawing.ContentAlignment.TopLeft;
+            this.gKillMic.Location = new System.Drawing.Point(340, 166);
+            this.gKillMic.Margin = new System.Windows.Forms.Padding(12, 3, 3, 3);
+            this.gKillMic.Name = "gKillMic";
+            this.gKillMic.Size = new System.Drawing.Size(158, 30);
+            this.gKillMic.TabIndex = 35;
+            this.gKillMic.Text = "Shut off mic when it\'s muted\r\n(to prevent overheating)";
+            this.tt.SetToolTip(this.gKillMic, "When microphone volume is lower than 10%,\r\nstop listening to the microphone input" +
+        ".\r\nReconnects when over 10% again.");
+            this.gKillMic.UseVisualStyleBackColor = true;
+            this.gKillMic.CheckedChanged += new System.EventHandler(this.gKillMic_CheckedChanged);
+            this.gKillMic.MouseEnter += new System.EventHandler(this.gHost_MouseEnter);
+            this.gKillMic.MouseLeave += new System.EventHandler(this.gHost_MouseLeave);
             // 
             // label3
             // 
@@ -488,7 +550,7 @@
             // 
             this.gRecPCM.AutoSize = true;
             this.gRecPCM.CheckAlign = System.Drawing.ContentAlignment.TopLeft;
-            this.gRecPCM.Location = new System.Drawing.Point(101, 207);
+            this.gRecPCM.Location = new System.Drawing.Point(101, 225);
             this.gRecPCM.Margin = new System.Windows.Forms.Padding(12, 3, 3, 3);
             this.gRecPCM.Name = "gRecPCM";
             this.gRecPCM.Size = new System.Drawing.Size(138, 17);
@@ -504,7 +566,7 @@
             // 
             this.gAutohide.AutoSize = true;
             this.gAutohide.CheckAlign = System.Drawing.ContentAlignment.TopLeft;
-            this.gAutohide.Location = new System.Drawing.Point(340, 207);
+            this.gAutohide.Location = new System.Drawing.Point(340, 225);
             this.gAutohide.Margin = new System.Windows.Forms.Padding(12, 3, 3, 3);
             this.gAutohide.Name = "gAutohide";
             this.gAutohide.Size = new System.Drawing.Size(122, 17);
@@ -533,7 +595,7 @@
             // 
             this.gAutoconn.AutoSize = true;
             this.gAutoconn.CheckAlign = System.Drawing.ContentAlignment.TopLeft;
-            this.gAutoconn.Location = new System.Drawing.Point(340, 184);
+            this.gAutoconn.Location = new System.Drawing.Point(340, 202);
             this.gAutoconn.Margin = new System.Windows.Forms.Padding(12, 3, 3, 3);
             this.gAutoconn.Name = "gAutoconn";
             this.gAutoconn.Size = new System.Drawing.Size(141, 17);
@@ -549,7 +611,7 @@
             // 
             this.gUnavail.AutoSize = true;
             this.gUnavail.CheckAlign = System.Drawing.ContentAlignment.TopLeft;
-            this.gUnavail.Location = new System.Drawing.Point(101, 184);
+            this.gUnavail.Location = new System.Drawing.Point(101, 202);
             this.gUnavail.Margin = new System.Windows.Forms.Padding(12, 3, 3, 3);
             this.gUnavail.Name = "gUnavail";
             this.gUnavail.Size = new System.Drawing.Size(150, 17);
@@ -567,7 +629,7 @@
             this.gTestDevs.CheckAlign = System.Drawing.ContentAlignment.TopLeft;
             this.gTestDevs.Checked = true;
             this.gTestDevs.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.gTestDevs.Location = new System.Drawing.Point(101, 148);
+            this.gTestDevs.Location = new System.Drawing.Point(101, 166);
             this.gTestDevs.Margin = new System.Windows.Forms.Padding(12, 3, 3, 3);
             this.gTestDevs.Name = "gTestDevs";
             this.gTestDevs.Size = new System.Drawing.Size(205, 30);
@@ -1286,6 +1348,20 @@
             this.pTagAdvanced1.TabIndex = 63;
             this.pTagAdvanced1.Visible = false;
             // 
+            // gTagSock
+            // 
+            this.gTagSock.AutoSize = true;
+            this.gTagSock.Location = new System.Drawing.Point(380, 147);
+            this.gTagSock.Name = "gTagSock";
+            this.gTagSock.Size = new System.Drawing.Size(128, 17);
+            this.gTagSock.TabIndex = 67;
+            this.gTagSock.Text = "Force socket fallback";
+            this.tt.SetToolTip(this.gTagSock, "Check this if tags don\'t send properly");
+            this.gTagSock.UseVisualStyleBackColor = true;
+            this.gTagSock.CheckedChanged += new System.EventHandler(this.gTagSock_CheckedChanged);
+            this.gTagSock.MouseEnter += new System.EventHandler(this.gHost_MouseEnter);
+            this.gTagSock.MouseLeave += new System.EventHandler(this.gHost_MouseLeave);
+            // 
             // gEncoding
             // 
             this.gEncoding.Location = new System.Drawing.Point(262, 145);
@@ -1887,17 +1963,50 @@
             this.tt.UseAnimation = false;
             this.tt.UseFading = false;
             // 
-            // gTagSock
+            // label32
             // 
-            this.gTagSock.AutoSize = true;
-            this.gTagSock.Location = new System.Drawing.Point(380, 147);
-            this.gTagSock.Name = "gTagSock";
-            this.gTagSock.Size = new System.Drawing.Size(128, 17);
-            this.gTagSock.TabIndex = 67;
-            this.gTagSock.Text = "Force socket fallback";
-            this.tt.SetToolTip(this.gTagSock, "Check this if tags don\'t send properly");
-            this.gTagSock.UseVisualStyleBackColor = true;
-            this.gTagSock.CheckedChanged += new System.EventHandler(this.gTagSock_CheckedChanged);
+            this.label32.AutoSize = true;
+            this.label32.Location = new System.Drawing.Point(196, 122);
+            this.label32.Name = "label32";
+            this.label32.Size = new System.Drawing.Size(70, 13);
+            this.label32.TabIndex = 39;
+            this.label32.Text = "Mic.Reverb%";
+            // 
+            // gReverbP
+            // 
+            this.gReverbP.Location = new System.Drawing.Point(207, 99);
+            this.gReverbP.Name = "gReverbP";
+            this.gReverbP.Size = new System.Drawing.Size(59, 20);
+            this.gReverbP.TabIndex = 38;
+            this.gReverbP.Text = "0";
+            this.gReverbP.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.tt.SetToolTip(this.gReverbP, "Enable microphone reverb by setting non-zero.\r\nThis is the initial reverb power. " +
+        "Suggestion: 15\r\nReconnect to enable or disable.\r\nCan adjust level while streamin" +
+        "g once enabled.\r\n");
+            this.gReverbP.TextChanged += new System.EventHandler(this.gReverb_TextChanged);
+            this.gReverbP.MouseEnter += new System.EventHandler(this.gHost_MouseEnter);
+            this.gReverbP.MouseLeave += new System.EventHandler(this.gHost_MouseLeave);
+            // 
+            // gReverbS
+            // 
+            this.gReverbS.Location = new System.Drawing.Point(272, 99);
+            this.gReverbS.Name = "gReverbS";
+            this.gReverbS.Size = new System.Drawing.Size(59, 20);
+            this.gReverbS.TabIndex = 40;
+            this.gReverbS.Text = "90";
+            this.tt.SetToolTip(this.gReverbS, "This is the reverb sustain.\r\nSuggestion: 90");
+            this.gReverbS.TextChanged += new System.EventHandler(this.gReverbS_TextChanged);
+            this.gReverbS.MouseEnter += new System.EventHandler(this.gHost_MouseEnter);
+            this.gReverbS.MouseLeave += new System.EventHandler(this.gHost_MouseLeave);
+            // 
+            // label33
+            // 
+            this.label33.AutoSize = true;
+            this.label33.Location = new System.Drawing.Point(272, 122);
+            this.label33.Name = "label33";
+            this.label33.Size = new System.Drawing.Size(73, 13);
+            this.label33.TabIndex = 41;
+            this.label33.Text = "Rev.Sustain%";
             // 
             // hTriggers
             // 
@@ -1981,6 +2090,7 @@
             this.tc.ResumeLayout(false);
             this.tpSoundcard.ResumeLayout(false);
             this.tpSoundcard.PerformLayout();
+            this.panel3.ResumeLayout(false);
             this.tpServer.ResumeLayout(false);
             this.tpServer.PerformLayout();
             this.tpEncoders.ResumeLayout(false);
@@ -2153,5 +2263,13 @@
         private System.Windows.Forms.Label label30;
         private System.Windows.Forms.TextBox gEvAudioP;
         private System.Windows.Forms.CheckBox gTagSock;
+        private System.Windows.Forms.CheckBox gKillMic;
+        private System.Windows.Forms.Button gRescan;
+        private System.Windows.Forms.Panel panel3;
+        private System.Windows.Forms.Label label31;
+        private System.Windows.Forms.Label label32;
+        private System.Windows.Forms.TextBox gReverbP;
+        private System.Windows.Forms.TextBox gReverbS;
+        private System.Windows.Forms.Label label33;
     }
 }

@@ -291,6 +291,30 @@ namespace Loopstream
         }
     }
 
+    public class Progress
+    {
+        double last;
+        Control background;
+        Control progressbar;
+
+        public Progress(Control bg, Control fg)
+        {
+            last = -1;
+            background = bg;
+            progressbar = fg;
+        }
+
+        public void prog(double cur, double max)
+        {
+            if (cur == last)
+                return;
+
+            progressbar.Visible = true;
+            progressbar.Width = (int)(background.Width * cur * 1.0 / max);
+            Application.DoEvents();
+        }
+    }
+
     public class WinapiShit
     {
         [DllImport("user32.dll")]

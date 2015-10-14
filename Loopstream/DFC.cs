@@ -15,7 +15,7 @@ namespace Loopstream
 
         const bool CHECK_MD5 = true;
 
-        public void extract(Label pb)
+        public void extract(Progress pb)
         {
             icp = new ICP();
             System.Threading.Thread t = new System.Threading.Thread(new System.Threading.ThreadStart(exthread));
@@ -28,9 +28,7 @@ namespace Loopstream
             }
             while (extracting)
             {
-                double progress = icp.i * 1.0 / toExtract;
-                pb.Width = (int)(progress * 600);
-                Application.DoEvents();
+                pb.prog(icp.i, toExtract);
                 System.Threading.Thread.Sleep(10);
             }
         }
@@ -175,15 +173,8 @@ namespace Loopstream
             return true;
         }
 
-        public void make(Label pb)
+        public void make(Progress pb)
         {
-            if (DialogResult.Yes != MessageBox.Show(
-                "make .dfc (decent file container) ?",
-                "new embedded archive",
-                MessageBoxButtons.YesNo,
-                MessageBoxIcon.Question))
-                return;
-
             icp = new ICP();
             new System.Threading.Thread(new System.Threading.ThreadStart(makeDFC)).Start();
             while (!encoding)
@@ -193,14 +184,14 @@ namespace Loopstream
             }
             while (encoding)
             {
-                double progress = (icp.i + bytesCompressed) * 1.0 / bytesToCompress;
-                //this.Text = string.Format("{0:0.00}%", Math.Round(progress * 100, 2)).Replace(".", " . ");
-                pb.Width = (int)(progress * 600);
-                Application.DoEvents();
+                pb.prog(icp.i + bytesCompressed, bytesToCompress);
                 System.Threading.Thread.Sleep(10);
             }
             //this.Text = "done";
-            MessageBox.Show("new dfc ok");
+            MessageBox.Show(
+                "restart Loopstream from visual studio to embed the new dfc\r\n\r\n" +
+                "then run Loopstream.exe with the command line argument 'sign'\r\n" +
+                "to create Loopstream.exe.exe for publication");
         }
 
         ICP icp;
@@ -215,7 +206,12 @@ namespace Loopstream
             {
                 recurse(str, archivequeue);
             }
-            archivequeue.AddRange(Directory.GetFiles(dir));
+            string[] files = Directory.GetFiles(dir);
+            foreach (string file in files)
+            {
+                if (!file.Contains("\\."))
+                    archivequeue.Add(file);
+            }
         }
 
         void makeDFC()
@@ -243,19 +239,19 @@ namespace Loopstream
 
             byte[] buffer = new byte[8192];
             byte[] header = new byte[
-                            4 + // header     length
-                            4 + // file       count
+                              4 + // header     length
+                              4 + // file       count
                files.Length * 4 + // filename   length
                files.Length * 8 + // compressed length
                files.Length * 8 + // extracted  length
-                filenameslength
+               filenameslength
             ];
             for (int a = 0; a < header.Length; a++)
             {
                 header[a] = 0xFF;
             }
 
-            using (FileStream fso = new FileStream(@"..\..\tools.dfc", FileMode.Create))
+            using (FileStream fso = new FileStream(@"..\..\res\tools.dfc", FileMode.Create))
             {
                 encoding = true;
                 fso.Write(header, 0, header.Length);

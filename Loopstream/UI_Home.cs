@@ -74,26 +74,119 @@ namespace Loopstream
 
             DFC.coreTest();
             z("dfc core ok");
-            if (Directory.Exists(@"..\..\tools\"))
+            string toolsBase = @"..\..\tools\";
+            string[] requiredFiles = {
+                "oggenc2.exe",
+                "lame.exe",
+                "lame_enc.dll"
+            };
+            if (Directory.Exists(toolsBase) &&
+                File.Exists(toolsBase + Program.toolsVer))
             {
-                splash.vis();
-                z("dfc maker");
-                new DFC().make(splash.pb);
-                Program.kill();
+                if (DialogResult.Yes == MessageBox.Show(
+                    "make .dfc (decent file container) ?",
+                    "new embedded archive",
+                    MessageBoxButtons.YesNo,
+                    MessageBoxIcon.Question))
+                {
+                    splash.vis();
+                    z("dfc maker");
+                    foreach (string filename in requiredFiles)
+                    {
+                        if (!File.Exists(toolsBase + filename))
+                        {
+                            DialogResult reply = MessageBox.Show(
+                                "The following file is required in order to build a\r\n" +
+                                "working DFC. Would you like to browse for it?\r\n\r\n" + filename,
+                                "Missing dependency", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
+
+                            if (reply == System.Windows.Forms.DialogResult.Cancel)
+                                Program.kill();
+
+                            if (reply == System.Windows.Forms.DialogResult.No)
+                                continue;
+
+                            string ext = filename.Substring(filename.LastIndexOf(".") + 1);
+
+                            OpenFileDialog ofd = new OpenFileDialog();
+                            ofd.CheckFileExists = true;
+                            ofd.Title = "I am hungry for " + filename;
+                            ofd.Filter = ext + " files|*." + ext;
+                            ofd.FileName =
+                                filename.Contains("lame") ? "*lame*" :
+                                filename.Contains("ogg") ? "*ogg*" : "";
+
+                            if (DialogResult.OK == ofd.ShowDialog())
+                                File.Copy(ofd.FileName, toolsBase + toolsBase);
+
+                            else
+                                Program.kill();
+                        }
+                    }
+                    new DFC().make(splash.progress);
+                    Program.kill();
+                }
             }
-            if (Directory.Exists(Program.tools) &&
-                !File.Exists(Program.tools + @"sfx\horn.mp3")) // @"web\png\win95.png"))
+            
+            string deleteReason = "";
+
+            if (Directory.Exists(Program.tools))
             {
-                z("outdated tools; deleting");
-                Directory.Delete(Program.tools, true);
+                if (!File.Exists(Program.tools + Program.toolsVer))
+                    deleteReason = "outdated.\r\n\r\nIf you'd like to keep something in there (for example your SFX folder) then create a backup now :)";
+
+                foreach (string filename in requiredFiles)
+                    if (!File.Exists(Program.tools + filename))
+                        deleteReason =
+                            "missing the following required file:\r\n\r\n" + 
+                            Program.tools + filename + "\r\n\r\n" +
+                            "Whoever made your Loopstream.exe probably messed up.";
             }
+
+            if (!string.IsNullOrWhiteSpace(deleteReason))
+            {
+                z("deleting cause its " + deleteReason);
+                if (DialogResult.OK != MessageBox.Show(
+                    "I'm about to delete your " + Program.tools.Trim('\\') + " directory since it's " + deleteReason,
+                    "Housekeeping", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning))
+                    Program.kill();
+
+                for (int a = 0; a < 3; a++)
+                {
+                    try
+                    {
+                        Directory.Delete(Program.tools, true);
+                        break;
+                    }
+                    catch (Exception ex)
+                    {
+                        z("thank you microsoft");
+                        System.Threading.Thread.Sleep(100);
+                    }
+                }
+                while (Directory.Exists(Program.tools))
+                    Application.DoEvents();
+            }
+
             if (!Directory.Exists(Program.tools))
             {
                 splash.vis();
                 z("extracting tools");
-                new DFC().extract(splash.pb);
+                new DFC().extract(splash.progress);
             }
-            Logger.app.a("extract sequence done");
+            z("extract sequence done");
+
+            foreach (string filename in requiredFiles)
+                if (!File.Exists(Program.tools + filename))
+                {
+                    MessageBox.Show(
+                        "The following required file was not found:\r\n\r\n" +
+                        Program.tools + filename + "\r\n\r\n" +
+                        "Whoever made your copy of Loopstream.exe fucked up.",
+                        "pokker", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    Program.kill();
+                }
+
             plowTheFields(); z("traktor test ok");
             splash.unvis(); z("splash hidden");
 
@@ -103,7 +196,7 @@ namespace Loopstream
                 return;
             }
             z("Settings #1 - LOAD"); settings = LSSettings.load();
-            z("Settings #2 - TEST"); settings.runTests(splash, false);
+            z("Settings #2 - TEST"); settings.runTests(splash.progress, false);
             z("Settings #3 - DONE"); isPresetLoad = true;
 
             z("Binding sliders");
@@ -148,36 +241,12 @@ namespace Loopstream
                 (int)(pictureBox1.Left + (pictureBox1.Width - gManualTags.Width) / 1.85),
                 (int)(pictureBox1.Top + (pictureBox1.Height - gManualTags.Height) / 1.9));
 
-            z("DJ Effects");
-            sfxes = new List<SFXNode>();
-            try
-            {
-                Size szb = new Size(68, 25);
-                Point pto = new Point(16, 14);
-                string[] files = Directory.GetFiles(Program.tools + "sfx");
-                Array.Sort(files);
-                int n = 0;
-                foreach (string f in files)
-                {
-                    Button b = new Button();
-                    b.Text = f.Substring(f.Replace("\\", "/").LastIndexOf('/') + 1).Replace(".mp3", "");
-                    b.Size = szb;
-                    b.Location = pto;
-                    if (++n > 4)
-                    {
-                        //b.Height++;
-                        n = 0;
-                    }
-                    psfx.Controls.Add(b);
-                    pto.Y += b.Height + b.Margin.Bottom;
-                    b.Click += new EventHandler(b_Click);
-                    b.MouseDown += new MouseEventHandler(b_MouseDown);
-                }
-            }
-            catch { }
+            // sfx
+            psfx_MouseClick(null, null);
 
             z("Position form");
             this.Bounds = myBounds;
+
             splash.Focus();
             //splash.BringToFront();
             splash.fx = settings.splash;
@@ -234,36 +303,47 @@ namespace Loopstream
         void b_MouseDown(object sender, MouseEventArgs e)
         {
             if (e.Button == System.Windows.Forms.MouseButtons.Right)
-            {
-                this.Width -= psfx.Width;
-                psfx.Visible = false;
-                while (psfx.Controls.Count > 0)
-                {
-                    psfx.Controls.RemoveAt(0);
-                }
-            }
+                lock (sfxes)
+                    foreach (var n in sfxes)
+                        if (n.title == ((Control)sender).Text)
+                            n.fx_out_PlaybackStopped(null, null);
         }
 
         class SFXNode
         {
-            public bool done;
-            NAudio.Wave.Mp3FileReader fx_mp3;
+            public bool done { get; private set; }
+            public string title { get; private set; }
+            
             NAudio.Wave.WasapiOut fx_out;
+            NAudio.Wave.WaveStream fx_in;
+
             public SFXNode(string title)
             {
                 done = false;
-                fx_mp3 = new NAudio.Wave.Mp3FileReader(Program.tools + "sfx\\" + title + ".mp3");
+                fx_in = null;
+                fx_out = null;
+                this.title = title;
+                string path = Program.tools + "sfx\\" + title;
+
+                if (File.Exists(path + ".mp3"))
+                {
+                    fx_in = new NAudio.Wave.Mp3FileReader(path + ".mp3");
+                }
+                else
+                {
+                    fx_in = new NVorbis.NAudioSupport.VorbisWaveReader(path + ".ogg");
+                }
                 fx_out = new NAudio.Wave.WasapiOut(LSSettings.singleton.devRec.mm, NAudio.CoreAudioApi.AudioClientShareMode.Shared, false, 100);
                 fx_out.PlaybackStopped += new EventHandler<NAudio.Wave.StoppedEventArgs>(fx_out_PlaybackStopped);
-                fx_out.Init(fx_mp3);
+                fx_out.Init(fx_in);
                 fx_out.Play();
             }
-            void fx_out_PlaybackStopped(object sender, NAudio.Wave.StoppedEventArgs e)
+            public void fx_out_PlaybackStopped(object sender, NAudio.Wave.StoppedEventArgs e)
             {
                 try
                 {
                     if (fx_out != null) fx_out.Dispose();
-                    if (fx_mp3 != null) fx_mp3.Dispose();
+                    if (fx_in != null) fx_in.Dispose();
                 }
                 catch { }
                 done = true;
@@ -271,15 +351,16 @@ namespace Loopstream
         }
         void b_Click(object sender, EventArgs e)
         {
-            try
-            {
-                sfxes.Add(new SFXNode(((Button)sender).Text));
-                while (sfxes.Count > 0 && sfxes[0].done)
+            lock (sfxes)
+                try
                 {
-                    sfxes.RemoveAt(0);
+                    sfxes.Add(new SFXNode(((Button)sender).Text));
+                    while (sfxes.Count > 0 && sfxes[0].done)
+                    {
+                        sfxes.RemoveAt(0);
+                    }
                 }
-            }
-            catch { }
+                catch { }
         }
 
         double shake = 1;
@@ -688,6 +769,7 @@ namespace Loopstream
                 gLoad_Click(sender, e);
             }
         }
+
         private void gPreset_MouseClick(object sender, MouseEventArgs e)
         {
             gPreset_Click(sender, null);
@@ -703,6 +785,7 @@ namespace Loopstream
             z("Displaying status form");
             new UI_Status(settings).Show();
         }
+
         void helloworld(object sender, EventArgs e)
         {
             if (settings.devRec == null || settings.devRec.mm == null)
@@ -1170,6 +1253,68 @@ namespace Loopstream
             z("Toggle manualTags checkbox");
             settings.tagAuto = !gManualTags.Checked;
             showhide();
+        }
+
+        private void psfx_MouseClick(object sender, MouseEventArgs e)
+        {
+            if (e != null && e.Button == System.Windows.Forms.MouseButtons.Right)
+            {
+                this.Width -= psfx.Width;
+                psfx.Visible = false;
+                while (psfx.Controls.Count > 0)
+                {
+                    psfx.Controls.RemoveAt(0);
+                }
+                return;
+            }
+
+            z("DJ Effects");
+            sfxes = new List<SFXNode>();
+            int widen = 0;
+            try
+            {
+                while (psfx.Controls.Count > 2)
+                {
+                    var c = psfx.Controls[2];
+                    psfx.Controls.RemoveAt(2);
+                    c.Dispose();
+                }
+            }
+            catch { }
+            try
+            {
+                Size szb = new Size(68, 25);
+                Point pto = new Point(16, 14);
+                string[] files = Directory.GetFiles(Program.tools + "sfx");
+                Array.Sort(files);
+                int n = 0;
+                foreach (string f in files)
+                {
+                    string title = f.Substring(f.Replace("\\", "/").LastIndexOf('/') + 1);
+                    int dot = title.LastIndexOf('.');
+                    if (dot < 0) continue;
+                    title = title.Substring(0, dot);
+                    
+                    if (++n > 14)
+                    {
+                        n = 0;
+                        pto.Y = 14;
+                        pto.X += szb.Width + 10;
+                        widen += szb.Width + 10;
+                    }
+                    Button b = new Button();
+                    b.Text = title;
+                    b.Size = szb;
+                    b.Location = pto;
+                    psfx.Controls.Add(b);
+                    pto.Y += b.Height + b.Margin.Bottom;
+                    b.Click += new EventHandler(b_Click);
+                    b.MouseDown += new MouseEventHandler(b_MouseDown);
+                }
+            }
+            catch { }
+            //this.Width += widen;
+            myBounds.Width += widen;
         }
     }
 }

@@ -31,6 +31,15 @@ namespace Loopstream
                 (settings.mp3.channels == LSSettings.LSChannels.stereo ? "j" : "s -a"),
                 settings.samplerate);
 
+            if (!File.Exists(proc.StartInfo.FileName))
+            {
+                System.Windows.Forms.MessageBox.Show(
+                    "Could not start streaming due to a missing required file:\r\n\r\n" + proc.StartInfo.FileName +
+                    "\r\n\r\nThis is usually because whoever made your loopstream.exe fucked up",
+                    "Shit wont fly", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Error);
+                Program.kill();
+            }
+
             logger.a("starting lame");
             proc.Start();
             while (true)

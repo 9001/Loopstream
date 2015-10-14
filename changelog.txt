@@ -3,6 +3,25 @@
 + new feature
 ~ other change
 
+2015-10-14, 02:57:09 - Loopstream 1.4.0.0
+  + when recording streams, record song titles to a text document
+  + and also log when the mic is enabled/disabled
+  + option to shut off mic when not in use, to prevent overheating
+  + reverb option for microphone which is hella buggy #yolo
+  + support for ogg/Vorbis sound effects
+  + soundboard expands if too much button
+  + stop sound effects by right-clicking the SFX buttons
+  = mixer test mode would ruin recordings by freaking out
+  = device rescan would not detect newly attached soundcards
+  = broken rescan also sometimes broke the crash reporter
+  = would crash on startup with certain custom win7 themes
+  ~ hide the SFX panel by right-clicking a blank area
+  ~ reload the SFX panel by left-clicking a blank area
+  ~ graph window shuts down when hidden, conserving CPU
+  ~ easier to build from source (simplified dfc stuff)
+  ~ some code cleanup, and generalized progressbars
+  ~ new naudio and oggenc2 versions
+
 2014-12-08, 15:31:02 - Loopstream 1.3.11.2
   = Cooldown on reconnecting after connection drops
   ~ Remember if socket fallback for tags is in use

@@ -30,6 +30,15 @@ namespace Loopstream
                 (settings.ogg.compression == LSSettings.LSCompression.cbr ? settings.ogg.bitrate : settings.ogg.quality),
                 (settings.ogg.channels == LSSettings.LSChannels.stereo ? "" : "--downmix"));
 
+            if (!File.Exists(proc.StartInfo.FileName))
+            {
+                System.Windows.Forms.MessageBox.Show(
+                    "Could not start streaming due to a missing required file:\r\n\r\n" + proc.StartInfo.FileName +
+                    "\r\n\r\nThis is usually because whoever made your loopstream.exe fucked up",
+                    "Shit wont fly", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Error);
+                Program.kill();
+            }
+
             logger.a("starting oggenc");
             proc.Start();
             while (true)

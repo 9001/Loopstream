@@ -34,6 +34,13 @@ namespace NPatch
                 throw new ArgumentException("All mixer inputs must have the same WaveFormat");
             }
         }
+        public void RemoveMixerInput(ISampleProvider mixerInput)
+        {
+            lock (sources)
+            {
+                sources.Remove(mixerInput);
+            }
+        }
         public int Read(float[] buffer, int offset, int count)
         {
             int ret = 0;
@@ -98,6 +105,11 @@ namespace NPatch
             return outputSamples;
         }
     }
+
+    // ********************************************************************************************************************************************************
+    // ********************************************************************************************************************************************************
+    // ********************************************************************************************************************************************************
+
     public class Fork
     {
         public class Outlet : ISampleProvider
@@ -243,6 +255,116 @@ namespace NPatch
         }
     }
 
+    // ********************************************************************************************************************************************************
+    // ********************************************************************************************************************************************************
+    // ********************************************************************************************************************************************************
+
+    public class Reverb : ISampleProvider
+    {
+        ISampleProvider source;
+        WaveFormat waveFormat;
+        float[] sourceBuffer;
+        float[] reverbBuffer;
+        int channels;
+        int[][] rev;
+        int revw;
+
+        public Reverb(ISampleProvider source)
+        {
+            if (source.WaveFormat.Channels < 2)
+            {
+                throw new ArgumentException("Source must be stereo or more");
+            }
+            this.source = source;
+            this.channels = source.WaveFormat.Channels;
+            this.waveFormat = WaveFormat.CreateIeeeFloatWaveFormat(source.WaveFormat.SampleRate, channels);
+            reverbBuffer = new float[44100];
+            rev = new int[][]
+            {
+                // Centered heptagonal primes
+                // Of the form (7n2 − 7n + 2) / 2
+                new int[]
+                {
+                    71, 197, 547, 953, 1471, 1933, 2647, 2843, 3697, 4663, 5741, 8233, 9283, 10781, 11173, 12391, 14561, 18397, 20483, 29303, 29947, 34651, 37493, 41203
+                },
+                new int[]
+                {
+                    43, 463, 547, 953, 1471, 1933, 2647, 2843, 3697, 4663, 5741, 8233, 9283, 10781, 11173, 12391, 14561, 18397, 20483, 29303, 29947, 34651, 37493, 41203
+                }
+            };
+            for (int a = 0; a < rev.Length; a++)
+                for (int b = 0; b < rev[a].Length; b++)
+                    rev[a][b] = reverbBuffer.Length - (1 + rev[a][b]);
+            revw = 0;
+        }
+
+        public WaveFormat WaveFormat
+        {
+            get { return this.waveFormat; }
+        }
+
+        public int Read(float[] buffer, int offset, int count)
+        {
+            int sourceSamplesRequired = count;
+            int outIndex = offset;
+            EnsureSourceBuffer(sourceSamplesRequired);
+            int sourceSamplesRead = source.Read(sourceBuffer, 0, sourceSamplesRequired);
+
+            int sourceSamplesWritten = Math.Min(sourceSamplesRead, (reverbBuffer.Length - revw));
+            Array.Copy(sourceBuffer, 0, reverbBuffer, revw, sourceSamplesWritten);
+            revw += sourceSamplesWritten;
+            if (revw >= reverbBuffer.Length)
+            {
+                revw = sourceSamplesRead - sourceSamplesWritten;
+                Array.Copy(sourceBuffer, sourceSamplesWritten, reverbBuffer, 0, sourceSamplesRead - sourceSamplesWritten);
+            }
+            for (int n = 0; n < sourceSamplesRead; n += channels)
+            {
+                for (int c = 0; c < channels; c++)
+                {
+                    buffer[outIndex++] = sourceBuffer[n + c];
+                }
+            }
+            for (int ch = 0; ch < rev.Length; ch++)
+            {
+                double boost = (Loopstream.LSSettings.singleton.reverbP / 100.0);
+                for (int ri = 0; ri < rev[ch].Length; ri++)
+                {
+                    outIndex -= sourceSamplesRead;
+                    for (int n = 0; n < sourceSamplesRead; n += channels)
+                    {
+                        try
+                        {
+                            if (rev[ch][ri] >= reverbBuffer.Length - ch)
+                                rev[ch][ri] -= reverbBuffer.Length;
+                            buffer[outIndex + ch] += (float)(reverbBuffer[rev[ch][ri] + ch] * boost);
+                            outIndex += channels;
+                            rev[ch][ri] += channels;
+                        }
+                        catch (Exception ex)
+                        {
+                            System.Windows.Forms.MessageBox.Show("buffer " + (outIndex + ch) + " of " + buffer.Length + ", reverb " + (rev[ch][ri] + ch) + " of " + reverbBuffer.Length + " (" + ch + "/" + ri + ")");
+                        }
+                    }
+                    boost *= (Loopstream.LSSettings.singleton.reverbS / 100.0);
+                }
+            }
+            return sourceSamplesRead;
+        }
+
+        private void EnsureSourceBuffer(int count)
+        {
+            if (this.sourceBuffer == null || this.sourceBuffer.Length < count)
+            {
+                this.sourceBuffer = new float[count];
+            }
+        }
+    }
+
+    // ********************************************************************************************************************************************************
+    // ********************************************************************************************************************************************************
+    // ********************************************************************************************************************************************************
+
     public class ChannelSelector : ISampleProvider
     {
         ISampleProvider source;
@@ -307,10 +429,15 @@ namespace NPatch
         }
     }
 
+    // ********************************************************************************************************************************************************
+    // ********************************************************************************************************************************************************
+    // ********************************************************************************************************************************************************
+
     public class VolumeSlider : ISampleProvider
     {
         readonly object lockObject = new object();
-        readonly ISampleProvider source;
+        ISampleProvider source;
+        WaveFormat wf;
         float currentVolume;
         float targetVolume;
         float volumeDelta;
@@ -327,11 +454,10 @@ namespace NPatch
         public long vuAge { get; private set; }
         public float curVol { get { return currentVolume; } set { } }
 
-        public VolumeSlider() { enVU = false; VU = 1; }
-        
-        public VolumeSlider(ISampleProvider source, bool initiallySilent = false)
+        public VolumeSlider()
         {
-            this.source = source;
+            this.source = null;
+            this.wf = null;
             currentVolume = 1;
             targetVolume = 1;
             enVU = false;
@@ -339,6 +465,24 @@ namespace NPatch
 
             attenuated = false;
             boost = 1;
+        }
+
+        public void SetSource(ISampleProvider source)
+        {
+            this.source = source;
+            if (source != null)
+                wf = source.WaveFormat;
+            else wf = null;
+        }
+
+        public bool OK()
+        {
+            return this.source != null;
+        }
+
+        public float GetVolume()
+        {
+            return targetVolume;
         }
 
         public void SetVolume(float volume)
@@ -352,7 +496,11 @@ namespace NPatch
             volumeDelta = volume - currentVolume;
             if (seconds > 0)
             {
-                volumeDelta = (float)(volumeDelta / (seconds * source.WaveFormat.SampleRate));
+                int samplerate = 44100;
+                if (wf != null)
+                    samplerate = wf.SampleRate;
+
+                volumeDelta = (float)(volumeDelta / (seconds * samplerate));
                 absDelta = Math.Abs(volumeDelta);
             }
             else
@@ -403,7 +551,7 @@ namespace NPatch
                             }
                             else currentVolume = targetVolume;
 
-                            for (int ch = 0; ch < source.WaveFormat.Channels; ch++)
+                            for (int ch = 0; ch < wf.Channels; ch++)
                             {
                                 float v = buffer[offset + sample] * currentVolume * nboost;
                                 if (v > 1)
@@ -441,7 +589,7 @@ namespace NPatch
 
         public WaveFormat WaveFormat
         {
-            get { return source.WaveFormat; }
+            get { return wf; }
         }
     }
 }

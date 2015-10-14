@@ -84,6 +84,7 @@ namespace Loopstream
                     ok2 = s.devMic != null && s.devMic.mm != null;
                     ok3 = s.devOut != null && s.devOut.mm != null;
                     sb.AppendLine("dev state indicated: " + ok1 + ", " + ok2 + ", " + ok3);
+					LSSettings.singleton.init();
                     s.runTests(null, true);
                     ok1 = ok1 == (s.devRec != null && s.devRec.mm != null);
                     ok2 = ok2 == (s.devMic != null && s.devMic.mm != null);

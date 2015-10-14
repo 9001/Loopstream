@@ -19,12 +19,14 @@ namespace Loopstream
 
         Random random;
         public bool fx;
+        public Progress progress;
 
-        public Label pb { get { return label3; } set { } }
+        //public Label pb { get { return label3; } set { } }
 
         private void Splesh_Load(object sender, EventArgs e)
         {
             this.Icon = Program.icon;
+            progress = new Progress(this, label3);
             random = new Random();
             fx = false;
             //this.Opacity = 0.999;
@@ -54,12 +56,12 @@ namespace Loopstream
             Application.DoEvents();
         }
 
-        public void prog(int cur, int max)
+        /*public void prog(int cur, int max)
         {
             label3.Visible = true;
             label3.Width = (int)(this.Width * cur * 1.0 / max);
             Application.DoEvents();
-        }
+        }*/
 
         private void Splesh_MouseClick(object sender, MouseEventArgs e)
         {
