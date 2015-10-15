@@ -110,5 +110,11 @@ namespace Loopstream
             new UI_Graph(settings).Show();
             this.Close();
         }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            new UI_Graph2P().Show();
+            this.Close();
+        }
     }
 }

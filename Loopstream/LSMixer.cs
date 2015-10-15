@@ -28,6 +28,9 @@ namespace Loopstream
         public string isLQ;
         System.Windows.Forms.Timer killmic;
 
+        LSBuffers.Buf bvmicmic, bvMUSMUS, bvmicMUS;
+        double dvmic, dvMUS;
+
         public void Dispose(ref string tex)
         {
             Logger.mix.a("dispose recCap"); tex = "recCap"; if (recCap != null) recCap.StopRecording();
@@ -59,6 +62,10 @@ namespace Loopstream
         void doMagic()
         {
             Logger.mix.a("doMagic");
+            bvmicmic = LSBuffers.add("microphone latency", 0, 1, 1);
+            bvMUSMUS = LSBuffers.add("music latency", 0, 1, 1);
+            bvmicMUS = LSBuffers.add("input delta", 0, 1, 0.02);
+
             string lq = "";
             recCap = null;
             micCap = null;
@@ -70,6 +77,7 @@ namespace Loopstream
 
             Logger.mix.a("create rec");
             recCap = new WasapiLoopbackCapture(settings.devRec.mm);
+            dvMUS = recCap.WaveFormat.BitsPerSample / 8.0;
             recCap.DataAvailable += recDev_DataAvailable_03;
             recIn = new BufferedWaveProvider(recCap.WaveFormat);
             if (recCap.WaveFormat.SampleRate != settings.samplerate)
@@ -85,7 +93,7 @@ namespace Loopstream
                     LSDevice.stringer(recCap.WaveFormat) + "\n\n";
             }
             recProv = new WaveToSampleProvider((IWaveProvider)recRe ?? (IWaveProvider)recIn);
-            recVol = new NPatch.VolumeSlider();
+            recVol = new NPatch.VolumeSlider(new string[0]);
             recVol.SetSource(recProv);
             mixa.AddMixerInput(recVol);
             Logger.mix.a("rec done");
@@ -93,13 +101,13 @@ namespace Loopstream
             killmic = new System.Windows.Forms.Timer();
             killmic.Interval = 1000;
             killmic.Tick += killmic_Tick;
-            micVol = new NPatch.VolumeSlider();
+            micVol = new NPatch.VolumeSlider(new string[0]);
             lq += micAdd();
 
             //mixer.ReadFully = true;
             fork = new NPatch.Fork(mixa, 2);
             lameOutlet = fork.providers[1];
-            outVol = new NPatch.VolumeSlider();
+            outVol = new NPatch.VolumeSlider(new string[] { "microphone latency", "music latency" });
             outVol.SetSource(fork.providers[0]);
             muxer = new SampleToWaveProvider(outVol);
 
@@ -169,6 +177,7 @@ namespace Loopstream
             {
                 Logger.mix.a("create mic");
                 micCap = new WasapiCapture(settings.devMic.mm);
+                dvmic = micCap.WaveFormat.BitsPerSample / 8.0;
                 micCap.DataAvailable += micDev_DataAvailable_03;
                 micIn = new BufferedWaveProvider(micCap.WaveFormat);
                 if (micCap.WaveFormat.SampleRate != settings.samplerate)
@@ -302,6 +311,8 @@ namespace Loopstream
 
         void recDev_DataAvailable_03(object sender, WaveInEventArgs e)
         {
+            bvMUSMUS.i += e.BytesRecorded / dvMUS;
+            bvmicMUS.o += e.BytesRecorded / dvMUS;
             recIn.AddSamples(e.Buffer, 0, e.BytesRecorded);
 
             if (recVol.attenuated)
@@ -318,6 +329,8 @@ namespace Loopstream
 
         void micDev_DataAvailable_03(object sender, WaveInEventArgs e)
         {
+            bvmicmic.i += e.BytesRecorded / dvmic;
+            bvmicMUS.i += e.BytesRecorded / dvmic;
             micIn.AddSamples(e.Buffer, 0, e.BytesRecorded);
         }
 

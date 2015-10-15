@@ -55,6 +55,7 @@ namespace Loopstream
             pictureBox1.BackgroundImage = null;
             penbrush = SystemBrushes.ControlText;
             brush = SystemBrushes.Control;
+            pen.Dispose();
             pen = SystemPens.ControlText;
             bg = SystemPens.Control;
             intimer = false;

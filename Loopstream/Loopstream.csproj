@@ -148,6 +148,12 @@
     <Compile Include="UC_Verter.Designer.cs">
       <DependentUpon>UC_Verter.cs</DependentUpon>
     </Compile>
+    <Compile Include="UI_Graph2P.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI_Graph2P.Designer.cs">
+      <DependentUpon>UI_Graph2P.cs</DependentUpon>
+    </Compile>
     <Compile Include="UI_ConfigSC.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -165,6 +171,12 @@
     </Compile>
     <Compile Include="UI_Graph.Designer.cs">
       <DependentUpon>UI_Graph.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI_Graph2.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI_Graph2.Designer.cs">
+      <DependentUpon>UI_Graph2.cs</DependentUpon>
     </Compile>
     <Compile Include="UI_Home.cs">
       <SubType>Form</SubType>
@@ -233,6 +245,9 @@
     <EmbeddedResource Include="UC_Verter.resx">
       <DependentUpon>UC_Verter.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="UI_Graph2P.resx">
+      <DependentUpon>UI_Graph2P.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="UI_ConfigSC.resx">
       <DependentUpon>UI_ConfigSC.cs</DependentUpon>
       <SubType>Designer</SubType>
@@ -242,6 +257,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="UI_Graph.resx">
       <DependentUpon>UI_Graph.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI_Graph2.resx">
+      <DependentUpon>UI_Graph2.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UI_Home.resx">
       <DependentUpon>UI_Home.cs</DependentUpon>

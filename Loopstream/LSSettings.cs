@@ -26,6 +26,9 @@ namespace Loopstream
         [XmlIgnore]
         public static LSSettings singleton;
 
+        [XmlIgnore]
+        public static LSBuffers buffers;
+
         public class LSTrigger : IComparable
         {
             public enum EventType
@@ -698,6 +701,7 @@ namespace Loopstream
                 resetTriggers();
             }
             LSSettings.singleton = this;
+            LSBuffers.init();
         }
         public void resetMetas()
         {

@@ -213,6 +213,19 @@ namespace NPatch
                     iRead = i;
                 }
             }
+
+            public int getReadPtr()
+            {
+                return iRead;
+            }
+            public int getWritePtr()
+            {
+                return iWrite;
+            }
+            public int getBufSize()
+            {
+                return buf.Length;
+            }
         }
 
         float[] buf;
@@ -268,6 +281,8 @@ namespace NPatch
         int channels;
         int[][] rev;
         int revw;
+        
+        Loopstream.LSBuffers.Buf bv;
 
         public Reverb(ISampleProvider source)
         {
@@ -296,6 +311,7 @@ namespace NPatch
                 for (int b = 0; b < rev[a].Length; b++)
                     rev[a][b] = reverbBuffer.Length - (1 + rev[a][b]);
             revw = 0;
+            bv = Loopstream.LSBuffers.add("reverb", 0.3, 1, 1);
         }
 
         public WaveFormat WaveFormat
@@ -309,14 +325,17 @@ namespace NPatch
             int outIndex = offset;
             EnsureSourceBuffer(sourceSamplesRequired);
             int sourceSamplesRead = source.Read(sourceBuffer, 0, sourceSamplesRequired);
+            bv.i += sourceSamplesRead;
 
             int sourceSamplesWritten = Math.Min(sourceSamplesRead, (reverbBuffer.Length - revw));
             Array.Copy(sourceBuffer, 0, reverbBuffer, revw, sourceSamplesWritten);
             revw += sourceSamplesWritten;
+            bv.o += sourceSamplesWritten;
             if (revw >= reverbBuffer.Length)
             {
                 revw = sourceSamplesRead - sourceSamplesWritten;
                 Array.Copy(sourceBuffer, sourceSamplesWritten, reverbBuffer, 0, sourceSamplesRead - sourceSamplesWritten);
+                bv.o += sourceSamplesRead - sourceSamplesWritten;
             }
             for (int n = 0; n < sourceSamplesRead; n += channels)
             {
@@ -331,6 +350,7 @@ namespace NPatch
                 for (int ri = 0; ri < rev[ch].Length; ri++)
                 {
                     outIndex -= sourceSamplesRead;
+                    //outIndex = offset;
                     for (int n = 0; n < sourceSamplesRead; n += channels)
                     {
                         try
@@ -447,6 +467,7 @@ namespace NPatch
         public float boost;
         public float boostLock;
         public bool attenuated;
+        public Loopstream.LSBuffers.Buf[] bv;
 
         //public event EventHandler vuc;
         public bool enVU;
@@ -454,7 +475,7 @@ namespace NPatch
         public long vuAge { get; private set; }
         public float curVol { get { return currentVolume; } set { } }
 
-        public VolumeSlider()
+        public VolumeSlider(string[] bvname)
         {
             this.source = null;
             this.wf = null;
@@ -465,6 +486,10 @@ namespace NPatch
 
             attenuated = false;
             boost = 1;
+
+            bv = new Loopstream.LSBuffers.Buf[bvname.Length];
+            for (int a = 0; a < bvname.Length; a++)
+                bv[a] = Loopstream.LSBuffers.add(bvname[a], 0, 1, 1);
         }
 
         public void SetSource(ISampleProvider source)
@@ -570,6 +595,9 @@ namespace NPatch
                     }
                 }
                 //Console.WriteLine("{0:000000} {1:000000}", count, sourceSamplesRead);
+                foreach (var v in bv)
+                    v.o += sourceSamplesRead;
+
                 return sourceSamplesRead;
             }
             catch (Exception ex)

@@ -33,6 +33,7 @@ namespace Loopstream
 
         public int iFrame;
         public LSFrame[] frames;
+        public LSBuffers.Buf bv;
 
         System.Net.Sockets.TcpClient tc;
         System.Net.Sockets.NetworkStream s;
@@ -50,6 +51,8 @@ namespace Loopstream
             crashed = false;
             locker = new object();
             rekick = 0;
+            
+            bv = LSBuffers.add("enc?", 0, 1, 0.01);
         }
 
         string esc(string raw)
@@ -62,6 +65,7 @@ namespace Loopstream
             logger.a("make shouter");
             proc.PriorityClass = System.Diagnostics.ProcessPriorityClass.AboveNormal;
 
+            bv.name = enc.ext;
             if (string.IsNullOrEmpty(settings.host))
             {
                 s = null;
@@ -256,12 +260,14 @@ namespace Loopstream
 
             try
             {
+                bv.i += c;
                 stdin.Write(buffer, 0, c);
                 stdin.Flush();
             }
             catch
             {
                 logger.a("encoder write failed");
+                bv.i = bv.o = 0;
                 enc.FIXME_kbps = -1;
                 crashed = true;
             }
@@ -295,6 +301,10 @@ namespace Loopstream
                     //Console.Write('!');
                     logger.a("awaiting encoder output");
                     int i = stdout.Read(buffer, 0, 4096);
+                    if (enc.compression == LSSettings.LSCompression.cbr)
+                    {
+                        bv.o += (int)(Math.Round((i / (125.0 * enc.bitrate)) * settings.samplerate * 2 * 2));
+                    }
                     if (m != null)
                     {
                         logger.a("writing file");

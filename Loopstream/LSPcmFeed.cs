@@ -11,6 +11,7 @@ namespace Loopstream
         int quitting;
         object locker;
         bool shuttingDown;
+        LSBuffers.Buf bv;
         LSSettings settings;
         List<LSEncoder> encoders;
         NPatch.Fork.Outlet outlet;
@@ -26,6 +27,8 @@ namespace Loopstream
             this.outlet = outlet;
             this.settings = settings;
             encoders = new List<LSEncoder>();
+            bv = LSBuffers.add("pcm", 0, 0.3, 1);
+
             wp16 = new NAudio.Wave.SampleProviders.SampleToWaveProvider16(outlet);
             System.Threading.Thread t = new System.Threading.Thread(new System.Threading.ThreadStart(dicks));
             t.Name = "LSPcm_Prism";
@@ -85,6 +88,10 @@ namespace Loopstream
                 while (true)
                 {
                     if (qt()) break;
+                    bv.i = outlet.getReadPtr();
+                    bv.o = outlet.getWritePtr();
+                    bv.s = outlet.getBufSize();
+
                     int avail = outlet.avail();
                     if (avail > 1024)
                     {
