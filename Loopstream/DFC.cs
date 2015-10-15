@@ -13,8 +13,6 @@ namespace Loopstream
         {
         }
 
-        const bool CHECK_MD5 = true;
-
         public void extract(Progress pb)
         {
             icp = new ICP();
@@ -321,9 +319,10 @@ namespace Loopstream
                 return md5.ComputeHash(storm);
             }
         }
+
         public static void coreTest()
         {
-            if (Program.SIGNMODE)
+            if (Program.SIGN_BINARY)
             {
                 byte[] myMD5 = md5sum(Application.ExecutablePath, 0);
                 using (FileStream fso = new FileStream(Application.ExecutablePath + ".exe", FileMode.Create))
@@ -342,7 +341,8 @@ namespace Loopstream
                 }
                 Program.kill();
             }
-            if (CHECK_MD5)
+            
+            if (Program.VERIFY_CHECKSUM)
             {
                 byte[] myMD5 = md5sum(Application.ExecutablePath, 16);
                 byte[] chMD5 = new byte[myMD5.Length];

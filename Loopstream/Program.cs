@@ -13,8 +13,9 @@ namespace Loopstream
         public const string toolsVer = "ls.tools.v1.txt";
         
         public static string[] args;
-        public static bool DUMBCEPTIONS;
-        public static bool SIGNMODE;
+        public static bool VERIFY_CHECKSUM;
+        public static bool CRASH_REPORTER;
+        public static bool SIGN_BINARY;
         public static string DBGLOG;
         public static string tools;
         public static System.Drawing.Icon icon;
@@ -29,20 +30,24 @@ namespace Loopstream
         static void Main(string[] args)
         {
             DBGLOG = "";
-            SIGNMODE = false;
-            DUMBCEPTIONS = false;
+            SIGN_BINARY = false;
+            CRASH_REPORTER = true;
+            VERIFY_CHECKSUM = true;
 
             Program.args = args;
             foreach (string str in args)
             {
                 if (str == "sign")
-                    SIGNMODE = true;
+                    SIGN_BINARY = true;
 
                 if (str == "exceptions")
-                    DUMBCEPTIONS = true;
+                    CRASH_REPORTER = false;
+
+                if (str == "unsigned")
+                    VERIFY_CHECKSUM = false;
             }
 
-            if (!DUMBCEPTIONS)
+            if (CRASH_REPORTER)
             {
                 AppDomain.CurrentDomain.UnhandledException += (ueSender, ueArgs) =>
                     new UI_Exception(ueArgs.ExceptionObject as Exception, 1).ShowDialog();

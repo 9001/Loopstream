@@ -13,8 +13,6 @@ namespace LoopstreamTraktor
         {
         }
 
-        const bool CHECK_MD5 = true;
-
         public void extract(Label pb)
         {
             icp = new ICP();
@@ -156,13 +154,6 @@ namespace LoopstreamTraktor
 
         public void make(Label pb)
         {
-            if (DialogResult.Yes != MessageBox.Show(
-                "make .dfc (decent file container) ?",
-                "new embedded archive",
-                MessageBoxButtons.YesNo,
-                MessageBoxIcon.Question))
-                return;
-
             icp = new ICP();
             new System.Threading.Thread(new System.Threading.ThreadStart(makeDFC)).Start();
             while (!encoding)
@@ -306,7 +297,7 @@ namespace LoopstreamTraktor
         }
         public static void coreTest()
         {
-            if (Program.SIGNMODE)
+            if (Program.SIGN_BINARY)
             {
                 byte[] myMD5 = md5sum(Application.ExecutablePath, 0);
                 using (FileStream fso = new FileStream(Application.ExecutablePath + ".exe", FileMode.Create))
@@ -325,7 +316,7 @@ namespace LoopstreamTraktor
                 }
                 Program.kill();
             }
-            if (CHECK_MD5)
+            if (Program.VERIFY_CHECKSUM)
             {
                 byte[] myMD5 = md5sum(Application.ExecutablePath, 16);
                 byte[] chMD5 = new byte[myMD5.Length];

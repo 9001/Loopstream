@@ -84,7 +84,7 @@ namespace Loopstream
                 File.Exists(toolsBase + Program.toolsVer))
             {
                 if (DialogResult.Yes == MessageBox.Show(
-                    "make .dfc (decent file container) ?",
+                    "make .dfc (decent file container) ?\r\n\r\nhint: rename the tools folder\r\n         if you don't wanna see this",
                     "new embedded archive",
                     MessageBoxButtons.YesNo,
                     MessageBoxIcon.Question))

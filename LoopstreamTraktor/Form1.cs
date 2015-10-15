@@ -54,11 +54,18 @@ namespace LoopstreamTraktor
             DFC.coreTest();
             if (Directory.Exists(@"..\..\tools\"))
             {
-                splash.vis();
-                new DFC().make(splash.pb);
-                Program.kill();
+                if (DialogResult.Yes == MessageBox.Show(
+                    "make .dfc (decent file container) ?\r\n\r\nhint: rename the tools folder\r\n         if you don't wanna see this",
+                    "new embedded archive",
+                    MessageBoxButtons.YesNo,
+                    MessageBoxIcon.Question))
+                {
+                    splash.vis();
+                    new DFC().make(splash.pb);
+                    Program.kill();
+                }
             }
-            if (Program.args.Length != 1 || Program.args[0].ToLower() != "doit")
+            if (!Program.DO_IT)
             {
                 MessageBox.Show("This program should be run by Loopstream!\n\nStop doing that.");
                 Program.kill();

@@ -9,7 +9,9 @@ namespace LoopstreamTraktor
     {
         public static string tools;
         public static string[] args;
-        public static bool SIGNMODE;
+        public static bool SIGN_BINARY;
+        public static bool VERIFY_CHECKSUM;
+        public static bool DO_IT;
 
         /// <summary>
         /// The main entry point for the application.
@@ -17,14 +19,19 @@ namespace LoopstreamTraktor
         [STAThread]
         static void Main(string[] args)
         {
-            SIGNMODE = false;
+            SIGN_BINARY = false;
+            VERIFY_CHECKSUM = true;
             Program.args = args;
-            if (args.Length > 0)
+            foreach (string arg in args)
             {
-                if (args[0] == "sign")
-                {
-                    SIGNMODE = true;
-                }
+                if (arg == "doit")
+                    DO_IT = true;
+
+                if (arg == "sign")
+                    SIGN_BINARY = true;
+
+                if (arg == "unsigned")
+                    VERIFY_CHECKSUM = false;
             }
 
             tools = System.Windows.Forms.Application.ExecutablePath;
