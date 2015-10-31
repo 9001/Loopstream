@@ -127,7 +127,7 @@ namespace Loopstream
 
         private void UI_Msg_MouseDown(object sender, MouseEventArgs e)
         {
-            sactive = true;
+            sactive = false;
             this.Dispose();
         }
     }

@@ -95,6 +95,9 @@ namespace Loopstream
 
         void t_Tick(object sender, EventArgs e)
         {
+            if (pictureBox1.Width < 10 || pictureBox1.Height < 10)
+                return;
+
             Bitmap b = new Bitmap(pictureBox1.Width, pictureBox1.Height);
             mgrad = new LinearGradientBrush(Point.Empty, new Point(0, b.Height), cmgrad, SystemColors.Control);
             ograd = new LinearGradientBrush(Point.Empty, new Point(0, b.Height), cograd, SystemColors.Control);

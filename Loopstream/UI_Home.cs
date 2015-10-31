@@ -200,9 +200,9 @@ namespace Loopstream
             z("Settings #3 - DONE"); isPresetLoad = true;
 
             z("Binding sliders");
-            gMusic.valueChanged += gSlider_valueChanged;
+            gMus.valueChanged += gSlider_valueChanged;
             gMic.valueChanged += gSlider_valueChanged;
-            gSpeed.valueChanged += gSlider_valueChanged;
+            gSpd.valueChanged += gSlider_valueChanged;
             gOut.valueChanged += gSlider_valueChanged;
             mixerPresetChanged(sender, e);
 
@@ -267,15 +267,15 @@ namespace Loopstream
             invals = new Control[] {
                 box_top_graden,
                 box_bottom_graden,
-                gMusic.giSlider,
-                gMusic.graden1,
-                gMusic.graden2,
+                gMus.giSlider,
+                gMus.graden1,
+                gMus.graden2,
                 gMic.giSlider,
                 gMic.graden1,
                 gMic.graden2,
-                gSpeed.giSlider,
-                gSpeed.graden1,
-                gSpeed.graden2,
+                gSpd.giSlider,
+                gSpd.graden1,
+                gSpd.graden2,
                 gOut.giSlider,
                 gOut.graden1,
                 gOut.graden2,
@@ -534,16 +534,16 @@ namespace Loopstream
         void gSlider_valueChanged(object sender, EventArgs e)
         {
             z("Mixer slider changed");
-            settings.mixer.vRec = gMusic.level / 255.0;
+            settings.mixer.vRec = gMus.level / 255.0;
             settings.mixer.vMic = gMic.level / 255.0;
-            settings.mixer.vSpd = gSpeed.level / 200.0;
+            settings.mixer.vSpd = gSpd.level / 200.0;
             settings.mixer.vOut = gOut.level / 255.0;
-            settings.mixer.bRec = gMusic.enabled;
+            settings.mixer.bRec = gMus.enabled;
             settings.mixer.bMic = gMic.enabled;
             settings.mixer.bOut = gOut.enabled;
-            settings.mixer.yRec = gMusic.boostLock;
+            settings.mixer.yRec = gMus.boostLock;
             settings.mixer.yMic = gMic.boostLock;
-            settings.mixer.xRec = gMusic.boost;
+            settings.mixer.xRec = gMus.boost;
             settings.mixer.xMic = gMic.boost;
 
             if (mixer != null)
@@ -553,8 +553,8 @@ namespace Loopstream
                 mixer.MuteChannel(LSMixer.Slider.Out, settings.mixer.bOut);
 
                 LSMixer.Slider sl = LSMixer.Slider.Out;
-                if (sender == gSpeed) return;
-                if (sender == gMusic) sl = LSMixer.Slider.Music;
+                if (sender == gSpd) return;
+                if (sender == gMus) sl = LSMixer.Slider.Music;
                 if (sender == gMic) sl = LSMixer.Slider.Mic;
                 double dur = 0;
 
@@ -587,37 +587,37 @@ namespace Loopstream
         void mixerPresetChanged(object sender, EventArgs e)
         {
             z("Mixer preset changed");
-            gMusic.level = (int)(255 * settings.mixer.vRec);
+            gMus.level = (int)(255 * settings.mixer.vRec);
             gMic.level = (int)(255 * settings.mixer.vMic);
-            gSpeed.level = (int)(200 * settings.mixer.vSpd);
+            gSpd.level = (int)(200 * settings.mixer.vSpd);
             gOut.level = (int)(255 * settings.mixer.vOut);
-            gMusic.enabled = settings.mixer.bRec;
+            gMus.enabled = settings.mixer.bRec;
             gMic.enabled = settings.mixer.bMic;
             gOut.enabled = settings.mixer.bOut;
-            gMusic.boostLock = settings.mixer.yRec;
+            gMus.boostLock = settings.mixer.yRec;
             gMic.boostLock = settings.mixer.yMic;
-            gMusic.boost = settings.mixer.xRec;
+            gMus.boost = settings.mixer.xRec;
             gMic.boost = settings.mixer.xMic;
 
             // you should probably fix this
             if (mixer != null)
             {
-                gMusic.eventType = Verter.EventType.slide;
+                gMus.eventType = Verter.EventType.slide;
                 gMic.eventType = Verter.EventType.slide;
                 gOut.eventType = Verter.EventType.slide;
-                gSlider_valueChanged(gMusic, null);
+                gSlider_valueChanged(gMus, null);
                 gSlider_valueChanged(gMic, null);
                 gSlider_valueChanged(gOut, null);
 
-                gMusic.eventType = Verter.EventType.boost;
+                gMus.eventType = Verter.EventType.boost;
                 gMic.eventType = Verter.EventType.boost;
-                gSlider_valueChanged(gMusic, null);
+                gSlider_valueChanged(gMus, null);
                 gSlider_valueChanged(gMic, null);
 
                 // in case this is necessary
-                gMusic.eventType = Verter.EventType.boostLock;
+                gMus.eventType = Verter.EventType.boostLock;
                 gMic.eventType = Verter.EventType.boostLock;
-                gSlider_valueChanged(gMusic, null);
+                gSlider_valueChanged(gMus, null);
                 gSlider_valueChanged(gMic, null);
             }
         }
@@ -661,7 +661,7 @@ namespace Loopstream
             daText = "D I S C O N N E C T";
             gConnect.Text = daText;
             tag = new LSTag(settings);
-            mixer = new LSMixer(settings, new LLabel[] { gMusic.giSlider, gMic.giSlider, gOut.giSlider });
+            mixer = new LSMixer(settings, new LLabel[] { gMus.giSlider, gMic.giSlider, gOut.giSlider });
             pcm = new LSPcmFeed(settings, mixer.lameOutlet);
             assumeConnected = true;
         }
@@ -704,6 +704,13 @@ namespace Loopstream
             daText = "kill_mixer";
             mixer.Dispose(ref daText);
             daText = "Connect";
+
+            this.Invoke((MethodInvoker)delegate
+            {
+                if (gMus != null && gMus.giSlider != null && gMus.giSlider.src != null) gMus.giSlider.src.ClearVu();
+                if (gMic != null && gMic.giSlider != null && gMic.giSlider.src != null) gMic.giSlider.src.ClearVu();
+                if (gOut != null && gOut.giSlider != null && gOut.giSlider.src != null) gOut.giSlider.src.ClearVu();
+            });
         }
 
         private void gSettings_Click(object sender, EventArgs e)
@@ -912,15 +919,15 @@ namespace Loopstream
                         ev.lastMouse = now;
                     }
                 }
-                if (gMusic != null &&
-                    gMusic.giSlider != null &&
-                    gMusic.giSlider.src != null)
+                if (gOut != null &&
+                    gOut.giSlider != null &&
+                    gOut.giSlider.src != null)
                 {
-                    if (gMusic.giSlider.src.vuAge < 16)
+                    if (gOut.giSlider.src.vuAge < 16)
                     {
                         foreach (LSSettings.LSTrigger ev in LSSettings.singleton.triggers)
                         {
-                            if (gMusic.giSlider.src.VU >= ev.pAudio)
+                            if (gOut.giSlider.src.VU >= ev.pAudio)
                             {
                                 ev.lastAudio = now;
                             }
@@ -939,10 +946,10 @@ namespace Loopstream
                 if (daText == "Connect")
                 {
                     this.Text = wincap;
-                    if (popPoor != null && popPoor.sactive) { popPoor.Dispose(); popPoor = null; }
-                    if (popDrop != null && popDrop.sactive) { popDrop.Dispose(); popDrop = null; }
-                    if (popSign != null && popSign.sactive) { popSign.Dispose(); popSign = null; }
-                    if (popQuit != null && popQuit.sactive) { popQuit.Dispose(); popQuit = null; }
+                    if (popPoor != null && popPoor.sactive) popPoor.Dispose(); popPoor = null;
+                    if (popDrop != null && popDrop.sactive) popDrop.Dispose(); popDrop = null;
+                    if (popSign != null && popSign.sactive) popSign.Dispose(); popSign = null;
+                    if (popQuit != null && popQuit.sactive) popQuit.Dispose(); popQuit = null;
                 }
                 else
                 {
@@ -968,7 +975,7 @@ namespace Loopstream
                 gConnect.Enabled = true;
             }
 
-            if (settings.mixer.xRec < gMusic.boost) gMusic.boost = settings.mixer.xRec;
+            if (settings.mixer.xRec < gMus.boost) gMus.boost = settings.mixer.xRec;
             if (settings.mixer.xMic < gMic.boost) gMic.boost = settings.mixer.xMic;
 
             double f, f_mp3, f_ogg;
@@ -992,42 +999,6 @@ namespace Loopstream
                 Logger.bitrateo.Add(Math.Max(settings.ogg.FIXME_kbps, 0));
             }
             
-            /*if (assumeConnected && popFilt)
-            {
-                if (settings.warn_drop_DEPRECATED && settings.lim_drop_DEPRECATED > f)
-                {
-                    if (popPoor != null && popPoor.sactive) { popPoor.Dispose(); popPoor = null; }
-                    if (popDrop == null || !popDrop.sactive)
-                    {
-                        popDrop = new UI_Msg("drop", "");
-                        popDrop.Show();
-                    }
-                }
-                else if (settings.warn_poor_DEPRECATED && settings.lim_poor_DEPRECATED > f)
-                {
-                    if (popDrop != null && popDrop.sactive) { popDrop.Dispose(); popDrop = null; }
-                    if (popPoor == null || !popPoor.sactive)
-                    {
-                        popPoor = new UI_Msg("poor", "");
-                        popPoor.Show();
-                    }
-                }
-                else
-                {
-                    if (popPoor != null && popPoor.sactive) { popPoor.Dispose(); popPoor = null; }
-                    if (popDrop != null && popDrop.sactive) { popDrop.Dispose(); popDrop = null; }
-                }
-            }
-            else
-            {
-                if (f >= Math.Max(settings.lim_poor_DEPRECATED, settings.lim_drop_DEPRECATED))
-                {
-                    popFilt = assumeConnected;
-                }
-                if (popPoor != null && popPoor.sactive) { popPoor.Dispose(); popPoor = null; }
-                if (popDrop != null && popDrop.sactive) { popDrop.Dispose(); popDrop = null; }
-            }*/
-
             if (connected && popFilt)
             {
                 foreach (LSSettings.LSTrigger ev in LSSettings.singleton.triggers)
@@ -1078,14 +1049,19 @@ namespace Loopstream
                         popDrop = new UI_Msg("drop", "");
                         popDrop.Show();
                     }
-                    if (show.eType == LSSettings.LSTrigger.EventType.WARN_NO_AUDIO && (popSign == null || !popSign.sactive))
+                    if (show.eType == LSSettings.LSTrigger.EventType.WARN_NO_AUDIO && popSign == null)
                     {
                         popSign = new UI_Msg("audio", "");
                         popSign.Show();
                     }
+                    if (show.eType != LSSettings.LSTrigger.EventType.WARN_NO_AUDIO && popSign != null)
+                    {
+                        popSign.Dispose();
+                        popSign = null;
+                    }
                     if (show.eType == LSSettings.LSTrigger.EventType.DISCONNECT)
                     {
-                        if (popQuit != null)
+                        if (popQuit != null && popQuit.sactive)
                         {
                             popQuit.setMsg("0");
                         }
@@ -1099,7 +1075,7 @@ namespace Loopstream
                     {
                         string msg = Math.Ceiling(remain.msec / 1000.0).ToString();
 
-                        if (popQuit == null)
+                        if (popQuit == null || !popQuit.sactive)
                         {
                             popQuit = new UI_Msg("quit", msg);
                             popQuit.Show();
@@ -1107,6 +1083,12 @@ namespace Loopstream
                         else
                         {
                             popQuit.setMsg(msg);
+                        }
+
+                        if (popSign != null && !popSign.sactive)
+                        {
+                            popSign.Dispose();
+                            popSign = null;
                         }
                     }
                 }

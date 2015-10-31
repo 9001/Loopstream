@@ -50,7 +50,6 @@ namespace Loopstream
         {
             unFX();
             if (settings.devRec == null ||
-                settings.devMic == null ||
                 settings.devOut == null)
             {
                 MessageBox.Show("Sorry, you need to select all three audio devices.");
@@ -114,7 +113,7 @@ namespace Loopstream
             {
                 fail += "music, ";
             }
-            if (settings.devMic.mm != null)
+            if (settings.devMic != null && settings.devMic.mm != null)
             {
                 try
                 {
@@ -1614,6 +1613,7 @@ namespace Loopstream
             wp.ShowDialog();
             gSource.Text = wp.starget + "*" + wp.itarget.ToString("x");
             gSource_TextChanged(sender, e);
+            wp.Dispose();
         }
 
         private void gURLDecode_CheckedChanged(object sender, EventArgs e)

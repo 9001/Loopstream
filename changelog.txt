@@ -3,6 +3,14 @@
 + new feature
 ~ other change
 
+2015-10-31, 19:32:05 - Loopstream 1.4.0.4
+  = Determine "No Audio" based on mixer output instead of input
+  = Crash if "No Audio" warning clicked and countdown begins
+  = Allow saving config with null microphone
+  = Crash when minimizing network graph
+  ~ Fadeout volume bars on disconnect
+  ~ Behavior of "No Audio" hiding
+
 2015-10-14, 02:57:09 - Loopstream 1.4.0.0
   + when recording streams, record song titles to a text document
   + and also log when the mic is enabled/disabled

@@ -480,6 +480,12 @@ namespace NPatch
             return this.source != null;
         }
 
+        public void ClearVu()
+        {
+            VU = 1;
+            vuAge = 512;
+        }
+
         public float GetVolume()
         {
             return targetVolume;

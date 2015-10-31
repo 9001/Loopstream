@@ -30,10 +30,10 @@
         {
             this.components = new System.ComponentModel.Container();
             this.box_sliders = new System.Windows.Forms.Panel();
-            this.gMusic = new Loopstream.Verter();
+            this.gMus = new Loopstream.Verter();
             this.gOut = new Loopstream.Verter();
             this.gMic = new Loopstream.Verter();
-            this.gSpeed = new Loopstream.Verter();
+            this.gSpd = new Loopstream.Verter();
             this.box_top = new System.Windows.Forms.Panel();
             this.box_top_dark = new System.Windows.Forms.Label();
             this.box_top_light = new System.Windows.Forms.Label();
@@ -87,10 +87,10 @@
             // 
             // box_sliders
             // 
-            this.box_sliders.Controls.Add(this.gMusic);
+            this.box_sliders.Controls.Add(this.gMus);
             this.box_sliders.Controls.Add(this.gOut);
             this.box_sliders.Controls.Add(this.gMic);
-            this.box_sliders.Controls.Add(this.gSpeed);
+            this.box_sliders.Controls.Add(this.gSpd);
             this.box_sliders.Controls.Add(this.box_top);
             this.box_sliders.Controls.Add(this.box_bottom);
             this.box_sliders.Dock = System.Windows.Forms.DockStyle.Left;
@@ -100,24 +100,24 @@
             this.box_sliders.Size = new System.Drawing.Size(476, 392);
             this.box_sliders.TabIndex = 4;
             // 
-            // gMusic
+            // gMus
             // 
-            this.gMusic.A_GRAD_1 = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(220)))), ((int)(((byte)(255)))));
-            this.gMusic.A_GRAD_2 = System.Drawing.Color.Blue;
-            this.gMusic.BackColor = System.Drawing.SystemColors.ControlLight;
-            this.gMusic.boost = 1D;
-            this.gMusic.boostLock = -1D;
-            this.gMusic.CanBoost = true;
-            this.gMusic.canToggle = true;
-            this.gMusic.enabled = true;
-            this.gMusic.level = 255;
-            this.gMusic.Location = new System.Drawing.Point(17, 17);
-            this.gMusic.Margin = new System.Windows.Forms.Padding(8);
-            this.gMusic.Name = "gMusic";
-            this.gMusic.Size = new System.Drawing.Size(98, 382);
-            this.gMusic.TabIndex = 9;
-            this.gMusic.timeScale = false;
-            this.gMusic.title = "Music";
+            this.gMus.A_GRAD_1 = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(220)))), ((int)(((byte)(255)))));
+            this.gMus.A_GRAD_2 = System.Drawing.Color.Blue;
+            this.gMus.BackColor = System.Drawing.SystemColors.ControlLight;
+            this.gMus.boost = 1D;
+            this.gMus.boostLock = -1D;
+            this.gMus.CanBoost = true;
+            this.gMus.canToggle = true;
+            this.gMus.enabled = true;
+            this.gMus.level = 255;
+            this.gMus.Location = new System.Drawing.Point(17, 17);
+            this.gMus.Margin = new System.Windows.Forms.Padding(8);
+            this.gMus.Name = "gMus";
+            this.gMus.Size = new System.Drawing.Size(98, 382);
+            this.gMus.TabIndex = 9;
+            this.gMus.timeScale = false;
+            this.gMus.title = "Music";
             // 
             // gOut
             // 
@@ -157,24 +157,24 @@
             this.gMic.timeScale = false;
             this.gMic.title = "mic";
             // 
-            // gSpeed
+            // gSpd
             // 
-            this.gSpeed.A_GRAD_1 = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(128)))), ((int)(((byte)(0)))));
-            this.gSpeed.A_GRAD_2 = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(0)))));
-            this.gSpeed.BackColor = System.Drawing.SystemColors.ControlLight;
-            this.gSpeed.boost = 1D;
-            this.gSpeed.boostLock = -1D;
-            this.gSpeed.CanBoost = false;
-            this.gSpeed.canToggle = false;
-            this.gSpeed.enabled = true;
-            this.gSpeed.level = 255;
-            this.gSpeed.Location = new System.Drawing.Point(245, 17);
-            this.gSpeed.Margin = new System.Windows.Forms.Padding(8);
-            this.gSpeed.Name = "gSpeed";
-            this.gSpeed.Size = new System.Drawing.Size(98, 382);
-            this.gSpeed.TabIndex = 11;
-            this.gSpeed.timeScale = true;
-            this.gSpeed.title = "Speed";
+            this.gSpd.A_GRAD_1 = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(128)))), ((int)(((byte)(0)))));
+            this.gSpd.A_GRAD_2 = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(0)))));
+            this.gSpd.BackColor = System.Drawing.SystemColors.ControlLight;
+            this.gSpd.boost = 1D;
+            this.gSpd.boostLock = -1D;
+            this.gSpd.CanBoost = false;
+            this.gSpd.canToggle = false;
+            this.gSpd.enabled = true;
+            this.gSpd.level = 255;
+            this.gSpd.Location = new System.Drawing.Point(245, 17);
+            this.gSpd.Margin = new System.Windows.Forms.Padding(8);
+            this.gSpd.Name = "gSpd";
+            this.gSpd.Size = new System.Drawing.Size(98, 382);
+            this.gSpd.TabIndex = 11;
+            this.gSpd.timeScale = true;
+            this.gSpd.title = "Speed";
             // 
             // box_top
             // 
@@ -656,9 +656,9 @@
 
         #endregion
 
-        private Verter gMusic;
+        private Verter gMus;
         private Verter gMic;
-        private Verter gSpeed;
+        private Verter gSpd;
         private Verter gOut;
         private System.Windows.Forms.Panel box_sliders;
         private System.Windows.Forms.Panel box_menu_outer;
