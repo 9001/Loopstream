@@ -491,6 +491,9 @@ namespace Loopstream
             gOggQualityV.Text = settings.ogg.quality.ToString();
             gOggMono.Checked = settings.ogg.channels == LSSettings.LSChannels.mono;
             gOggStereo.Checked = settings.ogg.channels == LSSettings.LSChannels.stereo;
+            gOggExternalTags.Checked = settings.ogg.tagMethod == LSSettings.LSTagMethod.outband;
+            gOggInternalTags.Checked = settings.ogg.tagMethod == LSSettings.LSTagMethod.inband;
+            gOggBothTags.Checked = settings.ogg.tagMethod == LSSettings.LSTagMethod.both;
 
             visualizeServerSettings();
 
@@ -925,6 +928,21 @@ namespace Loopstream
             if (gOggStereo.Checked) settings.ogg.channels = LSSettings.LSChannels.stereo;
         }
 
+        private void gOggInternalTags_CheckedChanged(object sender, EventArgs e)
+        {
+            if (gOggInternalTags.Checked) settings.ogg.tagMethod = LSSettings.LSTagMethod.inband;
+        }
+
+        private void gOggExternalTags_CheckedChanged(object sender, EventArgs e)
+        {
+            if (gOggExternalTags.Checked) settings.ogg.tagMethod = LSSettings.LSTagMethod.outband;
+        }
+
+        private void gOggBothTags_CheckedChanged(object sender, EventArgs e)
+        {
+            if (gOggBothTags.Checked) settings.ogg.tagMethod = LSSettings.LSTagMethod.both;
+        }
+
         private void gOggBitrateV_TextChanged(object sender, EventArgs e)
         {
             int n = getValue(gOggBitrateV);
@@ -936,7 +954,7 @@ namespace Loopstream
             int n = getValue(gOggQualityV);
             if (n >= 0) settings.ogg.quality = n;
         }
-        
+
         private void gUnavail_CheckedChanged(object sender, EventArgs e)
         {
             settings.showUnavail = gUnavail.Checked;
@@ -2159,6 +2177,5 @@ namespace Loopstream
             reDevice();
             initDevs();
         }
-
     }
 }
