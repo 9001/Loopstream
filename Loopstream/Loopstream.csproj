@@ -92,6 +92,10 @@
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
+    <Reference Include="taglib-sharp, Version=2.1.0.0, Culture=neutral, PublicKeyToken=db62eba44689b5b0, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>lib\taglib-sharp.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DFC.cs" />
@@ -210,6 +214,7 @@
     <Compile Include="UI_Winpeck.Designer.cs">
       <DependentUpon>UI_Winpeck.cs</DependentUpon>
     </Compile>
+    <Compile Include="VorbisTags.cs" />
     <Compile Include="W_IconRipper.cs" />
     <Compile Include="W_Lame.cs" />
     <Compile Include="W_NPatch.cs" />
@@ -290,6 +295,7 @@
     <EmbeddedResource Include="lib\NAudio.dll" />
     <EmbeddedResource Include="lib\NAudio.WindowsMediaFormat.dll" />
     <EmbeddedResource Include="lib\NVorbis.dll" />
+    <EmbeddedResource Include="lib\taglib-sharp.dll" />
     <Content Include="loopstream.ico" />
   </ItemGroup>
   <ItemGroup>

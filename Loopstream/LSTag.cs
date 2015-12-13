@@ -7,8 +7,10 @@ using System.Text.RegularExpressions;
 
 namespace Loopstream
 {
-    class LSTag
+    public delegate void TagsChanged(string tags);
+    public class LSTag
     {
+        public event TagsChanged changedTags;
         string auth;
         Encoding latin1;
         public LSTD tag;
@@ -325,7 +327,15 @@ namespace Loopstream
                                 e.enc.FIXME_kbps > 0)
                             {
                                 e.tag = tag.tag;
-                                sendTags(e);
+                                if (e.enc.ext.Contains("ogg"))
+                                {
+                                    if ((e.enc.tagMethod & LSSettings.LSTagMethod.inband) == LSSettings.LSTagMethod.inband)
+                                        changedTags(e.tag);
+                                    if ((e.enc.tagMethod & LSSettings.LSTagMethod.outband) == LSSettings.LSTagMethod.outband)
+                                        sendTags(e);
+                                }
+                                else
+                                    sendTags(e);
                             }
                         }
                     }
