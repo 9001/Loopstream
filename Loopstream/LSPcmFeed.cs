@@ -15,9 +15,11 @@ namespace Loopstream
         List<LSEncoder> encoders;
         NPatch.Fork.Outlet outlet;
         NAudio.Wave.SampleProviders.SampleToWaveProvider16 wp16;
-        public LSPcmFeed(LSSettings settings, NPatch.Fork.Outlet outlet)
+        public LSTag tagger;
+        public LSPcmFeed(LSSettings settings, NPatch.Fork.Outlet outlet, ref LSTag tag)
         {
             Logger.pcm.a("pcm init");
+            tagger = tag;
             locker = new object();
             shuttingDown = false;
             quitting = 0;

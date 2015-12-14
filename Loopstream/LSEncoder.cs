@@ -23,6 +23,9 @@ namespace Loopstream
         protected LSSettings settings;
         public LSSettings.LSParams enc;
         public int rekick;
+        protected bool newTags;
+        protected string tags;
+        protected bool firstBuffer;
 
         public Stream stdin { get; set; }
         public Stream stdout { get; set; }
@@ -48,6 +51,9 @@ namespace Loopstream
             dump = false;
             settings = null;
             crashed = false;
+            newTags = false;
+            tags = "";
+            firstBuffer = true;
             locker = new object();
             rekick = 0;
         }
@@ -295,6 +301,10 @@ namespace Loopstream
                     //Console.Write('!');
                     logger.a("awaiting encoder output");
                     int i = stdout.Read(buffer, 0, 4096);
+                    if (firstBuffer)
+                    {
+                        VorbisTags.GrabFirstBuffer(ref buffer, ref firstBuffer);
+                    }
                     if (m != null)
                     {
                         logger.a("writing file");
@@ -303,9 +313,16 @@ namespace Loopstream
                     try
                     {
                         logger.a("writing socket");
-                        
+
                         if (!string.IsNullOrEmpty(settings.host))
+                        {
+                            if (newTags && !firstBuffer)
+                            {
+                                newTags = false;
+                                VorbisTags.InsertTags(tags, ref s);
+                            }
                             s.Write(buffer, 0, i);
+                        }
                     }
                     catch
                     {

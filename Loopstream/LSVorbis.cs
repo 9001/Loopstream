@@ -12,6 +12,7 @@ namespace Loopstream
         public LSVorbis(LSSettings settings, LSPcmFeed pimp) : base()
         {
             logger = Logger.ogg;
+            pimp.tagger.changedTags += new TagsChanged(ForcefulInsertion);
 
             this.pimp = pimp;
             this.settings = settings;
@@ -64,6 +65,12 @@ namespace Loopstream
             dump = settings.recOgg;
             enc = settings.ogg;
             makeShouter();
+        }
+
+        public void ForcefulInsertion(string newtag)
+        {
+            newTags = true;
+            tags = newtag;
         }
     }
 }

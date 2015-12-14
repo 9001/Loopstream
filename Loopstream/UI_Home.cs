@@ -662,7 +662,7 @@ namespace Loopstream
             gConnect.Text = daText;
             tag = new LSTag(settings);
             mixer = new LSMixer(settings, new LLabel[] { gMus.giSlider, gMic.giSlider, gOut.giSlider });
-            pcm = new LSPcmFeed(settings, mixer.lameOutlet);
+            pcm = new LSPcmFeed(settings, mixer.lameOutlet, ref tag);
             assumeConnected = true;
         }
 

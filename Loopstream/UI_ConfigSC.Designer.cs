@@ -51,6 +51,9 @@
             this.pWrapper = new System.Windows.Forms.Panel();
             this.tc = new System.Windows.Forms.TabControl();
             this.tpSoundcard = new System.Windows.Forms.TabPage();
+            this.gReverbS = new System.Windows.Forms.TextBox();
+            this.label32 = new System.Windows.Forms.Label();
+            this.gReverbP = new System.Windows.Forms.TextBox();
             this.panel3 = new System.Windows.Forms.Panel();
             this.label31 = new System.Windows.Forms.Label();
             this.gRescan = new System.Windows.Forms.Button();
@@ -62,6 +65,7 @@
             this.gAutoconn = new System.Windows.Forms.CheckBox();
             this.gUnavail = new System.Windows.Forms.CheckBox();
             this.gTestDevs = new System.Windows.Forms.CheckBox();
+            this.label33 = new System.Windows.Forms.Label();
             this.tpServer = new System.Windows.Forms.TabPage();
             this.gServerDel = new System.Windows.Forms.Button();
             this.gServerLoad = new System.Windows.Forms.Button();
@@ -168,10 +172,10 @@
             this.label5 = new System.Windows.Forms.Label();
             this.label12 = new System.Windows.Forms.Label();
             this.tt = new System.Windows.Forms.ToolTip(this.components);
-            this.label32 = new System.Windows.Forms.Label();
-            this.gReverbP = new System.Windows.Forms.TextBox();
-            this.gReverbS = new System.Windows.Forms.TextBox();
-            this.label33 = new System.Windows.Forms.Label();
+            this.panel4 = new System.Windows.Forms.Panel();
+            this.gOggInternalTags = new System.Windows.Forms.RadioButton();
+            this.gOggExternalTags = new System.Windows.Forms.RadioButton();
+            this.gOggBothTags = new System.Windows.Forms.RadioButton();
             this.hTriggers = new Loopstream.TLabel();
             this.hTags = new Loopstream.TLabel();
             this.hEncoders = new Loopstream.TLabel();
@@ -195,6 +199,7 @@
             this.pFooter.SuspendLayout();
             this.pButtons.SuspendLayout();
             this.pTabs.SuspendLayout();
+            this.panel4.SuspendLayout();
             this.SuspendLayout();
             // 
             // gOutS
@@ -491,6 +496,42 @@
             this.tpSoundcard.TabIndex = 0;
             this.tpSoundcard.Text = "Soundcard";
             // 
+            // gReverbS
+            // 
+            this.gReverbS.Location = new System.Drawing.Point(272, 99);
+            this.gReverbS.Name = "gReverbS";
+            this.gReverbS.Size = new System.Drawing.Size(59, 20);
+            this.gReverbS.TabIndex = 40;
+            this.gReverbS.Text = "90";
+            this.tt.SetToolTip(this.gReverbS, "This is the reverb sustain.\r\nSuggestion: 90");
+            this.gReverbS.TextChanged += new System.EventHandler(this.gReverbS_TextChanged);
+            this.gReverbS.MouseEnter += new System.EventHandler(this.gHost_MouseEnter);
+            this.gReverbS.MouseLeave += new System.EventHandler(this.gHost_MouseLeave);
+            // 
+            // label32
+            // 
+            this.label32.AutoSize = true;
+            this.label32.Location = new System.Drawing.Point(196, 122);
+            this.label32.Name = "label32";
+            this.label32.Size = new System.Drawing.Size(70, 13);
+            this.label32.TabIndex = 39;
+            this.label32.Text = "Mic.Reverb%";
+            // 
+            // gReverbP
+            // 
+            this.gReverbP.Location = new System.Drawing.Point(207, 99);
+            this.gReverbP.Name = "gReverbP";
+            this.gReverbP.Size = new System.Drawing.Size(59, 20);
+            this.gReverbP.TabIndex = 38;
+            this.gReverbP.Text = "0";
+            this.gReverbP.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.tt.SetToolTip(this.gReverbP, "Enable microphone reverb by setting non-zero.\r\nThis is the initial reverb power. " +
+        "Suggestion: 15\r\nReconnect to enable or disable.\r\nCan adjust level while streamin" +
+        "g once enabled.\r\n");
+            this.gReverbP.TextChanged += new System.EventHandler(this.gReverb_TextChanged);
+            this.gReverbP.MouseEnter += new System.EventHandler(this.gHost_MouseEnter);
+            this.gReverbP.MouseLeave += new System.EventHandler(this.gHost_MouseLeave);
+            // 
             // panel3
             // 
             this.panel3.Controls.Add(this.label31);
@@ -641,6 +682,15 @@
             this.gTestDevs.CheckedChanged += new System.EventHandler(this.gTestDevs_CheckedChanged);
             this.gTestDevs.MouseEnter += new System.EventHandler(this.gHost_MouseEnter);
             this.gTestDevs.MouseLeave += new System.EventHandler(this.gHost_MouseLeave);
+            // 
+            // label33
+            // 
+            this.label33.AutoSize = true;
+            this.label33.Location = new System.Drawing.Point(272, 122);
+            this.label33.Name = "label33";
+            this.label33.Size = new System.Drawing.Size(73, 13);
+            this.label33.TabIndex = 41;
+            this.label33.Text = "Rev.Sustain%";
             // 
             // tpServer
             // 
@@ -868,6 +918,7 @@
             // tpEncoders
             // 
             this.tpEncoders.BackColor = System.Drawing.SystemColors.Control;
+            this.tpEncoders.Controls.Add(this.panel4);
             this.tpEncoders.Controls.Add(this.panel2);
             this.tpEncoders.Controls.Add(this.panel1);
             this.tpEncoders.Controls.Add(this.gMp3Enable);
@@ -1963,50 +2014,55 @@
             this.tt.UseAnimation = false;
             this.tt.UseFading = false;
             // 
-            // label32
+            // panel4
             // 
-            this.label32.AutoSize = true;
-            this.label32.Location = new System.Drawing.Point(196, 122);
-            this.label32.Name = "label32";
-            this.label32.Size = new System.Drawing.Size(70, 13);
-            this.label32.TabIndex = 39;
-            this.label32.Text = "Mic.Reverb%";
+            this.panel4.Controls.Add(this.gOggBothTags);
+            this.panel4.Controls.Add(this.gOggExternalTags);
+            this.panel4.Controls.Add(this.gOggInternalTags);
+            this.panel4.Location = new System.Drawing.Point(207, 202);
+            this.panel4.Name = "panel4";
+            this.panel4.Size = new System.Drawing.Size(139, 70);
+            this.panel4.TabIndex = 44;
             // 
-            // gReverbP
+            // gOggInternalTags
             // 
-            this.gReverbP.Location = new System.Drawing.Point(207, 99);
-            this.gReverbP.Name = "gReverbP";
-            this.gReverbP.Size = new System.Drawing.Size(59, 20);
-            this.gReverbP.TabIndex = 38;
-            this.gReverbP.Text = "0";
-            this.gReverbP.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            this.tt.SetToolTip(this.gReverbP, "Enable microphone reverb by setting non-zero.\r\nThis is the initial reverb power. " +
-        "Suggestion: 15\r\nReconnect to enable or disable.\r\nCan adjust level while streamin" +
-        "g once enabled.\r\n");
-            this.gReverbP.TextChanged += new System.EventHandler(this.gReverb_TextChanged);
-            this.gReverbP.MouseEnter += new System.EventHandler(this.gHost_MouseEnter);
-            this.gReverbP.MouseLeave += new System.EventHandler(this.gHost_MouseLeave);
+            this.gOggInternalTags.AutoSize = true;
+            this.gOggInternalTags.Location = new System.Drawing.Point(3, 26);
+            this.gOggInternalTags.Name = "gOggInternalTags";
+            this.gOggInternalTags.Size = new System.Drawing.Size(88, 17);
+            this.gOggInternalTags.TabIndex = 0;
+            this.gOggInternalTags.Text = "In-band Tags";
+            this.tt.SetToolTip(this.gOggInternalTags, "Tags are sent from within the vorbis stream. Should work if you don\'t have access" +
+        " to Icecast\'s admin.cgi");
+            this.gOggInternalTags.UseVisualStyleBackColor = true;
+            this.gOggInternalTags.CheckedChanged += new System.EventHandler(this.gOggInternalTags_CheckedChanged);
             // 
-            // gReverbS
+            // gOggExternalTags
             // 
-            this.gReverbS.Location = new System.Drawing.Point(272, 99);
-            this.gReverbS.Name = "gReverbS";
-            this.gReverbS.Size = new System.Drawing.Size(59, 20);
-            this.gReverbS.TabIndex = 40;
-            this.gReverbS.Text = "90";
-            this.tt.SetToolTip(this.gReverbS, "This is the reverb sustain.\r\nSuggestion: 90");
-            this.gReverbS.TextChanged += new System.EventHandler(this.gReverbS_TextChanged);
-            this.gReverbS.MouseEnter += new System.EventHandler(this.gHost_MouseEnter);
-            this.gReverbS.MouseLeave += new System.EventHandler(this.gHost_MouseLeave);
+            this.gOggExternalTags.AutoSize = true;
+            this.gOggExternalTags.Checked = true;
+            this.gOggExternalTags.Location = new System.Drawing.Point(3, 3);
+            this.gOggExternalTags.Name = "gOggExternalTags";
+            this.gOggExternalTags.Size = new System.Drawing.Size(96, 17);
+            this.gOggExternalTags.TabIndex = 1;
+            this.gOggExternalTags.TabStop = true;
+            this.gOggExternalTags.Text = "Out-band Tags";
+            this.tt.SetToolTip(this.gOggExternalTags, "Tags are sent using Icecast\'s admin.cgi");
+            this.gOggExternalTags.UseVisualStyleBackColor = true;
+            this.gOggExternalTags.CheckedChanged += new System.EventHandler(this.gOggExternalTags_CheckedChanged);
             // 
-            // label33
+            // gOggBothTags
             // 
-            this.label33.AutoSize = true;
-            this.label33.Location = new System.Drawing.Point(272, 122);
-            this.label33.Name = "label33";
-            this.label33.Size = new System.Drawing.Size(73, 13);
-            this.label33.TabIndex = 41;
-            this.label33.Text = "Rev.Sustain%";
+            this.gOggBothTags.AutoSize = true;
+            this.gOggBothTags.Location = new System.Drawing.Point(3, 49);
+            this.gOggBothTags.Name = "gOggBothTags";
+            this.gOggBothTags.Size = new System.Drawing.Size(47, 17);
+            this.gOggBothTags.TabIndex = 2;
+            this.gOggBothTags.Text = "Both";
+            this.tt.SetToolTip(this.gOggBothTags, "Tags are sent from within the vorbis stream AND by using Icecast\'s admin.cgi. Res" +
+        "ults may vary.");
+            this.gOggBothTags.UseVisualStyleBackColor = true;
+            this.gOggBothTags.CheckedChanged += new System.EventHandler(this.gOggBothTags_CheckedChanged);
             // 
             // hTriggers
             // 
@@ -2118,6 +2174,8 @@
             this.pButtons.ResumeLayout(false);
             this.pTabs.ResumeLayout(false);
             this.pTabs.PerformLayout();
+            this.panel4.ResumeLayout(false);
+            this.panel4.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -2271,5 +2329,9 @@
         private System.Windows.Forms.TextBox gReverbP;
         private System.Windows.Forms.TextBox gReverbS;
         private System.Windows.Forms.Label label33;
+        private System.Windows.Forms.Panel panel4;
+        private System.Windows.Forms.RadioButton gOggBothTags;
+        private System.Windows.Forms.RadioButton gOggExternalTags;
+        private System.Windows.Forms.RadioButton gOggInternalTags;
     }
 }

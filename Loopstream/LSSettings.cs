@@ -502,6 +502,7 @@ namespace Loopstream
 
         public enum LSCompression { cbr, q };
         public enum LSChannels { mono, stereo }
+        public enum LSTagMethod { outband = 1, inband = 2, both = 3 }
         public class LSParams
         {
             public bool enabled;
@@ -510,6 +511,7 @@ namespace Loopstream
             public long quality;
             public LSChannels channels;
             public string ext;
+            public LSTagMethod tagMethod;
 
             [XmlIgnore]
             public double FIXME_kbps;
@@ -582,6 +584,7 @@ namespace Loopstream
             mp3.quality = 2;
             mp3.channels = LSChannels.stereo;
             mp3.ext = "mp3";
+            mp3.tagMethod = LSTagMethod.outband;
             ogg = new LSParams();
             ogg.enabled = false;
             ogg.compression = LSCompression.q;
@@ -589,6 +592,7 @@ namespace Loopstream
             ogg.quality = 5;
             ogg.channels = LSChannels.stereo;
             ogg.ext = "ogg";
+            ogg.tagMethod = LSTagMethod.outband;
             samplerate = 44100;
             reverbP = 0;
             reverbS = 90;
