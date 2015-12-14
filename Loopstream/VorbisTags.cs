@@ -75,13 +75,16 @@ namespace Loopstream
   0xbcb4666d,0xb8757bda,0xb5365d03,0xb1f740b4};
 
         private static List<byte> oggVorbisHeader1, oggVorbisHeader2;
-        private static int pageLength, bytesGrabbed;
+        private static int pageLength, bytesGrabbed, fp;
+        private static bool firstPageFound;
 
         static VorbisTags()
         {
             oggVorbisHeader1 = new List<byte>();
             oggVorbisHeader2 = new List<byte>();
             pageLength = 0;
+            fp = 0;
+            firstPageFound = false;
         }
 
         //Taken directly from the Ogg source code. Works wonders.
@@ -132,8 +135,7 @@ namespace Loopstream
                 newHeaders.Add(test[i]);
             for (int i = 27 + oggVorbisHeader2[26] + oggVorbisHeader2[27]; i < oggVorbisHeader2.Count; i++)
                 newHeaders.Add(oggVorbisHeader2[i]);
-
-            //newHeaders[27] = Convert.ToByte((test.Length + 7));
+            
             newHeaders[26] += Convert.ToByte(bytesAdded);
             CalcCRC32(ref newHeaders);
             stdout.Write(newHeaders.ToArray(), 0, newHeaders.Count);
@@ -141,51 +143,67 @@ namespace Loopstream
 
         public static void GrabFirstBuffer(ref byte[] buffer, ref bool firstBuffer)
         {
-            if (pageLength == 0)
+            if (!firstPageFound)
             {
-                int pageBytesCount = buffer[84];
-                for (int i = 85; i < 85 + pageBytesCount; i++)
+                for (fp = 0; fp < 4096; fp++)
                 {
-                    pageLength += buffer[i];
+                    if (buffer[fp] == 79 && buffer[fp + 1] == 103 && buffer[fp + 2] == 103 && buffer[fp + 3] == 83)
+                    {
+                        firstPageFound = true;
+                        break;
+                    }
                 }
-                bytesGrabbed = 0;
-                oggVorbisHeader1.Clear();
-                oggVorbisHeader2.Clear();
             }
-
-            if (bytesGrabbed == 0)
+            if (firstPageFound)
             {
-                for (int i = 0; i <= 57; i++)
-                    oggVorbisHeader1.Add(buffer[i]);
-                for (int i = 58; i < 58 + 27 + buffer[84]; i++)
-                    oggVorbisHeader2.Add(buffer[i]);
-
-                if (pageLength < (4095 - (58 + 27 + buffer[84])))
+                if (pageLength == 0)
                 {
-                    for (int i = 58 + 27 + buffer[84]; i < pageLength + 58 + 27 + buffer[84]; i++)
+                    int pageBytesCount = buffer[fp + 84];
+                    for (int i = fp + 85; i < fp + 85 + pageBytesCount; i++)
+                    {
+                        pageLength += buffer[i];
+                    }
+                    bytesGrabbed = 0;
+                    oggVorbisHeader1.Clear();
+                    oggVorbisHeader2.Clear();
+                }
+
+                if (bytesGrabbed == 0)
+                {
+                    for (int i = fp; i <= fp + 57; i++)
+                        oggVorbisHeader1.Add(buffer[i]);
+                    for (int i = fp + 58; i < fp + 58 + 27 + buffer[fp + 84]; i++)
+                        oggVorbisHeader2.Add(buffer[i]);
+
+                    if (pageLength < ((4095 - fp) - (58 + 27 + buffer[fp + 84])))
+                    {
+                        for (int i = fp + 58 + 27 + buffer[fp + 84]; i < pageLength + 58 + 27 + buffer[fp + 84]; i++)
+                        {
+                            oggVorbisHeader2.Add(buffer[i]);
+                        }
+                        pageLength = 0;
+                        firstBuffer = false;
+                        firstPageFound = false;
+                    }
+                    else
+                    {
+                        for (int i = fp + 58 + 27 + buffer[fp + 84]; i < 4096 - fp; i++)
+                        {
+                            oggVorbisHeader2.Add(buffer[i]);
+                            bytesGrabbed++;
+                        }
+                    }
+                }
+                else
+                {
+                    for (int i = 0; i < pageLength - bytesGrabbed; i++)
                     {
                         oggVorbisHeader2.Add(buffer[i]);
                     }
                     pageLength = 0;
                     firstBuffer = false;
+                    firstPageFound = false;
                 }
-                else
-                {
-                    for (int i = 58 + 27 + buffer[84]; i < 4096; i++)
-                    {
-                        oggVorbisHeader2.Add(buffer[i]);
-                        bytesGrabbed++;
-                    }
-                }
-            }
-            else
-            {
-                for (int i = 0; i < pageLength - bytesGrabbed; i++)
-                {
-                    oggVorbisHeader2.Add(buffer[i]);
-                }
-                pageLength = 0;
-                firstBuffer = false;
             }
         }
     }

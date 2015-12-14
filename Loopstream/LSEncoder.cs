@@ -316,7 +316,7 @@ namespace Loopstream
 
                         if (!string.IsNullOrEmpty(settings.host))
                         {
-                            if (newTags)
+                            if (newTags && !firstBuffer)
                             {
                                 newTags = false;
                                 VorbisTags.InsertTags(tags, ref s);
