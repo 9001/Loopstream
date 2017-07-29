@@ -587,7 +587,6 @@
             this.gTag.Dock = System.Windows.Forms.DockStyle.Fill;
             this.gTag.ForeColor = System.Drawing.SystemColors.ControlText;
             this.gTag.Location = new System.Drawing.Point(0, 0);
-            this.gTag.Multiline = true;
             this.gTag.Name = "gTag";
             this.gTag.Size = new System.Drawing.Size(652, 20);
             this.gTag.TabIndex = 0;
