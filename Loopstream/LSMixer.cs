@@ -18,18 +18,23 @@ namespace Loopstream
         BufferedWaveProvider recIn, micIn;
         MediaFoundationResampler recRe, micRe;
         NPatch.VolumeSlider recVol, micVol, outVol;
-        MixingSampleProvider mixer;
         NPatch.Mixa mixa;
-        SampleToWaveProvider muxer;
         WasapiOut mixOut;
-        NPatch.Fork fork;
-        WaveFileWriter waver;
+        List<Object> cage;
         public NPatch.Fork.Outlet lameOutlet;
         public string isLQ;
-        System.Windows.Forms.Timer killmic;
+        System.Windows.Forms.Timer killmic, startReading;
 
         public void Dispose(ref string tex)
         {
+            lock (mixOut)
+            {
+                if (startReading != null)
+                {
+                    startReading.Dispose();
+                    startReading = null;
+                }
+            }
             Logger.mix.a("dispose recCap"); tex = "recCap"; if (recCap != null) recCap.StopRecording();
             Logger.mix.a("dispose micCap"); tex = "micCap"; if (micCap != null) micCap.StopRecording();
             Logger.mix.a("dispose mixOut"); tex = "mixOut"; if (mixOut != null) mixOut.Dispose();
@@ -59,19 +64,20 @@ namespace Loopstream
         void doMagic()
         {
             Logger.mix.a("doMagic");
+            cage = new List<Object>();
             string lq = "";
             recCap = null;
             micCap = null;
             recRe = micRe = null;
             ISampleProvider recProv;
             format = WaveFormat.CreateIeeeFloatWaveFormat(settings.samplerate, 2);
-            //mixer = new MixingSampleProvider(format);
             mixa = new NPatch.Mixa(format);
 
             Logger.mix.a("create rec");
             recCap = new WasapiLoopbackCapture(settings.devRec.mm);
             recCap.DataAvailable += recDev_DataAvailable_03;
             recIn = new BufferedWaveProvider(recCap.WaveFormat);
+            //recIn.ReadFully = false;
             if (recCap.WaveFormat.SampleRate != settings.samplerate)
             {
                 Logger.mix.a("create rec resampler");
@@ -85,6 +91,13 @@ namespace Loopstream
                     LSDevice.stringer(recCap.WaveFormat) + "\n\n";
             }
             recProv = new WaveToSampleProvider((IWaveProvider)recRe ?? (IWaveProvider)recIn);
+            if (recCap.WaveFormat.Channels != settings.chRec.Length)
+            {
+                cage.Add(recProv);
+                Logger.mix.a("rec chanselector");
+                recProv = new NPatch.ChannelSelectorIn(recProv, settings.chRec, 2);
+            }
+            cage.Add(recProv);
             recVol = new NPatch.VolumeSlider();
             recVol.SetSource(recProv);
             mixa.AddMixerInput(recVol);
@@ -96,12 +109,21 @@ namespace Loopstream
             micVol = new NPatch.VolumeSlider();
             lq += micAdd();
 
-            //mixer.ReadFully = true;
-            fork = new NPatch.Fork(mixa, 2);
+            NPatch.Fork fork = new NPatch.Fork(mixa, 2);
+            cage.Add(fork);
             lameOutlet = fork.providers[1];
             outVol = new NPatch.VolumeSlider();
             outVol.SetSource(fork.providers[0]);
-            muxer = new SampleToWaveProvider(outVol);
+
+            ISampleProvider outProv = outVol;
+            if (settings.devOut.wf.Channels != settings.chOut.Length)
+            {
+                Logger.mix.a("create ChannelMapperOut " + settings.devOut.wf.Channels);
+                outProv = new NPatch.ChannelMapperOut(outVol, settings.chOut, settings.devOut.wf.Channels);
+                cage.Add(outProv);
+            }
+            SampleToWaveProvider muxer = new SampleToWaveProvider(outProv);
+            cage.Add(muxer);
 
             Logger.mix.a("init mixer vol");
             recVol.SetVolume((float)settings.mixer.vRec);
@@ -119,22 +141,34 @@ namespace Loopstream
             mixOut = new WasapiOut(settings.devOut.mm,
                 AudioClientShareMode.Shared, false, 100);
 
-
-
             Logger.mix.a("init mixOut");
-            mixOut.Init(outVol);
+            mixOut.Init(muxer);
 
-            Logger.mix.a("rec.startRec");
-            recCap.StartRecording();
-
-            //System.Threading.Thread.Sleep(100);
-            if (micCap != null)
+            try
             {
-                Logger.mix.a("mic.startRec");
-                micCap.StartRecording();
+                Logger.mix.a("rec.startRec");
+                recCap.StartRecording();
+
+                if (micCap != null)
+                {
+                    Logger.mix.a("mic.startRec");
+                    micCap.StartRecording();
+                }
+                //throw new System.Runtime.InteropServices.COMException("fgsfds", 1234);
             }
-            Logger.mix.a("mixOut.play (ready)");
-            mixOut.Play();
+            catch (System.Runtime.InteropServices.COMException ce)
+            {
+                string msg = WinapiShit.comExMsg((uint)ce.ErrorCode);
+                System.Windows.Forms.MessageBox.Show(msg + "\r\n\r\ngonna crash now, bye");
+                throw;
+            }
+
+            // give wasapicapture some time to fill the buffer
+            startReading = new System.Windows.Forms.Timer();
+            //startReading_Tick(null, null);
+            startReading.Tick += startReading_Tick;
+            startReading.Interval = 300;
+            startReading.Start();
 
             if (settings.vu)
             {
@@ -147,15 +181,21 @@ namespace Loopstream
             }
 
             if (!string.IsNullOrEmpty(lq)) isLQ = lq;
+        }
 
-            /*byte[] buffer = new byte[outVol.WaveFormat.AverageBytesPerSecond * 10];
-            while (true)
+        void startReading_Tick(object sender, EventArgs e)
+        {
+            lock (mixOut)
             {
-                int i = wp16.Read(buffer, 0, fork.providers[1].avail());
-                waver.Write(buffer, 0, i);
-                System.Threading.Thread.Sleep(10);
-                System.Windows.Forms.Application.DoEvents();
-            }*/
+                if (startReading == null)
+                    return;
+
+                startReading.Dispose();
+                startReading = null;
+            }
+
+            Logger.mix.a("mixOut.play (ready)");
+            mixOut.Play();
         }
 
         string micAdd()
@@ -171,6 +211,7 @@ namespace Loopstream
                 micCap = new WasapiCapture(settings.devMic.mm);
                 micCap.DataAvailable += micDev_DataAvailable_03;
                 micIn = new BufferedWaveProvider(micCap.WaveFormat);
+                //micIn.ReadFully = false;
                 if (micCap.WaveFormat.SampleRate != settings.samplerate)
                 {
                     Logger.mix.a("create mic resampler");
@@ -184,18 +225,24 @@ namespace Loopstream
                         LSDevice.stringer(micCap.WaveFormat) + "\n\n";
                 }
                 micProv = new WaveToSampleProvider((IWaveProvider)micRe ?? (IWaveProvider)micIn);
+                cage.Add(micProv);
                 if (micCap.WaveFormat.Channels == 1)
                 {
                     Logger.mix.a("mic mono2stereo");
                     micProv = new MonoToStereoSampleProvider(micProv);
+                    cage.Add(micProv);
                 }
-                else if (settings.micLeft != settings.micRight)
+                else if (micCap.WaveFormat.Channels != settings.chMic.Length)
                 {
                     Logger.mix.a("mic chanselector");
-                    micProv = new NPatch.ChannelSelector(micProv, settings.micLeft ? 0 : 1);
+                    micProv = new NPatch.ChannelSelectorIn(micProv, settings.chMic, 2);
+                    cage.Add(micProv);
                 }
                 if (settings.reverbP > 0)
+                {
                     micProv = new NPatch.Reverb(micProv);
+                    cage.Add(micProv);
+                }
 
                 micVol.SetSource(micProv);
                 mixa.AddMixerInput(micVol);
@@ -255,7 +302,7 @@ namespace Loopstream
                 }
                 try
                 {
-                    LSSettings.LSParams[] encs = { settings.mp3, settings.ogg };
+                    LSSettings.LSParams[] encs = { settings.mp3, settings.ogg, settings.opus };
                     foreach (LSSettings.LSParams enc in encs)
                     {
                         if (enc.enabled && !string.IsNullOrWhiteSpace(enc.i.filename))

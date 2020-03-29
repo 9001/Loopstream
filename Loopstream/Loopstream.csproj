@@ -69,14 +69,11 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisIgnoreBuiltInRules>false</CodeAnalysisIgnoreBuiltInRules>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="NAudio">
       <HintPath>lib\NAudio.dll</HintPath>
-    </Reference>
-    <Reference Include="NAudio.WindowsMediaFormat">
-      <HintPath>lib\NAudio.WindowsMediaFormat.dll</HintPath>
     </Reference>
     <Reference Include="NVorbis, Version=0.8.4.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -100,6 +97,7 @@
     <Compile Include="LSEncoder.cs" />
     <Compile Include="LSLame.cs" />
     <Compile Include="LSMixer.cs" />
+    <Compile Include="LSOpus.cs" />
     <Compile Include="LSPcmFeed.cs" />
     <Compile Include="LSSettings.cs" />
     <Compile Include="LSTag.cs" />
@@ -147,6 +145,12 @@
     </Compile>
     <Compile Include="UC_Verter.Designer.cs">
       <DependentUpon>UC_Verter.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI_Chanvis.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI_Chanvis.Designer.cs">
+      <DependentUpon>UI_Chanvis.cs</DependentUpon>
     </Compile>
     <Compile Include="UI_ConfigSC.cs">
       <SubType>Form</SubType>
@@ -233,6 +237,9 @@
     <EmbeddedResource Include="UC_Verter.resx">
       <DependentUpon>UC_Verter.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="UI_Chanvis.resx">
+      <DependentUpon>UI_Chanvis.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="UI_ConfigSC.resx">
       <DependentUpon>UI_ConfigSC.cs</DependentUpon>
       <SubType>Designer</SubType>
@@ -288,7 +295,6 @@
     <EmbeddedResource Include="res\msg_audio.png" />
     <EmbeddedResource Include="res\msg_quit.png" />
     <EmbeddedResource Include="lib\NAudio.dll" />
-    <EmbeddedResource Include="lib\NAudio.WindowsMediaFormat.dll" />
     <EmbeddedResource Include="lib\NVorbis.dll" />
     <Content Include="loopstream.ico" />
   </ItemGroup>

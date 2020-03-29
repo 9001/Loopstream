@@ -30,32 +30,21 @@
         {
             this.components = new System.ComponentModel.Container();
             this.box_sliders = new System.Windows.Forms.Panel();
-            this.gMus = new Loopstream.Verter();
-            this.gOut = new Loopstream.Verter();
-            this.gMic = new Loopstream.Verter();
-            this.gSpd = new Loopstream.Verter();
             this.box_top = new System.Windows.Forms.Panel();
             this.box_top_dark = new System.Windows.Forms.Label();
             this.box_top_light = new System.Windows.Forms.Label();
-            this.box_top_graden = new Loopstream.Graden();
             this.box_bottom = new System.Windows.Forms.Panel();
             this.box_unused1 = new System.Windows.Forms.Panel();
             this.box_unused1_light = new System.Windows.Forms.Label();
             this.box_unused1_dark = new System.Windows.Forms.Label();
             this.box_bottom_dark = new System.Windows.Forms.Label();
             this.box_bottom_light = new System.Windows.Forms.Label();
-            this.box_bottom_graden = new Loopstream.Graden();
             this.box_menu_outer = new System.Windows.Forms.Panel();
             this.psfx = new System.Windows.Forms.Panel();
             this.label4 = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
             this.box_menu = new System.Windows.Forms.Panel();
             this.gManualTags = new System.Windows.Forms.CheckBox();
-            this.gLoad = new Loopstream.UC_Troggle();
-            this.gD = new Loopstream.Pritch();
-            this.gC = new Loopstream.Pritch();
-            this.gB = new Loopstream.Pritch();
-            this.gA = new Loopstream.Pritch();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.gGit = new System.Windows.Forms.Label();
             this.box_menu_light = new System.Windows.Forms.Label();
@@ -73,6 +62,17 @@
             this.gTagRead = new System.Windows.Forms.Button();
             this.gTagSend = new System.Windows.Forms.Button();
             this.tt = new System.Windows.Forms.ToolTip(this.components);
+            this.gLoad = new Loopstream.UC_Troggle();
+            this.gD = new Loopstream.Pritch();
+            this.gC = new Loopstream.Pritch();
+            this.gB = new Loopstream.Pritch();
+            this.gA = new Loopstream.Pritch();
+            this.gMus = new Loopstream.Verter();
+            this.gOut = new Loopstream.Verter();
+            this.gMic = new Loopstream.Verter();
+            this.gSpd = new Loopstream.Verter();
+            this.box_top_graden = new Loopstream.Graden();
+            this.box_bottom_graden = new Loopstream.Graden();
             this.box_sliders.SuspendLayout();
             this.box_top.SuspendLayout();
             this.box_bottom.SuspendLayout();
@@ -99,82 +99,6 @@
             this.box_sliders.Name = "box_sliders";
             this.box_sliders.Size = new System.Drawing.Size(476, 392);
             this.box_sliders.TabIndex = 4;
-            // 
-            // gMus
-            // 
-            this.gMus.A_GRAD_1 = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(220)))), ((int)(((byte)(255)))));
-            this.gMus.A_GRAD_2 = System.Drawing.Color.Blue;
-            this.gMus.BackColor = System.Drawing.SystemColors.ControlLight;
-            this.gMus.boost = 1D;
-            this.gMus.boostLock = -1D;
-            this.gMus.CanBoost = true;
-            this.gMus.canToggle = true;
-            this.gMus.enabled = true;
-            this.gMus.level = 255;
-            this.gMus.Location = new System.Drawing.Point(17, 17);
-            this.gMus.Margin = new System.Windows.Forms.Padding(8);
-            this.gMus.Name = "gMus";
-            this.gMus.Size = new System.Drawing.Size(98, 382);
-            this.gMus.TabIndex = 9;
-            this.gMus.timeScale = false;
-            this.gMus.title = "Music";
-            // 
-            // gOut
-            // 
-            this.gOut.A_GRAD_1 = System.Drawing.Color.Magenta;
-            this.gOut.A_GRAD_2 = System.Drawing.Color.Red;
-            this.gOut.BackColor = System.Drawing.SystemColors.ControlLight;
-            this.gOut.boost = 1D;
-            this.gOut.boostLock = -1D;
-            this.gOut.CanBoost = false;
-            this.gOut.canToggle = true;
-            this.gOut.enabled = true;
-            this.gOut.level = 255;
-            this.gOut.Location = new System.Drawing.Point(359, 17);
-            this.gOut.Margin = new System.Windows.Forms.Padding(8);
-            this.gOut.Name = "gOut";
-            this.gOut.Size = new System.Drawing.Size(98, 382);
-            this.gOut.TabIndex = 12;
-            this.gOut.timeScale = false;
-            this.gOut.title = "OUT";
-            // 
-            // gMic
-            // 
-            this.gMic.A_GRAD_1 = System.Drawing.Color.FromArgb(((int)(((byte)(214)))), ((int)(((byte)(214)))), ((int)(((byte)(0)))));
-            this.gMic.A_GRAD_2 = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(160)))), ((int)(((byte)(0)))));
-            this.gMic.BackColor = System.Drawing.SystemColors.ControlLight;
-            this.gMic.boost = 1D;
-            this.gMic.boostLock = -1D;
-            this.gMic.CanBoost = true;
-            this.gMic.canToggle = true;
-            this.gMic.enabled = true;
-            this.gMic.level = 255;
-            this.gMic.Location = new System.Drawing.Point(131, 17);
-            this.gMic.Margin = new System.Windows.Forms.Padding(8);
-            this.gMic.Name = "gMic";
-            this.gMic.Size = new System.Drawing.Size(98, 382);
-            this.gMic.TabIndex = 10;
-            this.gMic.timeScale = false;
-            this.gMic.title = "mic";
-            // 
-            // gSpd
-            // 
-            this.gSpd.A_GRAD_1 = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(128)))), ((int)(((byte)(0)))));
-            this.gSpd.A_GRAD_2 = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(0)))));
-            this.gSpd.BackColor = System.Drawing.SystemColors.ControlLight;
-            this.gSpd.boost = 1D;
-            this.gSpd.boostLock = -1D;
-            this.gSpd.CanBoost = false;
-            this.gSpd.canToggle = false;
-            this.gSpd.enabled = true;
-            this.gSpd.level = 255;
-            this.gSpd.Location = new System.Drawing.Point(245, 17);
-            this.gSpd.Margin = new System.Windows.Forms.Padding(8);
-            this.gSpd.Name = "gSpd";
-            this.gSpd.Size = new System.Drawing.Size(98, 382);
-            this.gSpd.TabIndex = 11;
-            this.gSpd.timeScale = true;
-            this.gSpd.title = "Speed";
             // 
             // box_top
             // 
@@ -205,18 +129,6 @@
             this.box_top_light.Name = "box_top_light";
             this.box_top_light.Size = new System.Drawing.Size(476, 1);
             this.box_top_light.TabIndex = 10;
-            // 
-            // box_top_graden
-            // 
-            this.box_top_graden.co = 1D;
-            this.box_top_graden.colorA = System.Drawing.SystemColors.Control;
-            this.box_top_graden.colorB = System.Drawing.SystemColors.ControlLight;
-            this.box_top_graden.Direction = false;
-            this.box_top_graden.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.box_top_graden.Location = new System.Drawing.Point(0, 0);
-            this.box_top_graden.Name = "box_top_graden";
-            this.box_top_graden.Size = new System.Drawing.Size(476, 59);
-            this.box_top_graden.TabIndex = 13;
             // 
             // box_bottom
             // 
@@ -278,18 +190,6 @@
             this.box_bottom_light.Name = "box_bottom_light";
             this.box_bottom_light.Size = new System.Drawing.Size(476, 1);
             this.box_bottom_light.TabIndex = 10;
-            // 
-            // box_bottom_graden
-            // 
-            this.box_bottom_graden.co = 1D;
-            this.box_bottom_graden.colorA = System.Drawing.SystemColors.Control;
-            this.box_bottom_graden.colorB = System.Drawing.SystemColors.ControlLight;
-            this.box_bottom_graden.Direction = true;
-            this.box_bottom_graden.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.box_bottom_graden.Location = new System.Drawing.Point(0, 0);
-            this.box_bottom_graden.Name = "box_bottom_graden";
-            this.box_bottom_graden.Size = new System.Drawing.Size(476, 105);
-            this.box_bottom_graden.TabIndex = 12;
             // 
             // box_menu_outer
             // 
@@ -371,70 +271,6 @@
             this.gManualTags.UseVisualStyleBackColor = true;
             this.gManualTags.CheckedChanged += new System.EventHandler(this.gManualTags_CheckedChanged);
             this.gManualTags.MouseClick += new System.Windows.Forms.MouseEventHandler(this.pictureBox1_MouseClick);
-            // 
-            // gLoad
-            // 
-            this.gLoad.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.gLoad.Location = new System.Drawing.Point(19, 360);
-            this.gLoad.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            this.gLoad.Mode = Loopstream.UC_Troggle.Modes.Load;
-            this.gLoad.Name = "gLoad";
-            this.gLoad.Size = new System.Drawing.Size(139, 34);
-            this.gLoad.TabIndex = 21;
-            this.gLoad.Click += new System.EventHandler(this.gLoad_Click);
-            // 
-            // gD
-            // 
-            this.gD.AlignLeft = true;
-            this.gD.AlignTop = true;
-            this.gD.Location = new System.Drawing.Point(90, 316);
-            this.gD.Margin = new System.Windows.Forms.Padding(0);
-            this.gD.Name = "gD";
-            this.gD.preset = null;
-            this.gD.Size = new System.Drawing.Size(68, 39);
-            this.gD.TabIndex = 20;
-            this.gD.Text = "D";
-            this.gD.Click += new System.EventHandler(this.gPreset_Click);
-            // 
-            // gC
-            // 
-            this.gC.AlignLeft = false;
-            this.gC.AlignTop = true;
-            this.gC.Location = new System.Drawing.Point(21, 316);
-            this.gC.Margin = new System.Windows.Forms.Padding(8, 0, 0, 0);
-            this.gC.Name = "gC";
-            this.gC.preset = null;
-            this.gC.Size = new System.Drawing.Size(68, 39);
-            this.gC.TabIndex = 19;
-            this.gC.Text = "C";
-            this.gC.Click += new System.EventHandler(this.gPreset_Click);
-            // 
-            // gB
-            // 
-            this.gB.AlignLeft = true;
-            this.gB.AlignTop = false;
-            this.gB.Location = new System.Drawing.Point(90, 277);
-            this.gB.Margin = new System.Windows.Forms.Padding(0);
-            this.gB.Name = "gB";
-            this.gB.preset = null;
-            this.gB.Size = new System.Drawing.Size(68, 39);
-            this.gB.TabIndex = 18;
-            this.gB.Text = "B";
-            this.gB.Click += new System.EventHandler(this.gPreset_Click);
-            // 
-            // gA
-            // 
-            this.gA.AlignLeft = false;
-            this.gA.AlignTop = false;
-            this.gA.Location = new System.Drawing.Point(21, 277);
-            this.gA.Margin = new System.Windows.Forms.Padding(8, 0, 0, 0);
-            this.gA.Name = "gA";
-            this.gA.preset = null;
-            this.gA.Size = new System.Drawing.Size(68, 39);
-            this.gA.TabIndex = 17;
-            this.gA.Text = "A";
-            this.gA.Click += new System.EventHandler(this.gPreset_Click);
-            this.gA.MouseClick += new System.Windows.Forms.MouseEventHandler(this.gPreset_MouseClick);
             // 
             // pictureBox1
             // 
@@ -534,15 +370,16 @@
             // 
             // gLowQ
             // 
-            this.gLowQ.BackColor = System.Drawing.Color.Maroon;
+            this.gLowQ.BackColor = System.Drawing.Color.DarkGoldenrod;
             this.gLowQ.Dock = System.Windows.Forms.DockStyle.Fill;
             this.gLowQ.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.gLowQ.ForeColor = System.Drawing.Color.Gold;
+            this.gLowQ.ForeColor = System.Drawing.Color.Wheat;
             this.gLowQ.Location = new System.Drawing.Point(0, 0);
             this.gLowQ.Name = "gLowQ";
+            this.gLowQ.Padding = new System.Windows.Forms.Padding(0, 4, 0, 0);
             this.gLowQ.Size = new System.Drawing.Size(752, 4);
             this.gLowQ.TabIndex = 0;
-            this.gLowQ.Text = "Resampler  enabled :     STREAMING  IN  LOW  QUALITY  MODE";
+            this.gLowQ.Text = "Resampler  enabled  --  High  latency  and  slightly  lower  quality\r\n";
             this.gLowQ.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.gLowQ.Click += new System.EventHandler(this.gLowQ_Click);
             // 
@@ -587,6 +424,7 @@
             this.gTag.Dock = System.Windows.Forms.DockStyle.Fill;
             this.gTag.ForeColor = System.Drawing.SystemColors.ControlText;
             this.gTag.Location = new System.Drawing.Point(0, 0);
+            this.gTag.Multiline = true;
             this.gTag.Name = "gTag";
             this.gTag.Size = new System.Drawing.Size(652, 20);
             this.gTag.TabIndex = 0;
@@ -619,6 +457,170 @@
             this.tt.ShowAlways = true;
             this.tt.UseAnimation = false;
             this.tt.UseFading = false;
+            // 
+            // gLoad
+            // 
+            this.gLoad.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.gLoad.Location = new System.Drawing.Point(19, 360);
+            this.gLoad.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.gLoad.Mode = Loopstream.UC_Troggle.Modes.Load;
+            this.gLoad.Name = "gLoad";
+            this.gLoad.Size = new System.Drawing.Size(139, 34);
+            this.gLoad.TabIndex = 21;
+            this.gLoad.Click += new System.EventHandler(this.gLoad_Click);
+            // 
+            // gD
+            // 
+            this.gD.AlignLeft = true;
+            this.gD.AlignTop = true;
+            this.gD.Location = new System.Drawing.Point(90, 316);
+            this.gD.Margin = new System.Windows.Forms.Padding(0);
+            this.gD.Name = "gD";
+            this.gD.preset = null;
+            this.gD.Size = new System.Drawing.Size(68, 39);
+            this.gD.TabIndex = 20;
+            this.gD.Text = "D";
+            this.gD.Click += new System.EventHandler(this.gPreset_Click);
+            // 
+            // gC
+            // 
+            this.gC.AlignLeft = false;
+            this.gC.AlignTop = true;
+            this.gC.Location = new System.Drawing.Point(21, 316);
+            this.gC.Margin = new System.Windows.Forms.Padding(8, 0, 0, 0);
+            this.gC.Name = "gC";
+            this.gC.preset = null;
+            this.gC.Size = new System.Drawing.Size(68, 39);
+            this.gC.TabIndex = 19;
+            this.gC.Text = "C";
+            this.gC.Click += new System.EventHandler(this.gPreset_Click);
+            // 
+            // gB
+            // 
+            this.gB.AlignLeft = true;
+            this.gB.AlignTop = false;
+            this.gB.Location = new System.Drawing.Point(90, 277);
+            this.gB.Margin = new System.Windows.Forms.Padding(0);
+            this.gB.Name = "gB";
+            this.gB.preset = null;
+            this.gB.Size = new System.Drawing.Size(68, 39);
+            this.gB.TabIndex = 18;
+            this.gB.Text = "B";
+            this.gB.Click += new System.EventHandler(this.gPreset_Click);
+            // 
+            // gA
+            // 
+            this.gA.AlignLeft = false;
+            this.gA.AlignTop = false;
+            this.gA.Location = new System.Drawing.Point(21, 277);
+            this.gA.Margin = new System.Windows.Forms.Padding(8, 0, 0, 0);
+            this.gA.Name = "gA";
+            this.gA.preset = null;
+            this.gA.Size = new System.Drawing.Size(68, 39);
+            this.gA.TabIndex = 17;
+            this.gA.Text = "A";
+            this.gA.Click += new System.EventHandler(this.gPreset_Click);
+            this.gA.MouseClick += new System.Windows.Forms.MouseEventHandler(this.gPreset_MouseClick);
+            // 
+            // gMus
+            // 
+            this.gMus.A_GRAD_1 = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(220)))), ((int)(((byte)(255)))));
+            this.gMus.A_GRAD_2 = System.Drawing.Color.Blue;
+            this.gMus.BackColor = System.Drawing.SystemColors.ControlLight;
+            this.gMus.boost = 1D;
+            this.gMus.boostLock = -1D;
+            this.gMus.CanBoost = true;
+            this.gMus.canToggle = true;
+            this.gMus.enabled = true;
+            this.gMus.level = 255;
+            this.gMus.Location = new System.Drawing.Point(17, 17);
+            this.gMus.Margin = new System.Windows.Forms.Padding(8);
+            this.gMus.Name = "gMus";
+            this.gMus.Size = new System.Drawing.Size(98, 382);
+            this.gMus.TabIndex = 9;
+            this.gMus.timeScale = false;
+            this.gMus.title = "Music";
+            // 
+            // gOut
+            // 
+            this.gOut.A_GRAD_1 = System.Drawing.Color.Magenta;
+            this.gOut.A_GRAD_2 = System.Drawing.Color.Red;
+            this.gOut.BackColor = System.Drawing.SystemColors.ControlLight;
+            this.gOut.boost = 1D;
+            this.gOut.boostLock = -1D;
+            this.gOut.CanBoost = false;
+            this.gOut.canToggle = true;
+            this.gOut.enabled = true;
+            this.gOut.level = 255;
+            this.gOut.Location = new System.Drawing.Point(359, 17);
+            this.gOut.Margin = new System.Windows.Forms.Padding(8);
+            this.gOut.Name = "gOut";
+            this.gOut.Size = new System.Drawing.Size(98, 382);
+            this.gOut.TabIndex = 12;
+            this.gOut.timeScale = false;
+            this.gOut.title = "OUT";
+            // 
+            // gMic
+            // 
+            this.gMic.A_GRAD_1 = System.Drawing.Color.FromArgb(((int)(((byte)(214)))), ((int)(((byte)(214)))), ((int)(((byte)(0)))));
+            this.gMic.A_GRAD_2 = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(160)))), ((int)(((byte)(0)))));
+            this.gMic.BackColor = System.Drawing.SystemColors.ControlLight;
+            this.gMic.boost = 1D;
+            this.gMic.boostLock = -1D;
+            this.gMic.CanBoost = true;
+            this.gMic.canToggle = true;
+            this.gMic.enabled = true;
+            this.gMic.level = 255;
+            this.gMic.Location = new System.Drawing.Point(131, 17);
+            this.gMic.Margin = new System.Windows.Forms.Padding(8);
+            this.gMic.Name = "gMic";
+            this.gMic.Size = new System.Drawing.Size(98, 382);
+            this.gMic.TabIndex = 10;
+            this.gMic.timeScale = false;
+            this.gMic.title = "mic";
+            // 
+            // gSpd
+            // 
+            this.gSpd.A_GRAD_1 = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(128)))), ((int)(((byte)(0)))));
+            this.gSpd.A_GRAD_2 = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(0)))));
+            this.gSpd.BackColor = System.Drawing.SystemColors.ControlLight;
+            this.gSpd.boost = 1D;
+            this.gSpd.boostLock = -1D;
+            this.gSpd.CanBoost = false;
+            this.gSpd.canToggle = false;
+            this.gSpd.enabled = true;
+            this.gSpd.level = 255;
+            this.gSpd.Location = new System.Drawing.Point(245, 17);
+            this.gSpd.Margin = new System.Windows.Forms.Padding(8);
+            this.gSpd.Name = "gSpd";
+            this.gSpd.Size = new System.Drawing.Size(98, 382);
+            this.gSpd.TabIndex = 11;
+            this.gSpd.timeScale = true;
+            this.gSpd.title = "Speed";
+            // 
+            // box_top_graden
+            // 
+            this.box_top_graden.co = 1D;
+            this.box_top_graden.colorA = System.Drawing.SystemColors.Control;
+            this.box_top_graden.colorB = System.Drawing.SystemColors.ControlLight;
+            this.box_top_graden.Direction = false;
+            this.box_top_graden.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.box_top_graden.Location = new System.Drawing.Point(0, 0);
+            this.box_top_graden.Name = "box_top_graden";
+            this.box_top_graden.Size = new System.Drawing.Size(476, 59);
+            this.box_top_graden.TabIndex = 13;
+            // 
+            // box_bottom_graden
+            // 
+            this.box_bottom_graden.co = 1D;
+            this.box_bottom_graden.colorA = System.Drawing.SystemColors.Control;
+            this.box_bottom_graden.colorB = System.Drawing.SystemColors.ControlLight;
+            this.box_bottom_graden.Direction = true;
+            this.box_bottom_graden.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.box_bottom_graden.Location = new System.Drawing.Point(0, 0);
+            this.box_bottom_graden.Name = "box_bottom_graden";
+            this.box_bottom_graden.Size = new System.Drawing.Size(476, 105);
+            this.box_bottom_graden.TabIndex = 12;
             // 
             // Home
             // 

@@ -89,7 +89,7 @@ namespace Loopstream
                     return true;
                 }
             }
-            catch
+            catch (System.Runtime.InteropServices.COMException)
             {
                 mm = null;
             }

@@ -149,7 +149,7 @@ namespace Loopstream
                     "specified in the settings (" + settings.samplerate + " Hz).\n" +
                     "\n" +
                     "This will still work, but there will be:\n" +
-                    "    - lower sound quality\n" +
+                    "    - slightly reduced sound quality\n" +
                     "    - more latency / audio delay\n" +
                     "    - more load on your computer\n\n" +
                     "Do you have time to fix this for\n" +
@@ -274,7 +274,7 @@ namespace Loopstream
             }
             tabHeader_MouseDown(tabHeader[0], new MouseEventArgs(System.Windows.Forms.MouseButtons.Left, 1, 20, 10, 0));
 
-            if (!System.IO.File.Exists("Loopstream.ini"))
+            if (!System.IO.File.Exists(Program.beta > 0 ? "Loopstream-beta.ini" : "Loopstream.ini"))
             {
                 if (DialogResult.Yes == MessageBox.Show("Since this is your first time,  wanna use the setup wizard?\n\nThis will start your default web browser,\nand you might get a firewall warning", "Loopstream for Dummies", MessageBoxButtons.YesNo))
                 {
@@ -445,24 +445,80 @@ namespace Loopstream
             var ov = disregardEvents;
             disregardEvents = true;
 
-            gOneS.Items.Clear();
-            gTwoS.Items.Clear();
+            gMusS.Items.Clear();
+            gMicS.Items.Clear();
             gOutS.Items.Clear();
-            populate(true, gOutS, gOneS);
-            populate(false, gTwoS);
+            populate(true, gOutS, gMusS);
+            populate(false, gMicS);
             LSDevice nil = new LSDevice();
             nil.name = "(disabled)";
 
-            gTwoS.Items.Insert(0, nil);
-            gOneS.SelectedItem = settings.devRec;
-            gTwoS.SelectedItem = settings.devMic;
+            gMicS.Items.Insert(0, nil);
+            gMusS.SelectedItem = settings.devRec;
+            gMicS.SelectedItem = settings.devMic;
             gOutS.SelectedItem = settings.devOut;
 
             if (settings.devMic == null ||
                 settings.devMic.mm == null)
-                gTwoS.SelectedIndex = 0;
+                gMicS.SelectedIndex = 0;
 
+            freshenChanselButtons();
             disregardEvents = ov;
+        }
+
+        void freshenChanselButtons()
+        {
+            freshenChansel(gMusB, settings.devRec, settings.chRec);
+            freshenChansel(gMicB, settings.devMic, settings.chMic);
+            freshenChansel(gOutB, settings.devOut, settings.chOut);
+            gMicB.Enabled = settings.devMic != null && settings.devMic.wf != null;
+            gOutB.Enabled = settings.devOut != null && settings.devOut.wf != null;
+        }
+
+        void freshenChansel(Control ctl, LSDevice dev, int[] chans)
+        {
+            if (dev == null || dev.wf == null)
+            {
+                ctl.Enabled = false;
+                ctl.Text = "Channels";
+                return;
+            }
+            ctl.Enabled = true;
+            
+            if (chans.Length == 0)
+            {
+                ctl.Text = "? the fuck";
+                return;
+            }
+
+            if (dev.wf.Channels == 1)
+            {
+                ctl.Text = "Mono";
+                return;
+            }
+            
+            string chlist = "";
+            if (dev.wf.Channels == 2)
+            {
+                if (chans.Length == 2)
+                    chlist = "Stereo";
+
+                else if (chans.Contains(0))
+                    chlist = "Mono (L)";
+
+                else if (chans.Contains(1))
+                    chlist = "Mono (R)";
+
+                else throw new Exception("invalid num chans " + chlist.Length);
+            }
+
+            if (dev.wf.Channels > 2)
+            {
+                foreach (var n in chans)
+                    chlist += (chlist == "" ? "" : " and ") + (n + 1);
+            }
+
+            ctl.Text = chlist;
         }
 
         void initForm()
@@ -470,8 +526,6 @@ namespace Loopstream
             disregardEvents = true;
             initDevs();
 
-            gLeft.Checked = settings.micLeft;
-            gRight.Checked = settings.micRight;
             gRate.Text = settings.samplerate.ToString();
             gReverbP.Text = settings.reverbP.ToString();
             gReverbS.Text = settings.reverbS.ToString();
@@ -492,6 +546,11 @@ namespace Loopstream
             gOggMono.Checked = settings.ogg.channels == LSSettings.LSChannels.mono;
             gOggStereo.Checked = settings.ogg.channels == LSSettings.LSChannels.stereo;
 
+            gOpusEnable.Checked = settings.opus.enabled;
+            gOpusQualityV.Text = settings.opus.quality.ToString();
+            gOpusMono.Checked = settings.opus.channels == LSSettings.LSChannels.mono;
+            gOpusStereo.Checked = settings.opus.channels == LSSettings.LSChannels.stereo;
+
             visualizeServerSettings();
 
             doRegexTests = false;
@@ -503,6 +562,7 @@ namespace Loopstream
             gRecPCM.Checked = settings.recPCM;
             gRecMP3.Checked = settings.recMp3;
             gRecOGG.Checked = settings.recOgg;
+            gRecOpus.Checked = settings.recOpus;
             gAutoconn.Checked = settings.autoconn;
             gAutohide.Checked = settings.autohide;
 
@@ -580,13 +640,13 @@ namespace Loopstream
             //spl.Show();
             //Application.DoEvents();
             var p = new Progress(panel3, label31);
-            gOneS.Enabled = gTwoS.Enabled = gOutS.Enabled = false;
+            gMusS.Enabled = gMicS.Enabled = gOutS.Enabled = false;
             
             settings.init();
             settings.runTests(p, true);
             label31.Visible = false;
 
-            gOneS.Enabled = gTwoS.Enabled = gOutS.Enabled = true;
+            gMusS.Enabled = gMicS.Enabled = gOutS.Enabled = true;
             //spl.gtfo();
         }
 
@@ -726,6 +786,7 @@ namespace Loopstream
                 settings.mount = gMount.Text.TrimStart('/');
                 if (settings.mount.EndsWith(".mp3") ||
                     settings.mount.EndsWith(".ogg") ||
+                    settings.mount.EndsWith(".opus") ||
                     settings.mount.EndsWith(".aac"))
                 {
                     settings.mount =
@@ -763,6 +824,7 @@ namespace Loopstream
                 return;
 
             settings.devOut = (LSDevice)gOutS.SelectedItem;
+            freshenChanselButtons();
             playFX(settings.devOut);
         }
 
@@ -771,8 +833,9 @@ namespace Loopstream
             if (disregardEvents)
                 return;
 
-            settings.devRec = (LSDevice)gOneS.SelectedItem;
+            settings.devRec = (LSDevice)gMusS.SelectedItem;
             //if (Program.debug) MessageBox.Show(LSDevice.stringer(settings.devRec.wf));
+            freshenChanselButtons();
             playFX(settings.devRec);
         }
 
@@ -781,18 +844,9 @@ namespace Loopstream
             if (disregardEvents)
                 return;
 
-            settings.devMic = (LSDevice)gTwoS.SelectedItem;
+            settings.devMic = (LSDevice)gMicS.SelectedItem;
+            freshenChanselButtons();
             //if (Program.debug) MessageBox.Show(LSDevice.stringer(settings.devMic.wf));
-        }
-
-        private void gLeft_CheckedChanged(object sender, EventArgs e)
-        {
-            settings.micLeft = gLeft.Checked;
-        }
-
-        private void gRight_CheckedChanged(object sender, EventArgs e)
-        {
-            settings.micRight = gRight.Checked;
         }
 
         private void gTestDevs_CheckedChanged(object sender, EventArgs e)
@@ -1396,7 +1450,7 @@ namespace Loopstream
                                         if (trg.Length == 1)
                                         {
                                             int ofs = Convert.ToInt32(trg);
-                                            ComboBox[] boxen = { gTwoS, gOneS, gOutS };
+                                            ComboBox[] boxen = { gMicS, gMusS, gOutS };
                                             this.Invoke((MethodInvoker)delegate
                                             {
                                                 boxen[ofs].SelectedItem = null;
@@ -2160,5 +2214,61 @@ namespace Loopstream
             initDevs();
         }
 
+        private void gOneB_Click(object sender, EventArgs e)
+        {
+            chanvis(gMusS, ref settings.chRec);
+        }
+
+        private void gTwoB_Click(object sender, EventArgs e)
+        {
+            chanvis(gMicS, ref settings.chMic);
+        }
+
+        private void gOutB_Click(object sender, EventArgs e)
+        {
+            chanvis(gOutS, ref settings.chOut);
+        }
+
+        void chanvis(ComboBox cb, ref int[] chans)
+        {
+            var tmp_chans = chans;
+            var lsdev = (LSDevice)cb.SelectedItem;
+            Array.Copy(chans, tmp_chans, chans.Length);
+            
+            var w = new UI_Chanvis(lsdev, tmp_chans);
+            w.ShowDialog();
+
+            if (w.chans.Length < 1 || w.chans.Length > 2)
+                return;
+            
+            chans = w.chans;
+            freshenChanselButtons();
+        }
+
+        private void gOpusEnable_CheckedChanged(object sender, EventArgs e)
+        {
+            settings.opus.enabled = gOpusEnable.Checked;
+        }
+
+        private void gRecOpus_CheckedChanged(object sender, EventArgs e)
+        {
+            settings.recOpus = gOpusEnable.Checked;
+        }
+
+        private void gOpusQualityV_TextChanged(object sender, EventArgs e)
+        {
+            int n = getValue(gOpusQualityV);
+            if (n >= 0) settings.opus.quality = n;
+        }
+
+        private void gOpusMono_CheckedChanged(object sender, EventArgs e)
+        {
+            if (gOpusMono.Checked) settings.opus.channels = LSSettings.LSChannels.mono;
+        }
+
+        private void gOpusStereo_CheckedChanged(object sender, EventArgs e)
+        {
+            if (gOpusStereo.Checked) settings.opus.channels = LSSettings.LSChannels.stereo;
+        }
     }
 }

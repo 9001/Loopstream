@@ -95,6 +95,7 @@ namespace Loopstream
                 catch { }
                 try
                 {
+                    sb.AppendLine("\n\n\n\n\nCache for opus"); sb.AppendLine(Logger.opus.compile());
                     sb.AppendLine("\n\n\n\n\nCache for ogg"); sb.AppendLine(Logger.ogg.compile());
                     sb.AppendLine("\n\n\n\n\nCache for mp3"); sb.AppendLine(Logger.mp3.compile());
                     sb.AppendLine("\n\n\n\n\nCache for pcm"); sb.AppendLine(Logger.pcm.compile());

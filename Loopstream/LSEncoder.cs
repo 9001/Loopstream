@@ -8,11 +8,6 @@ using System.Windows.Forms;
 
 namespace Loopstream
 {
-    public class LSFrame
-    {
-
-    }
-
     public class LSEncoder
     {
         object locker;
@@ -24,15 +19,13 @@ namespace Loopstream
         public LSSettings.LSParams enc;
         public int rekick;
 
+        Queue<byte[]> stdinQueue;
         public Stream stdin { get; set; }
         public Stream stdout { get; set; }
         protected Stream pstdin { get; set; }
         protected Stream pstdout { get; set; }
         public bool crashed { get; private set; }
         public bool aborted { get; private set; }
-
-        public int iFrame;
-        public LSFrame[] frames;
 
         System.Net.Sockets.TcpClient tc;
         System.Net.Sockets.NetworkStream s;
@@ -71,13 +64,17 @@ namespace Loopstream
                 stdout = pstdout;
                 stamps = new long[32];
                 chunks = new long[32];
+                stdinQueue = new Queue<byte[]>();
                 long v = DateTime.UtcNow.Ticks / 10000;
                 for (int a = 0; a < stamps.Length; a++) stamps[a] = v;
 
-                System.Threading.Thread tr = new System.Threading.Thread(new System.Threading.ThreadStart(reader));
+                var tr = new System.Threading.Thread(new System.Threading.ThreadStart(reader));
                 tr.Name = "LSEnc_Reader";
                 tr.Start();
-                System.Threading.Thread tc = new System.Threading.Thread(new System.Threading.ThreadStart(counter));
+                var tw = new System.Threading.Thread(new System.Threading.ThreadStart(writer));
+                tw.Name = "LSEnc_Writer";
+                tw.Start();
+                var tc = new System.Threading.Thread(new System.Threading.ThreadStart(counter));
                 tc.Name = "LSEnc_Counter";
                 tc.Start();
                 return;
@@ -87,10 +84,10 @@ namespace Loopstream
             string ver = Application.ProductVersion;
             string auth = string.Format("{0}:{1}", settings.user, settings.pass);
             auth = Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(auth));
-            byte[] header;
+            string sheader = "";
             if (enc.ext == "mp3")
             {
-                header = System.Text.Encoding.UTF8.GetBytes(string.Format(
+                sheader = string.Format(
                     "SOURCE /{1}.{2} HTTP/1.0{0}" +
                     "Authorization: Basic {3}{0}" +
                     "User-Agent: loopstream/{4}{0}" +
@@ -118,12 +115,11 @@ namespace Loopstream
                     enc.compression == LSSettings.LSCompression.cbr ? "bitrate" : "quality",
                     enc.compression == LSSettings.LSCompression.cbr ? "" + enc.bitrate : enc.quality + ".0",
 
-                    esc(settings.description)
-                ));
+                    esc(settings.description));
             }
-            else
+            else if (enc.ext == "ogg")
             {
-                header = System.Text.Encoding.UTF8.GetBytes(string.Format(
+                sheader = string.Format(
                     "SOURCE /{1}.{2} ICE/1.0{0}" +
                     "Content-Type: application/ogg{0}" +
                     "Authorization: Basic {3}{0}" +
@@ -136,7 +132,7 @@ namespace Loopstream
                     "ice-public: {10}{0}" +
                     "ice-description: {11}{0}" +
                     "ice-audio-info: ice-samplerate={12};ice-channels={13};ice-bitrate={8}{0}{0}",
-
+                    
                     "\r\n",
                     settings.mount,
                     enc.ext,
@@ -150,9 +146,39 @@ namespace Loopstream
                     settings.pubstream ? "1" : "0",
                     esc(settings.description),
                     settings.samplerate,
-                    enc.channels == LSSettings.LSChannels.stereo ? 2 : 1));
+                    enc.channels == LSSettings.LSChannels.stereo ? 2 : 1);
+            }
+            else
+            {
+                sheader = string.Format(
+                    "SOURCE /{1}.{2} HTTP/1.1{0}" +
+                    "Content-Type: application/ogg{0}" +
+                    "Authorization: Basic {3}{0}" +
+                    "User-Agent: loopstream/{4}{0}" +
+                    "icy-metadata: 0{0}" +
+                    "ice-name: {5}{0}" +
+                    "ice-url: {6}{0}" +
+                    "ice-genre: {7}{0}" +
+                    "ice-bitrate: {8}{0}" +
+                    "ice-private: {9}{0}" +
+                    "ice-public: {10}{0}" +
+                    "ice-description: {11}{0}{0}",
+
+                    "\r\n",
+                    settings.mount,
+                    enc.ext,
+                    auth,
+                    ver,
+                    esc(settings.title),
+                    esc(settings.url),
+                    esc(settings.genre),
+                    enc.compression == LSSettings.LSCompression.cbr ? enc.bitrate + "" : enc.quality + "",
+                    settings.pubstream ? "0" : "1", // why
+                    settings.pubstream ? "1" : "0",
+                    esc(settings.description));
             }
 
+            byte[] header = System.Text.Encoding.UTF8.GetBytes(sheader);
             string str = "(no reply)";
             try
             {
@@ -233,13 +259,17 @@ namespace Loopstream
                 s.WriteTimeout = 1000;
                 stamps = new long[32];
                 chunks = new long[32];
+                stdinQueue = new Queue<byte[]>();
                 long v = DateTime.UtcNow.Ticks / 10000;
                 for (int a = 0; a < stamps.Length; a++) stamps[a] = v;
                 Program.ni.ShowBalloonTip(1000, "Loopstream Connected", "Streaming to " + settings.mount + "." + enc.ext, ToolTipIcon.Info);
-                System.Threading.Thread tr = new System.Threading.Thread(new System.Threading.ThreadStart(reader));
+                var tr = new System.Threading.Thread(new System.Threading.ThreadStart(reader));
                 tr.Name = "LSEnc_Reader";
                 tr.Start();
-                System.Threading.Thread tc = new System.Threading.Thread(new System.Threading.ThreadStart(counter));
+                var tw = new System.Threading.Thread(new System.Threading.ThreadStart(writer));
+                tw.Name = "LSEnc_Writer";
+                tw.Start();
+                var tc = new System.Threading.Thread(new System.Threading.ThreadStart(counter));
                 tc.Name = "LSEnc_Counter";
                 tc.Start();
             }
@@ -250,20 +280,38 @@ namespace Loopstream
             }
         }
 
-        public void eat(byte[] buffer, int c)
+        public void enqueue(byte[] buffer, int c)
         {
             if (crashed || aborted) return;
 
-            try
+            var buf = new byte[c];
+            Array.Copy(buffer, buf, c);
+            stdinQueue.Enqueue(buf);
+        }
+
+        protected void writer()
+        {
+            while (true)
             {
-                stdin.Write(buffer, 0, c);
-                stdin.Flush();
-            }
-            catch
-            {
-                logger.a("encoder write failed");
-                enc.FIXME_kbps = -1;
-                crashed = true;
+                logger.a("awaiting pcm");
+                while (!pimp.qt(enc.ext) && stdinQueue.Count == 0)
+                    System.Threading.Thread.Sleep(10);
+
+                if (pimp.qt(enc.ext) || crashed || aborted)
+                    break;
+
+                byte[] buf = stdinQueue.Dequeue();
+                logger.a("putting pcm " + buf.Length);
+                try
+                {
+                    stdin.Write(buf, 0, buf.Length);
+                }
+                catch
+                {
+                    logger.a("encoder write failed");
+                    enc.FIXME_kbps = -1;
+                    crashed = true;
+                }
             }
         }
 
@@ -291,18 +339,28 @@ namespace Loopstream
             {
                 while (true)
                 {
-                    if (pimp.qt()) break;
-                    //Console.Write('!');
                     logger.a("awaiting encoder output");
-                    int i = stdout.Read(buffer, 0, 4096);
+                    int i = 0;
+                    while (!pimp.qt(enc.ext))
+                    {
+                        i = stdout.Read(buffer, 0, 4096);
+                        if (i > 0)
+                            break;
+
+                        System.Threading.Thread.Sleep(10);
+                    }
+
+                    if (pimp.qt(enc.ext) || crashed || aborted)
+                        break;
+
                     if (m != null)
                     {
-                        logger.a("writing file");
+                        logger.a("writing file " + i);
                         m.Write(buffer, 0, i);
                     }
                     try
                     {
-                        logger.a("writing socket");
+                        logger.a("writing socket " + i);
                         
                         if (!string.IsNullOrEmpty(settings.host))
                             s.Write(buffer, 0, i);

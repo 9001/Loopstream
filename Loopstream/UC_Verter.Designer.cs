@@ -29,16 +29,18 @@
         private void InitializeComponent()
         {
             this.gOSlider = new System.Windows.Forms.Panel();
-            this.giSlider = new Loopstream.LLabel();
             this.label2 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.gBar = new System.Windows.Forms.Label();
-            this.graden2 = new Loopstream.Graden();
-            this.graden1 = new Loopstream.Graden();
             this.gLabel = new System.Windows.Forms.Button();
             this.gButton = new System.Windows.Forms.Panel();
+            this.gAirhorn = new System.Windows.Forms.Button();
+            this.gSolo = new System.Windows.Forms.Button();
             this.gBorder = new System.Windows.Forms.Panel();
             this.gW8bugfix = new System.Windows.Forms.Panel();
+            this.giSlider = new Loopstream.LLabel();
+            this.graden2 = new Loopstream.Graden();
+            this.graden1 = new Loopstream.Graden();
             this.gOSlider.SuspendLayout();
             this.gButton.SuspendLayout();
             this.gBorder.SuspendLayout();
@@ -59,26 +61,6 @@
             this.gOSlider.Name = "gOSlider";
             this.gOSlider.Size = new System.Drawing.Size(94, 336);
             this.gOSlider.TabIndex = 1;
-            this.gOSlider.MouseDown += new System.Windows.Forms.MouseEventHandler(this.slider_MouseDown);
-            this.gOSlider.MouseMove += new System.Windows.Forms.MouseEventHandler(this.slider_MouseMove);
-            this.gOSlider.MouseUp += new System.Windows.Forms.MouseEventHandler(this.slider_MouseUp);
-            // 
-            // giSlider
-            // 
-            this.giSlider.A_GRAD_1 = System.Drawing.SystemColors.ScrollBar;
-            this.giSlider.A_GRAD_2 = System.Drawing.SystemColors.ScrollBar;
-            this.giSlider.BackColor = System.Drawing.SystemColors.ControlLightLight;
-            this.giSlider.ForeColor = System.Drawing.Color.White;
-            this.giSlider.Location = new System.Drawing.Point(0, 0);
-            this.giSlider.Name = "giSlider";
-            this.giSlider.Padding = new System.Windows.Forms.Padding(0, 0, 0, 19);
-            this.giSlider.Size = new System.Drawing.Size(48, 40);
-            this.giSlider.src = null;
-            this.giSlider.TabIndex = 1;
-            this.giSlider.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
-            this.giSlider.MouseDown += new System.Windows.Forms.MouseEventHandler(this.slider_MouseDown);
-            this.giSlider.MouseMove += new System.Windows.Forms.MouseEventHandler(this.slider_MouseMove);
-            this.giSlider.MouseUp += new System.Windows.Forms.MouseEventHandler(this.slider_MouseUp);
             // 
             // label2
             // 
@@ -107,6 +89,87 @@
             this.gBar.TabIndex = 2;
             this.gBar.Visible = false;
             // 
+            // gLabel
+            // 
+            this.gLabel.Dock = System.Windows.Forms.DockStyle.Top;
+            this.gLabel.Location = new System.Drawing.Point(0, 4);
+            this.gLabel.Name = "gLabel";
+            this.gLabel.Size = new System.Drawing.Size(98, 40);
+            this.gLabel.TabIndex = 2;
+            this.gLabel.Text = "button1";
+            this.gLabel.UseVisualStyleBackColor = true;
+            this.gLabel.Click += new System.EventHandler(this.gLabel_Click);
+            // 
+            // gButton
+            // 
+            this.gButton.Controls.Add(this.gAirhorn);
+            this.gButton.Controls.Add(this.gSolo);
+            this.gButton.Controls.Add(this.gLabel);
+            this.gButton.Dock = System.Windows.Forms.DockStyle.Top;
+            this.gButton.Location = new System.Drawing.Point(0, 338);
+            this.gButton.Name = "gButton";
+            this.gButton.Padding = new System.Windows.Forms.Padding(0, 4, 0, 0);
+            this.gButton.Size = new System.Drawing.Size(98, 159);
+            this.gButton.TabIndex = 3;
+            // 
+            // gAirhorn
+            // 
+            this.gAirhorn.Dock = System.Windows.Forms.DockStyle.Top;
+            this.gAirhorn.Location = new System.Drawing.Point(0, 84);
+            this.gAirhorn.Name = "gAirhorn";
+            this.gAirhorn.Size = new System.Drawing.Size(98, 40);
+            this.gAirhorn.TabIndex = 4;
+            this.gAirhorn.Text = "Play sound";
+            this.gAirhorn.UseVisualStyleBackColor = true;
+            this.gAirhorn.Click += new System.EventHandler(this.gAirhorn_Click);
+            // 
+            // gSolo
+            // 
+            this.gSolo.Dock = System.Windows.Forms.DockStyle.Top;
+            this.gSolo.Location = new System.Drawing.Point(0, 44);
+            this.gSolo.Name = "gSolo";
+            this.gSolo.Size = new System.Drawing.Size(98, 40);
+            this.gSolo.TabIndex = 3;
+            this.gSolo.Text = "Solo this";
+            this.gSolo.UseVisualStyleBackColor = true;
+            this.gSolo.Click += new System.EventHandler(this.gSolo_Click);
+            // 
+            // gBorder
+            // 
+            this.gBorder.BackColor = System.Drawing.SystemColors.ControlDark;
+            this.gBorder.Controls.Add(this.gOSlider);
+            this.gBorder.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.gBorder.Location = new System.Drawing.Point(1, 0);
+            this.gBorder.Name = "gBorder";
+            this.gBorder.Padding = new System.Windows.Forms.Padding(1);
+            this.gBorder.Size = new System.Drawing.Size(96, 338);
+            this.gBorder.TabIndex = 4;
+            // 
+            // gW8bugfix
+            // 
+            this.gW8bugfix.Controls.Add(this.gBorder);
+            this.gW8bugfix.Dock = System.Windows.Forms.DockStyle.Top;
+            this.gW8bugfix.Location = new System.Drawing.Point(0, 0);
+            this.gW8bugfix.Name = "gW8bugfix";
+            this.gW8bugfix.Padding = new System.Windows.Forms.Padding(1, 0, 1, 0);
+            this.gW8bugfix.Size = new System.Drawing.Size(98, 338);
+            this.gW8bugfix.TabIndex = 5;
+            // 
+            // giSlider
+            // 
+            this.giSlider.A_GRAD_1 = System.Drawing.SystemColors.ScrollBar;
+            this.giSlider.A_GRAD_2 = System.Drawing.SystemColors.ScrollBar;
+            this.giSlider.aggressive = false;
+            this.giSlider.BackColor = System.Drawing.SystemColors.ControlLightLight;
+            this.giSlider.ForeColor = System.Drawing.Color.White;
+            this.giSlider.Location = new System.Drawing.Point(0, 0);
+            this.giSlider.Name = "giSlider";
+            this.giSlider.Padding = new System.Windows.Forms.Padding(0, 0, 0, 19);
+            this.giSlider.Size = new System.Drawing.Size(48, 40);
+            this.giSlider.src = null;
+            this.giSlider.TabIndex = 1;
+            this.giSlider.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
+            // 
             // graden2
             // 
             this.graden2.co = 1D;
@@ -132,48 +195,6 @@
             this.graden1.Size = new System.Drawing.Size(94, 39);
             this.graden1.TabIndex = 3;
             // 
-            // gLabel
-            // 
-            this.gLabel.Dock = System.Windows.Forms.DockStyle.Top;
-            this.gLabel.Location = new System.Drawing.Point(0, 4);
-            this.gLabel.Name = "gLabel";
-            this.gLabel.Size = new System.Drawing.Size(98, 40);
-            this.gLabel.TabIndex = 2;
-            this.gLabel.Text = "button1";
-            this.gLabel.UseVisualStyleBackColor = true;
-            this.gLabel.Click += new System.EventHandler(this.gLabel_Click);
-            // 
-            // gButton
-            // 
-            this.gButton.Controls.Add(this.gLabel);
-            this.gButton.Dock = System.Windows.Forms.DockStyle.Top;
-            this.gButton.Location = new System.Drawing.Point(0, 338);
-            this.gButton.Name = "gButton";
-            this.gButton.Padding = new System.Windows.Forms.Padding(0, 4, 0, 0);
-            this.gButton.Size = new System.Drawing.Size(98, 96);
-            this.gButton.TabIndex = 3;
-            // 
-            // gBorder
-            // 
-            this.gBorder.BackColor = System.Drawing.SystemColors.ControlDark;
-            this.gBorder.Controls.Add(this.gOSlider);
-            this.gBorder.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.gBorder.Location = new System.Drawing.Point(1, 0);
-            this.gBorder.Name = "gBorder";
-            this.gBorder.Padding = new System.Windows.Forms.Padding(1);
-            this.gBorder.Size = new System.Drawing.Size(96, 338);
-            this.gBorder.TabIndex = 4;
-            // 
-            // gW8bugfix
-            // 
-            this.gW8bugfix.Controls.Add(this.gBorder);
-            this.gW8bugfix.Dock = System.Windows.Forms.DockStyle.Top;
-            this.gW8bugfix.Location = new System.Drawing.Point(0, 0);
-            this.gW8bugfix.Name = "gW8bugfix";
-            this.gW8bugfix.Padding = new System.Windows.Forms.Padding(1, 0, 1, 0);
-            this.gW8bugfix.Size = new System.Drawing.Size(98, 338);
-            this.gW8bugfix.TabIndex = 5;
-            // 
             // Verter
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -181,7 +202,7 @@
             this.Controls.Add(this.gButton);
             this.Controls.Add(this.gW8bugfix);
             this.Name = "Verter";
-            this.Size = new System.Drawing.Size(98, 420);
+            this.Size = new System.Drawing.Size(98, 506);
             this.gOSlider.ResumeLayout(false);
             this.gButton.ResumeLayout(false);
             this.gBorder.ResumeLayout(false);
@@ -203,6 +224,8 @@
         public Graden graden2;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Button gAirhorn;
+        private System.Windows.Forms.Button gSolo;
 
     }
 }

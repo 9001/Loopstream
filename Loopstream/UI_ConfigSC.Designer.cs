@@ -31,8 +31,8 @@
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ConfigSC));
             this.gOutS = new System.Windows.Forms.ComboBox();
-            this.gTwoS = new System.Windows.Forms.ComboBox();
-            this.gOneS = new System.Windows.Forms.ComboBox();
+            this.gMicS = new System.Windows.Forms.ComboBox();
+            this.gMusS = new System.Windows.Forms.ComboBox();
             this.gSiren = new System.Windows.Forms.RadioButton();
             this.gIce = new System.Windows.Forms.RadioButton();
             this.gShout = new System.Windows.Forms.RadioButton();
@@ -46,11 +46,15 @@
             this.label8 = new System.Windows.Forms.Label();
             this.label9 = new System.Windows.Forms.Label();
             this.label10 = new System.Windows.Forms.Label();
-            this.gLeft = new System.Windows.Forms.CheckBox();
-            this.gRight = new System.Windows.Forms.CheckBox();
             this.pWrapper = new System.Windows.Forms.Panel();
             this.tc = new System.Windows.Forms.TabControl();
             this.tpSoundcard = new System.Windows.Forms.TabPage();
+            this.gMicB = new System.Windows.Forms.Button();
+            this.gOutB = new System.Windows.Forms.Button();
+            this.gMusB = new System.Windows.Forms.Button();
+            this.gReverbS = new System.Windows.Forms.TextBox();
+            this.label32 = new System.Windows.Forms.Label();
+            this.gReverbP = new System.Windows.Forms.TextBox();
             this.panel3 = new System.Windows.Forms.Panel();
             this.label31 = new System.Windows.Forms.Label();
             this.gRescan = new System.Windows.Forms.Button();
@@ -62,6 +66,7 @@
             this.gAutoconn = new System.Windows.Forms.CheckBox();
             this.gUnavail = new System.Windows.Forms.CheckBox();
             this.gTestDevs = new System.Windows.Forms.CheckBox();
+            this.label33 = new System.Windows.Forms.Label();
             this.tpServer = new System.Windows.Forms.TabPage();
             this.gServerDel = new System.Windows.Forms.Button();
             this.gServerLoad = new System.Windows.Forms.Button();
@@ -80,6 +85,15 @@
             this.gGenre = new System.Windows.Forms.TextBox();
             this.gDescription = new System.Windows.Forms.TextBox();
             this.tpEncoders = new System.Windows.Forms.TabPage();
+            this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.label34 = new System.Windows.Forms.Label();
+            this.gOpusQualityV = new System.Windows.Forms.TextBox();
+            this.radioButton4 = new System.Windows.Forms.RadioButton();
+            this.gRecOpus = new System.Windows.Forms.CheckBox();
+            this.gOpusEnable = new System.Windows.Forms.CheckBox();
+            this.panel4 = new System.Windows.Forms.Panel();
+            this.gOpusMono = new System.Windows.Forms.RadioButton();
+            this.gOpusStereo = new System.Windows.Forms.RadioButton();
             this.panel2 = new System.Windows.Forms.Panel();
             this.gMp3Mono = new System.Windows.Forms.RadioButton();
             this.gMp3Stereo = new System.Windows.Forms.RadioButton();
@@ -168,10 +182,6 @@
             this.label5 = new System.Windows.Forms.Label();
             this.label12 = new System.Windows.Forms.Label();
             this.tt = new System.Windows.Forms.ToolTip(this.components);
-            this.label32 = new System.Windows.Forms.Label();
-            this.gReverbP = new System.Windows.Forms.TextBox();
-            this.gReverbS = new System.Windows.Forms.TextBox();
-            this.label33 = new System.Windows.Forms.Label();
             this.hTriggers = new Loopstream.TLabel();
             this.hTags = new Loopstream.TLabel();
             this.hEncoders = new Loopstream.TLabel();
@@ -183,6 +193,8 @@
             this.panel3.SuspendLayout();
             this.tpServer.SuspendLayout();
             this.tpEncoders.SuspendLayout();
+            this.groupBox3.SuspendLayout();
+            this.panel4.SuspendLayout();
             this.panel2.SuspendLayout();
             this.panel1.SuspendLayout();
             this.groupBox1.SuspendLayout();
@@ -203,7 +215,7 @@
             this.gOutS.FormattingEnabled = true;
             this.gOutS.Location = new System.Drawing.Point(101, 72);
             this.gOutS.Name = "gOutS";
-            this.gOutS.Size = new System.Drawing.Size(418, 21);
+            this.gOutS.Size = new System.Drawing.Size(330, 21);
             this.gOutS.TabIndex = 5;
             this.tt.SetToolTip(this.gOutS, "A set of speakers to play the final mix on\r\n    (can be the same as input Music)\r" +
         "\n    (can be muted on the mixer board)");
@@ -211,32 +223,32 @@
             this.gOutS.MouseEnter += new System.EventHandler(this.gHost_MouseEnter);
             this.gOutS.MouseLeave += new System.EventHandler(this.gHost_MouseLeave);
             // 
-            // gTwoS
+            // gMicS
             // 
-            this.gTwoS.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.gTwoS.FormattingEnabled = true;
-            this.gTwoS.Location = new System.Drawing.Point(101, 18);
-            this.gTwoS.Name = "gTwoS";
-            this.gTwoS.Size = new System.Drawing.Size(305, 21);
-            this.gTwoS.TabIndex = 1;
-            this.tt.SetToolTip(this.gTwoS, "The microphone you will use to voiceover on the stream");
-            this.gTwoS.SelectedIndexChanged += new System.EventHandler(this.gTwoS_SelectedIndexChanged);
-            this.gTwoS.MouseEnter += new System.EventHandler(this.gHost_MouseEnter);
-            this.gTwoS.MouseLeave += new System.EventHandler(this.gHost_MouseLeave);
+            this.gMicS.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.gMicS.FormattingEnabled = true;
+            this.gMicS.Location = new System.Drawing.Point(101, 18);
+            this.gMicS.Name = "gMicS";
+            this.gMicS.Size = new System.Drawing.Size(330, 21);
+            this.gMicS.TabIndex = 1;
+            this.tt.SetToolTip(this.gMicS, "The microphone you will use to voiceover on the stream");
+            this.gMicS.SelectedIndexChanged += new System.EventHandler(this.gTwoS_SelectedIndexChanged);
+            this.gMicS.MouseEnter += new System.EventHandler(this.gHost_MouseEnter);
+            this.gMicS.MouseLeave += new System.EventHandler(this.gHost_MouseLeave);
             // 
-            // gOneS
+            // gMusS
             // 
-            this.gOneS.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.gOneS.FormattingEnabled = true;
-            this.gOneS.Location = new System.Drawing.Point(101, 45);
-            this.gOneS.Name = "gOneS";
-            this.gOneS.Size = new System.Drawing.Size(418, 21);
-            this.gOneS.TabIndex = 4;
-            this.tt.SetToolTip(this.gOneS, "The set of speakers you will be playing music on\r\n    (either your regular speake" +
+            this.gMusS.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.gMusS.FormattingEnabled = true;
+            this.gMusS.Location = new System.Drawing.Point(101, 45);
+            this.gMusS.Name = "gMusS";
+            this.gMusS.Size = new System.Drawing.Size(330, 21);
+            this.gMusS.TabIndex = 4;
+            this.tt.SetToolTip(this.gMusS, "The set of speakers you will be playing music on\r\n    (either your regular speake" +
         "rs or a separate soundcard)");
-            this.gOneS.SelectedIndexChanged += new System.EventHandler(this.gOneS_SelectedIndexChanged);
-            this.gOneS.MouseEnter += new System.EventHandler(this.gHost_MouseEnter);
-            this.gOneS.MouseLeave += new System.EventHandler(this.gHost_MouseLeave);
+            this.gMusS.SelectedIndexChanged += new System.EventHandler(this.gOneS_SelectedIndexChanged);
+            this.gMusS.MouseEnter += new System.EventHandler(this.gHost_MouseEnter);
+            this.gMusS.MouseLeave += new System.EventHandler(this.gHost_MouseLeave);
             // 
             // gSiren
             // 
@@ -400,37 +412,6 @@
             this.label10.TabIndex = 34;
             this.label10.Text = "input Mic";
             // 
-            // gLeft
-            // 
-            this.gLeft.AutoSize = true;
-            this.gLeft.Location = new System.Drawing.Point(418, 20);
-            this.gLeft.Margin = new System.Windows.Forms.Padding(9, 3, 3, 3);
-            this.gLeft.Name = "gLeft";
-            this.gLeft.Size = new System.Drawing.Size(44, 17);
-            this.gLeft.TabIndex = 2;
-            this.gLeft.Text = "Left";
-            this.tt.SetToolTip(this.gLeft, "Use the left audio channel of the microphone?");
-            this.gLeft.UseVisualStyleBackColor = true;
-            this.gLeft.CheckedChanged += new System.EventHandler(this.gLeft_CheckedChanged);
-            this.gLeft.MouseEnter += new System.EventHandler(this.gHost_MouseEnter);
-            this.gLeft.MouseLeave += new System.EventHandler(this.gHost_MouseLeave);
-            // 
-            // gRight
-            // 
-            this.gRight.AutoSize = true;
-            this.gRight.Checked = true;
-            this.gRight.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.gRight.Location = new System.Drawing.Point(468, 20);
-            this.gRight.Name = "gRight";
-            this.gRight.Size = new System.Drawing.Size(51, 17);
-            this.gRight.TabIndex = 3;
-            this.gRight.Text = "Right";
-            this.tt.SetToolTip(this.gRight, "Use the right audio channel of the microphone?");
-            this.gRight.UseVisualStyleBackColor = true;
-            this.gRight.CheckedChanged += new System.EventHandler(this.gRight_CheckedChanged);
-            this.gRight.MouseEnter += new System.EventHandler(this.gHost_MouseEnter);
-            this.gRight.MouseLeave += new System.EventHandler(this.gHost_MouseLeave);
-            // 
             // pWrapper
             // 
             this.pWrapper.BackColor = System.Drawing.SystemColors.Control;
@@ -462,13 +443,16 @@
             // tpSoundcard
             // 
             this.tpSoundcard.BackColor = System.Drawing.SystemColors.Control;
+            this.tpSoundcard.Controls.Add(this.gMicB);
+            this.tpSoundcard.Controls.Add(this.gOutB);
+            this.tpSoundcard.Controls.Add(this.gMusB);
             this.tpSoundcard.Controls.Add(this.gReverbS);
             this.tpSoundcard.Controls.Add(this.label32);
             this.tpSoundcard.Controls.Add(this.gReverbP);
             this.tpSoundcard.Controls.Add(this.panel3);
             this.tpSoundcard.Controls.Add(this.gRescan);
             this.tpSoundcard.Controls.Add(this.gKillMic);
-            this.tpSoundcard.Controls.Add(this.gTwoS);
+            this.tpSoundcard.Controls.Add(this.gMicS);
             this.tpSoundcard.Controls.Add(this.label10);
             this.tpSoundcard.Controls.Add(this.gOutS);
             this.tpSoundcard.Controls.Add(this.label3);
@@ -477,10 +461,8 @@
             this.tpSoundcard.Controls.Add(this.gAutohide);
             this.tpSoundcard.Controls.Add(this.gRate);
             this.tpSoundcard.Controls.Add(this.gAutoconn);
-            this.tpSoundcard.Controls.Add(this.gLeft);
-            this.tpSoundcard.Controls.Add(this.gOneS);
+            this.tpSoundcard.Controls.Add(this.gMusS);
             this.tpSoundcard.Controls.Add(this.gUnavail);
-            this.tpSoundcard.Controls.Add(this.gRight);
             this.tpSoundcard.Controls.Add(this.label8);
             this.tpSoundcard.Controls.Add(this.gTestDevs);
             this.tpSoundcard.Controls.Add(this.label33);
@@ -490,6 +472,81 @@
             this.tpSoundcard.Size = new System.Drawing.Size(534, 275);
             this.tpSoundcard.TabIndex = 0;
             this.tpSoundcard.Text = "Soundcard";
+            // 
+            // gMicB
+            // 
+            this.gMicB.Location = new System.Drawing.Point(437, 17);
+            this.gMicB.Name = "gMicB";
+            this.gMicB.Size = new System.Drawing.Size(82, 23);
+            this.gMicB.TabIndex = 44;
+            this.gMicB.Text = "Channels";
+            this.tt.SetToolTip(this.gMicB, "Configure channel mapping for the microphone input");
+            this.gMicB.UseVisualStyleBackColor = true;
+            this.gMicB.Click += new System.EventHandler(this.gTwoB_Click);
+            this.gMicB.MouseEnter += new System.EventHandler(this.gHost_MouseEnter);
+            this.gMicB.MouseLeave += new System.EventHandler(this.gHost_MouseLeave);
+            // 
+            // gOutB
+            // 
+            this.gOutB.Location = new System.Drawing.Point(437, 71);
+            this.gOutB.Name = "gOutB";
+            this.gOutB.Size = new System.Drawing.Size(82, 23);
+            this.gOutB.TabIndex = 43;
+            this.gOutB.Text = "Channels";
+            this.tt.SetToolTip(this.gOutB, "Configure channel mapping for the speaker output");
+            this.gOutB.UseVisualStyleBackColor = true;
+            this.gOutB.Click += new System.EventHandler(this.gOutB_Click);
+            this.gOutB.MouseEnter += new System.EventHandler(this.gHost_MouseEnter);
+            this.gOutB.MouseLeave += new System.EventHandler(this.gHost_MouseLeave);
+            // 
+            // gMusB
+            // 
+            this.gMusB.Location = new System.Drawing.Point(437, 44);
+            this.gMusB.Name = "gMusB";
+            this.gMusB.Size = new System.Drawing.Size(82, 23);
+            this.gMusB.TabIndex = 42;
+            this.gMusB.Text = "Channels";
+            this.tt.SetToolTip(this.gMusB, "Configure channel mapping for the music input");
+            this.gMusB.UseVisualStyleBackColor = true;
+            this.gMusB.Click += new System.EventHandler(this.gOneB_Click);
+            this.gMusB.MouseEnter += new System.EventHandler(this.gHost_MouseEnter);
+            this.gMusB.MouseLeave += new System.EventHandler(this.gHost_MouseLeave);
+            // 
+            // gReverbS
+            // 
+            this.gReverbS.Location = new System.Drawing.Point(272, 99);
+            this.gReverbS.Name = "gReverbS";
+            this.gReverbS.Size = new System.Drawing.Size(59, 20);
+            this.gReverbS.TabIndex = 40;
+            this.gReverbS.Text = "90";
+            this.tt.SetToolTip(this.gReverbS, "This is the reverb sustain.\r\nSuggestion: 90");
+            this.gReverbS.TextChanged += new System.EventHandler(this.gReverbS_TextChanged);
+            this.gReverbS.MouseEnter += new System.EventHandler(this.gHost_MouseEnter);
+            this.gReverbS.MouseLeave += new System.EventHandler(this.gHost_MouseLeave);
+            // 
+            // label32
+            // 
+            this.label32.AutoSize = true;
+            this.label32.Location = new System.Drawing.Point(196, 122);
+            this.label32.Name = "label32";
+            this.label32.Size = new System.Drawing.Size(70, 13);
+            this.label32.TabIndex = 39;
+            this.label32.Text = "Mic.Reverb%";
+            // 
+            // gReverbP
+            // 
+            this.gReverbP.Location = new System.Drawing.Point(207, 99);
+            this.gReverbP.Name = "gReverbP";
+            this.gReverbP.Size = new System.Drawing.Size(59, 20);
+            this.gReverbP.TabIndex = 38;
+            this.gReverbP.Text = "0";
+            this.gReverbP.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.tt.SetToolTip(this.gReverbP, "Enable microphone reverb by setting non-zero.\r\nThis is the initial reverb power. " +
+        "Suggestion: 15\r\nReconnect to enable or disable.\r\nCan adjust level while streamin" +
+        "g once enabled.\r\n");
+            this.gReverbP.TextChanged += new System.EventHandler(this.gReverb_TextChanged);
+            this.gReverbP.MouseEnter += new System.EventHandler(this.gHost_MouseEnter);
+            this.gReverbP.MouseLeave += new System.EventHandler(this.gHost_MouseLeave);
             // 
             // panel3
             // 
@@ -512,13 +569,17 @@
             // 
             // gRescan
             // 
-            this.gRescan.Location = new System.Drawing.Point(384, 97);
+            this.gRescan.Location = new System.Drawing.Point(384, 115);
+            this.gRescan.Margin = new System.Windows.Forms.Padding(3, 18, 3, 3);
             this.gRescan.Name = "gRescan";
             this.gRescan.Size = new System.Drawing.Size(135, 23);
             this.gRescan.TabIndex = 36;
             this.gRescan.Text = "Refresh device list";
+            this.tt.SetToolTip(this.gRescan, "Scan for new soundcards and settings");
             this.gRescan.UseVisualStyleBackColor = true;
             this.gRescan.Click += new System.EventHandler(this.gRescan_Click);
+            this.gRescan.MouseEnter += new System.EventHandler(this.gHost_MouseEnter);
+            this.gRescan.MouseLeave += new System.EventHandler(this.gHost_MouseLeave);
             // 
             // gKillMic
             // 
@@ -641,6 +702,15 @@
             this.gTestDevs.CheckedChanged += new System.EventHandler(this.gTestDevs_CheckedChanged);
             this.gTestDevs.MouseEnter += new System.EventHandler(this.gHost_MouseEnter);
             this.gTestDevs.MouseLeave += new System.EventHandler(this.gHost_MouseLeave);
+            // 
+            // label33
+            // 
+            this.label33.AutoSize = true;
+            this.label33.Location = new System.Drawing.Point(272, 122);
+            this.label33.Name = "label33";
+            this.label33.Size = new System.Drawing.Size(73, 13);
+            this.label33.TabIndex = 41;
+            this.label33.Text = "Rev.Sustain%";
             // 
             // tpServer
             // 
@@ -868,6 +938,10 @@
             // tpEncoders
             // 
             this.tpEncoders.BackColor = System.Drawing.SystemColors.Control;
+            this.tpEncoders.Controls.Add(this.groupBox3);
+            this.tpEncoders.Controls.Add(this.gRecOpus);
+            this.tpEncoders.Controls.Add(this.gOpusEnable);
+            this.tpEncoders.Controls.Add(this.panel4);
             this.tpEncoders.Controls.Add(this.panel2);
             this.tpEncoders.Controls.Add(this.panel1);
             this.tpEncoders.Controls.Add(this.gMp3Enable);
@@ -882,11 +956,121 @@
             this.tpEncoders.TabIndex = 2;
             this.tpEncoders.Text = "Encoders";
             // 
+            // groupBox3
+            // 
+            this.groupBox3.Controls.Add(this.label34);
+            this.groupBox3.Controls.Add(this.gOpusQualityV);
+            this.groupBox3.Controls.Add(this.radioButton4);
+            this.groupBox3.Location = new System.Drawing.Point(387, 72);
+            this.groupBox3.Margin = new System.Windows.Forms.Padding(0, 3, 0, 8);
+            this.groupBox3.Name = "groupBox3";
+            this.groupBox3.Size = new System.Drawing.Size(139, 71);
+            this.groupBox3.TabIndex = 42;
+            this.groupBox3.TabStop = false;
+            this.groupBox3.Text = "Compression";
+            // 
+            // label34
+            // 
+            this.label34.AutoSize = true;
+            this.label34.Location = new System.Drawing.Point(24, 42);
+            this.label34.Name = "label34";
+            this.label34.Size = new System.Drawing.Size(109, 13);
+            this.label34.TabIndex = 36;
+            this.label34.Text = "( this is actually VBR )";
+            // 
+            // gOpusBitrateV
+            // 
+            this.gOpusQualityV.Location = new System.Drawing.Point(74, 19);
+            this.gOpusQualityV.Name = "gOpusBitrateV";
+            this.gOpusQualityV.Size = new System.Drawing.Size(59, 20);
+            this.gOpusQualityV.TabIndex = 35;
+            this.gOpusQualityV.Text = "128";
+            this.tt.SetToolTip(this.gOpusQualityV, "The bitrate to stream at (128, 160 or 192 recommended)");
+            this.gOpusQualityV.TextChanged += new System.EventHandler(this.gOpusQualityV_TextChanged);
+            // 
+            // radioButton4
+            // 
+            this.radioButton4.AutoSize = true;
+            this.radioButton4.Checked = true;
+            this.radioButton4.Location = new System.Drawing.Point(6, 20);
+            this.radioButton4.Name = "radioButton4";
+            this.radioButton4.Size = new System.Drawing.Size(55, 17);
+            this.radioButton4.TabIndex = 33;
+            this.radioButton4.TabStop = true;
+            this.radioButton4.Text = "Bitrate";
+            this.tt.SetToolTip(this.radioButton4, "Stream OGG using constant bitrate (NOT recommended)\r\n    (slow AND poor sound qua" +
+        "lity, just terrible)");
+            this.radioButton4.UseVisualStyleBackColor = true;
+            // 
+            // gRecOpus
+            // 
+            this.gRecOpus.AutoSize = true;
+            this.gRecOpus.CheckAlign = System.Drawing.ContentAlignment.TopLeft;
+            this.gRecOpus.Location = new System.Drawing.Point(393, 42);
+            this.gRecOpus.Margin = new System.Windows.Forms.Padding(12, 3, 3, 3);
+            this.gRecOpus.Name = "gRecOpus";
+            this.gRecOpus.Size = new System.Drawing.Size(89, 17);
+            this.gRecOpus.TabIndex = 45;
+            this.gRecOpus.Text = "Opus Record";
+            this.tt.SetToolTip(this.gRecOpus, "Record a copy of your streams as OGG/Vorbis");
+            this.gRecOpus.UseVisualStyleBackColor = true;
+            this.gRecOpus.CheckedChanged += new System.EventHandler(this.gRecOpus_CheckedChanged);
+            // 
+            // gOpusEnable
+            // 
+            this.gOpusEnable.AutoSize = true;
+            this.gOpusEnable.Location = new System.Drawing.Point(393, 19);
+            this.gOpusEnable.Name = "gOpusEnable";
+            this.gOpusEnable.Size = new System.Drawing.Size(87, 17);
+            this.gOpusEnable.TabIndex = 44;
+            this.gOpusEnable.Text = "Opus Stream";
+            this.tt.SetToolTip(this.gOpusEnable, "Transmit an OGG/Vorbis-encoded stream");
+            this.gOpusEnable.UseVisualStyleBackColor = true;
+            this.gOpusEnable.CheckedChanged += new System.EventHandler(this.gOpusEnable_CheckedChanged);
+            // 
+            // panel4
+            // 
+            this.panel4.Controls.Add(this.gOpusMono);
+            this.panel4.Controls.Add(this.gOpusStereo);
+            this.panel4.Location = new System.Drawing.Point(387, 154);
+            this.panel4.Margin = new System.Windows.Forms.Padding(21, 3, 3, 3);
+            this.panel4.Name = "panel4";
+            this.panel4.Size = new System.Drawing.Size(139, 45);
+            this.panel4.TabIndex = 43;
+            // 
+            // gOpusMono
+            // 
+            this.gOpusMono.AutoSize = true;
+            this.gOpusMono.Location = new System.Drawing.Point(6, 4);
+            this.gOpusMono.Name = "gOpusMono";
+            this.gOpusMono.Size = new System.Drawing.Size(52, 17);
+            this.gOpusMono.TabIndex = 37;
+            this.gOpusMono.Text = "Mono";
+            this.tt.SetToolTip(this.gOpusMono, "Stream using 1 audio channel (mono)\r\n    (there is really no need to choose this)" +
+        "");
+            this.gOpusMono.UseVisualStyleBackColor = true;
+            this.gOpusMono.CheckedChanged += new System.EventHandler(this.gOpusMono_CheckedChanged);
+            // 
+            // gOpusStereo
+            // 
+            this.gOpusStereo.AutoSize = true;
+            this.gOpusStereo.Checked = true;
+            this.gOpusStereo.Location = new System.Drawing.Point(74, 4);
+            this.gOpusStereo.Name = "gOpusStereo";
+            this.gOpusStereo.Size = new System.Drawing.Size(56, 17);
+            this.gOpusStereo.TabIndex = 38;
+            this.gOpusStereo.TabStop = true;
+            this.gOpusStereo.Text = "Stereo";
+            this.tt.SetToolTip(this.gOpusStereo, "Stream using 2 audio channels (stereo)");
+            this.gOpusStereo.UseVisualStyleBackColor = true;
+            this.gOpusStereo.CheckedChanged += new System.EventHandler(this.gOpusStereo_CheckedChanged);
+            // 
             // panel2
             // 
             this.panel2.Controls.Add(this.gMp3Mono);
             this.panel2.Controls.Add(this.gMp3Stereo);
-            this.panel2.Location = new System.Drawing.Point(18, 154);
+            this.panel2.Location = new System.Drawing.Point(10, 154);
+            this.panel2.Margin = new System.Windows.Forms.Padding(3, 3, 21, 3);
             this.panel2.Name = "panel2";
             this.panel2.Size = new System.Drawing.Size(139, 45);
             this.panel2.TabIndex = 43;
@@ -926,7 +1110,8 @@
             // 
             this.panel1.Controls.Add(this.gOggMono);
             this.panel1.Controls.Add(this.gOggStereo);
-            this.panel1.Location = new System.Drawing.Point(207, 154);
+            this.panel1.Location = new System.Drawing.Point(197, 154);
+            this.panel1.Margin = new System.Windows.Forms.Padding(21, 3, 21, 3);
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(139, 45);
             this.panel1.TabIndex = 42;
@@ -965,7 +1150,7 @@
             // gMp3Enable
             // 
             this.gMp3Enable.AutoSize = true;
-            this.gMp3Enable.Location = new System.Drawing.Point(24, 19);
+            this.gMp3Enable.Location = new System.Drawing.Point(16, 19);
             this.gMp3Enable.Name = "gMp3Enable";
             this.gMp3Enable.Size = new System.Drawing.Size(84, 17);
             this.gMp3Enable.TabIndex = 23;
@@ -980,7 +1165,7 @@
             // 
             this.gRecOGG.AutoSize = true;
             this.gRecOGG.CheckAlign = System.Drawing.ContentAlignment.TopLeft;
-            this.gRecOGG.Location = new System.Drawing.Point(213, 42);
+            this.gRecOGG.Location = new System.Drawing.Point(203, 42);
             this.gRecOGG.Margin = new System.Windows.Forms.Padding(12, 3, 3, 3);
             this.gRecOGG.Name = "gRecOGG";
             this.gRecOGG.Size = new System.Drawing.Size(88, 17);
@@ -995,7 +1180,7 @@
             // gOggEnable
             // 
             this.gOggEnable.AutoSize = true;
-            this.gOggEnable.Location = new System.Drawing.Point(213, 19);
+            this.gOggEnable.Location = new System.Drawing.Point(203, 19);
             this.gOggEnable.Name = "gOggEnable";
             this.gOggEnable.Size = new System.Drawing.Size(86, 17);
             this.gOggEnable.TabIndex = 31;
@@ -1012,7 +1197,7 @@
             this.gRecMP3.CheckAlign = System.Drawing.ContentAlignment.TopLeft;
             this.gRecMP3.Checked = true;
             this.gRecMP3.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.gRecMP3.Location = new System.Drawing.Point(24, 42);
+            this.gRecMP3.Location = new System.Drawing.Point(16, 42);
             this.gRecMP3.Margin = new System.Windows.Forms.Padding(12, 3, 3, 3);
             this.gRecMP3.Name = "gRecMP3";
             this.gRecMP3.Size = new System.Drawing.Size(86, 17);
@@ -1030,7 +1215,7 @@
             this.groupBox1.Controls.Add(this.gMp3Quality);
             this.groupBox1.Controls.Add(this.gMp3QualityV);
             this.groupBox1.Controls.Add(this.gMp3Bitrate);
-            this.groupBox1.Location = new System.Drawing.Point(18, 72);
+            this.groupBox1.Location = new System.Drawing.Point(10, 72);
             this.groupBox1.Margin = new System.Windows.Forms.Padding(0, 3, 0, 8);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(139, 71);
@@ -1100,7 +1285,7 @@
             this.groupBox2.Controls.Add(this.gOggQuality);
             this.groupBox2.Controls.Add(this.gOggQualityV);
             this.groupBox2.Controls.Add(this.gOggBitrate);
-            this.groupBox2.Location = new System.Drawing.Point(207, 72);
+            this.groupBox2.Location = new System.Drawing.Point(197, 72);
             this.groupBox2.Margin = new System.Windows.Forms.Padding(0, 3, 0, 8);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Size = new System.Drawing.Size(139, 71);
@@ -1963,51 +2148,6 @@
             this.tt.UseAnimation = false;
             this.tt.UseFading = false;
             // 
-            // label32
-            // 
-            this.label32.AutoSize = true;
-            this.label32.Location = new System.Drawing.Point(196, 122);
-            this.label32.Name = "label32";
-            this.label32.Size = new System.Drawing.Size(70, 13);
-            this.label32.TabIndex = 39;
-            this.label32.Text = "Mic.Reverb%";
-            // 
-            // gReverbP
-            // 
-            this.gReverbP.Location = new System.Drawing.Point(207, 99);
-            this.gReverbP.Name = "gReverbP";
-            this.gReverbP.Size = new System.Drawing.Size(59, 20);
-            this.gReverbP.TabIndex = 38;
-            this.gReverbP.Text = "0";
-            this.gReverbP.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            this.tt.SetToolTip(this.gReverbP, "Enable microphone reverb by setting non-zero.\r\nThis is the initial reverb power. " +
-        "Suggestion: 15\r\nReconnect to enable or disable.\r\nCan adjust level while streamin" +
-        "g once enabled.\r\n");
-            this.gReverbP.TextChanged += new System.EventHandler(this.gReverb_TextChanged);
-            this.gReverbP.MouseEnter += new System.EventHandler(this.gHost_MouseEnter);
-            this.gReverbP.MouseLeave += new System.EventHandler(this.gHost_MouseLeave);
-            // 
-            // gReverbS
-            // 
-            this.gReverbS.Location = new System.Drawing.Point(272, 99);
-            this.gReverbS.Name = "gReverbS";
-            this.gReverbS.Size = new System.Drawing.Size(59, 20);
-            this.gReverbS.TabIndex = 40;
-            this.gReverbS.Text = "90";
-            this.tt.SetToolTip(this.gReverbS, "This is the reverb sustain.\r\nSuggestion: 90");
-            this.gReverbS.TextChanged += new System.EventHandler(this.gReverbS_TextChanged);
-            this.gReverbS.MouseEnter += new System.EventHandler(this.gHost_MouseEnter);
-            this.gReverbS.MouseLeave += new System.EventHandler(this.gHost_MouseLeave);
-            // 
-            // label33
-            // 
-            this.label33.AutoSize = true;
-            this.label33.Location = new System.Drawing.Point(272, 122);
-            this.label33.Name = "label33";
-            this.label33.Size = new System.Drawing.Size(73, 13);
-            this.label33.TabIndex = 41;
-            this.label33.Text = "Rev.Sustain%";
-            // 
             // hTriggers
             // 
             this.hTriggers.AutoSize = true;
@@ -2095,6 +2235,10 @@
             this.tpServer.PerformLayout();
             this.tpEncoders.ResumeLayout(false);
             this.tpEncoders.PerformLayout();
+            this.groupBox3.ResumeLayout(false);
+            this.groupBox3.PerformLayout();
+            this.panel4.ResumeLayout(false);
+            this.panel4.PerformLayout();
             this.panel2.ResumeLayout(false);
             this.panel2.PerformLayout();
             this.panel1.ResumeLayout(false);
@@ -2125,8 +2269,8 @@
         #endregion
 
         private System.Windows.Forms.ComboBox gOutS;
-        private System.Windows.Forms.ComboBox gTwoS;
-        private System.Windows.Forms.ComboBox gOneS;
+        private System.Windows.Forms.ComboBox gMicS;
+        private System.Windows.Forms.ComboBox gMusS;
         private System.Windows.Forms.RadioButton gSiren;
         private System.Windows.Forms.RadioButton gIce;
         private System.Windows.Forms.RadioButton gShout;
@@ -2140,8 +2284,6 @@
         private System.Windows.Forms.Label label8;
         private System.Windows.Forms.Label label9;
         private System.Windows.Forms.Label label10;
-        private System.Windows.Forms.CheckBox gLeft;
-        private System.Windows.Forms.CheckBox gRight;
         private System.Windows.Forms.Panel pWrapper;
         private System.Windows.Forms.CheckBox gTestDevs;
         private System.Windows.Forms.CheckBox gSplash;
@@ -2271,5 +2413,17 @@
         private System.Windows.Forms.TextBox gReverbP;
         private System.Windows.Forms.TextBox gReverbS;
         private System.Windows.Forms.Label label33;
+        private System.Windows.Forms.Button gOutB;
+        private System.Windows.Forms.Button gMusB;
+        private System.Windows.Forms.Button gMicB;
+        private System.Windows.Forms.GroupBox groupBox3;
+        private System.Windows.Forms.Label label34;
+        private System.Windows.Forms.TextBox gOpusQualityV;
+        private System.Windows.Forms.RadioButton radioButton4;
+        private System.Windows.Forms.CheckBox gRecOpus;
+        private System.Windows.Forms.CheckBox gOpusEnable;
+        private System.Windows.Forms.Panel panel4;
+        private System.Windows.Forms.RadioButton gOpusMono;
+        private System.Windows.Forms.RadioButton gOpusStereo;
     }
 }

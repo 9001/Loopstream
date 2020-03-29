@@ -525,7 +525,8 @@ namespace Loopstream
 
         LSDevice _devRec, _devMic, _devOut;
         public string s_devRec, s_devMic, s_devOut;
-        public bool micLeft, micRight;
+        public bool micLeft, micRight; //deprecated
+        public int[] chRec, chMic, chOut;
 
         [XmlIgnore]
         public LSDevice[] devs;
@@ -538,7 +539,7 @@ namespace Loopstream
 
         public LSPreset mixer;
         public LSPreset[] presets;
-        public LSParams mp3, ogg;
+        public LSParams mp3, ogg, opus;
         public int samplerate;
         public int reverbP, reverbS;
 
@@ -558,6 +559,7 @@ namespace Loopstream
         public bool recPCM;
         public bool recMp3;
         public bool recOgg;
+        public bool recOpus;
         public bool showUnavail;
         public bool autoconn;
         public bool autohide;
@@ -573,8 +575,10 @@ namespace Loopstream
         public LSSettings()
         {
             s_devRec = s_devMic = s_devOut = "";
-            micLeft = true;
-            micRight = false;
+            chMic = new int[] { 0 };
+            chRec = new int[] { 0, 1 };
+            chOut = new int[] { 0, 1 };
+
             mp3 = new LSParams();
             mp3.enabled = true;
             mp3.compression = LSCompression.cbr;
@@ -582,6 +586,7 @@ namespace Loopstream
             mp3.quality = 2;
             mp3.channels = LSChannels.stereo;
             mp3.ext = "mp3";
+
             ogg = new LSParams();
             ogg.enabled = false;
             ogg.compression = LSCompression.q;
@@ -589,6 +594,15 @@ namespace Loopstream
             ogg.quality = 5;
             ogg.channels = LSChannels.stereo;
             ogg.ext = "ogg";
+
+            opus = new LSParams();
+            opus.enabled = false;
+            opus.compression = LSCompression.q;
+            opus.bitrate = 128;
+            opus.quality = 128;
+            opus.channels = LSChannels.stereo;
+            opus.ext = "opus";
+
             samplerate = 44100;
             reverbP = 0;
             reverbS = 90;
@@ -623,6 +637,7 @@ namespace Loopstream
             killmic = false;
             recMp3 = true;
             recOgg = true;
+            recOpus = true;
             recPCM = false;
             showUnavail = false;
             autoconn = false;
@@ -1045,9 +1060,10 @@ namespace Loopstream
             //  * Keeping this for now ince It Just Works
             //  * metaEnc/Dec() might complicate things
 
+            string fn = Program.beta > 0 ? "Loopstream-beta.ini" : "Loopstream.ini";
             metaEnc();
             var x = new XmlSerializer(this.GetType());
-            using (var s = new System.IO.FileStream("Loopstream.ini", System.IO.FileMode.Create))
+            using (var s = new System.IO.FileStream(fn, System.IO.FileMode.Create))
             {
                 byte[] ver = System.Text.Encoding.UTF8.GetBytes(version().ToString("x") + "\n");
                 s.Write(ver, 0, ver.Length);
@@ -1058,14 +1074,24 @@ namespace Loopstream
         public static LSSettings load()
         {
             Logger.app.a("Loading LSSettings");
+            string fn_rls = "Loopstream.ini";
+            string fn_beta = "Loopstream-beta.ini";
             LSSettings ret;
             XmlSerializer x = new XmlSerializer(typeof(LSSettings));
-            if (System.IO.File.Exists("Loopstream.ini"))
+            if (System.IO.File.Exists(fn_rls) ||
+                (Program.beta > 0 && System.IO.File.Exists(fn_beta)))
             {
                 Logger.app.a("Found existing .ini");
+
+                if (Program.beta > 0 && !System.IO.File.Exists(fn_beta))
+                {
+                    System.Windows.Forms.MessageBox.Show("since this is a beta version i'll make a copy of\r\n" + fn_rls+ " with all your settings\r\n\r\ni will be using " + fn_beta);
+                    System.IO.File.Copy(fn_rls, fn_beta);
+                }
+
                 try
                 {
-                    string str = System.IO.File.ReadAllText("Loopstream.ini", Encoding.UTF8);
+                    string str = System.IO.File.ReadAllText(Program.beta > 0 ? fn_beta : fn_rls, Encoding.UTF8);
                     string ver = str.Substring(0, str.IndexOf('\n'));
                     str = str.Substring(ver.Length + 1);
                     System.IO.MemoryStream s = new System.IO.MemoryStream(System.Text.Encoding.UTF8.GetBytes(str));
@@ -1094,6 +1120,9 @@ namespace Loopstream
                         //  Upgrade from v1.3.7.7:
                         //     yRec yMic
                         //
+                        //  Upgrade from v1.4.0.4:
+                        //     chMic
+                        //
                         if (ret.mixer.xRec < 1) ret.mixer.xRec = 1;
                         if (ret.mixer.xMic < 1) ret.mixer.xMic = 1;
                         if (ret.mixer.yRec < 1) ret.mixer.yRec = -1;
@@ -1113,6 +1142,15 @@ namespace Loopstream
                         }
                         if (ret.reverbS <= 0) ret.reverbS = 90;
                         if (ret.reverbP <= 0) ret.reverbP = 0;
+                        if (iniVer <= 0x01040004)
+                        {
+                            if (ret.micLeft && ret.micRight)
+                                ret.chMic = new int[] { 0, 1 };
+                            else if (ret.micRight)
+                                ret.chMic = new int[] { 1 };
+                            else
+                                ret.chMic = new int[] { 0 };
+                        }
                     }
                 }
                 catch (Exception e)
@@ -1130,7 +1168,8 @@ namespace Loopstream
                     Logger.app.a("Calling init()");
                     ret.init();
                     ret.mp3.FIXME_kbps =
-                    ret.ogg.FIXME_kbps = -1;
+                    ret.ogg.FIXME_kbps =
+                    ret.opus.FIXME_kbps = -1;
                     foreach (var v in ret.metas)
                     {
                         if (v.grp != 1)

@@ -9,16 +9,17 @@ namespace Loopstream
     {
         int res_cd;
         int quitting;
-        object locker;
+        object locker, locker_qt;
         bool shuttingDown;
         LSSettings settings;
         List<LSEncoder> encoders;
         NPatch.Fork.Outlet outlet;
-        NAudio.Wave.SampleProviders.SampleToWaveProvider16 wp16;
+        NAudio.Wave.IWaveProvider wp16;
         public LSPcmFeed(LSSettings settings, NPatch.Fork.Outlet outlet)
         {
             Logger.pcm.a("pcm init");
             locker = new object();
+            locker_qt = new object();
             shuttingDown = false;
             quitting = 0;
             res_cd = 0;
@@ -26,6 +27,7 @@ namespace Loopstream
             this.outlet = outlet;
             this.settings = settings;
             encoders = new List<LSEncoder>();
+            //wp16 = new NPatch.HelpfulSampleToWaveProvider16(outlet);
             wp16 = new NAudio.Wave.SampleProviders.SampleToWaveProvider16(outlet);
             System.Threading.Thread t = new System.Threading.Thread(new System.Threading.ThreadStart(dicks));
             t.Name = "LSPcm_Prism";
@@ -35,19 +37,19 @@ namespace Loopstream
         {
             Logger.pcm.a("dispose called");
             shuttingDown = true;
-            quitting = 2 + encoders.Count;
-            System.Threading.Thread.Sleep(1000);
+            quitting = 2;
 
-            /*for (int a = 0; a < 10; a++)
-            {
-                if (quitting <= 0) break;
-                System.Threading.Thread.Sleep(1);
-            }*/
             Logger.pcm.a("nuke encoders");
             foreach (LSEncoder enc in encoders)
             {
                 Logger.pcm.a("nuke " + enc.enc.ext);
                 enc.Dispose();
+            }
+
+            for (int a = 0; a < 20; a++)
+            {
+                if (quitting <= 0) break;
+                System.Threading.Thread.Sleep(50);
             }
             Logger.pcm.a("disposed");
             tex = "disconnected";
@@ -61,12 +63,13 @@ namespace Loopstream
             if (settings.recPCM)
             {
                 Logger.pcm.a("open dump target");
-                w = new System.IO.FileStream(string.Format("Loopstream-{0}.pcm", DateTime.Now.ToString("yyyy-MM-dd_HH.mm.ss")), System.IO.FileMode.Create);
+                w = new System.IO.FileStream(string.Format("Loopstream-{0}.pcm", DateTime.UtcNow.ToString("yyyy-MM-dd_HH.mm.ss")), System.IO.FileMode.Create);
             }
 
             // Create encoders first, but do not feed data
             if (settings.mp3.enabled) encoders.Add(new LSLame(settings, this));
             if (settings.ogg.enabled) encoders.Add(new LSVorbis(settings, this));
+            if (settings.opus.enabled) encoders.Add(new LSOpus(settings, this));
             // Note that encoders handle creation of and connecting to shouters
 
             // start the thread watching encoders/shouters and restarting the crashed ones
@@ -80,78 +83,82 @@ namespace Loopstream
             
             // PCM reader loop, passing on to encoders/shouters
             //List<string> toclip = new List<string>();
+            int align = (wp16.WaveFormat.BitsPerSample / 8) * wp16.WaveFormat.Channels;
             try
             {
                 while (true)
                 {
-                    if (qt()) break;
-                    int avail = outlet.avail();
-                    if (avail > 1024)
+                    Logger.pcm.a("awaiting pcm");
+                    int avail = 0;
+                    while (!qt("dicks"))
                     {
-                        //Console.Write('.');
-                        Logger.pcm.a("reading pcm data");
-                        int i = wp16.Read(buffer, 0, (outlet.avail() / 4) * 4);
-                        //toclip.Add((DateTime.UtcNow.Ticks / 10000) + ", " + i);
-                        Logger.pcm.a("locking for write");
-                        lock (locker)
+                        avail = outlet.avail();
+                        if (avail >= 2048)
+                            break;
+
+                        System.Threading.Thread.Sleep(20);
+                    }
+
+                    if (avail <= 0)
+                        break;
+
+                    //Console.Write('.');
+                    int toRead = (outlet.avail() / align) * align;
+                    Logger.pcm.a("reading pcm data " + buffer.Length + ", " + toRead);
+                    int i = wp16.Read(buffer, 0, toRead);
+                    //toclip.Add((DateTime.UtcNow.Ticks / 10000) + ", " + i);
+                    Logger.pcm.a("locking for write " + i);
+                    lock (locker)
+                    {
+                        int _soffMono = soffMono;
+                        int _soffStereo = soffStereo;
+                        for (int a = 0; a < encoders.Count; a++)
                         {
-                            int _soffMono = soffMono;
-                            int _soffStereo = soffStereo;
-                            for (int a = 0; a < encoders.Count; a++)
+                            LSEncoder enc = encoders[a];
+                            if (!enc.crashed && enc.stdin != null)
                             {
-                                LSEncoder enc = encoders[a];
-                                if (!enc.crashed && enc.stdin != null)
+                                bool silence = false;
+                                if (enc.GetType() == typeof(LSVorbis))
                                 {
-                                    bool silence = false;
-                                    if (enc.GetType() == typeof(LSVorbis))
+                                    silence = true;
+                                    for (int ofs = 1; ofs < i; ofs += 16)
                                     {
-                                        silence = true;
-                                        for (int ofs = 1; ofs < i; ofs += 16)
+                                        int v = buffer[ofs];
+                                        if (v > 0x80) v = 255 - v;
+                                        if (v > 1)
                                         {
-                                            int v = buffer[ofs];
-                                            if (v > 0x80) v = 255 - v;
-                                            if (v > 1)
-                                            {
-                                                silence = false;
-                                                break;
-                                            }
-                                        }
-                                        if (silence)
-                                        {
-                                            Logger.pcm.a("SILENCE to " + enc.enc.ext);
-                                            soffMono = _soffMono;
-                                            soffStereo = _soffStereo;
-                                            bool stereo = enc.enc.channels == LSSettings.LSChannels.stereo;
-                                            enc.eat(barf(i, stereo), i);
+                                            silence = false;
+                                            break;
                                         }
                                     }
-                                    if (!silence)
+                                    if (silence)
                                     {
-                                        Logger.pcm.a("writing to " + enc.enc.ext);
-                                        enc.eat(buffer, i);
+                                        Logger.pcm.a("SILENCE to " + enc.enc.ext + " " + i);
+                                        soffMono = _soffMono;
+                                        soffStereo = _soffStereo;
+                                        bool stereo = enc.enc.channels == LSSettings.LSChannels.stereo;
+                                        enc.enqueue(barf(i, stereo), i);
                                     }
+                                }
+                                if (!silence)
+                                {
+                                    //Logger.pcm.a("writing to " + enc.enc.ext + " " + i);
+                                    enc.enqueue(buffer, i);
                                 }
                             }
                         }
-                        if (w != null)
-                        {
-                            Logger.pcm.a("writing to dump");
-                            w.Write(buffer, 0, i);
-                        }
                     }
-                    Logger.pcm.a("waiting for pcm data");
-                    System.Threading.Thread.Sleep(70); // value selected by fair dice roll
-
-                    //if (toclip.Count > 1000) break;
+                    if (w != null)
+                    {
+                        //Logger.pcm.a("writing to dump " + i);
+                        w.Write(buffer, 0, i);
+                    }
                 }
             }
             catch (Exception ex)
             {
                 System.Windows.Forms.MessageBox.Show("pcm reader / enc prism just died\n\nthought you might want to know\n\n===========================\n" + ex.Message + "\n" + ex.StackTrace);
             }
-            //StringBuilder sb = new StringBuilder();
-            //foreach (string str in toclip) sb.AppendLine(str);
-            //System.IO.File.WriteAllText("asdf", sb.ToString());
 
             Console.WriteLine("shutting down encoder prism");
             if (w != null) w.Close();
@@ -160,9 +167,8 @@ namespace Loopstream
         void medic()
         {
             Logger.med.a("active");
-            while (true)
+            while (!qt("medic"))
             {
-                if (qt()) break;
                 for (int a = 0; a < encoders.Count; a++)
                 {
                     LSEncoder enc = encoders[a];
@@ -183,6 +189,10 @@ namespace Loopstream
                             else if (enc.enc.ext == "ogg")
                             {
                                 enc = new LSVorbis(settings, this);
+                            }
+                            else if (enc.enc.ext == "opus")
+                            {
+                                enc = new LSOpus(settings, this);
                             }
                             else
                             {
@@ -215,14 +225,16 @@ namespace Loopstream
             Logger.med.a("disposed");
         }
 
-        public bool qt()
+        public bool qt(string who)
         {
-            return shuttingDown;
-            lock (locker)
+            lock (locker_qt)
             {
-                if (quitting > 0)
+                if (who != "medic" && who != "dicks")
+                    return shuttingDown;
+                
+                if (shuttingDown)
                 {
-                    Logger.pcm.a("qt()--");
+                    Logger.pcm.a("qt(" + who + ")--");
                     quitting--;
                     return true;
                 }

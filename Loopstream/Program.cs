@@ -9,6 +9,7 @@ namespace Loopstream
 {
     static class Program
     {
+        public const int beta = 0;
         public const bool debug = false;
         public const string toolsVer = "ls.tools.v1.txt";
         
@@ -64,6 +65,9 @@ namespace Loopstream
                 {
                     // workaround for win7 custom themes
                     if (dargs.Name.Contains("PresentationFramework")) return null;
+                    
+                    // vs2019
+                    if (dargs.Name == "Loopstream.XmlSerializers") return null;
 
                     String resourceName = "Loopstream.lib." +
                         dargs.Name.Substring(0, dargs.Name.IndexOf(", ")) + ".dll";

@@ -147,17 +147,20 @@ namespace Loopstream
 
     public class Logger
     {
-        public static Logger mp3, ogg, pcm, med, mix, tag, app;
-        public static List<double> bitratem, bitrateo;
+        // awk '/^Cache for / {k=$3} {sub(/\|/, "| " k);print}' ~/Desktop/tmp | sort
+        public static Logger mp3, ogg, opus, pcm, med, mix, tag, app;
+        public static List<double> bitrate_mp3, bitrate_ogg, bitrate_opus;
         public static void init()
         {
-            bitratem = new List<double>();
-            bitrateo = new List<double>();
+            bitrate_mp3 = new List<double>();
+            bitrate_ogg = new List<double>();
+            bitrate_opus = new List<double>();
             pcm = new Logger();
             med = new Logger();
             mix = new Logger();
             mp3 = new Logger();
             ogg = new Logger();
+            opus = new Logger();
             tag = new Logger();
             app = new Logger();
         }
@@ -200,6 +203,7 @@ namespace Loopstream
         }
         public void a(string text)
         {
+            System.Diagnostics.Debug.WriteLine(DateTime.UtcNow.Ticks / 10000 + " " + text);
             lock (buf)
             {
                 if (text == buf[i].msg)
@@ -214,7 +218,7 @@ namespace Loopstream
                 e.tick = DateTime.UtcNow.Ticks;
             }
         }
-        public string compile()
+        public string compile(int limit=9001)
         {
             StringBuilder ret = new StringBuilder();
             lock (buf)
@@ -225,6 +229,8 @@ namespace Loopstream
                     if (buf[i].num >= 0)
                     {
                         ret.AppendLine(ToString());
+                        if (--limit == 0)
+                            break;
                     }
                     if (--i < 0) i = buf.Length - 1;
                     if (i == o) break;
@@ -348,6 +354,31 @@ namespace Loopstream
             UInt32 doshow = 0x0040;
             IntPtr topmost = new IntPtr(-1);
             SetWindowPos(hWnd, topmost, 0, 0, 0, 0, nomove | nosize | doshow);
+        }
+
+        public static string comEx(uint ec)
+        {
+            if (ec == 0x88890004 || ec == 0x8889000F)
+                return "The device no longer exists (unplugged or disabled)";
+            if (ec == 0x88890008)
+                return "The format we requested is not supported by either the device or wasapi";
+            if (ec == 0x8889000A)
+                return "Something is already using the device in exclusive-mode";
+            if (ec == 0x88890003)
+                return "Trying to loopback-record from a recording device (this is an LS bug, please report)";
+            if (ec == 0x88890012)
+                return "The device only supports exclusive mode (please let me know which device this is so i can do some tests)";
+
+            return "";
+        }
+
+        public static string comExMsg(uint ec)
+        {
+            string errmsg = WinapiShit.comEx(ec);
+            if (errmsg == "")
+                errmsg = "(i don't know what this means but please report it)";
+
+            return "could not start audio capture from device; error code 0x" + ec.ToString("x") + "\r\n\r\n" + errmsg;
         }
     }
 }

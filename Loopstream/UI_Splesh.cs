@@ -20,6 +20,7 @@ namespace Loopstream
         Random random;
         public bool fx;
         public Progress progress;
+        Label betabadge;
 
         //public Label pb { get { return label3; } set { } }
 
@@ -31,21 +32,25 @@ namespace Loopstream
             fx = false;
             //this.Opacity = 0.999;
             //this.TopLevel = true;
+
+            if (Program.beta > 0)
+            {
+                betabadge = new Label();
+                betabadge.Text = "B e t a";
+                betabadge.TextAlign = ContentAlignment.MiddleRight;
+                betabadge.Font = new System.Drawing.Font(betabadge.Font.FontFamily, betabadge.Font.SizeInPoints * 4f);
+                betabadge.ForeColor = Color.FromArgb(215, 215, 215);
+                betabadge.ForeColor = Color.FromArgb(255, 192, 64);
+                betabadge.BackColor = Color.FromArgb(65, 65, 65);
+                betabadge.Bounds = new Rectangle(0, 384, 262, 112);
+                this.Controls.Add(betabadge);
+                betabadge.BringToFront();
+            }
+            else betabadge = null;
         }
 
         public void vis()
         {
-            /*MessageBox.Show(
-                "Hello there!\n" +
-                "\n" +
-                "Since this is your first run, here's a\n" +
-                "short list of things that don't work yet:\n" +
-                "\n" +
-                "    - Streaming to OGG/Vorbis\n" +
-                "       (icecast disconnects when you stream silence)\n" +
-                "\n" +
-                "That's about it.\n" +
-                "Enjoy streaming!");*/
             label1.Visible = label2.Visible = label3.Visible = true;
             Application.DoEvents();
         }
@@ -76,6 +81,10 @@ namespace Loopstream
         public void gtfo()
         {
             label1.Visible = label2.Visible = label3.Visible = false;
+            
+            if (betabadge != null)
+                betabadge.Visible = false;
+
             Application.DoEvents();
             if (fx)
             {

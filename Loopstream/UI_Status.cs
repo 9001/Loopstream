@@ -37,6 +37,7 @@ namespace Loopstream
         {
             mp3.Text = "mp3  " + Logger.mp3;
             ogg.Text = "ogg  " + Logger.ogg;
+            opus.Text = "opus " + Logger.opus;
             pcm.Text = "pcm  " + Logger.pcm;
             med.Text = "med  " + Logger.med;
             mix.Text = "mix  " + Logger.mix;
@@ -47,7 +48,7 @@ namespace Loopstream
 
         void pop(Logger log)
         {
-            string p = log.compile();
+            string p = log.compile(96);
             Clipboard.Clear();
             Clipboard.SetText(p);
             MessageBox.Show(p);
@@ -61,6 +62,11 @@ namespace Loopstream
         private void ogg_Click(object sender, EventArgs e)
         {
             pop(Logger.ogg);
+        }
+
+        private void opus_Click(object sender, EventArgs e)
+        {
+            pop(Logger.opus);
         }
 
         private void pcm_Click(object sender, EventArgs e)
@@ -94,6 +100,7 @@ namespace Loopstream
             // it's time to think of a way to optimize this
             sb.AppendLine("Loopstream debug cache");
             sb.AppendLine("\n\n\n\n\nCache for ogg"); sb.AppendLine(Logger.ogg.compile());
+            sb.AppendLine("\n\n\n\n\nCache for opus"); sb.AppendLine(Logger.opus.compile());
             sb.AppendLine("\n\n\n\n\nCache for mp3"); sb.AppendLine(Logger.mp3.compile());
             sb.AppendLine("\n\n\n\n\nCache for pcm"); sb.AppendLine(Logger.pcm.compile());
             sb.AppendLine("\n\n\n\n\nCache for med"); sb.AppendLine(Logger.med.compile());

@@ -24,13 +24,6 @@ namespace Loopstream
             w8fuckOff = new Padding(1, 5, 1, 0);
             giSlider.Font = new Font(giSlider.Font.FontFamily, giSlider.Font.Size * 2);
 
-            graden1.MouseDown += slider_MouseDown;
-            graden1.MouseMove += slider_MouseMove;
-            graden1.MouseUp += slider_MouseUp;
-            graden2.MouseDown += slider_MouseDown;
-            graden2.MouseMove += slider_MouseMove;
-            graden2.MouseUp += slider_MouseUp;
-        
             Skinner.add(this);
         }
         ~Verter()
@@ -44,7 +37,7 @@ namespace Loopstream
         Color defaultBG;
         Padding w8fuckOn;
         Padding w8fuckOff;
-        public enum EventType { set, slide, mute, boost, boostLock };
+        public enum EventType { set, slide, mute, boost, boostLock, solo, airhorn };
         public EventType eventType;
         bool _enabled;
         public bool enabled
@@ -158,6 +151,23 @@ namespace Loopstream
         public Color A_GRAD_1 { get { return giSlider.A_GRAD_1; } set { giSlider.A_GRAD_1 = value; } }
         public Color A_GRAD_2 { get { return giSlider.A_GRAD_2; } set { giSlider.A_GRAD_2 = value; } }
 
+        public void makeInteractive()
+        {
+            foreach (var c in new Control[] {  graden1, graden2, giSlider, gOSlider })
+            {
+                c.MouseDown += slider_MouseDown;
+                c.MouseMove += slider_MouseMove;
+                c.MouseUp += slider_MouseUp;
+            }
+            gSolo.Enabled = false;
+            gAirhorn.Enabled = false;
+        }
+
+        public void disableOutput()
+        {
+            gAirhorn.Enabled = false;
+        }
+
         private void gLabel_Click(object sender, EventArgs e)
         {
             enabled = !enabled;
@@ -269,6 +279,18 @@ namespace Loopstream
                 else eventType = EventType.set;
                 emit();
             }
+        }
+
+        private void gSolo_Click(object sender, EventArgs e)
+        {
+            eventType = EventType.solo;
+            emit();
+        }
+
+        private void gAirhorn_Click(object sender, EventArgs e)
+        {
+            eventType = EventType.airhorn;
+            emit();
         }
     }
 }

@@ -12,6 +12,7 @@ using System.Windows.Forms;
 /*
  * TODO before release:
  * 
+ * Program.beta = 0
  * Program.debug = false
  * DFC.CHECK_MD5 = true
  * LSSettings ver.check
@@ -52,7 +53,7 @@ namespace Loopstream
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            pMessage.Height = 64;
+            pMessage.Height = 32;
             myBounds = this.Bounds;
             this.Bounds = new Rectangle(0, -100, 0, 0);
             this.Icon = Program.icon;
@@ -68,7 +69,11 @@ namespace Loopstream
         void t_Tick(object sender, EventArgs e)
         {
             ((Timer)sender).Stop();
+            
             wincap = this.Text + " v" + Application.ProductVersion;
+            if (Program.beta > 0)
+                wincap += "  beta-" + Program.beta;
+
             this.Text = wincap;
             z("set window title");
 
@@ -76,6 +81,7 @@ namespace Loopstream
             z("dfc core ok");
             string toolsBase = @"..\..\tools\";
             string[] requiredFiles = {
+                "opusenc.exe",
                 "oggenc2.exe",
                 "lame.exe",
                 "lame_enc.dll"
@@ -114,7 +120,8 @@ namespace Loopstream
                             ofd.Filter = ext + " files|*." + ext;
                             ofd.FileName =
                                 filename.Contains("lame") ? "*lame*" :
-                                filename.Contains("ogg") ? "*ogg*" : "";
+                                filename.Contains("ogg") ? "*ogg*" :
+                                filename.Contains("opus") ? "*opus*" : "";
 
                             if (DialogResult.OK == ofd.ShowDialog())
                                 File.Copy(ofd.FileName, toolsBase + toolsBase);
@@ -147,7 +154,8 @@ namespace Loopstream
             {
                 z("deleting cause its " + deleteReason);
                 if (DialogResult.OK != MessageBox.Show(
-                    "I'm about to delete your " + Program.tools.Trim('\\') + " directory since it's " + deleteReason,
+                    "I'm about to delete your " + Program.tools.Trim('\\') + " directory since it's " + deleteReason +
+                    "\r\n\r\nIf there's something you want to keep (sfx folder)\r\ntake a backup now",
                     "Housekeeping", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning))
                     Program.kill();
 
@@ -200,10 +208,11 @@ namespace Loopstream
             z("Settings #3 - DONE"); isPresetLoad = true;
 
             z("Binding sliders");
-            gMus.valueChanged += gSlider_valueChanged;
-            gMic.valueChanged += gSlider_valueChanged;
-            gSpd.valueChanged += gSlider_valueChanged;
-            gOut.valueChanged += gSlider_valueChanged;
+            foreach (var c in new Verter[] { gMus, gMic, gSpd, gOut })
+            {
+                c.makeInteractive();
+                c.valueChanged += gSlider_valueChanged;
+            }
             mixerPresetChanged(sender, e);
 
             z("Creating ni");
@@ -685,6 +694,8 @@ namespace Loopstream
 
         private void gConnect_Click(object sender, EventArgs e)
         {
+            Logger.app.a("begin " + gConnect.Text);
+
             if (gConnect.Text == "Connect")
             {
                 connect();
@@ -893,7 +904,7 @@ namespace Loopstream
             {
                 lqMessage = mixer.isLQ;
                 mixer.isLQ = null;
-                this.Height += 64;
+                this.Height += pMessage.Height;
                 pMessage.Visible = true;
             }
 
@@ -941,7 +952,7 @@ namespace Loopstream
 
 
 
-            if (settings.mp3.FIXME_kbps <= 1 && settings.ogg.FIXME_kbps <= 1)
+            if (settings.mp3.FIXME_kbps <= 1 && settings.ogg.FIXME_kbps <= 1 && settings.opus.FIXME_kbps <= 1)
             {
                 if (daText == "Connect")
                 {
@@ -951,16 +962,17 @@ namespace Loopstream
                     if (popSign != null && popSign.sactive) popSign.Dispose(); popSign = null;
                     if (popQuit != null && popQuit.sactive) popQuit.Dispose(); popQuit = null;
                 }
-                else
-                {
+                else if (daText == "D I S C O N N E C T")
                     this.Text = "- C O N N E C T I N G -";
-                }
+                else
+                    this.Text = "- D I S C O N N E C T I N G -";
             }
             else
             {
-                this.Text = string.Format("{0:0.00} // {1:0.00} // {2}",
+                this.Text = string.Format("{0:0.00} // {1:0.00} // {2:0.00} // {3}",
                     Math.Round(settings.mp3.FIXME_kbps, 2),
                     Math.Round(settings.ogg.FIXME_kbps, 2),
+                    Math.Round(settings.opus.FIXME_kbps, 2),
                     tag.tag.tag);
             }
             
@@ -978,8 +990,8 @@ namespace Loopstream
             if (settings.mixer.xRec < gMus.boost) gMus.boost = settings.mixer.xRec;
             if (settings.mixer.xMic < gMic.boost) gMic.boost = settings.mixer.xMic;
 
-            double f, f_mp3, f_ogg;
-            f = f_mp3 = f_ogg = -1;
+            double f, f_mp3, f_ogg, f_opus;
+            f = f_mp3 = f_ogg = f_opus = -1;
             if (settings.mp3.FIXME_kbps >= 0)
             {
                 f_mp3 = settings.mp3.FIXME_kbps * 1.0 / settings.mp3.bitrate;
@@ -988,16 +1000,22 @@ namespace Loopstream
             {
                 f_ogg = settings.ogg.FIXME_kbps * 1.0 / 24;
             }
+            if (settings.opus.FIXME_kbps >= 0)
+            {
+                f_opus = settings.opus.FIXME_kbps * 1.0 / 24;
+            }
+            
             // TODO: ogg
-            f = f_mp3 >= 0 ? f_mp3 : f_ogg;
-            lock (Logger.bitratem)
-            {
-                Logger.bitratem.Add(Math.Max(settings.mp3.FIXME_kbps, 0));
-            }
-            lock (Logger.bitrateo)
-            {
-                Logger.bitrateo.Add(Math.Max(settings.ogg.FIXME_kbps, 0));
-            }
+            f = f_mp3 >= 0 ? f_mp3 : f_ogg >= 0 ? f_ogg : f_opus;
+            
+            lock (Logger.bitrate_mp3)
+                Logger.bitrate_mp3.Add(Math.Max(settings.mp3.FIXME_kbps, 0));
+
+            lock (Logger.bitrate_ogg)
+                Logger.bitrate_ogg.Add(Math.Max(settings.ogg.FIXME_kbps, 0));
+            
+            lock (Logger.bitrate_opus)
+                Logger.bitrate_opus.Add(Math.Max(settings.opus.FIXME_kbps, 0));
             
             if (connected && popFilt)
             {
@@ -1141,8 +1159,8 @@ namespace Loopstream
 
         private void gLowQ_Click(object sender, EventArgs e)
         {
+            this.Height -= pMessage.Height;
             pMessage.Visible = false;
-            this.Height -= 64;
             if (sender == gLowQ) MessageBox.Show(lqMessage);
             lqMessage = null;
         }

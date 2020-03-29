@@ -285,7 +285,7 @@ namespace Loopstream
 
             if (this.exception == null) this.exception = new SerializableException();
 
-            HostApplicationVersion = System.Windows.Forms.Application.ProductVersion;
+            HostApplicationVersion = System.Windows.Forms.Application.ProductVersion + "-" + Program.beta;
 
             this.CLRVersion = Environment.Version.ToString();
 

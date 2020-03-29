@@ -1,10 +1,6 @@
-﻿using System;
+﻿using NAudio.Wave;
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using NAudio.Wave;
-using System.IO;
 
 namespace NPatch
 {
@@ -119,6 +115,7 @@ namespace NPatch
             bool iterated;
             object locker;
             int iRead, iWrite;
+            Dumper dumper_r, dumper_w;
             public WaveFormat WaveFormat { get; set; }
             /// <summary>
             /// Forked output from a common source. Not compatible with WasapiOut
@@ -131,35 +128,19 @@ namespace NPatch
                 this.locker = locker;
                 buf = new float[wf.SampleRate * wf.Channels * 5];
                 iRead = iWrite = 0;
+
+                dumper_r = null;
+                dumper_w = null;
+                //dumper_r = new Dumper(wf, "fork_r");
+                //dumper_w = new Dumper(wf, "fork_w");
             }
             public int Read(float[] fb, int offset, int count)
             {
                 fork.sync(count, this);
                 lock (locker)
                 {
-                    //Console.WriteLine("{3} {0:000000} {1:000000} {2:000000}", buf.Length, iRead, iWrite, DateTime.UtcNow.ToLongTimeString());
-
                     count = Math.Min(Math.Min(count, fb.Length - offset), avail());
                     
-                    // apparently the incoming array is a BYTE array, not a FUCKING FLOAT
-                    // thank you for invalidating my code naudio
-
-                    /*int len = buf.Length - iRead;
-                    if (count >= len)
-                    {
-                        Array.Copy(buf, iRead, fb, offset, count);
-                        offset += len;
-                        count -= len;
-                        Array.Copy(buf, 0, fb, offset, count);
-                        iRead = count;
-                    }
-                    else
-                    {
-                        Array.Copy(buf, iRead, fb, offset, count);
-                        iRead += count;
-                    }*/
-
-
                     int ret = count;
                     while (--count >= 0)
                     {
@@ -167,6 +148,9 @@ namespace NPatch
                         if (iRead >= buf.Length)
                             iRead = 0;
                     }
+                    if (dumper_r != null)
+                        dumper_r.samples(fb, offset - ret, ret);
+
                     return ret;
                 }
             }
@@ -175,6 +159,9 @@ namespace NPatch
             /// </summary>
             public void Write(float[] fb, int offset, int count)
             {
+                if (dumper_w != null)
+                    dumper_w.samples(fb, offset, count);
+
                 // TODO: Check overrun/underrun
                 int len = buf.Length - iWrite;
                 if (count >= len)
@@ -207,8 +194,9 @@ namespace NPatch
                 lock (locker)
                 {
                     int i = iWrite;
-                    i -= (int)((this.WaveFormat.SampleRate * this.WaveFormat.Channels) / latency);
-                    if (i < 0 && iterated) i += buf.Length; // ok
+                    int align = this.WaveFormat.Channels * 4;
+                    i -= (int)(((this.WaveFormat.SampleRate * this.WaveFormat.Channels) / latency) / align) * align;
+                    if (i < 0 && iterated) i += (int)(buf.Length / align) * align; // ok
                     else i = 0; // latency lower than requested
                     iRead = i;
                 }
@@ -365,67 +353,43 @@ namespace NPatch
     // ********************************************************************************************************************************************************
     // ********************************************************************************************************************************************************
 
-    public class ChannelSelector : ISampleProvider
+    public class ChannelSelectorIn : ISampleProvider
     {
         ISampleProvider source;
-        WaveFormat waveFormat;
         float[] sourceBuffer;
-        int ch;
-        int channels;
+        int[] chans2keep;
 
-        //int frac;
-        //bool mul;
-
-        public ChannelSelector(ISampleProvider source, int keepChannel)
+        public ChannelSelectorIn(ISampleProvider source, int[] chans2keep, int minChansOut)
         {
             if (source.WaveFormat.Channels < 2)
-            {
                 throw new ArgumentException("Source must be stereo or more");
-            }
-            this.ch = keepChannel;
+
+            // duplicate the input channel if 1 is selected but we want 2
+            if (chans2keep.Length < minChansOut && chans2keep.Length == 1)
+                chans2keep = new int[] { chans2keep[0], chans2keep[0] };
+
             this.source = source;
-            this.channels = source.WaveFormat.Channels;
-            this.waveFormat = WaveFormat.CreateIeeeFloatWaveFormat(source.WaveFormat.SampleRate, channels);
-            /*if (waveFormat.Channels > source.WaveFormat.Channels)
-            {
-                frac = waveFormat.Channels / source.WaveFormat.Channels;
-                mul = false;
-            }
-            else
-            {
-                frac = source.WaveFormat.Channels / waveFormat.Channels;
-                mul = true;
-            }*/
+            this.chans2keep = chans2keep;
+            this.WaveFormat = WaveFormat.CreateIeeeFloatWaveFormat(
+                source.WaveFormat.SampleRate, chans2keep.Length);
         }
 
-        public WaveFormat WaveFormat
-        {
-            get { return this.waveFormat; }
-        }
+        public WaveFormat WaveFormat { get; private set; }
 
         public int Read(float[] buffer, int offset, int count)
         {
-            //int sourceSamplesRequired = mul ? count * frac : count / frac;
-            int sourceSamplesRequired = count;
-            int outIndex = offset;
-            EnsureSourceBuffer(sourceSamplesRequired);
-            int sourceSamplesRead = source.Read(sourceBuffer, 0, sourceSamplesRequired);
-            for (int n = 0; n < sourceSamplesRead; n += channels)// ++)
-            {
-                for (int c = 0; c < channels; c++)
-                {
-                    buffer[outIndex++] = sourceBuffer[n + ch];
-                }
-            }
-            return sourceSamplesRead;
-        }
+            int sourceChans = source.WaveFormat.Channels;
+            count = (count / this.chans2keep.Length) * sourceChans;
+            if (sourceBuffer == null || sourceBuffer.Length < count)
+                sourceBuffer = new float[count];
 
-        private void EnsureSourceBuffer(int count)
-        {
-            if (this.sourceBuffer == null || this.sourceBuffer.Length < count)
-            {
-                this.sourceBuffer = new float[count];
-            }
+            int outIndex = offset;
+            int sourceSamplesRead = source.Read(sourceBuffer, 0, count);
+            for (int n = 0; n < sourceSamplesRead; n += sourceChans)
+                for (int c = 0; c < chans2keep.Length; c++)
+                    buffer[outIndex++] = sourceBuffer[n + chans2keep[c]];
+
+            return outIndex;
         }
     }
 
@@ -433,6 +397,123 @@ namespace NPatch
     // ********************************************************************************************************************************************************
     // ********************************************************************************************************************************************************
 
+    public class ChannelMapperOut : ISampleProvider
+    {
+        ISampleProvider source;
+        float[] sourceBuffer;
+        int[] chans2write;
+        int numChansOut;
+
+        public ChannelMapperOut(ISampleProvider source, int[] chans2write, int numChansOut)
+        {
+            if (source.WaveFormat.Channels < 1)
+                throw new ArgumentException("Source must be mono or more");
+
+            this.source = source;
+            this.chans2write = chans2write;
+            this.numChansOut = numChansOut;
+            this.WaveFormat = WaveFormat.CreateIeeeFloatWaveFormat(
+                source.WaveFormat.SampleRate, numChansOut);
+        }
+
+        public WaveFormat WaveFormat { get; private set; }
+
+        public int Read(float[] buffer, int offset, int count0)
+        {
+            if (count0 == 0)
+                return 0; // ??
+
+            //return source.Read(buffer, offset, count0);
+
+            int sourceChans = source.WaveFormat.Channels;
+            int count = (count0 / numChansOut) * sourceChans;
+            if (sourceBuffer == null || sourceBuffer.Length < count)
+                sourceBuffer = new float[count];
+
+            int outIndex = offset;
+            int sourceSamplesRead = source.Read(sourceBuffer, 0, count);
+            int numRet = (sourceSamplesRead / sourceChans) * numChansOut;
+            /*System.Diagnostics.Debug.WriteLine(
+                "buffer " + buffer.Length + ", offset " + offset + ", count0 " + count0 +
+                ", ret " + numRet +
+                ", sourceSamplesRead " + sourceSamplesRead + ", count " + count);*/
+
+            // TODO blanking until buffer.length overwrites unrelated objects :thunk:
+            for (int a = offset; a < offset + numRet; a++)
+                buffer[a] = 0;
+
+            for (int n = 0; n < sourceSamplesRead; n += sourceChans)
+            {
+                for (int c = 0; c < chans2write.Length; c++)
+                    buffer[outIndex + chans2write[c]] = sourceBuffer[n + c];
+
+                outIndex += numChansOut;
+
+                //if (outIndex >= buffer.Length || outIndex > numRet + offset)
+                //    throw new Exception("fug");
+            }
+
+            return outIndex - offset;
+        }
+    }
+
+    // ********************************************************************************************************************************************************
+    // ********************************************************************************************************************************************************
+    // ********************************************************************************************************************************************************
+
+    public class HelpfulSampleToWaveProvider16 : IWaveProvider
+    {
+        private readonly ISampleProvider sourceProvider;
+        private volatile float volume;
+        private float[] sourceBuffer;
+
+        public WaveFormat WaveFormat { get; private set; }
+
+        // unmodified naudio 1.10.0
+        public HelpfulSampleToWaveProvider16(ISampleProvider sourceProvider)
+        {
+            if (sourceProvider.WaveFormat.Encoding != WaveFormatEncoding.IeeeFloat)
+                throw new ArgumentException("Input source provider must be IEEE float");
+            if (sourceProvider.WaveFormat.BitsPerSample != 32)
+                throw new ArgumentException("Input source provider must be 32 bit");
+
+            this.WaveFormat = new WaveFormat(sourceProvider.WaveFormat.SampleRate, 16, sourceProvider.WaveFormat.Channels);
+
+            this.sourceProvider = sourceProvider;
+        }
+
+        // modified naudio 1.10.0
+        public int Read(byte[] destBuffer, int offset, int numBytes)
+        {
+            // this is the big
+            if (numBytes + offset > destBuffer.Length)
+                throw new ArgumentOutOfRangeException("numBytes " + numBytes + "+" + offset + " exceeds " + destBuffer.Length);
+
+            System.Diagnostics.Debug.WriteLine("wp16 read |" + destBuffer.Length + "|, " + offset + ", " + numBytes);
+            int samplesRequired = numBytes / 2;
+            sourceBuffer = NAudio.Utils.BufferHelpers.Ensure(sourceBuffer, samplesRequired);
+            int sourceSamples = sourceProvider.Read(sourceBuffer, 0, samplesRequired);
+            
+            for (int sample = 0; sample < sourceSamples; sample++)
+            {
+                float sample32 = sourceBuffer[sample];
+                if (sample32 > 1.0f)
+                    sample32 = 1.0f;
+                if (sample32 < -1.0f)
+                    sample32 = -1.0f;
+
+                short sample2 = (short)(sample32 * 32767);
+                //System.Diagnostics.Debug.WriteLine("wp16 put |" + destBuffer.Length + "|, " + offset);
+                destBuffer[offset++] = (byte)(sample2 / 256);
+                destBuffer[offset++] = (byte)(sample2 % 256);
+            }
+            return sourceSamples * 2;
+        }
+    }
+
+    // ********************************************************************************************************************************************************
+    // ********************************************************************************************************************************************************
+    // ********************************************************************************************************************************************************
     public class VolumeSlider : ISampleProvider
     {
         readonly object lockObject = new object();
@@ -443,6 +524,7 @@ namespace NPatch
         float volumeDelta;
         float absDelta;
         public bool muted;
+        Dumper dumper;
 
         public float boost;
         public float boostLock;
@@ -470,8 +552,12 @@ namespace NPatch
         public void SetSource(ISampleProvider source)
         {
             this.source = source;
+            this.dumper = null;
             if (source != null)
+            {
                 wf = source.WaveFormat;
+                //this.dumper = new Dumper(wf, "vol");
+            }
             else wf = null;
         }
 
@@ -521,6 +607,8 @@ namespace NPatch
             try
             {
                 int sourceSamplesRead = source.Read(buffer, offset, count);
+                if (dumper != null)
+                    dumper.samples(buffer, offset, sourceSamplesRead);
 
                 double amp = 0;
                 if (enVU)
@@ -530,7 +618,7 @@ namespace NPatch
                         amp = Math.Max(amp, buffer[offset + a]);
                     }
                     amp *= boost;
-                    if (amp > 0)
+                    if (amp > 0.001)
                     {
                         // local playback on higher sample rate
                         // than inputs cause empty buffers here
@@ -596,6 +684,70 @@ namespace NPatch
         public WaveFormat WaveFormat
         {
             get { return wf; }
+        }
+    }
+
+    // ********************************************************************************************************************************************************
+    // ********************************************************************************************************************************************************
+    // ********************************************************************************************************************************************************
+
+    public class Dumper
+    {
+        static object lck = new object();
+        static int ctr = 0;
+
+        public Dumper(NAudio.Wave.WaveFormat wf, string tag)
+        {
+            string sheader = "";
+            if (wf != null && wf.Channels == 1)
+                sheader = "52 49 46 46 24 ff ff 7f 57 41 56 45 66 6D 74 20 10 00 00 00 01 00 01 00 44 AC 00 00 88 58 01 00 02 00 10 00 64 61 74 61 00 ff ff 7f";
+            else if (wf != null && wf.Channels == 2)
+                sheader = "52 49 46 46 24 ff ff 7f 57 41 56 45 66 6D 74 20 10 00 00 00 01 00 02 00 44 AC 00 00 10 B1 02 00 04 00 10 00 64 61 74 61 00 ff ff 7f";
+
+            sheader = sheader.Replace(" ", "");
+            byte[] header = new byte[sheader.Length / 2];
+            if (header.Length > 0)
+                for (int a = 0; a < header.Length; a++)
+                    header[a] = Convert.ToByte(sheader.Substring(a * 2, 2), 16);
+
+            string ext = "pcm";
+            if (header.Length > 2)
+                ext = "wav";
+
+            string fn;
+            lock (lck)
+            {
+                string ts = System.DateTime.UtcNow.ToString("yyyy-MM-dd_HH.mm.ss");
+                fn = string.Format("Loopstream-{0}-{1}-{2}.{3}", ts, tag, ++ctr, ext);
+            }
+            fs = new System.IO.FileStream(fn, System.IO.FileMode.Create);
+            if (header.Length > 0)
+                fs.Write(header, 0, header.Length);
+        }
+
+        System.IO.FileStream fs;
+
+        ~Dumper()
+        {
+            fs.Close();
+            fs.Dispose();
+        }
+
+        public void wave(byte[] buf, int ofs, int len)
+        {
+            fs.Write(buf, ofs, len);
+        }
+
+        public void samples(float[] buf, int ofs, int len)
+        {
+            byte[] wbuf = new byte[len * 2];
+            for (int a = ofs; a < ofs + len; a++)
+            {
+                short v = (short)(32767 * Math.Min(Math.Max(buf[a], -1), 1));
+                wbuf[a * 2 + 0] = (byte)(v % 256);
+                wbuf[a * 2 + 1] = (byte)(v / 256);
+            }
+            fs.Write(wbuf, 0, wbuf.Length);
         }
     }
 }

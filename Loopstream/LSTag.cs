@@ -299,6 +299,7 @@ namespace Loopstream
             Est[] est = {
                 settings.mp3.enabled ? new Est("", settings.mp3) : null,
                 settings.ogg.enabled ? new Est("", settings.ogg) : null,
+                settings.opus.enabled ? new Est("", settings.opus) : null,
             };
             Logger.tag.a("active");
             bouncer = settings.meta.bnc;

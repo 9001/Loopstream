@@ -1,0 +1,20 @@
+# move the naudio subfolder out
+awk 'BEGIN {print "<?xml version=\"1.0\" encoding=\"utf-8\"?>"} /^.?<Project / {print "<Project ToolsVersion=\"4.0\" DefaultTargets=\"Build\" xmlns=\"http://schemas.microsoft.com/developer/msbuild/2003\">";next} 1' < NAudio.csproj > a; mv -nv NAudio.csproj NAudio.csproj.bak; mv a NAudio.csproj
+
+find -name '*RT.cs' -delete
+grep -lRE '(^#if )(.* )?NET35( |$)' | grep -E '\.cs$' | while IFS= read -r x; do sed -ri 's/(^#if )(.* )?NET35( |$)/\1\2NET40\3/' "$x"; done
+grep -lRE '(^#if )(.* )?NET40( |$)' | grep -E '\.cs$' | while IFS= read -r x; do sed -ri 's/(^#if )(.* )?NET40( |$)/\1\2true\3/' "$x"; done
+
+# naudio.csproj >> edit file
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net40-client</TargetFramework>
+	<TargetFrameworkIdentifier>.NETFramework</TargetFrameworkIdentifier>
+	<TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+	<TargetFrameworkProfile>Client</TargetFrameworkProfile>
+
+# naudio.csproj >> build >> advanced >> debuggin information: embedded
+
+# below attempt didn't work
+rm -rf packages NAudioTests NAudioUniversalDemo
+awk 'off>0 {off-=1;next} /"(NAudioTests|NAudioUniversalDemo)"/ {off=1;next} 1' < NAudio.sln > a; mv a NAudio.sln

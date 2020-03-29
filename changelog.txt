@@ -3,6 +3,15 @@
 + new feature
 ~ other change
 
+2020-03-29, 09:29:00 - Loopstream 1.5.0.0
+  + Opus streaming
+  + Channel mapper for fancy soundcards
+  = Deadlock if encoders are super slow
+  = Glitchy audio at the start of the stream
+  = Tiny chance that left/right channel could swap
+  ~ Faster disconnect
+  ~ Upgrade NAudio/NVorbis/LAME/oggenc2
+
 2015-10-31, 19:32:05 - Loopstream 1.4.0.4
   = Determine "No Audio" based on mixer output instead of input
   = Crash if "No Audio" warning clicked and countdown begins

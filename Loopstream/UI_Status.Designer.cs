@@ -38,12 +38,13 @@
             this.now = new System.Windows.Forms.Label();
             this.button1 = new System.Windows.Forms.Button();
             this.button2 = new System.Windows.Forms.Button();
+            this.opus = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // mp3
             // 
             this.mp3.AutoSize = true;
-            this.mp3.Location = new System.Drawing.Point(17, 69);
+            this.mp3.Location = new System.Drawing.Point(17, 95);
             this.mp3.Margin = new System.Windows.Forms.Padding(8, 8, 0, 0);
             this.mp3.Name = "mp3";
             this.mp3.Size = new System.Drawing.Size(424, 18);
@@ -65,7 +66,7 @@
             // tag
             // 
             this.tag.AutoSize = true;
-            this.tag.Location = new System.Drawing.Point(17, 174);
+            this.tag.Location = new System.Drawing.Point(17, 200);
             this.tag.Margin = new System.Windows.Forms.Padding(8, 8, 0, 0);
             this.tag.Name = "tag";
             this.tag.Size = new System.Drawing.Size(424, 18);
@@ -76,7 +77,7 @@
             // med
             // 
             this.med.AutoSize = true;
-            this.med.Location = new System.Drawing.Point(17, 121);
+            this.med.Location = new System.Drawing.Point(17, 147);
             this.med.Margin = new System.Windows.Forms.Padding(8, 8, 0, 0);
             this.med.Name = "med";
             this.med.Size = new System.Drawing.Size(424, 18);
@@ -87,7 +88,7 @@
             // pcm
             // 
             this.pcm.AutoSize = true;
-            this.pcm.Location = new System.Drawing.Point(17, 95);
+            this.pcm.Location = new System.Drawing.Point(17, 121);
             this.pcm.Margin = new System.Windows.Forms.Padding(8, 8, 0, 0);
             this.pcm.Name = "pcm";
             this.pcm.Size = new System.Drawing.Size(424, 18);
@@ -98,7 +99,7 @@
             // mix
             // 
             this.mix.AutoSize = true;
-            this.mix.Location = new System.Drawing.Point(17, 148);
+            this.mix.Location = new System.Drawing.Point(17, 174);
             this.mix.Margin = new System.Windows.Forms.Padding(8, 8, 0, 0);
             this.mix.Name = "mix";
             this.mix.Size = new System.Drawing.Size(424, 18);
@@ -120,7 +121,7 @@
             // now
             // 
             this.now.AutoSize = true;
-            this.now.Location = new System.Drawing.Point(17, 200);
+            this.now.Location = new System.Drawing.Point(17, 226);
             this.now.Margin = new System.Windows.Forms.Padding(8, 8, 0, 0);
             this.now.Name = "now";
             this.now.Size = new System.Drawing.Size(288, 18);
@@ -129,7 +130,7 @@
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(17, 247);
+            this.button1.Location = new System.Drawing.Point(17, 273);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(482, 32);
             this.button1.TabIndex = 10;
@@ -139,7 +140,7 @@
             // 
             // button2
             // 
-            this.button2.Location = new System.Drawing.Point(515, 247);
+            this.button2.Location = new System.Drawing.Point(515, 273);
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(122, 32);
             this.button2.TabIndex = 11;
@@ -147,11 +148,23 @@
             this.button2.UseVisualStyleBackColor = true;
             this.button2.Click += new System.EventHandler(this.button2_Click);
             // 
+            // opus
+            // 
+            this.opus.AutoSize = true;
+            this.opus.Location = new System.Drawing.Point(17, 69);
+            this.opus.Margin = new System.Windows.Forms.Padding(8, 8, 0, 0);
+            this.opus.Name = "opus";
+            this.opus.Size = new System.Drawing.Size(424, 18);
+            this.opus.TabIndex = 12;
+            this.opus.Text = "opus 2013-08-24 17:14:93  #71824  hello i am message";
+            this.opus.Click += new System.EventHandler(this.opus_Click);
+            // 
             // UI_Status
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 18F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(653, 291);
+            this.ClientSize = new System.Drawing.Size(653, 318);
+            this.Controls.Add(this.opus);
             this.Controls.Add(this.button2);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.now);
@@ -186,5 +199,6 @@
         private System.Windows.Forms.Label now;
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.Button button2;
+        private System.Windows.Forms.Label opus;
     }
 }

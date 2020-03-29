@@ -28,6 +28,7 @@ namespace Loopstream
             //debounce = 0;
             src = null;
             tinval = null;
+            aggressive = false;
             agrad1 = SystemColors.ScrollBar;
             agrad2 = SystemColors.ScrollBar;
             //olevel = LicenseManager.UsageMode == LicenseUsageMode.Designtime ? 1 : 0;
@@ -127,6 +128,7 @@ namespace Loopstream
         double olevel;
         Color agrad1, agrad2;
         NPatch.VolumeSlider vs;
+        public bool aggressive { get; set; }
         public NPatch.VolumeSlider src { get { return vs; } set { vs = value; applyLevel(); } }
         //public double A_LEVEL { get { return alevel; } set { alevel = value; applyLevel(); } }
         public Color A_GRAD_1 { get { return agrad1; } set { agrad1 = value; applyGradient(); } }
@@ -151,10 +153,17 @@ namespace Loopstream
         void tinval_Tick(object sender, EventArgs e)
         {
             double alevel = (vs != null && vs.vuAge < 16) ? vs.VU : 0;
+            if (aggressive)
+                olevel =
+                    alevel > olevel ?
+                    alevel * 0.6 + olevel * 0.4 :
+                    alevel * 0.3 + olevel * 0.7;
+            else
             olevel =
                 alevel > olevel ?
                 alevel * 0.30 + olevel * 0.70 :
                 alevel * 0.06 + olevel * 0.94;
+            
             //this.Text = alevel.ToString();
             this.Invalidate();
         }
