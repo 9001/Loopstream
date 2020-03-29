@@ -109,28 +109,56 @@ namespace Loopstream
                 g.PixelOffsetMode = System.Drawing.Drawing2D.PixelOffsetMode.HighSpeed;
                 g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighSpeed;
                 int numPoints = 60 * 5 + 2; // 1 sample per 200msec
-                
+
                 /*double factOGG = 0;
                 lock(Logger.bitrateo)
                     foreach (double d in Logger.bitrateo)
                         factOGG = Math.Max(factOGG, d);
                 factOGG *= 1.1;
                 double factMP3 = settings.mp3.bitrate * 1.1;*/
-                long maxbitrate = Math.Max(
-                    settings.mp3.bitrate, (
-                    settings.ogg.compression == LSSettings.LSCompression.q ? (
-                    settings.ogg.quality == 0 ? 80 :
-                    settings.ogg.quality == 1 ? 96 :
-                    settings.ogg.quality == 2 ? 112 :
-                    settings.ogg.quality == 3 ? 128 :
-                    settings.ogg.quality == 4 ? 160 :
-                    settings.ogg.quality == 5 ? 192 :
-                    settings.ogg.quality == 6 ? 224 :
-                    settings.ogg.quality == 7 ? 256 :
-                    settings.ogg.quality == 8 ? 320 :
-                    settings.ogg.quality == 9 ? 500 :
-                    settings.ogg.quality == 10 ? 1000 : 128) :
-                    settings.ogg.bitrate));
+                long maxbitrate;
+
+                // Defaults to showing ogg rate if neither streams are enabled, but I can deal with that
+                if (settings.mp3.enabled && settings.ogg.enabled)
+                {
+                    maxbitrate = Math.Max(
+                        settings.mp3.bitrate, (
+                        settings.ogg.compression == LSSettings.LSCompression.q ? (
+                        settings.ogg.quality == 0 ? 80 :
+                        settings.ogg.quality == 1 ? 96 :
+                        settings.ogg.quality == 2 ? 112 :
+                        settings.ogg.quality == 3 ? 128 :
+                        settings.ogg.quality == 4 ? 160 :
+                        settings.ogg.quality == 5 ? 192 :
+                        settings.ogg.quality == 6 ? 224 :
+                        settings.ogg.quality == 7 ? 256 :
+                        settings.ogg.quality == 8 ? 320 :
+                        settings.ogg.quality == 9 ? 500 :
+                        settings.ogg.quality == 10 ? 1000 : 128) :
+                        settings.ogg.bitrate));
+                }
+                else if (settings.mp3.enabled)
+                {
+                    maxbitrate = settings.mp3.bitrate;
+                }
+                else
+                {
+                    maxbitrate = (
+                        settings.ogg.compression == LSSettings.LSCompression.q ? (
+                        settings.ogg.quality == 0 ? 80 :
+                        settings.ogg.quality == 1 ? 96 :
+                        settings.ogg.quality == 2 ? 112 :
+                        settings.ogg.quality == 3 ? 128 :
+                        settings.ogg.quality == 4 ? 160 :
+                        settings.ogg.quality == 5 ? 192 :
+                        settings.ogg.quality == 6 ? 224 :
+                        settings.ogg.quality == 7 ? 256 :
+                        settings.ogg.quality == 8 ? 320 :
+                        settings.ogg.quality == 9 ? 500 :
+                        settings.ogg.quality == 10 ? 1000 : 128) :
+                        settings.ogg.bitrate);
+                }
+
                 double fact = maxbitrate * 1.1;
 
                 double mulY = b.Height * 1.0 / fact;
