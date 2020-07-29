@@ -342,7 +342,12 @@ namespace Loopstream
                 {
                     fx_in = new NVorbis.NAudioSupport.VorbisWaveReader(path + ".ogg");
                 }
-                fx_out = new NAudio.Wave.WasapiOut(LSSettings.singleton.devRec.mm, NAudio.CoreAudioApi.AudioClientShareMode.Shared, false, 100);
+
+                var devRec = LSSettings.singleton.devRec as LSDevice;
+                if (devRec == null)
+                    return;
+
+                fx_out = new NAudio.Wave.WasapiOut(devRec.mm, NAudio.CoreAudioApi.AudioClientShareMode.Shared, false, 100);
                 fx_out.PlaybackStopped += new EventHandler<NAudio.Wave.StoppedEventArgs>(fx_out_PlaybackStopped);
                 fx_out.Init(fx_in);
                 fx_out.Play();
@@ -728,7 +733,7 @@ namespace Loopstream
         {
             z("Show settings form");
             this.Hide();
-            new ConfigSC(settings).ShowDialog();
+            new ConfigSC(settings, this.Bounds).ShowDialog();
             showhide();
             this.Show();
         }
@@ -804,57 +809,6 @@ namespace Loopstream
             new UI_Status(settings).Show();
         }
 
-        void helloworld(object sender, EventArgs e)
-        {
-            if (settings.devRec == null || settings.devRec.mm == null)
-            {
-                MessageBox.Show("I'm about to open the settings window.\n\n" +
-                    "In the second dropdown (input Music), please select the speakers output you use when listening to music.\n\nPress apply when done.");
-                gSettings_Click(sender, e);
-
-                if (settings.devRec == null || settings.devRec.mm == null)
-                {
-                    MessageBox.Show("Sorry, but the settings are still invalid. Please try again or something.");
-                    return;
-                }
-            }
-            string app, str = "";
-            app = "CAPTURE_ENDPOINT = " + settings.devRec.mm.ToString() + "\r\n";
-            File.AppendAllText("Loopstream.log", app);
-            str += app;
-
-            wdt_waveIn = new NAudio.Wave.WasapiLoopbackCapture(settings.devRec.mm);
-
-            app = "WASAPI_FMT = " + LSDevice.stringer(wdt_waveIn) + "\r\n";
-            File.AppendAllText("Loopstream.log", app);
-            str += app;
-
-            Clipboard.Clear();
-            Clipboard.SetText(str);
-            MessageBox.Show(
-                "Capture will begin when you press OK; please open a media player and start listening to some music.\n\n" +
-                "While you wait, the following text is on your clipboard... Paste it in irc (Ctrl-V)\n\n" + str);
-
-            wdt_v = File.OpenWrite("Loopstream.raw");
-            wdt_writer = new NAudio.Wave.WaveFileWriter("Loopstream.wav", wdt_waveIn.WaveFormat);
-            wdt_waveIn.DataAvailable += wdt_OnDataAvailable;
-            wdt_waveIn.StartRecording();
-            while (true)
-            {
-                if (val < 0) break;
-                gMic.level = val;
-                Application.DoEvents();
-                System.Threading.Thread.Sleep(110);
-                val += 2;
-            }
-            gMic.level = 0;
-            if (DialogResult.Yes == MessageBox.Show("Test finished! The soundclip has been recorded to Loopstream.wav in the " +
-                    "same folder as this .exe, more specifically here:\n\n" + Application.StartupPath + "\n\n" +
-                    "Could you uploading this to pomf.se? Thanks!", "Open browser?", MessageBoxButtons.YesNo))
-            {
-                System.Diagnostics.Process.Start("http://pomf.se/");
-            }
-        }
         int val = 0;
         NAudio.Wave.IWaveIn wdt_waveIn;
         NAudio.Wave.WaveFileWriter wdt_writer;

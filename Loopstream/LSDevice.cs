@@ -6,19 +6,21 @@ using System.Xml.Serialization;
 
 namespace Loopstream
 {
-    public class LSDevice
+    public class LSDevice : LSAudioSrc
     {
+        public string id { get; set; }
+        public string name { get; set; }
+        
+        [XmlIgnore]
+        public NAudio.Wave.WaveFormat wf { get; set; }
+
         bool tested;
-        public string id, name;
         public bool isRec, isPlay;
         public string capt1, capt2;
         public string serializationData;
 
         [XmlIgnore]
         public NAudio.CoreAudioApi.MMDevice mm;
-
-        [XmlIgnore]
-        public NAudio.Wave.WaveFormat wf;
 
         public LSDevice()
         {
@@ -65,8 +67,10 @@ namespace Loopstream
             wf = null;
             try
             {
-                if (mm == null) return false;
-                NAudio.Wave.IWaveIn dev = null;
+                if (mm == null ||
+                    mm.State == NAudio.CoreAudioApi.DeviceState.NotPresent ||
+                    mm.State == NAudio.CoreAudioApi.DeviceState.Unplugged)
+                    return false;
 
                 capt1 = mm.FriendlyName; // windows name
                 capt2 = mm.DeviceFriendlyName; // just device
@@ -77,9 +81,9 @@ namespace Loopstream
                 isRec = mm.DataFlow == NAudio.CoreAudioApi.DataFlow.All || mm.DataFlow == NAudio.CoreAudioApi.DataFlow.Capture;
                 isPlay = mm.DataFlow == NAudio.CoreAudioApi.DataFlow.All || mm.DataFlow == NAudio.CoreAudioApi.DataFlow.Render;
 
-                dev = isPlay
-                    ? dev = new NAudio.Wave.WasapiLoopbackCapture(mm)
-                    : dev = new NAudio.CoreAudioApi.WasapiCapture(mm);
+                NAudio.Wave.IWaveIn dev = isPlay ?
+                    new NAudio.Wave.WasapiLoopbackCapture(mm) :
+                    new NAudio.CoreAudioApi.WasapiCapture(mm);
 
                 if (dev != null)
                 {

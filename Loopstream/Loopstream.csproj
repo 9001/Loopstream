@@ -93,6 +93,7 @@
   <ItemGroup>
     <Compile Include="DFC.cs" />
     <Compile Include="Exceptional.cs" />
+    <Compile Include="LSAudioSrc.cs" />
     <Compile Include="LSDevice.cs" />
     <Compile Include="LSEncoder.cs" />
     <Compile Include="LSLame.cs" />
@@ -102,6 +103,7 @@
     <Compile Include="LSSettings.cs" />
     <Compile Include="LSTag.cs" />
     <Compile Include="LSVorbis.cs" />
+    <Compile Include="LSWavetail.cs" />
     <Compile Include="turnkey\7zip\Common\CommandLineParser.cs" />
     <Compile Include="turnkey\7zip\Common\CRC.cs" />
     <Compile Include="turnkey\7zip\Common\InBuffer.cs" />
@@ -202,6 +204,12 @@
     <Compile Include="UI_Status.Designer.cs">
       <DependentUpon>UI_Status.cs</DependentUpon>
     </Compile>
+    <Compile Include="UI_WavetailCfg.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI_WavetailCfg.Designer.cs">
+      <DependentUpon>UI_WavetailCfg.cs</DependentUpon>
+    </Compile>
     <Compile Include="UI_Winlist.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -264,6 +272,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="UI_Status.resx">
       <DependentUpon>UI_Status.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI_WavetailCfg.resx">
+      <DependentUpon>UI_WavetailCfg.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UI_Winlist.resx">
       <DependentUpon>UI_Winlist.cs</DependentUpon>

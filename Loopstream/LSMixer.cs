@@ -13,7 +13,7 @@ namespace Loopstream
     {
         LSSettings settings;
         WaveFormat format;
-        WasapiLoopbackCapture recCap;
+        IWaveIn recCap;
         WasapiCapture micCap;
         BufferedWaveProvider recIn, micIn;
         MediaFoundationResampler recRe, micRe;
@@ -74,22 +74,32 @@ namespace Loopstream
             mixa = new NPatch.Mixa(format);
 
             Logger.mix.a("create rec");
-            recCap = new WasapiLoopbackCapture(settings.devRec.mm);
+            if (settings.devRec is LSDevice)
+                recCap = new WasapiLoopbackCapture(((LSDevice)settings.devRec).mm);
+            else
+                recCap = new LSWavetailDev((LSWavetail)settings.devRec);
+
             recCap.DataAvailable += recDev_DataAvailable_03;
             recIn = new BufferedWaveProvider(recCap.WaveFormat);
+            
             //recIn.ReadFully = false;
             if (recCap.WaveFormat.SampleRate != settings.samplerate)
             {
                 Logger.mix.a("create rec resampler");
                 recRe = new MediaFoundationResampler(recIn, settings.samplerate);
                 recRe.ResamplerQuality = 60;
-                lq += "Incorrect samplerate on music device, resampling\n" +
-                    settings.devRec.mm.DeviceFriendlyName + "\n" +
-                    settings.devRec.mm.FriendlyName + "\n" +
-                    settings.devRec.id + "\n" +
+                lq += "Incorrect samplerate on music device, resampling\n";
+
+                if (settings.devRec is LSDevice)
+                    lq +=
+                        ((LSDevice)settings.devRec).mm.DeviceFriendlyName + "\n" +
+                        ((LSDevice)settings.devRec).mm.FriendlyName + "\n";
+
+                lq += settings.devRec.id + "\n" +
                     LSDevice.stringer(settings.devRec.wf) + "\n" +
                     LSDevice.stringer(recCap.WaveFormat) + "\n\n";
             }
+
             recProv = new WaveToSampleProvider((IWaveProvider)recRe ?? (IWaveProvider)recIn);
             if (recCap.WaveFormat.Channels != settings.chRec.Length)
             {
@@ -138,7 +148,7 @@ namespace Loopstream
             outVol.muted = !settings.mixer.bOut;
 
             Logger.mix.a("create mixOut");
-            mixOut = new WasapiOut(settings.devOut.mm,
+            mixOut = new WasapiOut(((LSDevice)settings.devOut).mm,
                 AudioClientShareMode.Shared, false, 100);
 
             Logger.mix.a("init mixOut");
@@ -205,10 +215,11 @@ namespace Loopstream
             if (micVol != null && micVol.OK())
                 return "";
 
-            if (settings.devMic != null && settings.devMic.mm != null)
+            var devMic = settings.devMic as LSDevice;
+            if (devMic != null && devMic.mm != null)
             {
                 Logger.mix.a("create mic");
-                micCap = new WasapiCapture(settings.devMic.mm);
+                micCap = new WasapiCapture(devMic.mm);
                 micCap.DataAvailable += micDev_DataAvailable_03;
                 micIn = new BufferedWaveProvider(micCap.WaveFormat);
                 //micIn.ReadFully = false;
@@ -218,10 +229,10 @@ namespace Loopstream
                     micRe = new MediaFoundationResampler(micIn, settings.samplerate);
                     micRe.ResamplerQuality = 60;
                     ret += "Incorrect samplerate on microphone device, resampling\n" +
-                        settings.devMic.mm.DeviceFriendlyName + "\n" +
-                        settings.devMic.mm.FriendlyName + "\n" +
-                        settings.devMic.id + "\n" +
-                        LSDevice.stringer(settings.devMic.wf) + "\n" +
+                        devMic.mm.DeviceFriendlyName + "\n" +
+                        devMic.mm.FriendlyName + "\n" +
+                        devMic.id + "\n" +
+                        LSDevice.stringer(devMic.wf) + "\n" +
                         LSDevice.stringer(micCap.WaveFormat) + "\n\n";
                 }
                 micProv = new WaveToSampleProvider((IWaveProvider)micRe ?? (IWaveProvider)micIn);
@@ -366,16 +377,6 @@ namespace Loopstream
         void micDev_DataAvailable_03(object sender, WaveInEventArgs e)
         {
             micIn.AddSamples(e.Buffer, 0, e.BytesRecorded);
-        }
-
-        void doMagic02_WORKS()
-        {
-            WasapiLoopbackCapture wlc = new WasapiLoopbackCapture(settings.devRec.mm);
-            WaveInProvider waveIn = new WaveInProvider(wlc);
-            WasapiOut waveOut = new WasapiOut(settings.devOut.mm, AudioClientShareMode.Shared, false, 100);
-            waveOut.Init(waveIn);
-            wlc.StartRecording();
-            waveOut.Play();
         }
     }
 }

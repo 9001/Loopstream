@@ -523,19 +523,20 @@ namespace Loopstream
             }
         }
 
-        LSDevice _devRec, _devMic, _devOut;
+        LSAudioSrc _devRec, _devMic, _devOut;
         public string s_devRec, s_devMic, s_devOut;
         public bool micLeft, micRight; //deprecated
         public int[] chRec, chMic, chOut;
+        public LSWavetail wavetailer;
 
         [XmlIgnore]
-        public LSDevice[] devs;
+        public LSAudioSrc[] devs;
         [XmlIgnore]
-        public LSDevice devRec { get { return _devRec; } set { _devRec = value; s_devRec = value == null? "" : value.id; } }
+        public LSAudioSrc devRec { get { return _devRec; } set { _devRec = value; s_devRec = value == null ? "" : value.id; } }
         [XmlIgnore]
-        public LSDevice devMic { get { return _devMic; } set { _devMic = value; s_devMic = value == null ? "" : value.id; } }
+        public LSAudioSrc devMic { get { return _devMic; } set { _devMic = value; s_devMic = value == null ? "" : value.id; } }
         [XmlIgnore]
-        public LSDevice devOut { get { return _devOut; } set { _devOut = value; s_devOut = value == null ? "" : value.id; } }
+        public LSAudioSrc devOut { get { return _devOut; } set { _devOut = value; s_devOut = value == null ? "" : value.id; } }
 
         public LSPreset mixer;
         public LSPreset[] presets;
@@ -578,6 +579,8 @@ namespace Loopstream
             chMic = new int[] { 0 };
             chRec = new int[] { 0, 1 };
             chOut = new int[] { 0, 1 };
+
+            wavetailer = new LSWavetail();
 
             mp3 = new LSParams();
             mp3.enabled = true;
@@ -654,7 +657,7 @@ namespace Loopstream
 
         public void init()
         {
-            List<LSDevice> ldev = new List<LSDevice>();
+            List<LSAudioSrc> ldev = new List<LSAudioSrc>();
             try
             {
                 NAudio.CoreAudioApi.MMDeviceEnumerator mde = new NAudio.CoreAudioApi.MMDeviceEnumerator();
@@ -694,6 +697,7 @@ namespace Loopstream
             }
             catch { Logger.app.a("Failed !!!"); }
 
+            ldev.Add(wavetailer);
             devs = ldev.ToArray();
             if (string.IsNullOrEmpty(s_devRec)) s_devRec = "";
             if (string.IsNullOrEmpty(s_devMic)) s_devMic = "";
@@ -712,6 +716,7 @@ namespace Loopstream
             {
                 resetTriggers();
             }
+            wavetailer.setFormat();
             LSSettings.singleton = this;
         }
         public void resetMetas()
@@ -1001,24 +1006,32 @@ namespace Loopstream
                 StringBuilder sw = new StringBuilder();
                 for (int a = 0; a < devs.Length; a++)
                 {
+                    if (!(devs[a] is LSDevice))
+                        continue;
+
+                    var dev = (LSDevice)devs[a];
+
                     if (splesh != null)
                     {
                         splesh.prog(a + 1, devs.Length);
                     }
-                    //devs[a].test();
+                    //dev.test();
                     try
                     {
-                        devs[a].test();
-                        sw.AppendLine(devs[a].mm.ID);
-                        sw.AppendLine(devs[a].mm.DeviceFriendlyName);
-                        sw.AppendLine(devs[a].mm.FriendlyName);
-                        try
+                        dev.test();
+                        if (dev.mm != null)
                         {
-                            sw.AppendLine(LSDevice.stringer(devs[a].wf));
-                        }
-                        catch
-                        {
-                            sw.AppendLine("*** bad wf ***");
+                            sw.AppendLine(dev.mm.ID);
+                            sw.AppendLine(dev.mm.DeviceFriendlyName);
+                            sw.AppendLine(dev.mm.FriendlyName);
+                            try
+                            {
+                                sw.AppendLine(LSDevice.stringer(dev.wf));
+                            }
+                            catch
+                            {
+                                sw.AppendLine("*** bad wf ***");
+                            }
                         }
                     }
                     catch
@@ -1033,9 +1046,9 @@ namespace Loopstream
             }
         }
 
-        public LSDevice getDevByID(string id)
+        public LSAudioSrc getDevByID(string id)
         {
-            foreach (LSDevice dev in devs)
+            foreach (LSAudioSrc dev in devs)
             {
                 if (dev.id == id)
                 {

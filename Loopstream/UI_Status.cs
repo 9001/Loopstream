@@ -43,14 +43,18 @@ namespace Loopstream
             mix.Text = "mix  " + Logger.mix;
             tag.Text = "tag  " + Logger.tag;
             app.Text = "app  " + Logger.app;
+            wtail.Text = "wt   " + Logger.wt;
             now.Text = "---  " + DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss.ffff") + "  ------ |";
         }
 
         void pop(Logger log)
         {
             string p = log.compile(96);
+            
             Clipboard.Clear();
-            Clipboard.SetText(p);
+            if (p != "")
+                Clipboard.SetText(p);
+            
             MessageBox.Show(p);
         }
 
@@ -94,6 +98,11 @@ namespace Loopstream
             pop(Logger.app);
         }
 
+        private void wtail_Click(object sender, EventArgs e)
+        {
+            pop(Logger.wt);
+        }
+
         private void button1_Click(object sender, EventArgs e)
         {
             StringBuilder sb = new StringBuilder();
@@ -106,6 +115,7 @@ namespace Loopstream
             sb.AppendLine("\n\n\n\n\nCache for med"); sb.AppendLine(Logger.med.compile());
             sb.AppendLine("\n\n\n\n\nCache for mix"); sb.AppendLine(Logger.mix.compile());
             sb.AppendLine("\n\n\n\n\nCache for tag"); sb.AppendLine(Logger.tag.compile());
+            sb.AppendLine("\n\n\n\n\nCache for wt"); sb.AppendLine(Logger.wt.compile());
             sb.AppendLine("\n\n\n\n\nCache for app"); sb.AppendLine(Logger.app.compile());
             Clipboard.Clear();
             Clipboard.SetText(sb.ToString());

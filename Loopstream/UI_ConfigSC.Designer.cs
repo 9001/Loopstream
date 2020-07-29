@@ -2222,7 +2222,7 @@
             this.Controls.Add(this.pWrapper);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.SizableToolWindow;
             this.Name = "ConfigSC";
-            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
+            this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
             this.Text = "Loopstream Config";
             this.Load += new System.EventHandler(this.ConfigSC_Load);
             this.Resize += new System.EventHandler(this.ConfigSC_Resize);

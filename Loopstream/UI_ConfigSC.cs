@@ -17,9 +17,14 @@ namespace Loopstream
 {
     public partial class ConfigSC : Form
     {
-        public ConfigSC(LSSettings settings)
+        public ConfigSC(LSSettings settings, Rectangle bounds)
         {
             this.settings = settings;
+            this.bounds = bounds;
+            this.Location = new Point(
+                bounds.Left + bounds.Width / 2 - this.Width / 2,
+                bounds.Top + bounds.Height / 2 - this.Height / 2);
+
             InitializeComponent();
             pTabs.BringToFront();
         }
@@ -28,6 +33,7 @@ namespace Loopstream
         Control popTop;
         bool disregardEvents;
         public LSSettings settings; //, apply;
+        Rectangle bounds;
         bool doRegexTests;
         string welcomeText;
 
@@ -93,35 +99,38 @@ namespace Loopstream
             string smp = "";
             string fail = "";
             string dbg = "";
-            try
-            {
-                if (settings.devRec.wf == null)
+
+            if (settings.devRec is LSDevice)
+                try
                 {
-                    settings.devRec.test();
+                    if (((LSDevice)settings.devRec).wf == null)
+                    {
+                        ((LSDevice)settings.devRec).test();
+                    }
+                    NAudio.Wave.WaveFormat wf = ((LSDevice)settings.devRec).wf;
+                    if (wf.SampleRate != settings.samplerate)
+                    {
+                        smp += "music=" + wf.SampleRate + ", ";
+                    }
+                    if (Program.debug)
+                    {
+                        dbg += "music=" + LSDevice.stringer(wf) + "\n\n";
+                    }
                 }
-                NAudio.Wave.WaveFormat wf = settings.devRec.wf;
-                if (wf.SampleRate != settings.samplerate)
+                catch
                 {
-                    smp += "music=" + wf.SampleRate + ", ";
+                    fail += "music, ";
                 }
-                if (Program.debug)
-                {
-                    dbg += "music=" + LSDevice.stringer(wf) + "\n\n";
-                }
-            }
-            catch
-            {
-                fail += "music, ";
-            }
-            if (settings.devMic != null && settings.devMic.mm != null)
+
+            if (settings.devMic != null && ((LSDevice)settings.devMic).mm != null)
             {
                 try
                 {
-                    if (settings.devMic.wf == null)
+                    if (((LSDevice)settings.devMic).wf == null)
                     {
-                        settings.devMic.test();
+                        ((LSDevice)settings.devMic).test();
                     }
-                    NAudio.Wave.WaveFormat wf = settings.devMic.wf;
+                    NAudio.Wave.WaveFormat wf = ((LSDevice)settings.devMic).wf;
                     if (wf.SampleRate != settings.samplerate)
                     {
                         smp += "mic=" + wf.SampleRate + ", ";
@@ -228,8 +237,13 @@ namespace Loopstream
             reDevice();
             initDevs();
             string bads = "";
-            foreach (LSDevice dev in settings.devs)
+            foreach (LSAudioSrc idev in settings.devs)
             {
+                if (!(idev is LSDevice))
+                    continue;
+                
+                var dev = (LSDevice)idev;
+
                 if (dev != null &&
                     dev.wf != null &&
                     dev.wf.SampleRate != settings.samplerate)
@@ -450,16 +464,18 @@ namespace Loopstream
             gOutS.Items.Clear();
             populate(true, gOutS, gMusS);
             populate(false, gMicS);
+            gMusS.Items.Add(settings.wavetailer);
+
             LSDevice nil = new LSDevice();
             nil.name = "(disabled)";
-
             gMicS.Items.Insert(0, nil);
+
             gMusS.SelectedItem = settings.devRec;
             gMicS.SelectedItem = settings.devMic;
             gOutS.SelectedItem = settings.devOut;
 
             if (settings.devMic == null ||
-                settings.devMic.mm == null)
+                ((LSDevice)settings.devMic).mm == null)
                 gMicS.SelectedIndex = 0;
 
             freshenChanselButtons();
@@ -471,12 +487,21 @@ namespace Loopstream
             freshenChansel(gMusB, settings.devRec, settings.chRec);
             freshenChansel(gMicB, settings.devMic, settings.chMic);
             freshenChansel(gOutB, settings.devOut, settings.chOut);
-            gMicB.Enabled = settings.devMic != null && settings.devMic.wf != null;
-            gOutB.Enabled = settings.devOut != null && settings.devOut.wf != null;
+            gMicB.Enabled = settings.devMic != null && ((LSDevice)settings.devMic).wf != null;
+            gOutB.Enabled = settings.devOut != null && ((LSDevice)settings.devOut).wf != null;
         }
 
-        void freshenChansel(Control ctl, LSDevice dev, int[] chans)
+        void freshenChansel(Control ctl, LSAudioSrc asrc, int[] chans)
         {
+            if (asrc is LSWavetail)
+            {
+                ctl.Text = "Configure";
+                ctl.Enabled = true;
+                return;
+            }
+
+            var dev = (LSDevice)asrc;
+            
             if (dev == null || dev.wf == null)
             {
                 ctl.Enabled = false;
@@ -683,8 +708,13 @@ namespace Loopstream
             {
                 l.Items.Clear();
             }
-            foreach (LSDevice lsd in settings.devs)
+            foreach (LSAudioSrc idev in settings.devs)
             {
+                if (!(idev is LSDevice))
+                    continue;
+
+                var lsd = (LSDevice)idev;
+
                 if ((playback && lsd.isPlay) || (!playback && lsd.isRec))
                 {
                     foreach (ComboBox l in lb)
@@ -823,9 +853,9 @@ namespace Loopstream
             if (disregardEvents)
                 return;
 
-            settings.devOut = (LSDevice)gOutS.SelectedItem;
+            settings.devOut = (LSAudioSrc)gOutS.SelectedItem;
             freshenChanselButtons();
-            playFX(settings.devOut);
+            playFX((LSDevice)settings.devOut);
         }
 
         private void gOneS_SelectedIndexChanged(object sender, EventArgs e)
@@ -833,10 +863,11 @@ namespace Loopstream
             if (disregardEvents)
                 return;
 
-            settings.devRec = (LSDevice)gMusS.SelectedItem;
+            settings.devRec = (LSAudioSrc)gMusS.SelectedItem;
             //if (Program.debug) MessageBox.Show(LSDevice.stringer(settings.devRec.wf));
             freshenChanselButtons();
-            playFX(settings.devRec);
+            if (settings.devRec is LSDevice)
+                playFX((LSDevice)settings.devRec);
         }
 
         private void gTwoS_SelectedIndexChanged(object sender, EventArgs e)
@@ -844,7 +875,7 @@ namespace Loopstream
             if (disregardEvents)
                 return;
 
-            settings.devMic = (LSDevice)gMicS.SelectedItem;
+            settings.devMic = (LSAudioSrc)gMicS.SelectedItem;
             freshenChanselButtons();
             //if (Program.debug) MessageBox.Show(LSDevice.stringer(settings.devMic.wf));
         }
@@ -912,7 +943,8 @@ namespace Loopstream
                 if (fx_out != null) fx_out.Dispose();
                 if (fx_wav != null) fx_wav.Dispose();
                 if (fx_stream != null) fx_stream.Dispose();
-                unFxTimer.Stop();
+                if (unFxTimer != null)
+                    unFxTimer.Stop();
             }
             catch { }
         }
@@ -1403,9 +1435,11 @@ namespace Loopstream
                                 string[] mods = asdf[1].Split('&');
                                 foreach (string mod in mods)
                                 {
+                                    var devRec = settings.devRec as LSDevice;
+                                    var devMic = settings.devMic as LSDevice;
                                     if (mod.StartsWith("resampling") && (
-                                        (settings.devRec == null || settings.devRec.wf == null || settings.devRec.wf.SampleRate != settings.samplerate) ||
-                                        (settings.devMic != null && settings.devMic.wf != null && settings.devMic.wf.SampleRate != settings.samplerate)))
+                                        (devRec == null || devRec.wf == null || devRec.wf.SampleRate != settings.samplerate) ||
+                                        (devMic != null && devMic.wf != null && devMic.wf.SampleRate != settings.samplerate)))
                                     {
                                         action = "page/" + mod;
                                     }
@@ -1514,7 +1548,7 @@ namespace Loopstream
                                     if (ret.Contains("TPL_BADSMP"))
                                     {
                                         StringBuilder sb = new StringBuilder();
-                                        LSDevice[] devs = { settings.devMic, settings.devRec };
+                                        LSDevice[] devs = { (LSDevice)settings.devMic, (LSDevice)settings.devRec };
                                         foreach (LSDevice dev in devs)
                                         {
                                             if (dev != null && dev.wf != null && dev.wf.SampleRate != settings.samplerate)
@@ -1534,8 +1568,13 @@ namespace Loopstream
                                         StringBuilder sb0 = new StringBuilder();
                                         StringBuilder sb1 = new StringBuilder();
                                         StringBuilder sb2 = new StringBuilder();
-                                        foreach (LSDevice dev in settings.devs)
+                                        foreach (LSAudioSrc idev in settings.devs)
                                         {
+                                            if (!(idev is LSDevice))
+                                                continue;
+
+                                            var dev = (LSDevice)idev;
+
                                             if (dev.wf != null)
                                             {
                                                 string nam = dev.ToString();
@@ -2231,8 +2270,15 @@ namespace Loopstream
 
         void chanvis(ComboBox cb, ref int[] chans)
         {
+            LSAudioSrc src = (LSAudioSrc)cb.SelectedItem;
+            if (src is LSWavetail)
+            {
+                configWavetailer(cb);
+                return;
+            }
+
             var tmp_chans = chans;
-            var lsdev = (LSDevice)cb.SelectedItem;
+            var lsdev = (LSDevice)src;
             Array.Copy(chans, tmp_chans, chans.Length);
             
             var w = new UI_Chanvis(lsdev, tmp_chans);
@@ -2243,6 +2289,12 @@ namespace Loopstream
             
             chans = w.chans;
             freshenChanselButtons();
+        }
+
+        void configWavetailer(ComboBox cb)
+        {
+            new UI_WavetailCfg((LSWavetail)cb.SelectedItem).ShowDialog();
+            cb.Items[cb.SelectedIndex] = cb.Items[cb.SelectedIndex];
         }
 
         private void gOpusEnable_CheckedChanged(object sender, EventArgs e)

@@ -39,6 +39,7 @@
             this.button1 = new System.Windows.Forms.Button();
             this.button2 = new System.Windows.Forms.Button();
             this.opus = new System.Windows.Forms.Label();
+            this.wtail = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // mp3
@@ -121,7 +122,7 @@
             // now
             // 
             this.now.AutoSize = true;
-            this.now.Location = new System.Drawing.Point(17, 226);
+            this.now.Location = new System.Drawing.Point(17, 252);
             this.now.Margin = new System.Windows.Forms.Padding(8, 8, 0, 0);
             this.now.Name = "now";
             this.now.Size = new System.Drawing.Size(288, 18);
@@ -130,9 +131,10 @@
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(17, 273);
+            this.button1.Location = new System.Drawing.Point(12, 286);
+            this.button1.Margin = new System.Windows.Forms.Padding(3, 16, 3, 3);
             this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(482, 32);
+            this.button1.Size = new System.Drawing.Size(489, 32);
             this.button1.TabIndex = 10;
             this.button1.Text = "copy recent debug output to clipboard (for pastebin)";
             this.button1.UseVisualStyleBackColor = true;
@@ -140,9 +142,9 @@
             // 
             // button2
             // 
-            this.button2.Location = new System.Drawing.Point(515, 273);
+            this.button2.Location = new System.Drawing.Point(507, 286);
             this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(122, 32);
+            this.button2.Size = new System.Drawing.Size(134, 32);
             this.button2.TabIndex = 11;
             this.button2.Text = "Network";
             this.button2.UseVisualStyleBackColor = true;
@@ -159,11 +161,23 @@
             this.opus.Text = "opus 2013-08-24 17:14:93  #71824  hello i am message";
             this.opus.Click += new System.EventHandler(this.opus_Click);
             // 
+            // wtail
+            // 
+            this.wtail.AutoSize = true;
+            this.wtail.Location = new System.Drawing.Point(17, 226);
+            this.wtail.Margin = new System.Windows.Forms.Padding(8, 8, 0, 0);
+            this.wtail.Name = "wtail";
+            this.wtail.Size = new System.Drawing.Size(424, 18);
+            this.wtail.TabIndex = 13;
+            this.wtail.Text = "wt   2013-08-24 17:14:93  #71824  hello i am message";
+            this.wtail.Click += new System.EventHandler(this.wtail_Click);
+            // 
             // UI_Status
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 18F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(653, 318);
+            this.ClientSize = new System.Drawing.Size(653, 330);
+            this.Controls.Add(this.wtail);
             this.Controls.Add(this.opus);
             this.Controls.Add(this.button2);
             this.Controls.Add(this.button1);
@@ -200,5 +214,6 @@
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.Button button2;
         private System.Windows.Forms.Label opus;
+        private System.Windows.Forms.Label wtail;
     }
 }

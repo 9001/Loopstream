@@ -148,7 +148,7 @@ namespace Loopstream
     public class Logger
     {
         // awk '/^Cache for / {k=$3} {sub(/\|/, "| " k);print}' ~/Desktop/tmp | sort
-        public static Logger mp3, ogg, opus, pcm, med, mix, tag, app;
+        public static Logger mp3, ogg, opus, pcm, med, mix, tag, app, wt;
         public static List<double> bitrate_mp3, bitrate_ogg, bitrate_opus;
         public static void init()
         {
@@ -163,6 +163,7 @@ namespace Loopstream
             opus = new Logger();
             tag = new Logger();
             app = new Logger();
+            wt = new Logger();
         }
         public long i, msg;
         
