@@ -1111,6 +1111,21 @@ namespace Loopstream
 
                     int myVer = version();
                     int iniVer = Convert.ToInt32(ver, 16);
+                    if (Program.beta == 0 && myVer != iniVer)
+                    {
+                        string fn_bak = "Loopstream-backup-" +
+                            ((iniVer >> 0x18) & 0xff) + "." +
+                            ((iniVer >> 0x10) & 0xff) + "." +
+                            ((iniVer >> 0x8) & 0xff) + "." +
+                            ((iniVer) & 0xff) + ".ini";
+
+                        if (!System.IO.File.Exists(fn_bak))
+                        {
+                            System.IO.File.Move(fn_rls, fn_bak);
+                            System.IO.File.Copy(fn_bak, fn_rls);
+                        }
+                    }
+
                     //if (myVer != iniVer)
                     if (iniVer < 0x01020600)
                     {

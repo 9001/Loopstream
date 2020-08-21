@@ -44,6 +44,7 @@ namespace Loopstream
 
         public void set(string str)
         {
+            str = str.Replace("\r", "").Replace("\n", "");  // waffuru ran into this 2020-07-31
             Logger.tag.a("set " + str);
             manual = new LSTD(true, str, "MANUALLY_APPLIED");
         }

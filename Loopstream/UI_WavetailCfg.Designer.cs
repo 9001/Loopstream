@@ -39,6 +39,8 @@
             this.label3 = new System.Windows.Forms.Label();
             this.gBitness = new System.Windows.Forms.TextBox();
             this.label4 = new System.Windows.Forms.Label();
+            this.gLE = new System.Windows.Forms.RadioButton();
+            this.gBE = new System.Windows.Forms.RadioButton();
             this.SuspendLayout();
             // 
             // label1
@@ -70,11 +72,11 @@
             // gDelet
             // 
             this.gDelet.AutoSize = true;
-            this.gDelet.Location = new System.Drawing.Point(232, 78);
+            this.gDelet.Location = new System.Drawing.Point(339, 78);
             this.gDelet.Margin = new System.Windows.Forms.Padding(3, 12, 3, 3);
             this.gDelet.Name = "gDelet";
             this.gDelet.Size = new System.Drawing.Size(95, 17);
-            this.gDelet.TabIndex = 6;
+            this.gDelet.TabIndex = 8;
             this.gDelet.Text = "Delete old files";
             this.gDelet.UseVisualStyleBackColor = true;
             // 
@@ -83,7 +85,7 @@
             this.gSave.Location = new System.Drawing.Point(498, 71);
             this.gSave.Name = "gSave";
             this.gSave.Size = new System.Drawing.Size(93, 29);
-            this.gSave.TabIndex = 7;
+            this.gSave.TabIndex = 9;
             this.gSave.Text = "S a v e";
             this.gSave.UseVisualStyleBackColor = true;
             this.gSave.Click += new System.EventHandler(this.gSave_Click);
@@ -104,14 +106,18 @@
             this.gSampleRate.Name = "gSampleRate";
             this.gSampleRate.Size = new System.Drawing.Size(60, 20);
             this.gSampleRate.TabIndex = 3;
+            this.gSampleRate.Tag = "";
             this.gSampleRate.Text = "44100";
+            this.gSampleRate.TextChanged += new System.EventHandler(this.gSampleRate_TextChanged);
             // 
             // gChannels
             // 
+            this.gChannels.Enabled = false;
             this.gChannels.Location = new System.Drawing.Point(144, 76);
             this.gChannels.Name = "gChannels";
             this.gChannels.Size = new System.Drawing.Size(60, 20);
             this.gChannels.TabIndex = 5;
+            this.gChannels.Tag = "";
             this.gChannels.Text = "2";
             // 
             // label3
@@ -131,6 +137,7 @@
             this.gBitness.Name = "gBitness";
             this.gBitness.Size = new System.Drawing.Size(60, 20);
             this.gBitness.TabIndex = 4;
+            this.gBitness.Tag = "";
             this.gBitness.Text = "16";
             // 
             // label4
@@ -143,11 +150,36 @@
             this.label4.TabIndex = 10;
             this.label4.Text = "Bitness";
             // 
+            // gLE
+            // 
+            this.gLE.AutoSize = true;
+            this.gLE.Checked = true;
+            this.gLE.Location = new System.Drawing.Point(216, 83);
+            this.gLE.Margin = new System.Windows.Forms.Padding(9, 3, 3, 3);
+            this.gLE.Name = "gLE";
+            this.gLE.Size = new System.Drawing.Size(83, 17);
+            this.gLE.TabIndex = 7;
+            this.gLE.TabStop = true;
+            this.gLE.Text = "Little Endian";
+            this.gLE.UseVisualStyleBackColor = true;
+            // 
+            // gBE
+            // 
+            this.gBE.AutoSize = true;
+            this.gBE.Location = new System.Drawing.Point(216, 64);
+            this.gBE.Name = "gBE";
+            this.gBE.Size = new System.Drawing.Size(76, 17);
+            this.gBE.TabIndex = 6;
+            this.gBE.Text = "Big Endian";
+            this.gBE.UseVisualStyleBackColor = true;
+            // 
             // UI_WavetailCfg
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(603, 112);
+            this.Controls.Add(this.gBE);
+            this.Controls.Add(this.gLE);
             this.Controls.Add(this.gBitness);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.gChannels);
@@ -182,5 +214,7 @@
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.TextBox gBitness;
         private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.RadioButton gLE;
+        private System.Windows.Forms.RadioButton gBE;
     }
 }

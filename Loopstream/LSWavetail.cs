@@ -21,6 +21,7 @@ namespace Loopstream
         public NAudio.Wave.WaveFormat wf { get; set; }
 
         public int samplerate;
+        public bool big_endian;
         public int bitness;
         public int chans;
 
@@ -32,15 +33,17 @@ namespace Loopstream
             srcdir = "";
             id = "wavetailer";
             samplerate = 44100;
+            big_endian = false;
             bitness = 16;
             chans = 2;
             delete = 10;
             wf = null;
         }
 
-        public void setFormat(int samplerate, int bitness, int chans)
+        public void setFormat(int samplerate, bool big_endian, int bitness, int chans)
         {
             this.samplerate = samplerate;
+            this.big_endian = big_endian;
             this.bitness = bitness;
             this.chans = chans;
         }
@@ -388,11 +391,23 @@ namespace Loopstream
                     ofs += nr;
                     if (cfg.bitness == 16)
                     {
-                        for (int a = 0; a < nr; a += 2)
+                        if (cfg.big_endian)
                         {
-                            //fbuf[a / 2] = rbuf[a] | rbuf[a + 1] << 8;
-                            var b = rbuf[a + 1];
-                            fbuf[a / 2] = (rbuf[a] | (b < 128 ? b : b - 256) << 8) / (256f * 256);
+                            for (int a = 0; a < nr; a += 2)
+                            {
+                                //fbuf[a / 2] = rbuf[a] | rbuf[a + 1] << 8;
+                                var b = rbuf[a];
+                                fbuf[a / 2] = (rbuf[a + 1] | (b < 128 ? b : b - 256) << 8) / 32768f;
+                            }
+                        }
+                        else
+                        {
+                            for (int a = 0; a < nr; a += 2)
+                            {
+                                //fbuf[a / 2] = rbuf[a] | rbuf[a + 1] << 8;
+                                var b = rbuf[a + 1];
+                                fbuf[a / 2] = (rbuf[a] | (b < 128 ? b : b - 256) << 8) / 32768f;
+                            }
                         }
                         nr *= sizeof(float) / (cfg.bitness / 8);
                         Buffer.BlockCopy(fbuf, 0, bbuf, 0, nr);
