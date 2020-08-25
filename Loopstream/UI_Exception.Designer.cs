@@ -37,6 +37,8 @@
             this.gDesc = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
             this.panel3 = new System.Windows.Forms.Panel();
+            this.linkLabel1 = new System.Windows.Forms.LinkLabel();
+            this.label3 = new System.Windows.Forms.Label();
             this.panel4 = new System.Windows.Forms.Panel();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.panel1.SuspendLayout();
@@ -116,7 +118,7 @@
             this.gDesc.Multiline = true;
             this.gDesc.Name = "gDesc";
             this.gDesc.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.gDesc.Size = new System.Drawing.Size(424, 230);
+            this.gDesc.Size = new System.Drawing.Size(424, 188);
             this.gDesc.TabIndex = 4;
             this.gDesc.Text = "Please wait, gathering error information ...";
             // 
@@ -124,7 +126,7 @@
             // 
             this.label2.AutoSize = true;
             this.label2.ForeColor = System.Drawing.SystemColors.ControlDarkDark;
-            this.label2.Location = new System.Drawing.Point(26, 53);
+            this.label2.Location = new System.Drawing.Point(12, 53);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(398, 13);
             this.label2.TabIndex = 5;
@@ -133,23 +135,48 @@
             // 
             // panel3
             // 
+            this.panel3.Controls.Add(this.linkLabel1);
+            this.panel3.Controls.Add(this.label3);
             this.panel3.Controls.Add(this.gExit);
             this.panel3.Controls.Add(this.label2);
             this.panel3.Controls.Add(this.gSend);
             this.panel3.Dock = System.Windows.Forms.DockStyle.Top;
             this.panel3.Location = new System.Drawing.Point(0, 109);
             this.panel3.Name = "panel3";
-            this.panel3.Size = new System.Drawing.Size(448, 76);
+            this.panel3.Size = new System.Drawing.Size(448, 91);
             this.panel3.TabIndex = 6;
+            // 
+            // linkLabel1
+            // 
+            this.linkLabel1.AutoSize = true;
+            this.linkLabel1.Location = new System.Drawing.Point(80, 69);
+            this.linkLabel1.Margin = new System.Windows.Forms.Padding(0, 3, 3, 0);
+            this.linkLabel1.Name = "linkLabel1";
+            this.linkLabel1.Size = new System.Drawing.Size(220, 13);
+            this.linkLabel1.TabIndex = 7;
+            this.linkLabel1.TabStop = true;
+            this.linkLabel1.Text = "<PATH TO CRASH REPORT GOES HERE>";
+            this.linkLabel1.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel1_LinkClicked);
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.ForeColor = System.Drawing.SystemColors.ControlDarkDark;
+            this.label3.Location = new System.Drawing.Point(12, 69);
+            this.label3.Margin = new System.Windows.Forms.Padding(3, 3, 0, 0);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(68, 13);
+            this.label3.TabIndex = 6;
+            this.label3.Text = "Read it here:";
             // 
             // panel4
             // 
             this.panel4.Controls.Add(this.gDesc);
             this.panel4.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel4.Location = new System.Drawing.Point(0, 185);
+            this.panel4.Location = new System.Drawing.Point(0, 200);
             this.panel4.Name = "panel4";
             this.panel4.Padding = new System.Windows.Forms.Padding(12, 0, 12, 8);
-            this.panel4.Size = new System.Drawing.Size(448, 238);
+            this.panel4.Size = new System.Drawing.Size(448, 196);
             this.panel4.TabIndex = 7;
             // 
             // UI_Exception
@@ -157,7 +184,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.Control;
-            this.ClientSize = new System.Drawing.Size(448, 423);
+            this.ClientSize = new System.Drawing.Size(448, 396);
             this.Controls.Add(this.panel4);
             this.Controls.Add(this.panel3);
             this.Controls.Add(this.panel1);
@@ -190,5 +217,7 @@
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Panel panel3;
         private System.Windows.Forms.Panel panel4;
+        private System.Windows.Forms.LinkLabel linkLabel1;
+        private System.Windows.Forms.Label label3;
     }
 }

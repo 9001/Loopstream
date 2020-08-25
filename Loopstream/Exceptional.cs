@@ -362,8 +362,6 @@ namespace Loopstream
 
         //public Variables vars { get; set; }
 
-        public string moar { get; set; }
-
         public string os { get; set; }
 
         public override string ToString()

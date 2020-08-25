@@ -728,7 +728,7 @@ namespace Loopstream
                     "Foobar 2000  (window title)",
                     "foobar2000",
                     200,
-                    @" *(.*[^ ]) *( - foobar2000$|\[foobar2000 v([0-9\.]*)\]$)",
+                    @" *(.*[^ ]) *( - foobar2000$|\[foobar2000( v[0-9\.]*)?\]$)",
                     "{1}",
                     "utf-8",
                     false,

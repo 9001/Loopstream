@@ -51,10 +51,10 @@ namespace Loopstream
             if (CRASH_REPORTER)
             {
                 AppDomain.CurrentDomain.UnhandledException += (ueSender, ueArgs) =>
-                    new UI_Exception(ueArgs.ExceptionObject as Exception, 1).ShowDialog();
+                    new UI_Exception(ueArgs.ExceptionObject as Exception, 1);
 
                 Application.ThreadException += (ueSender, ueArgs) =>
-                    new UI_Exception(ueArgs.Exception, 2).ShowDialog();
+                    new UI_Exception(ueArgs.Exception, 2);
 
                 Application.SetUnhandledExceptionMode(UnhandledExceptionMode.CatchException);
             }
@@ -67,7 +67,7 @@ namespace Loopstream
                     if (dargs.Name.Contains("PresentationFramework")) return null;
                     
                     // vs2019
-                    if (dargs.Name == "Loopstream.XmlSerializers") return null;
+                    if (dargs.Name.StartsWith("Loopstream.XmlSerializers")) return null;
 
                     String resourceName = "Loopstream.lib." +
                         dargs.Name.Substring(0, dargs.Name.IndexOf(", ")) + ".dll";

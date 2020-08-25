@@ -11,43 +11,111 @@ namespace Loopstream
 {
     public partial class UI_Exception : Form
     {
-        public UI_Exception(Exception ex, int type)
-        {
-            InitializeComponent();
-            defaultmsg = "You can add a description here, if you'd like\r\n\r\n(or maybe something like an email address even)";
-            this.type = type;
-            this.ex = ex;
-        }
-
-        int type;
-        Exception ex;
-        GeneralInfo gi;
-        string defaultmsg;
-
         // 1 = AppDomain.CurrentDomain.UnhandledException
         // 2 = Application.ThreadException
+
+        static bool bail = false;
+        public UI_Exception(Exception ex, int type)
+        {
+            if (ex != null && ex.Message != null)
+                System.Console.WriteLine(bail + " " + ex.Message);
+
+            if (bail)
+                return;
+            bail = true;
+
+            this.ex = ex;
+            this.type = type;
+            defaultmsg = "You can add a description here, if you'd like\r\n\r\n(or maybe something like an email address even)";
+            genExceptionData();
+
+            new System.Threading.Thread(new System.Threading.ThreadStart(() => // ok fine i give up
+            {
+                System.Threading.Thread.Sleep(50);
+                this.Invoke((MethodInvoker)delegate
+                {
+                    this.BringToFront();
+                    Application.DoEvents();
+                    t_Tick(null, null);
+                });
+            })).Start();
+            this.ShowDialog();
+        }
 
         private void UI_Exception_Load(object sender, EventArgs e)
         {
             this.Icon = Program.icon;
             label1.Font = new Font(label1.Font.FontFamily, label1.Font.SizeInPoints * 2.18f);
-            Timer t = new Timer();
-            t.Interval = 100;
-            t.Start();
-            t.Tick += new EventHandler(t_Tick);
-            gExit.Enabled = false;
-            gSend.Enabled = false;
-            gDesc.Enabled = false;
-
-            //if (ex.StackTrace.Contains("System.Windows.Forms.ContextMenu.Show")) this.Dispose(); //lol
         }
+
+        int type;
+        Exception ex;
+        GeneralInfo gi;
+        string serText;
+        string serPath;
+        string defaultmsg;
 
         void t_Tick(object sender, EventArgs e)
         {
-            ((Timer)sender).Stop();
+            if (serText == null)
+                return;
+
+            var sb = new StringBuilder(serText);
+            sb.AppendLine();
+            bool ok1, ok2, ok3, oks;
+            ok1 = ok2 = ok3 = oks = false;
             try
             {
+                LSSettings s = LSSettings.singleton;
+                ok1 = s.devRec != null && (!(s.devRec is LSDevice)) || ((LSDevice)s.devRec).mm != null;
+                ok2 = s.devMic != null && ((LSDevice)s.devMic).mm != null;
+                ok3 = s.devOut != null && ((LSDevice)s.devOut).mm != null;
+                sb.AppendLine("dev state indicated: " + ok1 + ", " + ok2 + ", " + ok3);
+                LSSettings.singleton.init();
+                s.runTests(null, true);
+                ok1 = ok1 == (s.devRec != null && (!(s.devRec is LSDevice)) || ((LSDevice)s.devRec).mm != null);
+                ok2 = ok2 == (s.devMic != null && ((LSDevice)s.devMic).mm != null);
+                ok3 = ok3 == (s.devOut != null && ((LSDevice)s.devOut).mm != null);
+                sb.AppendLine("dev state correct: " + ok1 + ", " + ok2 + ", " + ok3);
+                oks = true;
+            }
+            catch { }
+            serText = gi.ToString() + "\r\n" + sb.ToString();
+            System.IO.File.WriteAllText(serPath + "2.txt", serText, Encoding.UTF8);
+            System.IO.File.Delete(serPath + "1.txt");
+            linkLabel1.Text = serPath + "2.txt";
+
+            gDesc.Enabled = true;
+            gDesc.Text = defaultmsg;
+            gExit.Enabled = true;
+            gSend.Enabled = true;
+            gSend.Focus();
+
+            if (oks && (!ok1 || !ok2 || !ok3))
+            {
+                if (DialogResult.Yes == MessageBox.Show(
+                    "The  bad  news:   Loopstream just crashed :(\n" +
+                    "The good news:   I think I know why!\n\n" +
+                    "Did you disconnect or disable your speakers or microphone?\n" +
+                    "'cause you need to restart Loopstream when you do that.\n\n" +
+                    "Wanna go for a restart?", "Dirty devices detected",
+                    MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation))
+                {
+                    Program.fixWorkingDirectory();
+                }
+            }
+        }
+
+        void genExceptionData()
+        {
+            this.gSend = null;
+            try
+            {
+                Int32 nix = (Int32)(DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1))).TotalSeconds;
+                serPath = Program.tools + "loopstream-crash-" + nix + ".";
+
                 var se = new SerializableException(ex);
+                StringBuilder sb = new StringBuilder();
                 gi = new GeneralInfo(se, ex);
 
                 LSSettings s = LSSettings.singleton;
@@ -55,44 +123,29 @@ namespace Loopstream
                 {
                     if (s == null)
                     {
-                        s = new LSSettings();
+                        LSSettings.singleton = new LSSettings();
+                        s = LSSettings.singleton;
                         s.host = "nullsettings";
                     }
                     s.serverPresets = new List<LSSettings.LSServerPreset>();
+                    s.metas = new List<LSSettings.LSMeta>();
+                    s.host = "(redacted)";
                     s.pass = "(redacted)";
-                    GeneralInfo.ser(s);
+                    sb.Append("\r\n// cfg\r\n" + GeneralInfo.ser(s));
                 }
-                catch { }
-                try
-                {
-                    if (s.devs == null) s.devs = new LSAudioSrc[0];
-                    GeneralInfo.ser(s.devs);
-                }
-                catch
-                {
-                    try { s.devs = new LSAudioSrc[0]; }
-                    catch { }
-                }
+                catch (Exception exx) { }
 
-                StringBuilder sb = new StringBuilder();
-                sb.AppendLine();
-                bool ok1, ok2, ok3, oks;
-                ok1 = ok2 = ok3 = oks = false;
                 try
                 {
-                    ok1 = s.devRec != null && (!(s.devRec is LSDevice)) || ((LSDevice)s.devRec).mm != null;
-                    ok2 = s.devMic != null && ((LSDevice)s.devMic).mm != null;
-                    ok3 = s.devOut != null && ((LSDevice)s.devOut).mm != null;
-                    sb.AppendLine("dev state indicated: " + ok1 + ", " + ok2 + ", " + ok3);
-					LSSettings.singleton.init();
-                    s.runTests(null, true);
-                    ok1 = ok1 == (s.devRec != null && (!(s.devRec is LSDevice)) || ((LSDevice)s.devRec).mm != null);
-                    ok2 = ok2 == (s.devMic != null && ((LSDevice)s.devMic).mm != null);
-                    ok3 = ok3 == (s.devOut != null && ((LSDevice)s.devOut).mm != null);
-                    sb.AppendLine("dev state correct: " + ok1 + ", " + ok2 + ", " + ok3);
-                    oks = true;
+                    var devs = new LSDevice[s.devs.Length];
+                    for (var a = 0; a < devs.Length; a++)
+                        devs[a] = s.devs[a] as LSDevice;
+
+                    sb.Append("\r\n// devs\r\n" + GeneralInfo.ser(devs));
                 }
-                catch { }
+                catch (Exception exx) { }
+
+                sb.AppendLine();
                 try
                 {
                     sb.AppendLine("\n\n\n\n\nCache for opus"); sb.AppendLine(Logger.opus.compile());
@@ -105,55 +158,40 @@ namespace Loopstream
                     sb.AppendLine("\n\n\n\n\nCache for app"); sb.AppendLine(Logger.app.compile());
                 }
                 catch { }
-                gi.moar = sb.ToString();
-                string serialized = gi.ToString();
+                serText = gi.ToString() + "\r\n" + sb.ToString();
+                System.IO.File.WriteAllText(serPath + "1.txt", serText, Encoding.UTF8);
 
-                gDesc.Enabled = true;
-                gDesc.Text = defaultmsg;
-                gExit.Enabled = true;
-                gSend.Enabled = true;
-                gSend.Focus();
-
-                /*string one = Z.gze(serialized);
-                string two = Z.lze(serialized);
-                gDesc.Text =
-                    one.Length + "\n" +
-                    two.Length + "\n\n" +
-                    Convert.FromBase64String(one).Length + "\n" +
-                    Convert.FromBase64String(two).Length + "\n\n" +
-                    serialized;
-
-                System.IO.File.WriteAllBytes("dump.txt", Encoding.UTF8.GetBytes(serialized));
-                System.IO.File.WriteAllBytes("dump.gz", Convert.FromBase64String(one));
-                System.IO.File.WriteAllBytes("dump.lzma", Convert.FromBase64String(two));*/
-
-                if (oks && (!ok1 || !ok2 || !ok3))
-                {
-                    if (DialogResult.Yes == MessageBox.Show(
-                        "The  bad  news:   Loopstream just crashed :(\n" + 
-                        "The good news:   I think I know why!\n\n" +
-                        "Did you disconnect or disable your speakers or microphone?\n" +
-                        "'cause you need to restart Loopstream every time you do that.\n\n" +
-                        "Wanna go for a restart?", "Dirty devices detected",
-                        MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation))
-                    {
-                        Program.fixWorkingDirectory();
-                    }
-                }
+                InitializeComponent();
+                gDesc.Text = "L o a d i n g    d e t a i l s . . .";
+                linkLabel1.Text = serPath + "1.txt";
+                gExit.Enabled = false;
+                gSend.Enabled = false;
+                gDesc.Enabled = false;
             }
             catch (Exception exx)
             {
-                gDesc.Enabled = true;
+                serText = null;
+                string desc = "";
                 try
                 {
-                    gDesc.Text = "Shit is properly fucked, can't send error information to devs\r\n" +
-                        "This is the best I can do:\r\n\r\n" +
-                        ex.Message + "\r\n\r\n" + ex.StackTrace;
+                    var msg = ex.Message + "\r\n\r\n" + ex.StackTrace;
+
+                    desc = "Shit is properly fucked, can't send error information to devs\r\n" +
+                        "This is the best I can do:\r\n\r\n" + msg;
+                    
+                    System.IO.File.WriteAllText(serPath + "0.txt", msg, Encoding.UTF8);
+                    linkLabel1.Text = serPath + "0.txt";
                 }
                 catch
                 {
-                    gDesc.Text = "Shit is properly fucked, can't send error information to devs";
+                    desc = "Shit is properly fucked, can't send error information to devs";
                 }
+
+                if (this.gSend == null)
+                    InitializeComponent();
+
+                gDesc.Text = desc;
+                gDesc.Enabled = true;
                 gExit.Enabled = true;
                 gExit.Focus();
             }
@@ -176,25 +214,7 @@ namespace Loopstream
             try
             {
                 gi.UserDescription = gDesc.Text;
-                string serialized = gi.ToString();
-
-                try
-                {
-                    serialized += "\r\n" + GeneralInfo.ser(LSSettings.singleton);
-                }
-                catch { serialized += "\r\n" + "LSSettings Serialization Error"; }
-
-                try
-                {
-                    serialized += "\r\n" + GeneralInfo.ser(LSSettings.singleton.devs);
-                }
-                catch { serialized += "\r\n" + "LSDevices Serialization Error"; }
-
-
-
-                byte[] payload = Z.lze(serialized, true);
-                Int32 nix = (Int32)(DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1))).TotalSeconds;
-                System.IO.File.WriteAllText("crash-" + nix, serialized, Encoding.UTF8);
+                byte[] payload = Z.lze(serText, true);
                 
                 string hash;
                 using (var sha = System.Security.Cryptography.MD5.Create())
@@ -312,6 +332,11 @@ FILEDATA...
         private void UI_Exception_FormClosing(object sender, FormClosingEventArgs e)
         {
             Program.kill();
+        }
+
+        private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo(((Control)sender).Text));
         }
     }
 }
