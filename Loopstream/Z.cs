@@ -204,7 +204,7 @@ namespace Loopstream
         }
         public void a(string text)
         {
-            System.Diagnostics.Debug.WriteLine(DateTime.UtcNow.Ticks / 10000 + " " + text);
+            // System.Diagnostics.Debug.WriteLine(DateTime.UtcNow.Ticks / 10000 + " " + text);
             lock (buf)
             {
                 if (text == buf[i].msg)
