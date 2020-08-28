@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Concurrent;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -19,7 +20,7 @@ namespace Loopstream
         public LSSettings.LSParams enc;
         public int rekick;
 
-        Queue<byte[]> stdinQueue;
+        ConcurrentQueue<byte[]> stdinQueue;
         public Stream stdin { get; set; }
         public Stream stdout { get; set; }
         protected Stream pstdin { get; set; }
@@ -64,7 +65,7 @@ namespace Loopstream
                 stdout = pstdout;
                 stamps = new long[32];
                 chunks = new long[32];
-                stdinQueue = new Queue<byte[]>();
+                stdinQueue = new ConcurrentQueue<byte[]>();
                 long v = DateTime.UtcNow.Ticks / 10000;
                 for (int a = 0; a < stamps.Length; a++) stamps[a] = v;
 
@@ -259,7 +260,7 @@ namespace Loopstream
                 s.WriteTimeout = 1000;
                 stamps = new long[32];
                 chunks = new long[32];
-                stdinQueue = new Queue<byte[]>();
+                stdinQueue = new ConcurrentQueue<byte[]>();
                 long v = DateTime.UtcNow.Ticks / 10000;
                 for (int a = 0; a < stamps.Length; a++) stamps[a] = v;
                 Program.ni.ShowBalloonTip(1000, "Loopstream Connected", "Streaming to " + settings.mount + "." + enc.ext, ToolTipIcon.Info);
@@ -294,13 +295,19 @@ namespace Loopstream
             while (true)
             {
                 logger.a("awaiting pcm");
-                while (!pimp.qt(enc.ext) && stdinQueue.Count == 0)
+                while (!pimp.qt(enc.ext) && stdinQueue.IsEmpty)
                     System.Threading.Thread.Sleep(10);
 
                 if (pimp.qt(enc.ext) || crashed || aborted)
                     break;
 
-                byte[] buf = stdinQueue.Dequeue();
+                byte[] buf;
+                if (!stdinQueue.TryDequeue(out buf))
+                {
+                    logger.a("Queue not empty but dequeue failed");
+                    throw new Exception("nani the fuck");
+                }
+
                 logger.a("putting pcm " + buf.Length);
                 try
                 {
