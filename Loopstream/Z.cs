@@ -280,14 +280,23 @@ namespace Loopstream
 
         public int read(IntPtr adr, byte[] buf)
         {
-            int ret = -1;
-            ReadProcessMemory(handle, adr, buf, sizeof(byte) * buf.Length, out ret);
+            int ret = -1,
+                readSize = buf.Length;
+            bool warked = false;
+
+            // Make 4 attempts at reading, halving the read length on each attempt
+            for (var i = 0; i < 4; i++)
+            {
+                warked = ReadProcessMemory(handle, adr, buf, sizeof(byte) * readSize, out ret);
+                if (warked) break;
+                readSize /= 2;
+            }
             return ret;
         }
 
         public int read(IntPtr adr, byte[] buf, int[] ofs)
         {
-            byte[] u32 = new byte[4];
+            byte[] u32 = new byte[IntPtr.Size];
             foreach (int o in ofs)
             {
                 int i = read(adr, u32);
