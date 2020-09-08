@@ -709,15 +709,18 @@ namespace Loopstream
         public void initFinally()
         {
             if (metas.Count == 0)
-            {
                 resetMetas();
-            }
+
             if (triggers.Count == 0)
-            {
                 resetTriggers();
-            }
+
             wavetailer.setFormat();
             LSSettings.singleton = this;
+
+            foreach (var m in metas) {
+                if (m.tit == "Foobar 2000  (window title)" && m.ptn == @" *(.*[^ ]) *( - foobar2000$|\[foobar2000 v([0-9\.]*)\]$)")
+                    m.ptn = @" *(.*[^ ]) *( - foobar2000$|\[foobar2000( v[0-9\.]*)?\]$)";
+            }
         }
         public void resetMetas()
         {

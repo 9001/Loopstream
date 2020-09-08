@@ -17,6 +17,7 @@ namespace Loopstream
         public static bool VERIFY_CHECKSUM;
         public static bool CRASH_REPORTER;
         public static bool SIGN_BINARY;
+        public static bool BALLOONS;
         public static string DBGLOG;
         public static string tools;
         public static System.Drawing.Icon icon;
@@ -34,6 +35,7 @@ namespace Loopstream
             SIGN_BINARY = false;
             CRASH_REPORTER = true;
             VERIFY_CHECKSUM = true;
+            BALLOONS = true;
 
             Program.args = args;
             foreach (string str in args)

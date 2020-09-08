@@ -978,10 +978,10 @@
             this.label34.TabIndex = 36;
             this.label34.Text = "( this is actually VBR )";
             // 
-            // gOpusBitrateV
+            // gOpusQualityV
             // 
             this.gOpusQualityV.Location = new System.Drawing.Point(74, 19);
-            this.gOpusQualityV.Name = "gOpusBitrateV";
+            this.gOpusQualityV.Name = "gOpusQualityV";
             this.gOpusQualityV.Size = new System.Drawing.Size(59, 20);
             this.gOpusQualityV.TabIndex = 35;
             this.gOpusQualityV.Text = "128";
@@ -2224,6 +2224,7 @@
             this.Name = "ConfigSC";
             this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
             this.Text = "Loopstream Config";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.ConfigSC_FormClosing);
             this.Load += new System.EventHandler(this.ConfigSC_Load);
             this.Resize += new System.EventHandler(this.ConfigSC_Resize);
             this.pWrapper.ResumeLayout(false);

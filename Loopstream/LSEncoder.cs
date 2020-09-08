@@ -196,9 +196,11 @@ namespace Loopstream
             }
             catch (Exception e)
             {
-                Program.ni.ShowBalloonTip(9999, "Server connection error",
-                    e.Message + " (" + e.Source + ")",
-                    ToolTipIcon.Error);
+                if (Program.BALLOONS)
+                    Program.ni.ShowBalloonTip(9999, "Server connection error",
+                        e.Message + " (" + e.Source + ")",
+                        ToolTipIcon.Error);
+
                 System.Threading.Thread.Sleep(200);
                 crashed = true;
                 return;
@@ -263,7 +265,9 @@ namespace Loopstream
                 stdinQueue = new ConcurrentQueue<byte[]>();
                 long v = DateTime.UtcNow.Ticks / 10000;
                 for (int a = 0; a < stamps.Length; a++) stamps[a] = v;
-                Program.ni.ShowBalloonTip(1000, "Loopstream Connected", "Streaming to " + settings.mount + "." + enc.ext, ToolTipIcon.Info);
+                if (Program.BALLOONS)
+                    Program.ni.ShowBalloonTip(1000, "Loopstream Connected", "Streaming to " + settings.mount + "." + enc.ext, ToolTipIcon.Info);
+
                 var tr = new System.Threading.Thread(new System.Threading.ThreadStart(reader));
                 tr.Name = "LSEnc_Reader";
                 tr.Start();

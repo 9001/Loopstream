@@ -2304,7 +2304,7 @@ namespace Loopstream
 
         private void gRecOpus_CheckedChanged(object sender, EventArgs e)
         {
-            settings.recOpus = gOpusEnable.Checked;
+            settings.recOpus = gRecOpus.Checked;
         }
 
         private void gOpusQualityV_TextChanged(object sender, EventArgs e)
@@ -2321,6 +2321,11 @@ namespace Loopstream
         private void gOpusStereo_CheckedChanged(object sender, EventArgs e)
         {
             if (gOpusStereo.Checked) settings.opus.channels = LSSettings.LSChannels.stereo;
+        }
+
+        private void ConfigSC_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            System.Diagnostics.Debug.Print("close configsc");
         }
     }
 }

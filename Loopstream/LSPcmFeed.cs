@@ -208,7 +208,8 @@ namespace Loopstream
                         catch
                         {
                             Logger.pcm.a("resurrect failure: " + enc.enc.ext);
-                            Program.ni.ShowBalloonTip(1000, "Connection error", "Failed to restart " + enc.enc.ext, System.Windows.Forms.ToolTipIcon.Error);
+                            if (Program.BALLOONS)
+                                Program.ni.ShowBalloonTip(1000, "Connection error", "Failed to restart " + enc.enc.ext, System.Windows.Forms.ToolTipIcon.Error);
                         }
                     }
                     else if (enc.aborted)
@@ -217,7 +218,8 @@ namespace Loopstream
                         
                         Logger.pcm.a(msg);
                         encoders.RemoveAt(a--);
-                        Program.ni.ShowBalloonTip(1000, "Connection error", msg, System.Windows.Forms.ToolTipIcon.Error);
+                        if (Program.BALLOONS)
+                            Program.ni.ShowBalloonTip(1000, "Connection error", msg, System.Windows.Forms.ToolTipIcon.Error);
                     }
                 }
                 System.Threading.Thread.Sleep(10);
