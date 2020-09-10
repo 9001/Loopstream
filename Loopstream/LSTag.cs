@@ -42,7 +42,16 @@ namespace Loopstream
         {
             Logger.tag.a("reinit");
             var deets = string.Format("{0}:{1}", settings.user, settings.pass);
-            auth = Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(deets)); 
+            auth = Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(deets));
+
+            new System.Threading.Thread(new System.Threading.ThreadStart(delayedTagReset)).Start();
+        }
+
+        void delayedTagReset()
+        {
+            // some(tm) icecast proxies don't eat tags right away
+            System.Threading.Thread.Sleep(3000);
+            lastTag = null;
         }
 
         public void StartTx()
