@@ -9,7 +9,7 @@ namespace Loopstream
 {
     static class Program
     {
-        public const int beta = 2;
+        public const int beta = 3;
         public const bool debug = false;
         public const string toolsVer = "ls.tools.v1.txt";
         
