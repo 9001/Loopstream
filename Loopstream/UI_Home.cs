@@ -39,6 +39,7 @@ namespace Loopstream
         LSMixer mixer;
         LSPcmFeed pcm;
         LSTag tag;
+        UI_Tagbox tbox;
         bool assumeConnected, popFilt;
         UI_Msg popPoor, popDrop, popSign, popQuit;
         Control[] invals; //sorry
@@ -86,7 +87,8 @@ namespace Loopstream
                 "lame.exe",
                 "lame_enc.dll"
             };
-            if (Directory.Exists(toolsBase) &&
+            if (Program.ASK_DFC &&
+                Directory.Exists(toolsBase) &&
                 File.Exists(toolsBase + Program.toolsVer))
             {
                 if (DialogResult.Yes == MessageBox.Show(
@@ -271,6 +273,9 @@ namespace Loopstream
                 z("Autoconn was true");
                 connect();
             }
+
+            tag = new LSTag(settings);
+            tbox = null;
 
             // please don't look
             invals = new Control[] {
@@ -674,7 +679,8 @@ namespace Loopstream
             Program.ni.ContextMenu.MenuItems[1].Text = "Disconnect";
             daText = "D I S C O N N E C T";
             gConnect.Text = daText;
-            tag = new LSTag(settings);
+            tag.Reload();
+            tag.StartTx();
             mixer = new LSMixer(settings, new LLabel[] { gMus.giSlider, gMic.giSlider, gOut.giSlider });
             pcm = new LSPcmFeed(settings, mixer.lameOutlet);
             assumeConnected = true;
@@ -714,7 +720,7 @@ namespace Loopstream
         void discthread()
         {
             daText = "kill_tag";
-            tag.Dispose();
+            tag.StopTx();
             daText = "kill_pcm";
             pcm.Dispose(ref daText);
             daText = "kill_mixer";
@@ -862,7 +868,7 @@ namespace Loopstream
                 pMessage.Visible = true;
             }
 
-            bool connected = assumeConnected && tag != null;
+            bool connected = assumeConnected && mixer != null;
             long now = DateTime.UtcNow.Ticks / 10000;
             if (!connected)
             {
@@ -900,7 +906,7 @@ namespace Loopstream
                     }
                 }
             }
-            if (tag == null) return;
+            if (mixer == null) return;
 
 
 
@@ -1129,7 +1135,7 @@ namespace Loopstream
                 gTag.Text = gTag.Text.Replace("\r", "").Replace("\n", "");
                 gTag.SelectionStart = gTag.Text.Length;
                 gTag.SelectionLength = 0;
-                if (tag != null) tag.set(gTag.Text);
+                tag.set(gTag.Text);
             }
         }
 
@@ -1269,6 +1275,15 @@ namespace Loopstream
             catch { }
             //this.Width += widen;
             myBounds.Width += widen;
+        }
+
+        private void gTagbox_Click(object sender, EventArgs e)
+        {
+            if (tbox == null || tbox.IsDisposed)
+                tbox = new UI_Tagbox(settings, tag);
+
+            tbox.Hide();
+            tbox.ShowAt(this.Bounds);
         }
     }
 }

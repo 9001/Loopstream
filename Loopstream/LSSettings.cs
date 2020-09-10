@@ -565,6 +565,15 @@ namespace Loopstream
         public bool autoconn;
         public bool autohide;
 
+        public string tboxFont;
+        public double tboxSize;
+        public bool tboxBold;
+        public bool tboxItalic;
+        public string tboxColorFront;
+        public string tboxColorBack;
+        public int tboxWidth;
+        public int tboxHeight;
+
         public bool warn_poor_DEPRECATED, warn_drop_DEPRECATED; // TODO: Delete all references
         public double lim_poor_DEPRECATED, lim_drop_DEPRECATED; // TODO: Delete all references
 
@@ -622,6 +631,15 @@ namespace Loopstream
             genre = "Post-Avant Jazzcore";
             url = "https://github.com/9001/loopstream";
             pubstream = false;
+
+            tboxFont = "Comic Sans MS";
+            tboxSize = 24;
+            tboxBold = false;
+            tboxItalic = false;
+            tboxColorFront = "fff";
+            tboxColorBack = "000";
+            tboxWidth = -1;
+            tboxHeight = -1;
 
             latin = false;
             tagAuto = true;
@@ -1113,7 +1131,7 @@ namespace Loopstream
                     System.IO.MemoryStream s = new System.IO.MemoryStream(System.Text.Encoding.UTF8.GetBytes(str));
 
                     int myVer = version();
-                    int iniVer = Convert.ToInt32(ver, 16);
+                    int iniVer = Convert.ToInt32(ver.Trim(), 16);
                     if (Program.beta == 0 && myVer != iniVer)
                     {
                         string fn_bak = "Loopstream-backup-" +

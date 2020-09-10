@@ -9,7 +9,7 @@ namespace Loopstream
 {
     static class Program
     {
-        public const int beta = 0;
+        public const int beta = 1;
         public const bool debug = false;
         public const string toolsVer = "ls.tools.v1.txt";
         
@@ -18,6 +18,7 @@ namespace Loopstream
         public static bool CRASH_REPORTER;
         public static bool SIGN_BINARY;
         public static bool BALLOONS;
+        public static bool ASK_DFC;
         public static string DBGLOG;
         public static string tools;
         public static System.Drawing.Icon icon;
@@ -36,6 +37,7 @@ namespace Loopstream
             CRASH_REPORTER = true;
             VERIFY_CHECKSUM = true;
             BALLOONS = true;
+            ASK_DFC = true;
 
             Program.args = args;
             foreach (string str in args)
@@ -48,6 +50,9 @@ namespace Loopstream
 
                 if (str == "unsigned")
                     VERIFY_CHECKSUM = false;
+
+                if (str == "no_dfc")
+                    ASK_DFC = false;
             }
 
             if (CRASH_REPORTER)

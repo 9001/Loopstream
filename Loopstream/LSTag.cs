@@ -7,7 +7,7 @@ using System.Text.RegularExpressions;
 
 namespace Loopstream
 {
-    class LSTag
+    public class LSTag
     {
         string auth;
         Encoding latin1;
@@ -15,6 +15,7 @@ namespace Loopstream
         public LSTD manual;
         LSSettings settings;
         bool socket_fallback;
+        bool streaming;
         bool haveFailed;
         bool quitting;
 
@@ -23,18 +24,35 @@ namespace Loopstream
             Logger.tag.a("init");
 
             settings = set;
+            streaming = false;
             quitting = false;
             haveFailed = false;
             socket_fallback = false;
             latin1 = Encoding.GetEncoding("ISO_8859-1");
             manual = new LSTD(false, "", "STILL_UNUSED");
             tag = new LSTD(false, "", "STILL_UNUSED");
-            
-            auth = string.Format("{0}:{1}", settings.user, settings.pass);
-            auth = Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(auth)); 
+
+            Reload();
             System.Threading.Thread t = new System.Threading.Thread(new System.Threading.ThreadStart(feeder));
             t.Name = "LSTag_Feeder";
             t.Start();
+        }
+
+        public void Reload()
+        {
+            Logger.tag.a("reinit");
+            var deets = string.Format("{0}:{1}", settings.user, settings.pass);
+            auth = Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(deets)); 
+        }
+
+        public void StartTx()
+        {
+            streaming = true;
+        }
+
+        public void StopTx()
+        {
+            streaming = false;
         }
 
         public void Dispose()
@@ -339,6 +357,9 @@ namespace Loopstream
 
         void sendTags(Est est)
         {
+            if (!streaming)
+                return;
+
             try
             {
                 System.IO.File.AppendAllText(

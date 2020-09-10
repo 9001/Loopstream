@@ -120,6 +120,55 @@ namespace Loopstream
                 }
             }
         }
+
+        public static Color hex2color(string hex)
+        {
+            if (hex.Length == 3)
+            {
+                var cr = hex.Substring(0, 1);
+                var cg = hex.Substring(1, 1);
+                var cb = hex.Substring(2, 1);
+                hex = cr + cr + cg + cg + cb + cb;
+            }
+            try
+            {
+                return Color.FromArgb(
+                    Convert.ToInt32("0x" + hex.Substring(0, 2), 16),
+                    Convert.ToInt32("0x" + hex.Substring(2, 2), 16),
+                    Convert.ToInt32("0x" + hex.Substring(4, 2), 16));
+            }
+            catch
+            {
+                return Color.Empty;
+            }
+        }
+
+        public static string shortcolor(string hex)
+        {
+            if (hex.Length == 3)
+                return hex;
+
+            try
+            {
+                if (hex[0] == hex[1] && hex[2] == hex[3] && hex[4] == hex[5])
+                    return new string(new char[] { hex[0], hex[2], hex[4] });
+            }
+            catch { }
+            
+            if (hex.Length == 6)
+                return hex;
+
+            return null;
+        }
+
+        public static string shortcolor(Color c)
+        {
+            if (Color.Empty.Equals(c))
+                return null;
+
+            var ret = "000000" + c.ToArgb().ToString("x");
+            return shortcolor(ret.Substring(ret.Length - 6));
+        }
     }
 
     public class Skinner
