@@ -41,6 +41,7 @@
             this.gTags.TabIndex = 0;
             this.gTags.Text = "label1";
             this.gTags.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.gTags.UseMnemonic = false;
             this.gTags.Click += new System.EventHandler(this.gTags_Click);
             // 
             // UI_Tagbox
