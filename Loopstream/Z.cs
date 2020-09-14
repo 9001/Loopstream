@@ -169,6 +169,35 @@ namespace Loopstream
             var ret = "000000" + c.ToArgb().ToString("x");
             return shortcolor(ret.Substring(ret.Length - 6));
         }
+
+        static ContentAlignment[] alignments = {
+            ContentAlignment.TopLeft,
+            ContentAlignment.TopCenter,
+            ContentAlignment.TopRight,
+            ContentAlignment.MiddleLeft,
+            ContentAlignment.MiddleCenter,
+            ContentAlignment.MiddleRight,
+            ContentAlignment.BottomLeft,
+            ContentAlignment.BottomCenter,
+            ContentAlignment.BottomRight
+        };
+
+        public static ContentAlignment int2alignment(int iv, ContentAlignment fallback)
+        {
+            if (iv >= 1 && iv <= alignments.Length)
+                return alignments[iv - 1];
+
+            return fallback;
+        }
+
+        public static int aligment2int(ContentAlignment ca, int fallback)
+        {
+            for (int a = 0; a < alignments.Length; a++)
+                if (alignments[a] == ca)
+                    return a + 1;
+
+            return fallback;
+        }
     }
 
     public class Skinner

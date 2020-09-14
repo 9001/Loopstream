@@ -571,6 +571,9 @@ namespace Loopstream
         public bool tboxItalic;
         public string tboxColorFront;
         public string tboxColorBack;
+        public int tboxAlign;
+        public string tboxAntialias;
+        public string tboxRendermode;
         public int tboxWidth;
         public int tboxHeight;
 
@@ -638,6 +641,9 @@ namespace Loopstream
             tboxItalic = false;
             tboxColorFront = "fff";
             tboxColorBack = "000";
+            tboxAlign = 5;
+            tboxAntialias = "Clear";
+            tboxRendermode = "Bitmap";
             tboxWidth = -1;
             tboxHeight = -1;
 

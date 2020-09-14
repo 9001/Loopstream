@@ -93,6 +93,12 @@
   <ItemGroup>
     <Compile Include="DFC.cs" />
     <Compile Include="Exceptional.cs" />
+    <Compile Include="UC_HintedLabel.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="UC_HintedLabel.Designer.cs">
+      <DependentUpon>UC_HintedLabel.cs</DependentUpon>
+    </Compile>
     <Compile Include="LSAudioSrc.cs" />
     <Compile Include="LSDevice.cs" />
     <Compile Include="LSEncoder.cs" />

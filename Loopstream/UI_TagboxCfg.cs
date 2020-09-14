@@ -24,8 +24,14 @@ namespace Loopstream
 
         private void UI_TagboxCfg_Load(object sender, EventArgs e)
         {
-            gtFG.Font = new Font(FontFamily.GenericMonospace.ToString(), gtFG.Font.Size);
-            gtBG.Font = gtFG.Font;
+            //var font = FontFamily.GenericMonospace.Name;
+            var font = "Consolas";
+            
+            foreach (var ctl in new Control[] { gtFG, gtBG, gtSize })
+            {
+                ctl.Font = new Font(font, gtFont.Font.Size * 1.1f);
+                ctl.Top -= 1;
+            }
 
             if (settings.tboxBold)
                 grBold.Checked = true;
@@ -39,6 +45,17 @@ namespace Loopstream
 
             gtFG.Text = settings.tboxColorFront;
             gtBG.Text = settings.tboxColorBack;
+
+            setRadio("grAlign" + settings.tboxAlign);
+            setRadio("grAlias" + settings.tboxAntialias);
+            setRadio("grRender" + settings.tboxRendermode);
+        }
+
+        void setRadio(string name)
+        {
+            var ctls = this.Controls.Find(name, true);
+            if (ctls.Length == 1)
+                ((RadioButton)ctls[0]).Checked = true;
         }
 
         public void ShowAt(Rectangle bounds)
@@ -130,6 +147,7 @@ namespace Loopstream
                 settings.tboxFont = gtFont.Text;
             }
             catch { }
+            tbox.Reload();
         }
 
         string getColor(string orig)
@@ -180,6 +198,49 @@ namespace Loopstream
             settings.tboxItalic = fd.Font.Style == FontStyle.Italic;
             
             UI_TagboxCfg_Load(sender, e);
+        }
+
+        private void grAlign_CheckedChanged(object sender, EventArgs e)
+        {
+            var c = (RadioButton)sender;
+            if (!c.Checked)
+                return;
+
+            settings.tboxAlign = int.Parse(c.Name.Substring(c.Name.Length - 1));
+            tbox.Reload();
+        }
+
+        private void grAlias_CheckedChanged(object sender, EventArgs e)
+        {
+            var c = (RadioButton)sender;
+            if (!c.Checked)
+                return;
+
+            settings.tboxAntialias = c.Name.Substring(7);
+            tbox.Reload();
+        }
+
+        private void grRender_CheckedChanged(object sender, EventArgs e)
+        {
+            var c = (RadioButton)sender;
+            if (!c.Checked)
+                return;
+
+            settings.tboxRendermode = c.Name.Substring(8);
+            tbox.Reload();
+        }
+
+        private void gbHelp_Click(object sender, EventArgs e)
+        {
+            MessageBox.Show(
+                "the main purpose of the tagbox is to provide an overlay in OBS or other streaming software\r\n\r\n" +
+                "you will get the best results with a black or white background, and the opposite color for the text\r\n\r\n" +
+                "in obs, you should add a ''Luma Key'' effect filter to the windowcapture, as that will remove the background and keep just the tags\r\n\r\n" +
+                "if you need a shadow you can for example duplicate the windowcapture and invert the colors of the backmost one\r\n\r\n" +
+                "when using a Luma Key to remove the background, you should use one of these combinations of options:\r\n\r\n" +
+                "    1) antialiasing = cleartext   and   rendermode = bitmap\r\n\r\n" +
+                "    2) antialiasing = grayscale   and   rendermode = label\r\n\r\n" +
+                "other combinations may work but in particular cleartext+label will cause color bleeding");
         }
     }
 }
