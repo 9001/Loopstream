@@ -34,6 +34,7 @@ namespace Loopstream
 
         private void UI_Tagbox_Load(object sender, EventArgs e)
         {
+            this.Icon = Program.icon;
             Reload();
 
             var t = new Timer();

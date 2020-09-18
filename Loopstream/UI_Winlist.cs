@@ -21,7 +21,10 @@ namespace Loopstream
         bool fuck, shit;
         public string target;
 
-        private void UI_Winpick_Load(object sender, EventArgs e) { }
+        private void UI_Winpick_Load(object sender, EventArgs e)
+        {
+            this.Icon = Program.icon;
+        }
         private void gReload_Click(object sender, EventArgs e) { }
         private void gSave_Click(object sender, EventArgs e) { }
         private void gCancel_Click(object sender, EventArgs e) { }

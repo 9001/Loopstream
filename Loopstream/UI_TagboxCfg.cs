@@ -24,6 +24,8 @@ namespace Loopstream
 
         private void UI_TagboxCfg_Load(object sender, EventArgs e)
         {
+            this.Icon = Program.icon;
+
             //var font = FontFamily.GenericMonospace.Name;
             var font = "Consolas";
             
@@ -237,10 +239,11 @@ namespace Loopstream
                 "you will get the best results with a black or white background, and the opposite color for the text\r\n\r\n" +
                 "in obs, you should add a ''Luma Key'' effect filter to the windowcapture, as that will remove the background and keep just the tags\r\n\r\n" +
                 "if you need a shadow you can for example duplicate the windowcapture and invert the colors of the backmost one\r\n\r\n" +
-                "when using a Luma Key to remove the background, you should use one of these combinations of options:\r\n\r\n" +
+                "when using a Luma Key to remove the background, these combinations of options are recommended (depending on font):\r\n\r\n" +
                 "    1) antialiasing = cleartext   and   rendermode = bitmap\r\n\r\n" +
-                "    2) antialiasing = grayscale   and   rendermode = label\r\n\r\n" +
-                "other combinations may work but in particular cleartext+label will cause color bleeding");
+                "    2) antialiasing = grayscale   and   rendermode = bitmap\r\n\r\n" +
+                "    3) antialiasing = grayscale   and   rendermode = label\r\n\r\n" +
+                "other combinations may work but in particular cleartext+label is bad (will cause color bleeding)");
         }
     }
 }

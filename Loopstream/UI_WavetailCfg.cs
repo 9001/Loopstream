@@ -22,6 +22,8 @@ namespace Loopstream
 
         private void UI_WavetailCfg_Load(object sender, EventArgs e)
         {
+            this.Icon = Program.icon;
+
             // waveformat is float, use members
             gSampleRate.Text = wt.samplerate.ToString();
             gBitness.Text = wt.bitness.ToString();
