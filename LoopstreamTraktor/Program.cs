@@ -37,7 +37,7 @@ namespace LoopstreamTraktor
             tools = System.Windows.Forms.Application.ExecutablePath;
             tools = tools.Substring(tools.Replace('\\', '/').LastIndexOf('/') + 1);
             tools = tools.Split('.')[0];
-            tools = tools.Substring(0, tools.Length - 7).TrimEnd('-');
+            tools = tools.Substring(0, tools.IndexOf("Traktor")).TrimEnd('-');
             tools += "Tools\\";
 
             Application.EnableVisualStyles();
@@ -52,3 +52,5 @@ namespace LoopstreamTraktor
         }
     }
 }
+
+// LoopstreamTraktor.exe sign && ping 127.0.0.1 -n 2 >nul && copy /Y LoopstreamTraktor.exe.exe c:\users\ed\bin\rls\LoopstreamTraktor2.exe

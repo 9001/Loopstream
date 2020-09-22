@@ -15,6 +15,7 @@ namespace Loopstream
         
         public static string[] args;
         public static bool VERIFY_CHECKSUM;
+        public static bool IGNORE_EXCEPTIONS;
         public static bool CRASH_REPORTER;
         public static bool SIGN_BINARY;
         public static bool BALLOONS;
@@ -35,6 +36,7 @@ namespace Loopstream
             DBGLOG = "";
             SIGN_BINARY = false;
             CRASH_REPORTER = true;
+            IGNORE_EXCEPTIONS = false;
             VERIFY_CHECKSUM = true;
             BALLOONS = true;
             ASK_DFC = true;
@@ -57,11 +59,20 @@ namespace Loopstream
 
             if (CRASH_REPORTER)
             {
-                AppDomain.CurrentDomain.UnhandledException += (ueSender, ueArgs) =>
+                AppDomain.CurrentDomain.UnhandledException += (ueSender, ueArgs) => {
+                    if (IGNORE_EXCEPTIONS)
+                        return;
+
                     new UI_Exception(ueArgs.ExceptionObject as Exception, 1);
+                };
 
                 Application.ThreadException += (ueSender, ueArgs) =>
+                {
+                    if (IGNORE_EXCEPTIONS)
+                        return;
+
                     new UI_Exception(ueArgs.Exception, 2);
+                };
 
                 Application.SetUnhandledExceptionMode(UnhandledExceptionMode.CatchException);
             }
@@ -167,3 +178,5 @@ namespace Loopstream
         }
     }
 }
+
+// Loopstream.exe sign && ping 127.0.0.1 -n 2 >nul && copy /Y Loopstream.exe.exe c:\users\ed\bin\rls\Loopstream.exe

@@ -14,9 +14,11 @@ namespace Loopstream
         // 1 = AppDomain.CurrentDomain.UnhandledException
         // 2 = Application.ThreadException
 
+        bool ignored;
         static bool bail = false;
         public UI_Exception(Exception ex, int type)
         {
+            ignored = false;
             if (ex != null && ex.Message != null)
                 System.Console.WriteLine(bail + " " + ex.Message);
 
@@ -85,11 +87,9 @@ namespace Loopstream
             System.IO.File.Delete(serPath + "1.txt");
             linkLabel1.Text = serPath + "2.txt";
 
-            gDesc.Enabled = true;
+            gDesc.Enabled = gIgnOnce.Enabled = gIgnAlways.Enabled = gRestart.Enabled = true;
             gDesc.Text = defaultmsg;
-            gExit.Enabled = true;
-            gSend.Enabled = true;
-            gSend.Focus();
+            gRestart.Focus();
 
             if (oks && (!ok1 || !ok2 || !ok3))
             {
@@ -108,7 +108,7 @@ namespace Loopstream
 
         void genExceptionData()
         {
-            this.gSend = null;
+            this.gRestart = null;
             try
             {
                 Int32 nix = (Int32)(DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1))).TotalSeconds;
@@ -164,9 +164,7 @@ namespace Loopstream
                 InitializeComponent();
                 gDesc.Text = "L o a d i n g    d e t a i l s . . .";
                 linkLabel1.Text = serPath + "1.txt";
-                gExit.Enabled = false;
-                gSend.Enabled = false;
-                gDesc.Enabled = false;
+                gDesc.Enabled = gIgnOnce.Enabled = gIgnAlways.Enabled = gRestart.Enabled = false;
             }
             catch (Exception exx)
             {
@@ -187,18 +185,48 @@ namespace Loopstream
                     desc = "Shit is properly fucked, can't send error information to devs";
                 }
 
-                if (this.gSend == null)
+                if (this.gRestart == null)
                     InitializeComponent();
 
                 gDesc.Text = desc;
-                gDesc.Enabled = true;
-                gExit.Enabled = true;
-                gExit.Focus();
+                gDesc.Enabled = gIgnOnce.Enabled = gIgnAlways.Enabled = gRestart.Enabled = true;
+                gRestart.Focus();
             }
         }
 
         private void gSend_Click(object sender, EventArgs e)
         {
+            if (!gcSend.Checked)
+            {
+                AskRestart("");
+                return;
+            }
+            string msg = upload();
+            if (msg != null)
+                AskRestart(msg);
+        }
+
+        void AskRestart(string msg)
+        {
+            if (!string.IsNullOrWhiteSpace(msg))
+                msg += "\n\n==========================\n\n";
+
+            var res = MessageBox.Show(
+                msg + "YES = Restart Loopstream\n\nNO = Exit Loopstream\n\nCANCEL = ignore this error\n    and try to continue after all",
+                "restart loopstream?",
+                MessageBoxButtons.YesNoCancel,
+                MessageBoxIcon.Question);
+
+            if (res == System.Windows.Forms.DialogResult.Cancel)
+                ignored = true;
+            else if (res == System.Windows.Forms.DialogResult.Yes)
+                Program.fixWorkingDirectory();
+
+            this.Close();
+        }
+
+        string upload()
+        { 
             if (gDesc.Text.Contains(defaultmsg) && gDesc.Text.Length - defaultmsg.Length < 3)
             {
                 if (DialogResult.Yes == MessageBox.Show(
@@ -206,10 +234,10 @@ namespace Loopstream
                     "Wanna go back and add an email address or something?",
                     "No contact info ", MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation))
                 {
-                    return;
+                    return null;
                 }
             }
-            gExit.Enabled = gSend.Enabled = gDesc.Enabled = false;
+            gDesc.Enabled = gIgnOnce.Enabled = gIgnAlways.Enabled = gRestart.Enabled = false;
             Application.DoEvents();
             try
             {
@@ -303,40 +331,45 @@ FILEDATA...
                 header = enc.GetString(buf, 0, i);
                 string msg = "";
                 if (!header.Contains("ls_ex_rep_ok"))
-                {
-                    msg = "FAILED to send error info to devs!\n\n(the crash reporter just crashed)";
-                }
+                    return "FAILED to send error info to devs!\n\n(the crash reporter just crashed)";
                 else
-                {
-                    msg = "Thank you !";
-                }
-                if (DialogResult.Yes == MessageBox.Show(
-                    msg + "\n\n" + "Restart Loopstream?", "now what",
-                    MessageBoxButtons.YesNo, MessageBoxIcon.Question))
-                {
-                    Program.fixWorkingDirectory();
-                }
+                    return "Thank you !";
             }
             catch (Exception ee)
             {
-                MessageBox.Show("the crash reporter just crashed:\n\n" + ee.Message + "\n\n" + ee.StackTrace);
+                return "the crash reporter just crashed:\n\n" + ee.Message + "\n\n" + ee.StackTrace;
             }
-            this.Close();
-        }
-
-        private void gExit_Click(object sender, EventArgs e)
-        {
-            this.Close();
         }
 
         private void UI_Exception_FormClosing(object sender, FormClosingEventArgs e)
         {
-            Program.kill();
+            if (ignored)
+                bail = false;
+            else
+                Program.kill();
         }
 
         private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo(((Control)sender).Text));
+        }
+
+        private void gIgnOnce_Click(object sender, EventArgs e)
+        {
+            ignored = true;
+            if (gcSend.Checked && upload() == null)
+                return;
+
+            this.Close();
+        }
+
+        private void gIgnAlways_Click(object sender, EventArgs e)
+        {
+            ignored = Program.IGNORE_EXCEPTIONS = true;
+            if (gcSend.Checked && upload() == null)
+                return;
+
+            this.Close();
         }
     }
 }

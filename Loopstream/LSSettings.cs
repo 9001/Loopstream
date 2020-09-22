@@ -741,11 +741,18 @@ namespace Loopstream
             wavetailer.setFormat();
             LSSettings.singleton = this;
 
+            bool scrap_it = true;
             foreach (var m in metas) {
                 if (m.tit == "Foobar 2000  (window title)" && m.ptn == @" *(.*[^ ]) *( - foobar2000$|\[foobar2000 v([0-9\.]*)\]$)")
                     m.ptn = @" *(.*[^ ]) *( - foobar2000$|\[foobar2000( v[0-9\.]*)?\]$)";
+
+                if (m.tit.Contains("Rekordbox"))
+                    scrap_it = false;
             }
+            if (scrap_it)
+                resetMetas();
         }
+
         public void resetMetas()
         {
             metas.Clear();
@@ -775,32 +782,6 @@ namespace Loopstream
                     1,
                     5,
                     "H4sIAAAAAAAEAHWST2sbMRDF7/oU71owwnUCBUMLPtRQSOLQ7q2Uol3N2qLaGUeazcb99NXKDtiH3vTn6c383qg5hIxjokyKKcSIRM5D3T6jTzJADwT0Ir/d6IPkLknbRkrWF2knw1GYWBE4B0/YirQurZbLpTU/AndULNnLBA0aCaUSi2LM5BcozmU/SfqTQa/ECD1OMmIIHIbw99oMKtDkTtZsMqLwHi5XbXHCg8tqt49XzUxBD1evF1XaOa7yWrUT7sMeWOODMe8GrutknFkynnZNyeFlDKl22o5aPZjIz70UWnWFf87mGMd9YDj2IHbtTKlrsw1lgc9fgOdEPSUqWeTzQSMSL8vNTaTns59vv/D1bHR7bYz59vi8+95snpo1sON4uqRXef83I7xSykEYH+29/bSYG7XWmst4+prSjHy3aoMiS6+TS7S44U0j40HkmLV8jqHgX9SDeLKmEOZcsyg5aanUUpxHLuiKXOnq6d3K0hvVsIo+vU/Eqf0HYDNJeIcCAAA="
-                ),
-                new LSMeta(
-                    LSMeta.Reader.ProcessMemory,
-                    "iTunes 64bit 11.0.4.4  (BROKEN (PROBABLY))",
-                    "itunes",
-                    500,
-                    "iTunes.dll+15C4D52, iTunes.dll+15C4952",
-                    "{1}",
-                    "utf-16",
-                    false,
-                    1,
-                    0,
-                    "H4sIAAAAAAAEAE1RzU7DMAy+9ym+G0yaKpAm7pyA+3gAt3Mba1lcGpeyt8fuJkRPaeLv18ckFY/TrB11+bqDlnzFqvO5YhVLsMTgH+oN3zxX0YLn5/apPbQH6AA5LoXrHlRON2SMvxw6+Rtvm+bD+ZZ8Kg+Gc9F1D4g9VBQ1UIUM+IAUY6cw9VM1yvnODHYa0EhSWryrC9Qk5pz350TB404G6YUyVrqGrZHNpIx4nU2qbe6OYpn3qOpqiTapmavOFidCr5cps7Er0DosGRe2pKe2+SyDDy2FtreIN87sP07ba6n8tXDpGV6iJTJPhmo61a3CsOB3AapZxnRDJSqjA8o9ood5U3SZLozXyU3ABdFxgCPsPvAlIrnNzoN5IVOmK89Ng3/f49b/mXkKpMVafauDOGGVzWKUThhVT7HRyBtd+VDP1YeZw/DuFzHtZE8RAgAA"
-                ),
-                new LSMeta(
-                    LSMeta.Reader.WindowCaption,
-                    "Mieda Player Classic HomeCinema",
-                    "mpc-hc",
-                    200,
-                    @" *(.*[^ ]) *",
-                    "{1}",
-                    "utf-8",
-                    false,
-                    1,
-                    5,
-                    "H4sIAAAAAAAEAE2RvW7DMAyEdz3FIbOT7l2zdClQIH0BxqJjtfoxSDmO376U0wTxIvhE3n2kTvPEAg1pioxJyhDsrAXC5FFHBucahLGE7MuCyreKMuDz67j/OHbuZ9ZqtalcQ76A8gqdqGcF1a1bK0k13ZuPb41NrKFGPjjnvsegz9CeMq4sK5g0xBVnBvnmz74BLUV+jaKOoBhRzEcwRVpZtAOpzskIXLO3xGBUb/ccPFL7WcSGgRYjtVwfdOv3CHkrSOwD/Xs+520W787h/h1HyhfeqnenMkvPO2AIHD0GKQm7NPX7sTfRiFuVDWfbUGRK3D1cimx3TXvAHfjGaGvo7Nd2t5YZCxnt61O8Mlnj4Q8Cgn3ovAEAAA=="
                 ),
                 new LSMeta(
                     LSMeta.Reader.WindowCaption,
@@ -842,6 +823,19 @@ namespace Loopstream
                     "H4sIAAAAAAAEAF2QzWrDMBCE736KweckUHoo5FboA5RSKD2u7VW8VD9GWtf123cth5ZEFyFm95sZfbKCYtKRM6acnHjGMko/IjMNBSYg8CCEydNqQ4vEIS1QUc8HoJttH44koxNFSJnRpzB56Ul5ODXNCzuaveJDIoXJxOjkMmdSSRFiDgll3IjmtHl4KQqOmlfEOXRmSVrFopQVydXH1d/LF5+bBvt5eHw64TnrRjjifRuxezdumuZ9nMuhbr+SKue4wyzDX3Px/lxpxyPeOKRvvoYocMn7tPCAbrXG7akFXE6h8jq+SIwSLzfx7kAUV5SJei4277aPojiAnCWpO+1t8haT9b1jVDb/KNq9VfufgQ124/4Lus7FPNsBAAA="
                 ),
                 new LSMeta(
+                    LSMeta.Reader.WindowCaption,
+                    "Aimp",
+                    "aimp",
+                    200,
+                    @"(.*)",
+                    "{1}",
+                    "utf-8",
+                    false,
+                    2,
+                    5,
+                    "H4sIAAAAAAAEAMsoKSkottLXLy8v10vMzC3QKyrVBwBTfJugFAAAAA=="
+                ),
+                new LSMeta(
                     LSMeta.Reader.File,
                     "---------------------------------------------------",
                     "tag.txt",
@@ -876,29 +870,42 @@ namespace Loopstream
                 ),
                 new LSMeta(
                     LSMeta.Reader.Website,
-                    "NI Traktor  (requires Loopstream Plugin)",
-                    "http://localhost:42069/status2.xsl",
-                    1000,
-                    "\\n<pre>(.*)</pre>\\n",
+                    "R/a/dio website",
+                    "https://r-a-d.io/",
+                    2000,
+                    "\\n\\s*<span id=\"np\">\\n\\s*([^\\n]*[^\\n]*)\\n",
                     "{1}",
                     "utf-8",
                     true,
                     1,
                     0,
-                    "H4sIAAAAAAAEAMtUSE7MK1FISs3JTC1LVajML1UoSczJTk1RyE1VyMwryVcoycgsBgCrdlFBJgAAAA=="
+                    "H4sIAAAAAAAEACXLMQ6AIAwF0N1T/M0J2R29gInGA2Ao0CjWQB28vRrXl7yJnIe6WBGKZCTVs/bWFuOM71hs0yyVwrWDA265Wo+dN4IKKK/kPyv/5+PFcZghBVUyaeIjPpCDra5fAAAA"
                 ),
                 new LSMeta(
-                    LSMeta.Reader.ProcessMemory,
-                    "NSFPlay v2.3.b3 - SynthesiaMOD v0.53   [32bit]",
-                    "nsfplay",
+                    LSMeta.Reader.Website,
+                    "Rekordbox plugin",
+                    "http://127.0.0.1:41379",
                     1000,
-                    "in_yansf.dll+47cc4*376, in_yansf.dll+47cc4*356",
+                    "(.*)",
                     "{1}",
-                    "shift_jis",
-                    false,
+                    "utf-8",
+                    true,
                     1,
                     0,
-                    "H4sIAAAAAAAEAG1SwW7CMAy99yusHaFUSGMg7cZhSEybNEHvk9u4YJEmVZxq7d/PFIoGmk+J/fye/ZK18xyPFOAr+JJEPqn2oYdAaCikAJZPBBusOQ9YnhRXtBHE8uEYbQ/CdWMpZMn6gOxSaDBGCg6kdxG7V9AoUAhqb1pLMAV2HBkt+KoSijCBxrPTFmhsK9dsksAl2H336KTKjLXTxaosF5Pn1TL9N/+yTJINB4nAAmhM0F0geljv8u0+T4G6xuqIZKAg638ypd9T6Z15wOfb/OMtGyaYzWDDClB7bghfDdfrPk9/J3nSubSodM3FypHkva2bM/VQuxKlZxoH6EYnlHjeDbtA0Ue6NedncVGHWE4qYLhErWo3xjvCYY3RzUfl0eR78Xmnbl7UoGrD8AvwqA8/tu/0DBgiS0x+AZrbiA0oAgAA"
+                    "H4sIAAAAAAAEACtOTVXIKCkpKLbS10/PLMkoTdJLzs/V904tyShOLNIPSs3OL0pJyq8ISk1MSS0CAAWU0J0uAAAA"
+                ),
+                new LSMeta(
+                    LSMeta.Reader.Website,
+                    "Traktor plugin  (does VirtualDJ too)",
+                    "http://127.0.0.1:42069/statuls.xsl",
+                    1000,
+                    "\\n<h42>( - )?([^\\n]*)</h42>\\n",
+                    "{2}",
+                    "utf-8",
+                    true,
+                    1,
+                    0,
+                    "H4sIAAAAAAAEACtOTVXIKCkpKLbS189PLtPLTdXPyc8vKC4pSk3M1S8pSswuyS/SBwC6STfxJgAAAA=="
                 ),
                 new LSMeta(
                     LSMeta.Reader.File,

@@ -347,9 +347,18 @@ namespace Loopstream
                     }
                     if (--bouncer < 0)
                     {
+                        try
+                        {
+                            var buf = System.Text.Encoding.UTF8.GetBytes(tag.tag + "\n");
+                            using (var fs = new System.IO.FileStream(Program.tools + "tags.txt", System.IO.FileMode.Create))
+                                fs.Write(buf, 0, buf.Length);
+                        }
+                        catch { }
+
                         foreach (Est e in est)
                         {
                             if (e != null &&
+                                streaming &&
                                 e.tag != tag.tag &&
                                 e.enc.FIXME_kbps > 0)
                             {
@@ -366,9 +375,6 @@ namespace Loopstream
 
         void sendTags(Est est)
         {
-            if (!streaming)
-                return;
-
             try
             {
                 System.IO.File.AppendAllText(

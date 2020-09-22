@@ -14,12 +14,12 @@ namespace Loopstream
     {
         public UI_Winpeck()
         {
-            InitializeComponent();
             target = IntPtr.Zero;
             me = IntPtr.Zero;
             starget = null;
             itarget = 0;
             tocker = 0;
+            InitializeComponent();
         }
 
         [DllImport("user32.dll")]

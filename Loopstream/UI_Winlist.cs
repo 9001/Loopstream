@@ -14,8 +14,8 @@ namespace Loopstream
     {
         public UI_Winlist()
         {
-            InitializeComponent();
             target = null;
+            InitializeComponent();
         }
 
         bool fuck, shit;

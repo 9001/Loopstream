@@ -14,9 +14,9 @@ namespace Loopstream
     {
         public UI_TagboxCfg(LSSettings settings, UI_Tagbox tbox)
         {
-            InitializeComponent();
             this.settings = settings;
             this.tbox = tbox;
+            InitializeComponent();
         }
 
         LSSettings settings;

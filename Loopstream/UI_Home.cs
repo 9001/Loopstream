@@ -1193,18 +1193,33 @@ namespace Loopstream
         void plowTheFields()
         {
             string wd = Application.ExecutablePath;
-            string ice = Application.ExecutablePath;
+            string icebase = Application.ExecutablePath;
             wd = wd.Substring(0, wd.Replace('\\', '/').LastIndexOf('/') + 1);
-            ice = ice.Substring(0, ice.LastIndexOf('.')) + "Traktor.exe";
-            if (System.IO.File.Exists(ice))
+            icebase = icebase.Substring(0, icebase.LastIndexOf('.')) + "Traktor";
+            var ices = new string[] {
+                icebase + "2.exe",
+                icebase + ".exe"
+            };
+            if (System.IO.File.Exists(ices[0]))
             {
                 z("Found ice, launching");
-                ice = ice.Substring(wd.Length);
+                string ice = ices[0].Substring(wd.Length);
                 System.Diagnostics.Process proc = new System.Diagnostics.Process();
                 proc.StartInfo = new System.Diagnostics.ProcessStartInfo(ice, "doit");
                 proc.StartInfo.WorkingDirectory = wd;
                 proc.Start();
                 proc.WaitForExit();
+                return;
+            }
+            foreach (string ice in ices)
+            {
+                if (!System.IO.File.Exists(ice))
+                    continue;
+
+                MessageBox.Show("found an old version of the Traktor plugin," +
+                    "\n\ni need this:\n   " + Path.GetFileName(ices[0]) + 
+                    "\n\nplease delete this:\n   " + Path.GetFileName(ice));
+                return;
             }
         }
 

@@ -23,8 +23,8 @@ namespace Loopstream
 
         public UC_Troggle()
         {
-            InitializeComponent();
             bLoad = bSave = null;
+            InitializeComponent();
             init();
             Resize += UC_Troggle_Resize;
             pb.MouseDown += new MouseEventHandler(pb_MouseDown);

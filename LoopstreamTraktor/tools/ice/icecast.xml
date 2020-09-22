@@ -19,7 +19,7 @@
     </listen-socket>
     <fileserve>1</fileserve>
     <paths>
-        <logdir>./logs</logdir>
+        <logdir>./log</logdir>
         <webroot>./web</webroot>
         <adminroot>./admin</adminroot>
         <alias source="/" dest="/status.xsl"/>
@@ -29,4 +29,12 @@
         <errorlog>error.log</errorlog>
       	<loglevel>1</loglevel> <!-- 4 Debug, 3 Info, 2 Warn, 1 Error -->
     </logging>
+    <mount>
+        <mount-name>/utf.mp3</mount-name>
+        <charset>utf-8</charset>
+    </mount>
+    <mount>
+        <mount-name>/utf.ogg</mount-name>
+        <charset>utf-8</charset>
+    </mount>
 </icecast>

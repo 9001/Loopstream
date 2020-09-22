@@ -15,15 +15,15 @@ namespace Loopstream
     {
         public UI_Tagbox(LSSettings settings, LSTag tag)
         {
-            InitializeComponent();
-
             this.settings = settings;
             this.tag = tag;
 
+            cui = null;
             lastTag = null;
             lastSize = Size.Empty;
+
+            InitializeComponent();
             gPic.Image = null;
-            cui = null;
         }
 
         LSTag tag;

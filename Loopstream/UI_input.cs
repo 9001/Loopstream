@@ -13,10 +13,10 @@ namespace Loopstream
     {
         public UI_input(LSSettings.LSMeta meta, List<LSSettings.LSMeta> metas)
         {
-            InitializeComponent();
-            textBox1.Text = meta.tit;
             this.metas = metas;
             this.meta = meta;
+            InitializeComponent();
+            textBox1.Text = meta.tit;
             wasAdded = true;
         }
 

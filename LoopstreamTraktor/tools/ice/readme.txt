@@ -1,63 +1,97 @@
 This folder should contain a portable icecast installation,
 make it match the recursive directory listing below.
 
-Also make sure to rename the icecast exe to
-traktor2loopstream.exe
+inside ./bin, rename icecast.exe to:
+  traktor2loopstream.exe
+
+Delete these files from icecast-2.4.4:
+  ./Uninstall.exe
+  ./icecast.bat
+  ./doc
 
 
 
-.:
-total 3896
-drwx------ 1 ed ed     288 Oct 11 15:23 .
-drwx------ 1 ed ed       6 Jan  4  2014 ..
-drwx------ 1 ed ed     210 Jan  4  2014 admin
--rw-r--r-- 1 ed ed    1103 Jan  4  2014 icecast.xml
--rw-r--r-- 1 ed ed  892928 Nov 28  2004 iconv.dll
--rw-r--r-- 1 ed ed  176128 Feb 26  2006 libcurl.dll
--rw-r--r-- 1 ed ed 1069056 May 10  2006 libeay32.dll
--rw-r--r-- 1 ed ed  930816 Feb  8  2008 libxml2.dll
--rw-r--r-- 1 ed ed  161792 Feb  8  2008 libxslt.dll
-drwx------ 1 ed ed      38 Jan  4  2014 logs
--rw-r--r-- 1 ed ed   53300 Jun 22  2004 pthreadVSE.dll
--rw-r--r-- 1 ed ed       0 Oct 11 15:23 README.txt
--rw-r--r-- 1 ed ed  200704 May 10  2006 ssleay32.dll
--rw-r--r-- 1 ed ed  417792 May 24  2008 traktor2loopstream.exe
-drwx------ 1 ed ed     350 Jan  4  2014 web
--rw-r--r-- 1 ed ed   73728 Feb 26  2006 zlib1.dll
+C:\foo>dir /s
 
-./admin:
-total 36
-drwx------ 1 ed ed  210 Jan  4  2014 .
-drwx------ 1 ed ed  288 Oct 11 15:23 ..
--rw-r--r-- 1 ed ed 3792 Apr 30  2008 listclients.xsl
--rw-r--r-- 1 ed ed 3181 Apr 30  2008 listmounts.xsl
--rw-r--r-- 1 ed ed 3430 Apr  7  2008 manageauth.xsl
--rw-r--r-- 1 ed ed 2359 Apr  7  2008 moveclients.xsl
--rw-r--r-- 1 ed ed 1956 Aug 11  2007 response.xsl
--rw-r--r-- 1 ed ed 4276 Apr 30  2008 stats.xsl
--rw-r--r-- 1 ed ed 2318 Apr  7  2008 updatemetadata.xsl
--rw-r--r-- 1 ed ed 2944 Aug 11  2007 xspf.xsl
+ Directory of C:\foo
 
-./logs:
-total 4
-drwx------ 1 ed ed  38 Jan  4  2014 .
-drwx------ 1 ed ed 288 Oct 11 15:23 ..
--rw-r--r-- 1 ed ed  29 Jan  4  2014 not an empty folder
+09/22/2020  08:12 PM    <DIR>          .
+09/22/2020  08:12 PM    <DIR>          ..
+09/22/2020  08:10 PM    <DIR>          admin
+09/22/2020  08:11 PM    <DIR>          bin
+09/22/2020  08:08 PM             1,271 icecast.xml
+09/22/2020  08:12 PM    <DIR>          log
+11/03/2018  08:08 PM           102,925 mime.types
+09/22/2020  08:12 PM             2,547 readme.txt
+09/22/2020  08:10 PM    <DIR>          web
+               3 File(s)        106,743 bytes
 
-./web:
-total 80
-drwx------ 1 ed ed  350 Jan  4  2014 .
-drwx------ 1 ed ed  288 Oct 11 15:23 ..
--rw-r--r-- 1 ed ed 1975 Apr  9  2008 auth.xsl
--rw-r--r-- 1 ed ed 8164 Jul  4  2005 corner_bottomleft.jpg
--rw-r--r-- 1 ed ed 8155 Jul  4  2005 corner_bottomright.jpg
--rw-r--r-- 1 ed ed 8149 Jul  4  2005 corner_topleft.jpg
--rw-r--r-- 1 ed ed 8151 Jul  4  2005 corner_topright.jpg
--rw-r--r-- 1 ed ed 1104 Mar 21  2006 example.xsl
--rw-r--r-- 1 ed ed 5073 Jul  4  2005 icecast.png
--rw-r--r-- 1 ed ed 2228 Aug 12  2005 key.png
--rw-r--r-- 1 ed ed 3053 Apr 30  2008 server_version.xsl
--rw-r--r-- 1 ed ed  493 Jan  4  2014 status2.xsl
--rw-r--r-- 1 ed ed 4748 Apr 30  2008 status.xsl
--rw-r--r-- 1 ed ed 4972 May  9  2008 style.css
--rw-r--r-- 1 ed ed 2042 Aug 12  2005 tunein.png
+ Directory of C:\foo\admin
+
+09/22/2020  08:10 PM    <DIR>          .
+09/22/2020  08:10 PM    <DIR>          ..
+11/03/2018  06:11 PM             3,225 listclients.xsl
+11/03/2018  06:11 PM             2,256 listmounts.xsl
+11/03/2018  06:11 PM             3,026 manageauth.xsl
+11/03/2018  06:11 PM             1,604 moveclients.xsl
+11/03/2018  06:11 PM             1,287 response.xsl
+11/03/2018  06:11 PM             3,320 stats.xsl
+11/03/2018  06:11 PM             1,723 updatemetadata.xsl
+11/03/2018  06:11 PM             2,322 vclt.xsl
+11/03/2018  06:11 PM             2,981 xspf.xsl
+               9 File(s)         21,744 bytes
+
+ Directory of C:\foo\bin
+
+09/22/2020  08:11 PM    <DIR>          .
+09/22/2020  08:11 PM    <DIR>          ..
+11/03/2018  08:08 PM             2,238 icecast.ico
+11/03/2018  08:08 PM         1,462,764 libcrypto-10.dll
+11/03/2018  08:08 PM           462,301 libcurl-4.dll
+11/03/2018  08:08 PM            98,260 libgcc_s_sjlj-1.dll
+11/03/2018  08:08 PM           779,064 libgcrypt-20.dll
+11/03/2018  08:08 PM           144,550 libgpg-error-0.dll
+11/03/2018  08:08 PM           296,538 libnspr4.dll
+11/03/2018  08:08 PM            26,729 libogg-0.dll
+11/03/2018  08:08 PM            23,715 libplc4.dll
+11/03/2018  08:08 PM            20,952 libplds4.dll
+11/03/2018  08:08 PM           142,095 libspeex-1.dll
+11/03/2018  08:08 PM           164,434 libssh2-1.dll
+11/03/2018  08:08 PM           350,313 libssl-10.dll
+11/03/2018  08:08 PM           304,866 libtheora-0.dll
+11/03/2018  08:08 PM           166,297 libvorbis-0.dll
+11/03/2018  08:08 PM            52,669 libwinpthread-1.dll
+11/03/2018  08:08 PM         1,184,559 libxml2-2.dll
+11/03/2018  08:08 PM           233,974 libxslt-1.dll
+11/03/2018  08:08 PM         1,200,557 nss3.dll
+11/03/2018  08:08 PM           131,095 nssutil3.dll
+11/03/2018  08:08 PM           271,022 ssl3.dll
+11/03/2018  08:08 PM           214,925 traktor2loopstream.exe
+11/03/2018  08:08 PM            88,489 zlib1.dll
+              23 File(s)      7,822,406 bytes
+
+ Directory of C:\foo\log
+
+09/22/2020  08:12 PM    <DIR>          .
+09/22/2020  08:12 PM    <DIR>          ..
+09/22/2020  08:12 PM                 2 ayy.txt
+               1 File(s)              2 bytes
+
+ Directory of C:\foo\web
+
+09/22/2020  08:10 PM    <DIR>          .
+09/22/2020  08:10 PM    <DIR>          ..
+11/03/2018  06:11 PM             2,011 auth.xsl
+11/03/2018  06:11 PM             5,073 icecast.png
+11/03/2018  06:11 PM             2,228 key.png
+11/03/2018  06:11 PM             2,180 server_version.xsl
+09/22/2020  09:26 PM               517 statuls.xsl
+11/03/2018  06:11 PM             1,882 status-json.xsl
+11/03/2018  06:11 PM             5,324 status.xsl
+11/03/2018  06:11 PM             3,879 style.css
+11/03/2018  06:11 PM             2,042 tunein.png
+11/03/2018  06:11 PM             8,785 xml2json.xslt
+               9 File(s)         33,404 bytes
+
+     Total Files Listed:
+              45 File(s)      7,984,299 bytes
