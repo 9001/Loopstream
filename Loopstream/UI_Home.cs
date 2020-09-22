@@ -1197,6 +1197,7 @@ namespace Loopstream
             wd = wd.Substring(0, wd.Replace('\\', '/').LastIndexOf('/') + 1);
             icebase = icebase.Substring(0, icebase.LastIndexOf('.')) + "Traktor";
             var ices = new string[] {
+                icebase + "3.exe",
                 icebase + "2.exe",
                 icebase + ".exe"
             };

@@ -5,12 +5,7 @@
 
 	<xsl:for-each select="source">
 <xsl:text>&#xa;</xsl:text>
-<h42>
-<xsl:if test="artist">
-<xsl:value-of select="artist" /> - 
-</xsl:if>
-<xsl:value-of select="title" />
-</h42>
+<h42><xsl:if test="artist"><xsl:value-of select="artist" /> - </xsl:if><xsl:value-of select="title" /></h42>
 <xsl:text>&#xa;</xsl:text>
 	</xsl:for-each>
 

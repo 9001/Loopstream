@@ -176,20 +176,31 @@ namespace LoopstreamTraktor
             if (procs.Length > 0) Program.kill();
 
             string basedir = Program.tools + "ice";
-            if (Directory.Exists(basedir) && !File.Exists(Path.Combine(basedir, "web", "statuls.xsl")))
-                for (int a = 0; a < 3; a++)
-                    try
-                    {
-                        Directory.Delete(basedir, true);
-                        Application.DoEvents();
-                        System.Threading.Thread.Sleep(500); // mkdir fails otherwise, ok yes good
-                        break;
-                    }
-                    catch
-                    {
-                        Application.DoEvents();
-                        System.Threading.Thread.Sleep(250);
-                    }
+            if (Directory.Exists(basedir))
+            {
+                bool ok = false;
+                try
+                {
+                    var txt = File.ReadAllText(Path.Combine(basedir, "web", "statuls.xsl"), Encoding.UTF8);
+                    ok = txt.Contains("artist\" /> - </xsl:if><xsl");
+                }
+                catch { }
+
+                if (!ok)
+                    for (int a = 0; a < 3; a++)
+                        try
+                        {
+                            Directory.Delete(basedir, true);
+                            Application.DoEvents();
+                            System.Threading.Thread.Sleep(500); // mkdir fails otherwise, ok yes good
+                            break;
+                        }
+                        catch
+                        {
+                            Application.DoEvents();
+                            System.Threading.Thread.Sleep(250);
+                        }
+            }
 
             if (!Directory.Exists(basedir))
             {

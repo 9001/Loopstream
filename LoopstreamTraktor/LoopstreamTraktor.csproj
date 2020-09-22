@@ -114,6 +114,16 @@
     <Content Include="ice_cube.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PreBuildEvent>
+    </PreBuildEvent>
+  </PropertyGroup>
+  <PropertyGroup>
+    <PostBuildEvent>LoopstreamTraktor.exe sign
+ping 127.0.0.1 -n 2 &gt;nul
+copy /Y LoopstreamTraktor.exe.exe c:\users\ed\bin\rls\LoopstreamTraktor3.exe
+</PostBuildEvent>
+  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

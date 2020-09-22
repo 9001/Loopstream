@@ -737,7 +737,7 @@ namespace Loopstream
 
             if (triggers.Count == 0)
                 resetTriggers();
-
+            
             wavetailer.setFormat();
             LSSettings.singleton = this;
 
@@ -899,8 +899,8 @@ namespace Loopstream
                     "Traktor plugin  (does VirtualDJ too)",
                     "http://127.0.0.1:42069/statuls.xsl",
                     1000,
-                    "\\n<h42>( - )?([^\\n]*)</h42>\\n",
-                    "{2}",
+                    "\\n<h42>( - )?([^\\n<]*)\\n*([^\\n<]*)\\n*([^<]*)</h42>\\n",
+                    "{2}{3}{4}",
                     "utf-8",
                     true,
                     1,

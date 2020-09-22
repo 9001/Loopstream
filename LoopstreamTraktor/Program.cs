@@ -53,4 +53,4 @@ namespace LoopstreamTraktor
     }
 }
 
-// LoopstreamTraktor.exe sign && ping 127.0.0.1 -n 2 >nul && copy /Y LoopstreamTraktor.exe.exe c:\users\ed\bin\rls\LoopstreamTraktor2.exe
+// LoopstreamTraktor.exe sign && ping 127.0.0.1 -n 2 >nul && copy /Y LoopstreamTraktor.exe.exe c:\users\ed\bin\rls\LoopstreamTraktor3.exe
