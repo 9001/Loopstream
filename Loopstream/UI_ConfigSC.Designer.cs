@@ -180,13 +180,13 @@
             this.gSplash = new System.Windows.Forms.CheckBox();
             this.pTabs = new System.Windows.Forms.Panel();
             this.label5 = new System.Windows.Forms.Label();
-            this.label12 = new System.Windows.Forms.Label();
-            this.tt = new System.Windows.Forms.ToolTip(this.components);
             this.hTriggers = new Loopstream.TLabel();
             this.hTags = new Loopstream.TLabel();
             this.hEncoders = new Loopstream.TLabel();
             this.hServer = new Loopstream.TLabel();
             this.hSoundcard = new Loopstream.TLabel();
+            this.label12 = new System.Windows.Forms.Label();
+            this.tt = new System.Windows.Forms.ToolTip(this.components);
             this.pWrapper.SuspendLayout();
             this.tc.SuspendLayout();
             this.tpSoundcard.SuspendLayout();
@@ -2133,21 +2133,6 @@
             this.label5.Size = new System.Drawing.Size(542, 1);
             this.label5.TabIndex = 5;
             // 
-            // label12
-            // 
-            this.label12.BackColor = System.Drawing.SystemColors.Control;
-            this.label12.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.label12.Location = new System.Drawing.Point(0, 34);
-            this.label12.Name = "label12";
-            this.label12.Size = new System.Drawing.Size(542, 10);
-            this.label12.TabIndex = 1;
-            // 
-            // tt
-            // 
-            this.tt.ShowAlways = true;
-            this.tt.UseAnimation = false;
-            this.tt.UseFading = false;
-            // 
             // hTriggers
             // 
             this.hTriggers.AutoSize = true;
@@ -2212,6 +2197,21 @@
             this.hSoundcard.Size = new System.Drawing.Size(115, 35);
             this.hSoundcard.TabIndex = 0;
             this.hSoundcard.Text = "Soundcard";
+            // 
+            // label12
+            // 
+            this.label12.BackColor = System.Drawing.SystemColors.Control;
+            this.label12.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.label12.Location = new System.Drawing.Point(0, 34);
+            this.label12.Name = "label12";
+            this.label12.Size = new System.Drawing.Size(542, 10);
+            this.label12.TabIndex = 1;
+            // 
+            // tt
+            // 
+            this.tt.ShowAlways = true;
+            this.tt.UseAnimation = false;
+            this.tt.UseFading = false;
             // 
             // ConfigSC
             // 
