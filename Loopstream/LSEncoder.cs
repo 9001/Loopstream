@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Collections.Concurrent;
 using System.Diagnostics;
@@ -205,12 +205,15 @@ namespace Loopstream
                 crashed = true;
                 return;
             }
-            if (str.StartsWith("HTTP/1.0 401 Unauthorized"))
+            if (str.StartsWith("HTTP/1."))
+                str = str.Substring(8);
+
+            if (str.StartsWith(" 401 Unauthorized"))
             {
                 MessageBox.Show("Radio server error: Wrong password",
                     "Stream abort", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
-            else if (str.StartsWith("HTTP/1.0 403 Mountpoint in use"))
+            else if (str.StartsWith(" 403 Mountpoint in use"))
             {
                 if (--rekick > 0)
                 {
@@ -251,7 +254,7 @@ namespace Loopstream
                     aborted = true;
                 }
             }
-            else if (str.StartsWith("HTTP/1.0 200 OK"))
+            else if (str.StartsWith(" 200 OK"))
             {
                 logger.a("bootstrap");
                 s = prepS;
