@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -1404,12 +1404,23 @@ namespace Loopstream
                     {
                         byte[] data = { }, hdr = { };
                         string ctype = "text/html; charset=utf-8";
+                        string action = "";
 
                         TcpClient tc = tl.AcceptTcpClient();
                         NetworkStream s = tc.GetStream();
-                        StreamReader sr = new StreamReader(s);
-                        string action = sr.ReadLine();
-                        while (sr.ReadLine() != "") ;
+                        s.ReadTimeout = 500;
+                        try
+                        {
+                            while (!action.EndsWith("\r\n\r\n"))
+                                action += (char)s.ReadByte();
+                        }
+                        catch (IOException)
+                        {
+                            s.Dispose();
+                            tc.Close();
+                            continue;
+                        }
+                        action = action.Split('\r')[0];
                         Match m = r.Match(action);
                         if (false)
                         {
@@ -1660,6 +1671,7 @@ namespace Loopstream
                         s.Write(hdr, 0, hdr.Length);
                         s.Write(data, 0, data.Length);
                         s.Flush();
+                        System.Threading.Thread.Sleep(100);
                         s.Dispose();
                         tc.Close();
                     }
