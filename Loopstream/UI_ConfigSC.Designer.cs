@@ -1812,7 +1812,9 @@ namespace Loopstream
             this.gDescText.Name = "gDescText";
             this.gDescText.Size = new System.Drawing.Size(488, 160);
             this.gDescText.TabIndex = 68;
-            this.gDescText.Text = resources.GetString("gDescText.Text");
+            this.gDescText.Text = "\nSelect a media player profile from the dropdown above.\n\nYou can add support for " +
+    "more media players by tweaking\nexisting profiles. Some regex knowledge may be re" +
+    "quired.\n\n";
             this.gDescText.TextChanged += new System.EventHandler(this.gDescText_TextChanged);
             // 
             // label29
