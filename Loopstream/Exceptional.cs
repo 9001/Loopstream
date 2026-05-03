@@ -356,8 +356,6 @@ namespace Loopstream
 
         public string TargetSite { get; set; }
 
-        public string UserDescription { get; set; }
-
         public SerializableException exception { get; set; }
 
         //public Variables vars { get; set; }

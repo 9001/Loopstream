@@ -241,7 +241,7 @@ namespace Loopstream
             Application.DoEvents();
             try
             {
-                gi.UserDescription = gDesc.Text;
+                serText = gDesc.Text.Replace("\r", "").Replace("\n\n--/--\n\n", "") + "\n\n--/--\n\n" + serText;
                 byte[] payload = Z.lze(serText, true);
                 
                 string hash;
