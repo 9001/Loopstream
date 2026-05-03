@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -24,10 +24,11 @@ namespace Loopstream
             proc.StartInfo.RedirectStandardInput = true;
             proc.StartInfo.RedirectStandardOutput = true;
             proc.StartInfo.Arguments = string.Format(
-                "{0} {1} -h -m {2} --noreplaygain -S " + //..................target params
-                "-r -s {3} --bitwidth 16 --signed --little-endian - -", //...source params
+                "{0} {1} {2} -m {3} --noreplaygain -S " + //..................target params
+                "-r -s {4} --bitwidth 16 --signed --little-endian - -", //...source params
                 (settings.mp3.compression == LSSettings.LSCompression.cbr ? "--preset cbr" : "-V"),
                 (settings.mp3.compression == LSSettings.LSCompression.cbr ? settings.mp3.bitrate : settings.mp3.quality),
+                (settings.mp3.compression == LSSettings.LSCompression.cbr ? "-q 4" : "-h"),  // lame#516
                 (settings.mp3.channels == LSSettings.LSChannels.stereo ? "j" : "s -a"),
                 settings.samplerate);
 
