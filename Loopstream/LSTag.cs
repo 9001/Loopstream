@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -113,7 +113,14 @@ namespace Loopstream
                 string raw = null;
                 if (m.src.Contains('*'))
                 {
-                    raw = WinapiShit.getWinText(new IntPtr(Convert.ToInt32(m.src.Split('*')[1], 16)));
+                    try
+                    {
+                        raw = WinapiShit.getWinText(new IntPtr(Convert.ToInt32(m.src.Split('*')[1], 16)));
+                    }
+                    catch
+                    {
+                        return new LSTD(false, "(no such target)", "invalid source value  «" + m.src + "»");
+                    }
                 }
                 if (string.IsNullOrEmpty(raw))
                 {
