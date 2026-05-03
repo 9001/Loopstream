@@ -1,4 +1,4 @@
-﻿namespace Loopstream
+namespace Loopstream
 {
     partial class ConfigSC
     {
@@ -1585,8 +1585,10 @@
             this.gYield.Name = "gYield";
             this.gYield.Size = new System.Drawing.Size(100, 20);
             this.gYield.TabIndex = 53;
-            this.tt.SetToolTip(this.gYield, "How often Loopstream will look for new metadata (in miliseconds)");
+            this.tt.SetToolTip(this.gYield, "Regex output template");
             this.gYield.TextChanged += new System.EventHandler(this.gYield_TextChanged);
+            this.gYield.MouseEnter += new System.EventHandler(this.gHost_MouseEnter);
+            this.gYield.MouseLeave += new System.EventHandler(this.gHost_MouseLeave);
             // 
             // gResetTags
             // 
