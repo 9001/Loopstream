@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -823,9 +823,9 @@ namespace Loopstream
                     "H4sIAAAAAAAEAF2QzWrDMBCE736KweckUHoo5FboA5RSKD2u7VW8VD9GWtf123cth5ZEFyFm95sZfbKCYtKRM6acnHjGMko/IjMNBSYg8CCEydNqQ4vEIS1QUc8HoJttH44koxNFSJnRpzB56Ul5ODXNCzuaveJDIoXJxOjkMmdSSRFiDgll3IjmtHl4KQqOmlfEOXRmSVrFopQVydXH1d/LF5+bBvt5eHw64TnrRjjifRuxezdumuZ9nMuhbr+SKue4wyzDX3Px/lxpxyPeOKRvvoYocMn7tPCAbrXG7akFXE6h8jq+SIwSLzfx7kAUV5SJei4277aPojiAnCWpO+1t8haT9b1jVDb/KNq9VfufgQ124/4Lus7FPNsBAAA="
                 ),
                 new LSMeta(
-                    LSMeta.Reader.WindowCaption,
+                    LSMeta.Reader.File,
                     "Aimp",
-                    "aimp",
+                    "aimp-np.txt",
                     200,
                     @"(.*)",
                     "{1}",
@@ -833,7 +833,7 @@ namespace Loopstream
                     false,
                     2,
                     5,
-                    "H4sIAAAAAAAEAMsoKSkottLXLy8v10vMzC3QKyrVBwBTfJugFAAAAA=="
+                    "H4sIAAAAAAAEAD2QT0sDMRDF7/sphhzECrtFRJCWIqUo9FARq2cZN7O7sflHdmK3395JK95mXh6/9yZvhBocMWpkhC4FB+vt7hXqunoh0iPwQKA2OSXyDO8J2wNsfReAA6z9SUG0uTd+CQNzHBfzORoXm5TnjzqsWmHa0F8laj+NXt3dP1TVJvjO9DmRkJEvYRcGWHMoqhkXYkuETIDg6QhMLtqyHg0P50aaOsyWYUCvLSXgUyS4Vs/GEoTMMbOaLasb2BNDJ6JHV973+EOleZHUrEyq9K19bHhiJWETF9WGEEeWCq6hiYTz5PFL0P+AD2/aoEn9RagdTsZlB6EDOTYk+Tg56BxT7N95FNOt+gXVhpCFbgEAAA=="
                 ),
                 new LSMeta(
                     LSMeta.Reader.File,
